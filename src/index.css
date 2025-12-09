@@ -13,12 +13,18 @@
   }
 }
 
-/* Custom styles for glitch effect if needed */
-.glitch-effect {
-  position: relative;
-}
-
 @theme {
-  --color-slate-900: #0f172a;
-  --color-slate-50: #f8fafc;
+  --color-custom-bg: #212529;
+  --color-custom-header: #343a40;
+  --color-custom-title: #f8f9fa;
+  --color-custom-text: #ffffff;
+  --color-custom-accent: #04b2a6;
+  --color-custom-category: #495057;
+  --color-custom-border: #33a1e0;
+  --color-custom-success: #2ecc71;
+  --color-custom-error: #e74c3c;
+  --color-custom-warning: #f39c12;
+  --color-custom-info: #3498db;
+
+  --font-sans: 'Poppins', sans-serif;
 }

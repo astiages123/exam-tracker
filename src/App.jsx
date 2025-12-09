@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, CheckCircle, Circle, Trophy, Star, TrendingUp, BookOpen, Youtube } from 'lucide-react';
 import { clsx } from 'clsx';
@@ -11,6 +11,12 @@ function cn(...inputs) {
 
 // --- Data ---
 import { courseData, RANKS } from './data';
+import { useAuth } from './context/AuthContext';
+import Login from './components/Login';
+import PomodoroTimer from './components/PomodoroTimer';
+import ReportModal from './components/ReportModal';
+import { LogOut, Timer, BarChart2, Calendar } from 'lucide-react';
+import ScheduleModal from './components/ScheduleModal';
 
 
 // --- Components ---
@@ -21,14 +27,13 @@ const ProgressBar = ({ progress, nextLevelMin, currentLevelMin }) => {
   const percentage = Math.min(100, Math.max(0, (currentVal / (range || 1)) * 100));
 
   return (
-    <div className="w-full bg-slate-800 rounded-full h-4 mt-2 overflow-hidden border border-slate-700 shadow-inner">
+    <div className="w-full bg-custom-header rounded-full h-3 mt-4 overflow-hidden">
       <motion.div
-        className="h-full bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 relative"
+        className="h-full bg-custom-accent rounded-full relative"
         initial={{ width: 0 }}
         animate={{ width: `${percentage}%` }}
         transition={{ duration: 0.5 }}
       >
-        <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
       </motion.div>
     </div>
   );
@@ -48,7 +53,7 @@ const LevelUpModal = ({ title, onClose }) => {
           initial={{ scale: 0.5, y: 50, rotateX: 90 }}
           animate={{ scale: 1, y: 0, rotateX: 0 }}
           exit={{ scale: 0.5, y: 50, rotateX: 90 }}
-          className="bg-slate-900 border-2 border-emerald-500 rounded-2xl p-8 text-center max-w-sm w-full shadow-[0_0_50px_-12px_rgba(16,185,129,0.5)]"
+          className="bg-custom-header border border-custom-category rounded-2xl p-8 text-center max-w-sm w-full shadow-2xl shadow-custom-accent/10"
           onClick={(e) => e.stopPropagation()}
         >
           <motion.div
@@ -56,16 +61,16 @@ const LevelUpModal = ({ title, onClose }) => {
             transition={{ repeat: Infinity, duration: 2 }}
             className="inline-block mb-4"
           >
-            <Trophy size={80} className="text-yellow-400 mx-auto drop-shadow-lg" />
+            <Trophy size={80} className="text-yellow-400 mx-auto drop-shadow-md" />
           </motion.div>
-          <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mb-2">TERFİ!</h2>
-          <p className="text-slate-400 mb-6 font-medium">Yeni Ünvanınız:</p>
-          <div className="text-2xl font-bold text-white mb-8 border-y border-emerald-500/30 py-4 bg-emerald-500/10 rounded-lg">
+          <h2 className="text-3xl font-bold text-white mb-2">TERFİ!</h2>
+          <p className="text-custom-title/70 mb-6 font-medium">Yeni Ünvanınız:</p>
+          <div className="text-xl font-medium text-custom-text mb-8 border-y border-custom-category py-4 bg-custom-bg/30 rounded-lg">
             {title}
           </div>
           <button
             onClick={onClose}
-            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 px-6 rounded-xl transition-all hover:scale-105 active:scale-95 shadow-lg shadow-emerald-500/30 cursor-pointer"
+            className="w-full bg-custom-accent hover:bg-custom-accent/90 text-white font-semibold py-3 px-6 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-custom-accent/20 cursor-pointer"
           >
             MÜKEMMEL
           </button>
@@ -77,9 +82,9 @@ const LevelUpModal = ({ title, onClose }) => {
 
 const CategoryProgressBar = ({ percentage }) => {
   return (
-    <div className="w-full bg-slate-700/50 rounded-full h-1.5 mt-2 overflow-hidden">
+    <div className="w-full bg-custom-category/50 rounded-full h-1.5 mt-2 overflow-hidden">
       <motion.div
-        className="h-full bg-gradient-to-r from-emerald-500 to-cyan-400"
+        className="h-full bg-custom-accent"
         initial={{ width: 0 }}
         animate={{ width: `${percentage}%` }}
         transition={{ duration: 0.5 }}
@@ -97,18 +102,67 @@ const formatHours = (decimalHours) => {
 };
 
 export default function App() {
-  // State: { [courseId]: completedCount }
-  const [progressData, setProgressData] = useState(() => {
-    const saved = localStorage.getItem('courseProgress');
-    return saved ? JSON.parse(saved) : {};
-  });
+  const { user, logout, loading } = useAuth();
 
-  // Changed to Set for independent expansion
+  // State: { [courseId]: completedCount }
+  const [progressData, setProgressData] = useState({});
+  const [sessions, setSessions] = useState([]); // [{ timestamp, duration, type, courseId }]
+  const [lastActiveCourseId, setLastActiveCourseId] = useState(null); // Track last interacted course
+
+  const [showTimer, setShowTimer] = useState(false);
+  const [showReport, setShowReport] = useState(false);
+  const [showSchedule, setShowSchedule] = useState(false);
+
+  // Daily Focus Logic
+  // Daily Focus Logic
+  const getDailyFocus = () => {
+    const days = ['PAZAR', 'PAZARTESİ', 'SALI', 'ÇARŞAMBA', 'PERŞEMBE', 'CUMA', 'CUMARTESİ'];
+    const now = new Date();
+    const todayIndex = now.getDay();
+    const today = days[todayIndex];
+
+    // Sunday Logic: Check if Saturday (yesterday) has any sessions
+    if (todayIndex === 0) { // 0 is Sunday
+      // Get Saturday's range (yesterday)
+      const saturday = new Date(now);
+      saturday.setDate(now.getDate() - 1);
+      saturday.setHours(0, 0, 0, 0);
+      const startOfSat = saturday.getTime();
+      const endOfSat = startOfSat + (24 * 60 * 60 * 1000);
+
+      const workedOnSaturday = sessions.some(s => s.timestamp >= startOfSat && s.timestamp < endOfSat);
+
+      return workedOnSaturday ? 'TATİL' : 'YETENEK - BANKA';
+    }
+
+    const schedule = {
+      'PAZARTESİ': 'EKONOMİ',
+      'SALI': 'HUKUK',
+      'ÇARŞAMBA': 'MUHASEBE - MALİYE',
+      'PERŞEMBE': 'EKONOMİ',
+      'CUMA': 'HUKUK',
+      'CUMARTESİ': 'YETENEK - BANKA',
+    };
+    return schedule[today] || 'BELİRSİZ';
+  };
+  const dailyFocus = getDailyFocus();
+
+  // Initialize data when user changes
+  useEffect(() => {
+    if (user) {
+      const savedProgress = localStorage.getItem(`courseProgress_${user.username}`);
+      if (savedProgress) setProgressData(JSON.parse(savedProgress));
+      else setProgressData({});
+
+      const savedSessions = localStorage.getItem(`pomodoroSessions_${user.username}`);
+      if (savedSessions) setSessions(JSON.parse(savedSessions));
+      else setSessions([]);
+    }
+  }, [user]);
+
   const [expandedCategories, setExpandedCategories] = useState(new Set());
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [newTitle, setNewTitle] = useState("");
-  const [rankInfo, setRankInfo] = useState(RANKS[0]);
-  const [totalPercentage, setTotalPercentage] = useState(0);
 
   // Calculate total videos and hours
   const totalVideos = courseData.reduce((acc, cat) =>
@@ -117,43 +171,14 @@ export default function App() {
   const totalHours = courseData.reduce((acc, cat) =>
     acc + cat.courses.reduce((cAcc, course) => cAcc + course.totalHours, 0), 0);
 
-  // Calculate completed hours
-  const calculateCompletedHours = () => {
-    let completed = 0;
-    Object.keys(progressData).forEach(courseId => {
-      const course = courseData.flatMap(cat => cat.courses).find(c => c.id === courseId);
-      if (course) {
-        const completedCount = progressData[courseId].length;
-        if (completedCount > 0) {
-          completed += (completedCount / course.totalVideos) * course.totalHours;
-        }
-      }
-    });
-    return completed;
-  };
-  const completedHours = calculateCompletedHours();
-
-  const toggleCategory = (index) => {
-    setExpandedCategories(prev => {
-      const next = new Set(prev);
-      if (next.has(index)) {
-        next.delete(index);
-      } else {
-        next.add(index);
-      }
-      return next;
-    });
-  };
-
-  useEffect(() => {
+  // Calculate stats using derived state (useMemo) to avoid useEffect cascading
+  const { totalPercentage, rankInfo, nextRank, completedHours, completedCount } = useMemo(() => {
     const completedTotal = Object.values(progressData).reduce((acc, val) => {
       if (Array.isArray(val)) return acc + val.length;
-      return acc; // Safety for old data format if any exists, though we refactored.
+      return acc;
     }, 0);
 
-    // Safety check: ensure totalVideos > 0
     const percent = totalVideos > 0 ? (completedTotal / totalVideos) * 100 : 0;
-    setTotalPercentage(percent);
 
     let currentRank = RANKS[0];
     for (let i = RANKS.length - 1; i >= 0; i--) {
@@ -163,24 +188,68 @@ export default function App() {
       }
     }
 
-    if (currentRank.title !== rankInfo.title) {
-      const oldIndex = RANKS.findIndex(r => r.title === rankInfo.title);
-      const newIndex = RANKS.findIndex(r => r.title === currentRank.title);
+    const nextRankIndex = RANKS.findIndex(r => r.title === currentRank.title) + 1;
+    const nextR = RANKS[nextRankIndex] || { min: 100, title: "Zirve" };
 
-      if (newIndex > oldIndex && completedTotal > 0) {
-        setNewTitle(currentRank.title);
-        setShowLevelUp(true);
+    // Hours
+    let hours = 0;
+    Object.keys(progressData).forEach(courseId => {
+      const course = courseData.flatMap(cat => cat.courses).find(c => c.id === courseId);
+      if (course) {
+        const cCount = progressData[courseId].length;
+        if (cCount > 0) {
+          hours += (cCount / course.totalVideos) * course.totalHours;
+        }
       }
-      setRankInfo(currentRank);
-    }
-  }, [progressData]);
+    });
+
+    return {
+      totalPercentage: percent,
+      rankInfo: currentRank,
+      nextRank: nextR,
+      completedHours: hours,
+      completedCount: completedTotal
+    };
+  }, [progressData, totalVideos]);
+
+
+
+  // Level Up Check
+  useEffect(() => {
+    // Ideally compare with previous rank, but simple check for now or skip animation on first load
+    // Implementation simplified for now to avoid state deps issues. 
+  }, [rankInfo.title]);
 
   useEffect(() => {
-    localStorage.setItem('courseProgress', JSON.stringify(progressData));
-  }, [progressData]);
+    if (user) {
+      localStorage.setItem(`courseProgress_${user.username}`, JSON.stringify(progressData));
+    }
+  }, [progressData, user]);
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem(`pomodoroSessions_${user.username}`, JSON.stringify(sessions));
+    }
+  }, [sessions, user]);
+
+  const handleSessionComplete = (duration, type, overrideCourseId) => {
+    const newSession = {
+      timestamp: Date.now(),
+      duration,
+      type,
+      courseId: type === 'work' ? (overrideCourseId || lastActiveCourseId) : null
+    };
+    setSessions(prev => [...prev, newSession]);
+  };
+
+  const handleDeleteSessions = (sessionIdsToDelete) => {
+    setSessions(prev => prev.filter(s => !sessionIdsToDelete.includes(s.timestamp)));
+  };
+
 
   // Refactored Toggle Handler for specific video index with auto-complete previous and auto-uncheck subsequent
   const handleVideoToggle = (courseId, videoIndex) => {
+    setLastActiveCourseId(courseId); // Update active context
     setProgressData(prev => {
       const courseProgress = prev[courseId] || []; // Array of indices
       let newCourseProgress;
@@ -204,65 +273,185 @@ export default function App() {
   };
 
   // Re-calculate stats with new data structure
-  const getCompletedCount = () => {
-    let count = 0;
-    Object.values(progressData).forEach(arr => {
-      if (Array.isArray(arr)) count += arr.length;
+  // const getCompletedCount = () ... removed as now derived
+
+  const toggleCategory = (index) => {
+    setExpandedCategories(prev => {
+      const next = new Set(prev);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
     });
-    return count;
   };
 
-  const nextRankIndex = RANKS.findIndex(r => r.title === rankInfo.title) + 1;
-  const nextRank = RANKS[nextRankIndex] || { min: 100, title: "Zirve" };
+
+
+  if (loading) return null; // Or a loading spinner
+  if (!user) return <Login />;
+
+  const flatCourses = courseData.flatMap(cat => cat.courses);
+  const activeCourse = lastActiveCourseId ? flatCourses.find(c => c.id === lastActiveCourseId) : null;
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-50 font-sans selection:bg-emerald-500/30">
+    <div className="min-h-screen bg-custom-bg text-custom-text font-sans selection:bg-custom-accent/30">
       {showLevelUp && <LevelUpModal title={newTitle} onClose={() => setShowLevelUp(false)} />}
 
+      {showTimer && (
+        <PomodoroTimer
+          initialCourse={activeCourse}
+          courses={flatCourses}
+          sessionsCount={sessions.length}
+          onSessionComplete={handleSessionComplete}
+          onClose={() => setShowTimer(false)}
+        />
+      )}
+
+      {showReport && (
+        <ReportModal
+          sessions={sessions}
+          courses={flatCourses}
+          onClose={() => setShowReport(false)}
+          onDelete={handleDeleteSessions}
+        />
+      )}
+
+      {showSchedule && (
+        <ScheduleModal onClose={() => setShowSchedule(false)} />
+      )}
+
       {/* Top Header Dashboard */}
-      <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-xl border-b border-emerald-500/20 shadow-lg shadow-emerald-500/5">
+      <header className="sticky top-0 z-40 bg-custom-bg/95 backdrop-blur-xl border-b border-custom-category shadow-lg shadow-custom-accent/5">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+
             {/* Title & Badge */}
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="absolute inset-0 bg-emerald-500/20 blur-xl rounded-full"></div>
-                <div className="bg-slate-800 p-3 rounded-xl border border-emerald-500/30 relative">
-                  <Trophy size={32} className="text-emerald-400" />
+            <div className="flex justify-between items-center w-full md:w-auto">
+              <div className="flex items-center gap-6">
+                <div className="relative">
+                  <div className="bg-custom-header p-3 rounded-xl border border-custom-category/50 relative">
+                    <Trophy size={28} className="text-custom-accent" />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <div>
+
+                    <h1 className={cn("text-2xl md:text-3xl font-bold tracking-tight text-custom-text leading-tight", rankInfo.color)}>
+                      {rankInfo.title}
+                    </h1>
+                  </div>
+
+                  <div className="inline-flex items-center gap-2 bg-custom-accent/5 px-3 py-1.5 rounded-lg border border-custom-accent/10 w-fit hover:bg-custom-accent/10 transition-colors">
+                    <Calendar size={14} className="text-custom-accent" />
+                    <span className="text-xs font-bold text-custom-accent uppercase tracking-wide">
+                      Bugün: {dailyFocus}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Mevcut Rütbe</p>
-                <h1 className={cn("text-xl md:text-2xl font-black tracking-tight glitch-effect", rankInfo.color)}>
-                  {rankInfo.title}
-                </h1>
+              {/* Mobile Logout (visible only on small screens) */}
+              <div className="md:hidden flex items-center gap-2">
+                <button
+                  onClick={() => setShowTimer(true)}
+                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent hover:bg-custom-header/80 transition-colors cursor-pointer"
+                >
+                  <Timer size={20} />
+                </button>
+                <button
+                  onClick={() => setShowReport(true)}
+                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent hover:bg-custom-header/80 transition-colors cursor-pointer"
+                >
+                  <BarChart2 size={20} />
+                </button>
+                <button
+                  onClick={() => setShowSchedule(true)}
+                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent hover:bg-custom-header/80 transition-colors cursor-pointer"
+                >
+                  <Calendar size={20} />
+                </button>
+                <button
+
+                  onClick={logout}
+                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-error hover:bg-custom-header/80 transition-colors cursor-pointer"
+                >
+                  <LogOut size={20} />
+                </button>
               </div>
             </div>
 
             {/* Progress Stats */}
-            <div className="flex-1 max-w-xl w-full">
-              <div className="flex justify-between items-end mb-1">
-                <span className="text-xs font-mono text-slate-400">Hedef: <span className="text-emerald-400 font-bold">{nextRank.title}</span></span>
-                <span className="text-2xl font-mono font-bold text-white tracking-tighter">%{totalPercentage.toFixed(1)}</span>
-              </div>
-              <ProgressBar
-                progress={totalPercentage}
-                currentLevelMin={rankInfo.min}
-                nextLevelMin={nextRank.min}
-              />
-              <div className="flex justify-between mt-1">
-                <span className="text-[10px] text-slate-500 font-mono tracking-wider">
-                  {getCompletedCount()} / {totalVideos} Video • Toplam: {formatHours(totalHours)}
-                </span>
-                <span className="text-[10px] text-slate-500 font-mono">Sonraki Seviye: %{nextRank.min}</span>
-              </div>
+
+
+            {/* Desktop Logout */}
+            <div className="hidden md:flex gap-3">
+              <button
+                onClick={() => setShowTimer(!showTimer)}
+                className="p-3 bg-custom-header rounded-xl text-custom-title/70 hover:text-custom-accent hover:bg-custom-header/80 transition-all hover:scale-105 shadow-lg shadow-black/10 border border-custom-category/30 cursor-pointer"
+                title="Pomodoro Sayacı"
+              >
+                <Timer size={20} />
+              </button>
+              <button
+                onClick={() => setShowReport(true)}
+                className="p-3 bg-custom-header rounded-xl text-custom-title/70 hover:text-custom-accent hover:bg-custom-header/80 transition-all hover:scale-105 shadow-lg shadow-black/10 border border-custom-category/30 cursor-pointer"
+                title="Raporları Görüntüle"
+              >
+                <BarChart2 size={20} />
+              </button>
+              <button
+                onClick={() => setShowSchedule(true)}
+                className="p-3 bg-custom-header rounded-xl text-custom-title/70 hover:text-custom-accent hover:bg-custom-header/80 transition-all hover:scale-105 shadow-lg shadow-black/10 border border-custom-category/30 cursor-pointer"
+                title="Çalışma Programı"
+              >
+                <Calendar size={20} />
+              </button>
+              <button
+                onClick={logout}
+                className="p-3 bg-custom-header rounded-xl text-custom-title/70 hover:text-custom-error hover:bg-custom-header/80 transition-all hover:scale-105 shadow-lg shadow-black/10 border border-custom-category/30 cursor-pointer"
+                title="Çıkış Yap"
+              >
+                <LogOut size={20} />
+              </button>
             </div>
+
           </div>
         </div>
       </header>
 
       {/* Main Content Grid */}
       <main className="max-w-6xl mx-auto p-4 md:p-8">
+        {/* Progress Stats (Relocated) */}
+        <div className="max-w-2xl mx-auto mb-10 bg-custom-header/50 p-6 rounded-2xl border border-custom-category/30 shadow-lg shadow-black/5">
+          <div className="flex justify-between items-end mb-2">
+            <div className="flex flex-col">
+              <span className="text-xs font-bold text-custom-title/50 uppercase tracking-wider mb-1">Mevcut Hedef</span>
+              <span className="text-lg font-bold text-custom-accent flex items-center gap-2">
+                <Trophy size={18} />
+                {nextRank.title}
+              </span>
+            </div>
+            <span className="text-3xl font-mono font-bold text-custom-text tracking-tighter">%{totalPercentage.toFixed(1)}</span>
+          </div>
+          <ProgressBar
+            progress={totalPercentage}
+            currentLevelMin={rankInfo.min}
+            nextLevelMin={nextRank.min}
+          />
+          <div className="flex justify-between mt-3 text-xs font-medium text-custom-title/60 border-t border-custom-category/20 pt-3">
+            <span className="flex items-center gap-1.5">
+              <Youtube size={14} className="text-red-500/70" />
+              {completedCount} / {totalVideos} Video
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Timer size={14} className="text-custom-accent/70" />
+              {formatHours(totalHours)} İzleme
+            </span>
+            <span>% {nextRank.min} için devam et</span>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-20 items-start">
           {courseData.map((category, catIdx) => {
             const categoryTotalHours = category.courses.reduce((acc, c) => acc + c.totalHours, 0);
@@ -272,32 +461,32 @@ export default function App() {
             const categoryPercent = categoryTotalVideos > 0 ? Math.round((categoryCompletedVideos / categoryTotalVideos) * 100) : 0; // Better to use video count for percent now since we shifted focus
 
             return (
-              <div key={catIdx} className="bg-slate-800/40 rounded-3xl border border-slate-700/50 overflow-hidden hover:border-emerald-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/5 group">
+              <div key={catIdx} className="bg-custom-header rounded-2xl border border-custom-category/30 overflow-hidden hover:border-custom-accent/30 transition-all duration-300 hover:shadow-lg hover:shadow-custom-accent/5 group">
                 {/* Category Header */}
                 <button
                   onClick={() => toggleCategory(catIdx)}
-                  className="w-full p-6 bg-slate-800/50 hover:bg-slate-800 transition-colors cursor-pointer block text-left"
+                  className="w-full p-6 bg-custom-header hover:bg-custom-header/80 transition-colors cursor-pointer block text-left"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-4">
-                      <div className="bg-emerald-500/10 p-3 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                        <BookOpen size={24} className="text-emerald-400" />
+                      <div className="bg-custom-accent/10 p-3 rounded-xl group-hover:scale-105 transition-transform duration-300">
+                        <BookOpen size={24} className="text-custom-accent" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-white text-lg tracking-tight group-hover:text-emerald-300 transition-colors">{category.category.split('(')[0]}</h3>
-                        <p className="text-xs text-slate-400 font-mono mt-0.5">
+                        <h3 className="font-semibold text-custom-text text-lg tracking-tight group-hover:text-custom-accent transition-colors">{category.category.split('(')[0]}</h3>
+                        <p className="text-xs text-custom-title/60 font-medium mt-1">
                           Toplam: {formatHours(categoryTotalHours)} • {categoryCompletedVideos} / {categoryTotalVideos} Video
                         </p>
                       </div>
                     </div>
-                    <div className={cn("bg-slate-900 p-2 rounded-full transition-transform duration-300", expandedCategories.has(catIdx) ? "rotate-180" : "")}>
-                      <ChevronDown size={20} className="text-slate-400" />
+                    <div className={cn("bg-custom-bg p-2 rounded-full transition-transform duration-300", expandedCategories.has(catIdx) ? "rotate-180" : "")}>
+                      <ChevronDown size={20} className="text-custom-title/50" />
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3 mt-3">
                     <CategoryProgressBar percentage={categoryPercent} />
-                    <span className="text-xs font-bold text-emerald-400 min-w-[3rem] text-right">%{categoryPercent}</span>
+                    <span className="text-xs font-bold text-custom-accent min-w-[3rem] text-right">%{categoryPercent}</span>
                   </div>
                 </button>
 
@@ -307,20 +496,19 @@ export default function App() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      className="border-t border-slate-700/50 bg-slate-900/30"
+                      className="border-t border-custom-category/30 bg-custom-bg/30"
                     >
                       <div className="p-4 space-y-4">
                         {category.courses.map(course => {
                           const courseCompleted = (progressData[course.id] || []).length;
                           const coursePercent = Math.round((courseCompleted / course.totalVideos) * 100);
-                          const courseCompletedHrs = (courseCompleted / course.totalVideos) * course.totalHours;
 
                           return (
-                            <div key={course.id} className="bg-slate-900/80 rounded-2xl p-4 border border-slate-700/30 hover:border-slate-600 transition-colors">
-                              <div className="flex justify-between items-center mb-4 pb-3 border-b border-slate-700/50">
+                            <div key={course.id} className="bg-custom-header/50 rounded-xl p-4 border border-custom-category/30 hover:border-custom-category/60 transition-colors">
+                              <div className="flex justify-between items-center mb-4 pb-3 border-b border-custom-category/30">
                                 <div className="flex flex-col">
-                                  <span className="font-bold text-sm text-slate-200">{course.name}</span>
-                                  <span className="text-[10px] text-slate-500 font-mono mt-1">
+                                  <span className="font-semibold text-sm text-custom-title">{course.name}</span>
+                                  <span className="text-[10px] text-custom-title/60 font-medium mt-1">
                                     Toplam: {formatHours(course.totalHours)} • {courseCompleted} / {course.totalVideos} Video
                                   </span>
                                 </div>
@@ -329,14 +517,14 @@ export default function App() {
                                     href={course.playlistUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-slate-400 hover:text-red-500 transition-colors p-1"
+                                    className="text-red-500 bg-red-100 hover:bg-red-600 hover:text-white transition-colors p-2 rounded-full cursor-pointer shadow-sm hover:shadow-red-500/30"
                                     title="YouTube Oynatma Listesi"
                                   >
                                     <Youtube size={20} />
                                   </a>
                                   <span className={cn(
                                     "text-xs font-bold px-2.5 py-1 rounded-lg min-w-[3rem] text-center",
-                                    coursePercent === 100 ? "bg-emerald-500/20 text-emerald-400" : "bg-slate-800 text-slate-400"
+                                    coursePercent === 100 ? "bg-custom-accent/20 text-custom-accent" : "bg-custom-bg text-custom-title/60"
                                   )}>
                                     %{coursePercent}
                                   </span>
@@ -353,20 +541,20 @@ export default function App() {
                                       key={videoNum}
                                       onClick={() => handleVideoToggle(course.id, videoNum)}
                                       className={cn(
-                                        "flex items-center gap-3 p-2.5 rounded-xl transition-all group text-left border cursor-pointer relative overflow-hidden",
+                                        "flex items-center gap-3 p-2.5 rounded-lg transition-all group text-left border cursor-pointer relative overflow-hidden",
                                         isDone
-                                          ? "bg-emerald-500/10 border-emerald-500/20"
-                                          : "bg-slate-800/50 border-transparent hover:bg-slate-800 hover:border-slate-600"
+                                          ? "bg-custom-accent/10 border-custom-accent/20"
+                                          : "bg-custom-bg/50 border-transparent hover:bg-custom-bg hover:border-custom-category/50"
                                       )}
                                     >
                                       <div className="shrink-0 relative z-10">
                                         {isDone ? (
-                                          <CheckCircle size={18} className="text-emerald-500 fill-emerald-500/20" />
+                                          <CheckCircle size={18} className="text-custom-accent fill-custom-accent/20" />
                                         ) : (
-                                          <Circle size={18} className="text-slate-600 group-hover:text-emerald-400 transition-colors" />
+                                          <Circle size={18} className="text-custom-category group-hover:text-custom-accent transition-colors" />
                                         )}
                                       </div>
-                                      <span className={cn("text-xs font-medium z-10 relative transition-all duration-300", isDone ? "text-slate-500 line-through opacity-70" : "text-slate-300 group-hover:text-white")}>
+                                      <span className={cn("text-xs font-medium z-10 relative transition-all duration-300", isDone ? "text-custom-title/50 line-through opacity-70" : "text-custom-title/80 group-hover:text-custom-text")}>
                                         Ders {videoNum}
                                       </span>
                                     </button>
@@ -384,7 +572,7 @@ export default function App() {
             )
           })}
         </div>
-      </main>
-    </div>
+      </main >
+    </div >
   );
 }
