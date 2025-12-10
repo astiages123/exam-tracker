@@ -8,8 +8,12 @@ let supabase = null
 
 if (supabaseUrl && supabaseAnonKey) {
     supabase = createClient(supabaseUrl, supabaseAnonKey)
+    console.log('Supabase Client Initialized Successfully');
 } else {
-    console.warn('VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY is missing in .env')
+    console.error('Supabase Initialization Failed');
+    console.log('VITE_SUPABASE_URL:', supabaseUrl ? 'Exists' : 'Missing');
+    console.log('VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'Exists' : 'Missing');
+    console.warn('VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY is missing in .env');
 }
 
 export { supabase }
