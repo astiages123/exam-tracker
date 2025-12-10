@@ -1,21 +1,29 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Lock, User, Check } from 'lucide-react';
+import { Lock, User } from 'lucide-react';
 
 export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [remember, setRemember] = useState(false);
     const [error, setError] = useState('');
     const { login } = useAuth();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        if (login(username, password, remember)) {
-            // Success, App will re-render
-        } else {
-            setError('Kullanıcı adı veya şifre hatalı');
+
+        // Pseudo-domain strategy for username-only login
+        const email = `${username}@banka.takip`;
+
+        const { error: loginError } = await login(email, password);
+
+        if (loginError) {
+            console.error(loginError);
+            if (loginError.message === 'Invalid login credentials') {
+                setError('Kullanıcı adı veya şifre hatalı');
+            } else {
+                setError('Giriş yapılırken bir hata oluştu');
+            }
         }
     };
 
@@ -44,7 +52,8 @@ export default function Login() {
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 className="block w-full pl-10 pr-3 py-3 border border-custom-category rounded-xl bg-custom-bg text-custom-text placeholder-custom-category/50 focus:outline-none focus:ring-2 focus:ring-custom-accent/50 focus:border-custom-accent transition-colors"
-                                placeholder="Örn: admin"
+                                placeholder="kullaniciadi"
+                                required
                             />
                         </div>
                     </div>
@@ -63,25 +72,9 @@ export default function Login() {
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="block w-full pl-10 pr-3 py-3 border border-custom-category rounded-xl bg-custom-bg text-custom-text placeholder-custom-category/50 focus:outline-none focus:ring-2 focus:ring-custom-accent/50 focus:border-custom-accent transition-colors"
                                 placeholder="••••••"
+                                required
                             />
                         </div>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                        <label className="flex items-center cursor-pointer group">
-                            <div className="relative">
-                                <input
-                                    type="checkbox"
-                                    checked={remember}
-                                    onChange={(e) => setRemember(e.target.checked)}
-                                    className="sr-only"
-                                />
-                                <div className={`w-5 h-5 border rounded transition-colors flex items-center justify-center ${remember ? 'bg-custom-accent border-custom-accent' : 'border-custom-category bg-custom-bg'}`}>
-                                    {remember && <Check size={14} className="text-white" />}
-                                </div>
-                            </div>
-                            <span className="ml-2 text-sm text-custom-title/70 group-hover:text-custom-text transition-colors">Beni hatırla</span>
-                        </label>
                     </div>
 
                     {error && (

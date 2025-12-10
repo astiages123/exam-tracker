@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { USERS } from '../users';
+import { supabase } from '../lib/supabaseClient';
 
 const AuthContext = createContext(null);
 
@@ -8,40 +8,32 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check for saved user in localStorage (Remember Me)
-        const savedUser = localStorage.getItem('exam_tracker_user');
-        if (savedUser) {
-            setUser(JSON.parse(savedUser));
-        } else {
-            // Check session storage (for non-remember me sessions that persist on refresh)
-            const sessionUser = sessionStorage.getItem('exam_tracker_user');
-            if (sessionUser) {
-                setUser(JSON.parse(sessionUser));
-            }
-        }
-        setLoading(false);
+        // Check active sessions and subscribe to auth changes
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setUser(session?.user ?? null);
+            setLoading(false);
+        });
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null);
+            setLoading(false);
+        });
+
+        return () => subscription.unsubscribe();
     }, []);
 
-    const login = (username, password, remember) => {
-        const validUser = USERS.find(u => u.username === username && u.password === password);
-        if (validUser) {
-            const userData = { username: validUser.username };
-            setUser(userData);
+    const login = async (email, password) => {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
 
-            if (remember) {
-                localStorage.setItem('exam_tracker_user', JSON.stringify(userData));
-            } else {
-                sessionStorage.setItem('exam_tracker_user', JSON.stringify(userData));
-            }
-            return true;
-        }
-        return false;
+        if (error) return { error };
+        return { data };
     };
 
-    const logout = () => {
-        setUser(null);
-        localStorage.removeItem('exam_tracker_user');
-        sessionStorage.removeItem('exam_tracker_user');
+    const logout = async () => {
+        await supabase.auth.signOut();
     };
 
     return (

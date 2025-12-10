@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, CheckCircle, Circle, Trophy, Star, TrendingUp, BookOpen, Youtube } from 'lucide-react';
+import { ChevronDown, CheckCircle, Circle, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar } from 'lucide-react';
+import ScheduleModal from './components/ScheduleModal';
+
+
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -8,15 +11,13 @@ import { twMerge } from 'tailwind-merge';
 function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
-
 // --- Data ---
 import { courseData, RANKS } from './data';
 import { useAuth } from './context/AuthContext';
+import { supabase } from './lib/supabaseClient';
 import Login from './components/Login';
 import PomodoroTimer from './components/PomodoroTimer';
 import ReportModal from './components/ReportModal';
-import { LogOut, Timer, BarChart2, Calendar } from 'lucide-react';
-import ScheduleModal from './components/ScheduleModal';
 
 
 // --- Components ---
@@ -149,15 +150,23 @@ export default function App() {
 
   // Initialize data when user changes
   useEffect(() => {
-    if (user) {
-      const savedProgress = localStorage.getItem(`courseProgress_${user.username}`);
-      if (savedProgress) setProgressData(JSON.parse(savedProgress));
-      else setProgressData({});
+    async function loadData() {
+      if (user) {
+        const { data, error } = await supabase
+          .from('user_progress')
+          .select('progress_data, sessions')
+          .eq('user_id', user.id)
+          .single();
 
-      const savedSessions = localStorage.getItem(`pomodoroSessions_${user.username}`);
-      if (savedSessions) setSessions(JSON.parse(savedSessions));
-      else setSessions([]);
+        if (data) {
+          if (data.progress_data) setProgressData(data.progress_data);
+          if (data.sessions) setSessions(data.sessions);
+        } else if (error && error.code !== 'PGRST116') { // PGRST116 is "no rows returned"
+          console.error('Error loading data:', error);
+        }
+      }
     }
+    loadData();
   }, [user]);
 
   const [expandedCategories, setExpandedCategories] = useState(new Set());
@@ -215,22 +224,28 @@ export default function App() {
 
 
   // Level Up Check
-  useEffect(() => {
-    // Ideally compare with previous rank, but simple check for now or skip animation on first load
-    // Implementation simplified for now to avoid state deps issues. 
-  }, [rankInfo.title]);
+
 
   useEffect(() => {
     if (user) {
-      localStorage.setItem(`courseProgress_${user.username}`, JSON.stringify(progressData));
-    }
-  }, [progressData, user]);
+      const saveData = async () => {
+        const { error } = await supabase
+          .from('user_progress')
+          .upsert({
+            user_id: user.id,
+            progress_data: progressData,
+            sessions: sessions,
+            updated_at: new Date()
+          });
 
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem(`pomodoroSessions_${user.username}`, JSON.stringify(sessions));
+        if (error) console.error('Error saving data:', error);
+      };
+
+      // Debounce save to avoid too many requests
+      const timer = setTimeout(saveData, 2000);
+      return () => clearTimeout(timer);
     }
-  }, [sessions, user]);
+  }, [progressData, sessions, user]);
 
   const handleSessionComplete = (duration, type, overrideCourseId) => {
     const newSession = {
@@ -325,67 +340,89 @@ export default function App() {
       {/* Top Header Dashboard */}
       <header className="sticky top-0 z-40 bg-custom-bg/95 backdrop-blur-xl border-b border-custom-category shadow-lg shadow-custom-accent/5">
         <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
 
-            {/* Title & Badge */}
-            <div className="flex justify-between items-center w-full md:w-auto">
-              <div className="flex items-center gap-6">
+          {/* --- MOBILE LAYOUT --- */}
+          <div className="md:hidden flex flex-col gap-4">
+            {/* Row 1: Title (Full Width) */}
+            <div className="w-full border-b border-custom-category/20 pb-3">
+              <h1 className={cn("text-2xl font-bold tracking-tight text-custom-text leading-tight", rankInfo.color)}>
+                {rankInfo.title}
+              </h1>
+            </div>
+
+            {/* Row 2: Icon | Badge | Buttons */}
+            <div className="flex items-center justify-between">
+
+              {/* Left: Icon & Badge */}
+              <div className="flex items-center gap-3">
                 <div className="relative">
-                  <div className="bg-custom-header p-3 rounded-xl border border-custom-category/50 relative">
-                    <Trophy size={28} className="text-custom-accent" />
+                  <div className="bg-custom-header p-2.5 rounded-xl border border-custom-category/50 relative">
+                    <Trophy size={24} className="text-custom-accent" />
                   </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <div>
 
-                    <h1 className={cn("text-2xl md:text-3xl font-bold tracking-tight text-custom-text leading-tight", rankInfo.color)}>
-                      {rankInfo.title}
-                    </h1>
-                  </div>
-
-                  <div className="inline-flex items-center gap-2 bg-custom-accent/5 px-3 py-1.5 rounded-lg border border-custom-accent/10 w-fit hover:bg-custom-accent/10 transition-colors">
-                    <Calendar size={14} className="text-custom-accent" />
-                    <span className="text-xs font-bold text-custom-accent uppercase tracking-wide">
-                      Bugün: {dailyFocus}
-                    </span>
-                  </div>
+                <div className="inline-flex items-center gap-2 bg-custom-accent/5 px-3 py-1.5 rounded-lg border border-custom-accent/10 w-fit">
+                  <Calendar size={14} className="text-custom-accent" />
+                  <span className="text-[10px] font-bold text-custom-accent uppercase tracking-wide">
+                    {dailyFocus}
+                  </span>
                 </div>
               </div>
-              {/* Mobile Logout (visible only on small screens) */}
-              <div className="md:hidden flex items-center gap-2">
+
+              {/* Right: Action Buttons */}
+              <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowTimer(true)}
-                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent hover:bg-custom-header/80 transition-colors cursor-pointer"
+                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30"
                 >
-                  <Timer size={20} />
+                  <Timer size={18} />
                 </button>
                 <button
                   onClick={() => setShowReport(true)}
-                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent hover:bg-custom-header/80 transition-colors cursor-pointer"
+                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30"
                 >
-                  <BarChart2 size={20} />
+                  <BarChart2 size={18} />
                 </button>
                 <button
                   onClick={() => setShowSchedule(true)}
-                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent hover:bg-custom-header/80 transition-colors cursor-pointer"
+                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30"
                 >
-                  <Calendar size={20} />
+                  <Calendar size={18} />
                 </button>
                 <button
-
                   onClick={logout}
-                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-error hover:bg-custom-header/80 transition-colors cursor-pointer"
+                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-error border border-custom-category/30"
                 >
-                  <LogOut size={20} />
+                  <LogOut size={18} />
                 </button>
+              </div>
+
+            </div>
+          </div>
+
+
+          {/* --- DESKTOP LAYOUT --- */}
+          <div className="hidden md:flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <div className="relative">
+                <div className="bg-custom-header p-3 rounded-xl border border-custom-category/50 relative">
+                  <Trophy size={28} className="text-custom-accent" />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h1 className={cn("text-3xl font-bold tracking-tight text-custom-text leading-tight", rankInfo.color)}>
+                  {rankInfo.title}
+                </h1>
+                <div className="inline-flex items-center gap-2 bg-custom-accent/5 px-3 py-1.5 rounded-lg border border-custom-accent/10 w-fit hover:bg-custom-accent/10 transition-colors">
+                  <Calendar size={14} className="text-custom-accent" />
+                  <span className="text-xs font-bold text-custom-accent uppercase tracking-wide">
+                    Bugün: {dailyFocus}
+                  </span>
+                </div>
               </div>
             </div>
 
-            {/* Progress Stats */}
-
-
-            {/* Desktop Logout */}
-            <div className="hidden md:flex gap-3">
+            <div className="flex gap-3">
               <button
                 onClick={() => setShowTimer(!showTimer)}
                 className="p-3 bg-custom-header rounded-xl text-custom-title/70 hover:text-custom-accent hover:bg-custom-header/80 transition-all hover:scale-105 shadow-lg shadow-black/10 border border-custom-category/30 cursor-pointer"
@@ -415,8 +452,8 @@ export default function App() {
                 <LogOut size={20} />
               </button>
             </div>
-
           </div>
+
         </div>
       </header>
 
