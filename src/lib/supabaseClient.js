@@ -1,19 +1,17 @@
 
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+// Hardcoded fallback because Vercel env vars are failing
+const supabaseUrl = 'https://kkltszpzflyqyvxkjtqc.supabase.co';
+const supabaseAnonKey = 'sb_publishable_zA1HdsKbRoSoFyjek6MtSw_Pl5p7ejE';
 
 let supabase = null
 
-if (supabaseUrl && supabaseAnonKey) {
+try {
     supabase = createClient(supabaseUrl, supabaseAnonKey)
-    console.log('Supabase Client Initialized Successfully');
-} else {
-    console.error('Supabase Initialization Failed');
-    console.log('VITE_SUPABASE_URL:', supabaseUrl ? 'Exists' : 'Missing');
-    console.log('VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'Exists' : 'Missing');
-    console.warn('VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY is missing in .env');
+    console.log('Supabase Client Initialized with hardcoded values');
+} catch (error) {
+    console.error('Supabase Initialization Failed:', error);
 }
 
 export { supabase }
