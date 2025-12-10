@@ -135,18 +135,22 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
                                                     <div className="flex gap-2 pt-2 mt-2 border-t border-custom-category/20">
                                                         <input
                                                             type="text"
+                                                            name="schedule-time"
                                                             placeholder="Saat (örn: 09:00 - 12:00)"
                                                             value={newItem.time}
                                                             onChange={(e) => setNewItem({ ...newItem, time: e.target.value })}
                                                             className="flex-1 bg-custom-bg border border-custom-category/30 rounded-lg px-3 py-2 text-sm text-custom-text placeholder-custom-title/30 focus:outline-none focus:border-custom-accent/50"
+                                                            autoComplete="off"
                                                         />
                                                         <input
                                                             type="text"
+                                                            name="schedule-subject"
                                                             placeholder="Ders (örn: Matematik)"
                                                             value={newItem.subject}
                                                             onChange={(e) => setNewItem({ ...newItem, subject: e.target.value })}
                                                             className="flex-1 bg-custom-bg border border-custom-category/30 rounded-lg px-3 py-2 text-sm text-custom-text placeholder-custom-title/30 focus:outline-none focus:border-custom-accent/50"
                                                             onKeyDown={(e) => e.key === 'Enter' && handleAddItem(day)}
+                                                            autoComplete="off"
                                                         />
                                                         <button
                                                             onClick={() => handleAddItem(day)}
