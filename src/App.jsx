@@ -108,6 +108,7 @@ export default function App() {
   // State: { [courseId]: completedCount }
   const [progressData, setProgressData] = useState({});
   const [sessions, setSessions] = useState([]); // [{ timestamp, duration, type, courseId }]
+  const [schedule, setSchedule] = useState({}); // { "Pazartesi": [{ time: "09:00", subject: "Math" }] }
   const [lastActiveCourseId, setLastActiveCourseId] = useState(null); // Track last interacted course
 
   const [showTimer, setShowTimer] = useState(false);
@@ -136,7 +137,12 @@ export default function App() {
       return workedOnSaturday ? 'TATİL' : 'YETENEK - BANKA';
     }
 
-    const schedule = {
+    // Dynamic focus from schedule if available
+    if (schedule[today] && schedule[today].length > 0) {
+      return schedule[today][0].subject.toUpperCase();
+    }
+
+    const defaultSchedule = {
       'PAZARTESİ': 'EKONOMİ',
       'SALI': 'HUKUK',
       'ÇARŞAMBA': 'MUHASEBE - MALİYE',
@@ -144,7 +150,7 @@ export default function App() {
       'CUMA': 'HUKUK',
       'CUMARTESİ': 'YETENEK - BANKA',
     };
-    return schedule[today] || 'BELİRSİZ';
+    return defaultSchedule[today] || 'BELİRSİZ';
   };
   const dailyFocus = getDailyFocus();
 
@@ -154,13 +160,14 @@ export default function App() {
       if (user) {
         const { data, error } = await supabase
           .from('user_progress')
-          .select('progress_data, sessions')
+          .select('progress_data, sessions, schedule')
           .eq('user_id', user.id)
           .single();
 
         if (data) {
           if (data.progress_data) setProgressData(data.progress_data);
           if (data.sessions) setSessions(data.sessions);
+          if (data.schedule) setSchedule(data.schedule);
         } else if (error && error.code !== 'PGRST116') { // PGRST116 is "no rows returned"
           console.error('Error loading data:', error);
         }
@@ -235,6 +242,7 @@ export default function App() {
             user_id: user.id,
             progress_data: progressData,
             sessions: sessions,
+            schedule: schedule,
             updated_at: new Date()
           });
 
@@ -245,7 +253,7 @@ export default function App() {
       const timer = setTimeout(saveData, 2000);
       return () => clearTimeout(timer);
     }
-  }, [progressData, sessions, user]);
+  }, [progressData, sessions, schedule, user]);
 
   const handleSessionComplete = (duration, type, overrideCourseId) => {
     const newSession = {
@@ -334,7 +342,11 @@ export default function App() {
       )}
 
       {showSchedule && (
-        <ScheduleModal onClose={() => setShowSchedule(false)} />
+        <ScheduleModal
+          onClose={() => setShowSchedule(false)}
+          schedule={schedule}
+          setSchedule={setSchedule}
+        />
       )}
 
       {/* Top Header Dashboard */}
