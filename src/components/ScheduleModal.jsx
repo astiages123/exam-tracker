@@ -114,44 +114,44 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
             <motion.div
                 initial={{ scale: 0.95, opacity: 0, y: 20 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
-                className="bg-[#0F1115] border border-white/5 rounded-3xl w-full max-w-5xl flex flex-col shadow-2xl shadow-black/50 cursor-default overflow-hidden max-h-[90vh]"
+                className="bg-custom-bg border border-custom-category/20 rounded-3xl w-full max-w-5xl flex flex-col shadow-2xl shadow-black/50 cursor-default overflow-hidden max-h-[90vh]"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="p-6 border-b border-white/5 flex justify-between items-center bg-[#13161C] sticky top-0 z-10">
+                <div className="p-6 border-b border-custom-category/20 flex justify-between items-center bg-custom-header sticky top-0 z-10">
                     <div className="flex items-center gap-4">
                         <div className="bg-custom-accent/10 p-3 rounded-xl">
                             <Calendar className="text-custom-accent" size={24} />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-white tracking-tight">
+                            <h2 className="text-xl font-bold text-custom-text tracking-tight">
                                 {isEditing ? "Programı Düzenle" : "Haftalık Çalışma Programı"}
                             </h2>
-                            <p className="text-sm text-gray-400">
+                            <p className="text-sm text-custom-title/70">
                                 {isEditing ? "Değişiklikleri kaydetmeyi unutmayın" : "Ders programınızın genel bakışı"}
                             </p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-2.5 bg-white/5 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                        className="p-2.5 bg-custom-title/10 rounded-xl text-custom-title/50 hover:text-white hover:bg-white/10 transition-colors"
                     >
                         <X size={20} />
                     </button>
                 </div>
 
                 {/* Content - Grid Layout */}
-                <div className="p-6 overflow-y-auto custom-scrollbar flex-1 bg-[#0F1115]">
+                <div className="p-6 overflow-y-auto custom-scrollbar flex-1 bg-custom-bg">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                         {DAYS.map((day) => {
                             const dayItems = localSchedule[day] || [];
                             const currentNewItem = newItems[day] || { time: '', subject: 'EKONOMİ' };
 
                             return (
-                                <div key={day} className="flex flex-col bg-[#13161C] border border-white/5 rounded-2xl overflow-hidden hover:border-white/10 transition-colors h-full">
+                                <div key={day} className="flex flex-col bg-custom-header border border-custom-category/20 rounded-2xl overflow-hidden hover:border-custom-category/30 transition-colors h-full">
                                     {/* Day Header */}
-                                    <div className="p-3 bg-white/[0.02] border-b border-white/5 flex justify-between items-center">
-                                        <span className="font-bold text-gray-200 text-sm tracking-wide">
+                                    <div className="p-3 bg-custom-bg/20 border-b border-custom-category/20 flex justify-between items-center">
+                                        <span className="font-bold text-custom-text text-sm tracking-wide">
                                             {day}
                                         </span>
                                         {dayItems.length > 0 && (
@@ -182,7 +182,7 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
                                                         <div className={cn("text-xs font-mono font-bold px-1.5 py-0.5 rounded-md", styles.badge, styles.text)}>
                                                             {item.time}
                                                         </div>
-                                                        <span className={cn("text-xs font-semibold truncate flex-1", styles.text)}>
+                                                        <span className={cn("text-xs font-semibold break-words flex-1", styles.text)}>
                                                             {item.subject}
                                                         </span>
 
@@ -203,7 +203,7 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
 
                                     {/* Add Input - Fixed at bottom of card */}
                                     {isEditing && (
-                                        <div className="p-2 border-t border-white/5 bg-white/[0.02]">
+                                        <div className="p-2 border-t border-custom-category/20 bg-custom-bg/20">
                                             <div className="flex flex-col gap-2">
                                                 <div className="flex gap-2">
                                                     <div className="relative flex-1">
@@ -213,7 +213,7 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
                                                             placeholder="09:00"
                                                             value={currentNewItem.time}
                                                             onChange={(e) => handleNewItemChange(day, 'time', e.target.value)}
-                                                            className="w-full bg-[#0F1115] border border-white/10 rounded-lg pl-6 pr-2 py-1.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-custom-accent/50 focus:bg-[#13161C] transition-all"
+                                                            className="w-full bg-custom-bg border border-custom-category/30 rounded-lg pl-6 pr-2 py-1.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-custom-accent/50 focus:bg-custom-header transition-all"
                                                         />
                                                     </div>
                                                     <button
@@ -228,7 +228,7 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
                                                     <select
                                                         value={currentNewItem.subject}
                                                         onChange={(e) => handleNewItemChange(day, 'subject', e.target.value)}
-                                                        className="w-full bg-[#0F1115] border border-white/10 rounded-lg px-2 py-1.5 text-[10px] font-medium text-gray-300 focus:outline-none focus:border-custom-accent/50 appearance-none cursor-pointer hover:bg-[#13161C] transition-colors"
+                                                        className="w-full bg-custom-bg border border-custom-category/30 rounded-lg px-2 py-1.5 text-[10px] font-medium text-gray-300 focus:outline-none focus:border-custom-accent/50 appearance-none cursor-pointer hover:bg-custom-header transition-colors"
                                                     >
                                                         {SUBJECT_OPTIONS.map(opt => (
                                                             <option key={opt} value={opt}>{opt}</option>
@@ -246,12 +246,12 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="p-4 border-t border-white/5 bg-[#13161C] flex justify-end gap-3 sticky bottom-0 z-10">
+                <div className="p-4 border-t border-custom-category/20 bg-custom-header flex justify-end gap-3 sticky bottom-0 z-10">
                     {isEditing ? (
                         <>
                             <button
                                 onClick={handleCancelEdit}
-                                className="px-5 py-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm font-semibold"
+                                className="px-5 py-2.5 rounded-xl text-custom-title/70 hover:text-white hover:bg-custom-title/10 transition-colors text-sm font-semibold"
                             >
                                 Vazgeç
                             </button>
@@ -266,7 +266,7 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
                     ) : (
                         <button
                             onClick={() => setIsEditing(true)}
-                            className="flex items-center gap-2 px-6 py-2.5 bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 text-white rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-black/20 text-sm font-bold"
+                            className="flex items-center gap-2 px-6 py-2.5 bg-custom-title/10 border border-custom-title/10 hover:bg-custom-title/10 hover:border-custom-title/30 text-white rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-black/20 text-sm font-bold"
                         >
                             <Edit2 size={16} />
                             Düzenle
