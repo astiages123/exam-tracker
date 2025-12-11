@@ -12,10 +12,10 @@ function cn(...inputs) {
 const DAYS = ['PAZARTESİ', 'SALI', 'ÇARŞAMBA', 'PERŞEMBE', 'CUMA', 'CUMARTESİ', 'PAZAR'];
 
 const SUBJECT_STYLES = {
-    'EKONOMİ': { bg: 'bg-blue-500/10', text: 'text-blue-500', border: 'border-blue-500/20', badge: 'bg-blue-500/20' },
-    'HUKUK': { bg: 'bg-rose-500/10', text: 'text-rose-500', border: 'border-rose-500/20', badge: 'bg-rose-500/20' },
-    'MUHASEBE - MALİYE': { bg: 'bg-emerald-500/10', text: 'text-emerald-500', border: 'border-emerald-500/20', badge: 'bg-emerald-500/20' },
-    'YETENEK - BANKA': { bg: 'bg-violet-500/10', text: 'text-violet-500', border: 'border-violet-500/20', badge: 'bg-violet-500/20' },
+    'EKONOMİ': { bg: 'bg-blue-500/20', text: 'text-blue-100', border: 'border-blue-500/30', badge: 'bg-blue-500/30' },
+    'HUKUK': { bg: 'bg-rose-500/20', text: 'text-rose-100', border: 'border-rose-500/30', badge: 'bg-rose-500/30' },
+    'MUHASEBE - MALİYE': { bg: 'bg-emerald-500/20', text: 'text-emerald-100', border: 'border-emerald-500/30', badge: 'bg-emerald-500/30' },
+    'YETENEK - BANKA': { bg: 'bg-violet-500/20', text: 'text-violet-100', border: 'border-violet-500/30', badge: 'bg-violet-500/30' },
     'DEFAULT': { bg: 'bg-custom-header', text: 'text-custom-text', border: 'border-custom-category/20', badge: 'bg-custom-category/20' }
 };
 
