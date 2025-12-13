@@ -18,6 +18,7 @@ import { supabase } from './lib/supabaseClient';
 import Login from './components/Login';
 import PomodoroTimer from './components/PomodoroTimer';
 import ReportModal from './components/ReportModal';
+import RankModal from './components/RankModal';
 
 
 // --- Components ---
@@ -114,6 +115,7 @@ export default function App() {
   const [showTimer, setShowTimer] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
+  const [showRankModal, setShowRankModal] = useState(false);
 
   // Daily Focus Logic
   // Daily Focus Logic
@@ -351,6 +353,13 @@ export default function App() {
         />
       )}
 
+      {showRankModal && (
+        <RankModal
+          currentRank={rankInfo}
+          onClose={() => setShowRankModal(false)}
+        />
+      )}
+
       {/* Top Header Dashboard */}
       <header className="sticky top-0 z-40 bg-custom-bg/95 backdrop-blur-xl border-b border-custom-category shadow-lg shadow-custom-accent/5">
         <div className="max-w-6xl mx-auto px-4 py-4">
@@ -358,7 +367,10 @@ export default function App() {
           {/* --- MOBILE LAYOUT --- */}
           <div className="md:hidden flex flex-col gap-4">
             {/* Row 1: Title (Full Width) */}
-            <div className="w-full border-b border-custom-category/20 pb-3">
+            <div
+              className="w-full border-b border-custom-category/20 pb-3 cursor-pointer hover:bg-custom-header/50 transition-colors rounded-lg px-2 -mx-2"
+              onClick={() => setShowRankModal(true)}
+            >
               <h1 className={cn("text-2xl font-bold tracking-tight text-custom-text leading-tight", rankInfo.color)}>
                 {rankInfo.title}
               </h1>
@@ -369,7 +381,10 @@ export default function App() {
 
               {/* Left: Icon & Badge */}
               <div className="flex items-center gap-3">
-                <div className="relative">
+                <div
+                  className="relative cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => setShowRankModal(true)}
+                >
                   <div className="bg-custom-header p-2.5 rounded-xl border border-custom-category/50 relative">
                     <Trophy size={24} className="text-custom-accent" />
                   </div>
@@ -418,13 +433,19 @@ export default function App() {
           {/* --- DESKTOP LAYOUT --- */}
           <div className="hidden md:flex items-center justify-between">
             <div className="flex items-center gap-6">
-              <div className="relative">
-                <div className="bg-custom-header p-3 rounded-xl border border-custom-category/50 relative">
-                  <Trophy size={28} className="text-custom-accent" />
+              <div
+                className="relative cursor-pointer hover:scale-105 transition-transform group"
+                onClick={() => setShowRankModal(true)}
+              >
+                <div className="bg-custom-header p-3 rounded-xl border border-custom-category/50 relative group-hover:border-custom-accent/30 box-border transition-colors">
+                  <Trophy size={28} className="text-custom-accent group-hover:drop-shadow-lg" />
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <h1 className={cn("text-3xl font-bold tracking-tight text-custom-text leading-tight", rankInfo.color)}>
+                <h1
+                  className={cn("text-3xl font-bold tracking-tight text-custom-text leading-tight cursor-pointer hover:opacity-80 transition-opacity", rankInfo.color)}
+                  onClick={() => setShowRankModal(true)}
+                >
                   {rankInfo.title}
                 </h1>
                 <div className="inline-flex items-center gap-2 bg-custom-accent/5 px-3 py-1.5 rounded-lg border border-custom-accent/10 w-fit hover:bg-custom-accent/10 transition-colors">
