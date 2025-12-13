@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw, X } from 'lucide-react';
-import { playNotificationSound } from '../utils/sound';
+import { playNotificationSound, initAudio } from '../utils/sound';
 
 const WORK_TIME = 50 * 60;
 const BREAK_TIME = 10 * 60;
@@ -36,6 +36,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
 
     const handleStartSession = () => {
         if (!selectedCourseId) return;
+        initAudio();
         setView('timer');
         // Set target time based on CURRENT timeLeft (which is full duration initially)
         endTimeRef.current = Date.now() + timeLeft * 1000;

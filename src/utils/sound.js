@@ -1,8 +1,25 @@
-export const playNotificationSound = () => {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) return;
+let audioContext = null;
 
-    const ctx = new AudioContext();
+export const initAudio = () => {
+    if (!audioContext) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+            audioContext = new AudioContext();
+        }
+    }
+    if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+};
+
+export const playNotificationSound = () => {
+    if (!audioContext) {
+        initAudio();
+    }
+
+    if (!audioContext) return;
+
+    const ctx = audioContext;
 
     const playBeep = (time) => {
         const osc = ctx.createOscillator();
