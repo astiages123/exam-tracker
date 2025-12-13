@@ -256,11 +256,13 @@ export default function App() {
   }, [progressData, sessions, schedule, user]);
 
   const handleSessionComplete = (duration, type, overrideCourseId) => {
+    if (type !== 'work') return; // Don't record break sessions
+
     const newSession = {
       timestamp: Date.now(),
       duration,
       type,
-      courseId: type === 'work' ? (overrideCourseId || lastActiveCourseId) : null
+      courseId: overrideCourseId || lastActiveCourseId
     };
     setSessions(prev => [...prev, newSession]);
   };
@@ -326,7 +328,7 @@ export default function App() {
         <PomodoroTimer
           initialCourse={activeCourse}
           courses={flatCourses}
-          sessionsCount={sessions.length}
+          sessionsCount={sessions.filter(s => s.type === 'work').length}
           onSessionComplete={handleSessionComplete}
           onClose={() => setShowTimer(false)}
         />

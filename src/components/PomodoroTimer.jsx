@@ -110,6 +110,20 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         setTimeLeft(mode === 'work' ? WORK_TIME : BREAK_TIME);
     };
 
+    const handleSkipBreak = () => {
+        if (mode === 'break') {
+            setIsActive(false);
+            clearInterval(timerRef.current);
+            // Log the break session as completed
+            onSessionComplete(BREAK_TIME, 'break', null);
+
+            // Switch to work mode
+            setMode('work');
+            setTimeLeft(WORK_TIME);
+            playNotificationSound();
+        }
+    };
+
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
@@ -207,6 +221,16 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                         <RotateCcw size={24} />
                     </button>
                 </div>
+
+                {mode === 'break' && (
+                    <button
+                        onClick={handleSkipBreak}
+                        className="mt-4 px-6 py-2 bg-custom-bg/50 hover:bg-custom-accent/20 text-custom-title/60 hover:text-custom-accent border border-custom-category/30 rounded-lg text-sm font-medium transition-all group flex items-center gap-2 cursor-pointer"
+                    >
+                        <span>Molayı Bitir ve Çalış</span>
+                        <Play size={14} className="group-hover:translate-x-1 transition-transform" />
+                    </button>
+                )}
             </div>
         </div>
     );
