@@ -19,7 +19,8 @@ import Login from './components/Login';
 import PomodoroTimer from './components/PomodoroTimer';
 import ReportModal from './components/ReportModal';
 import RankModal from './components/RankModal';
-
+import StreakDisplay from './components/StreakDisplay';
+import { calculateStreak, logActivity } from './utils/streakUtils';
 
 // --- Components ---
 
@@ -110,6 +111,7 @@ export default function App() {
   const [progressData, setProgressData] = useState({});
   const [sessions, setSessions] = useState([]); // [{ timestamp, duration, type, courseId }]
   const [schedule, setSchedule] = useState({}); // { "Pazartesi": [{ time: "09:00", subject: "Math" }] }
+  const [activityLog, setActivityLog] = useState({}); // { "YYYY-MM-DD": true }
   const [lastActiveCourseId, setLastActiveCourseId] = useState(null); // Track last interacted course
 
   const [showTimer, setShowTimer] = useState(false);
@@ -120,28 +122,24 @@ export default function App() {
   // Daily Focus Logic
   // Daily Focus Logic
   const getDailyFocus = () => {
-    const days = ['PAZAR', 'PAZARTESİ', 'SALI', 'ÇARŞAMBA', 'PERŞEMBE', 'CUMA', 'CUMARTESİ'];
     const now = new Date();
-    const todayIndex = now.getDay();
-    const today = days[todayIndex];
+    const dayIndex = now.getDay();
 
-    // Sunday Logic: Check if Saturday (yesterday) has any sessions
-    if (todayIndex === 0) { // 0 is Sunday
-      // Get Saturday's range (yesterday)
-      const saturday = new Date(now);
-      saturday.setDate(now.getDate() - 1);
-      saturday.setHours(0, 0, 0, 0);
-      const startOfSat = saturday.getTime();
-      const endOfSat = startOfSat + (24 * 60 * 60 * 1000);
+    const dayKeys = [
+      'CUMARTESİ / PAZAR', // 0: Sunday
+      'PAZARTESİ',         // 1
+      'SALI',              // 2
+      'ÇARŞAMBA',          // 3
+      'PERŞEMBE',          // 4
+      'CUMA',              // 5
+      'CUMARTESİ / PAZAR'  // 6: Saturday
+    ];
 
-      const workedOnSaturday = sessions.some(s => s.timestamp >= startOfSat && s.timestamp < endOfSat);
-
-      return workedOnSaturday ? 'TATİL' : 'YETENEK - BANKA';
-    }
+    const todayKey = dayKeys[dayIndex];
 
     // Dynamic focus from schedule if available
-    if (schedule[today] && schedule[today].length > 0) {
-      return schedule[today][0].subject.toUpperCase();
+    if (schedule[todayKey] && schedule[todayKey].length > 0) {
+      return schedule[todayKey][0].subject.toUpperCase();
     }
 
     const defaultSchedule = {
@@ -150,9 +148,9 @@ export default function App() {
       'ÇARŞAMBA': 'MUHASEBE - MALİYE',
       'PERŞEMBE': 'EKONOMİ',
       'CUMA': 'HUKUK',
-      'CUMARTESİ': 'YETENEK - BANKA',
+      'CUMARTESİ / PAZAR': 'YETENEK - BANKA',
     };
-    return defaultSchedule[today] || 'BELİRSİZ';
+    return defaultSchedule[todayKey] || 'BELİRSİZ';
   };
   const dailyFocus = getDailyFocus();
 
@@ -162,7 +160,7 @@ export default function App() {
       if (user) {
         const { data, error } = await supabase
           .from('user_progress')
-          .select('progress_data, sessions, schedule')
+          .select('progress_data, sessions, schedule, activity_log')
           .eq('user_id', user.id)
           .single();
 
@@ -170,6 +168,7 @@ export default function App() {
           if (data.progress_data) setProgressData(data.progress_data);
           if (data.sessions) setSessions(data.sessions);
           if (data.schedule) setSchedule(data.schedule);
+          if (data.activity_log) setActivityLog(data.activity_log);
         } else if (error && error.code !== 'PGRST116') { // PGRST116 is "no rows returned"
           console.error('Error loading data:', error);
         }
@@ -230,6 +229,8 @@ export default function App() {
     };
   }, [progressData, totalVideos]);
 
+  const currentStreak = useMemo(() => calculateStreak(activityLog), [activityLog]);
+
 
 
   // Level Up Check
@@ -245,6 +246,7 @@ export default function App() {
             progress_data: progressData,
             sessions: sessions,
             schedule: schedule,
+            activity_log: activityLog,
             updated_at: new Date()
           });
 
@@ -255,7 +257,7 @@ export default function App() {
       const timer = setTimeout(saveData, 2000);
       return () => clearTimeout(timer);
     }
-  }, [progressData, sessions, schedule, user]);
+  }, [progressData, sessions, schedule, activityLog, user]);
 
   const handleSessionComplete = (duration, type, overrideCourseId) => {
     if (type !== 'work') return; // Don't record break sessions
@@ -291,6 +293,9 @@ export default function App() {
           newSet.add(i);
         }
         newCourseProgress = Array.from(newSet);
+
+        // Log activity only when marking as done
+        setActivityLog(prev => logActivity(prev));
       }
       return {
         ...prev,
@@ -396,31 +401,33 @@ export default function App() {
                     {dailyFocus}
                   </span>
                 </div>
+
+                <StreakDisplay streak={currentStreak} />
               </div>
 
               {/* Right: Action Buttons */}
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowTimer(true)}
-                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30"
+                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30 cursor-pointer"
                 >
                   <Timer size={18} />
                 </button>
                 <button
                   onClick={() => setShowReport(true)}
-                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30"
+                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30 cursor-pointer"
                 >
                   <BarChart2 size={18} />
                 </button>
                 <button
                   onClick={() => setShowSchedule(true)}
-                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30"
+                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30 cursor-pointer"
                 >
                   <Calendar size={18} />
                 </button>
                 <button
                   onClick={logout}
-                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-error border border-custom-category/30"
+                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-error border border-custom-category/30 cursor-pointer"
                 >
                   <LogOut size={18} />
                 </button>
@@ -448,11 +455,14 @@ export default function App() {
                 >
                   {rankInfo.title}
                 </h1>
-                <div className="inline-flex items-center gap-2 bg-custom-accent/5 px-3 py-1.5 rounded-lg border border-custom-accent/10 w-fit hover:bg-custom-accent/10 transition-colors">
-                  <Calendar size={14} className="text-custom-accent" />
-                  <span className="text-xs font-bold text-custom-accent uppercase tracking-wide">
-                    Bugün: {dailyFocus}
-                  </span>
+                <div className="flex items-center gap-2">
+                  <div className="inline-flex items-center gap-2 bg-custom-accent/5 px-3 py-1.5 rounded-lg border border-custom-accent/10 w-fit hover:bg-custom-accent/10 transition-colors">
+                    <Calendar size={14} className="text-custom-accent" />
+                    <span className="text-xs font-bold text-custom-accent uppercase tracking-wide">
+                      Bugün: {dailyFocus}
+                    </span>
+                  </div>
+                  <StreakDisplay streak={currentStreak} />
                 </div>
               </div>
             </div>
@@ -489,13 +499,13 @@ export default function App() {
             </div>
           </div>
 
-        </div>
-      </header>
+        </div >
+      </header >
 
       {/* Main Content Grid */}
-      <main className="max-w-6xl mx-auto p-4 md:p-8">
+      < main className="max-w-6xl mx-auto p-4 md:p-8" >
         {/* Progress Stats (Relocated) */}
-        <div className="max-w-2xl mx-auto mb-10 bg-custom-header/50 p-6 rounded-2xl border border-custom-category/30 shadow-lg shadow-black/5">
+        < div className="max-w-2xl mx-auto mb-10 bg-custom-header/50 p-6 rounded-2xl border border-custom-category/30 shadow-lg shadow-black/5" >
           <div className="flex justify-between items-end mb-2">
             <div className="flex flex-col">
               <span className="text-xs font-bold text-custom-title/50 uppercase tracking-wider mb-1">Mevcut Hedef</span>
@@ -522,7 +532,7 @@ export default function App() {
             </span>
             <span>% {nextRank.min} için devam et</span>
           </div>
-        </div>
+        </div >
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-20 items-start">
           {courseData.map((category, catIdx) => {

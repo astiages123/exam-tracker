@@ -9,7 +9,7 @@ function cn(...inputs) {
     return twMerge(clsx(inputs));
 }
 
-const DAYS = ['PAZARTESİ', 'SALI', 'ÇARŞAMBA', 'PERŞEMBE', 'CUMA', 'CUMARTESİ', 'PAZAR'];
+const DAYS = ['PAZARTESİ', 'SALI', 'ÇARŞAMBA', 'PERŞEMBE', 'CUMA', 'CUMARTESİ / PAZAR'];
 
 const SUBJECT_STYLES = {
     'EKONOMİ': { bg: 'bg-blue-500/20', text: 'text-blue-100', border: 'border-blue-500/30', badge: 'bg-blue-500/30' },
@@ -142,7 +142,7 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
 
                 {/* Content - Grid Layout */}
                 <div className="p-6 overflow-y-auto custom-scrollbar flex-1 bg-custom-bg">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {DAYS.map((day) => {
                             const dayItems = localSchedule[day] || [];
                             const currentNewItem = newItems[day] || { time: '', subject: 'EKONOMİ' };
