@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw, X } from 'lucide-react';
+import { Play, Pause, RotateCcw, X, ChevronDown, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { playNotificationSound, initAudio } from '../utils/sound';
 
 const WORK_TIME = 50 * 60;
@@ -9,6 +10,7 @@ const BREAK_TIME = 10 * 60;
 export default function PomodoroTimer({ initialCourse, courses, sessionsCount, onSessionComplete, onClose }) {
     const [view, setView] = useState('selection'); // 'selection' | 'timer'
     const [selectedCourseId, setSelectedCourseId] = useState(initialCourse ? initialCourse.id : '');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // [NEW] Dropdown state
 
     const [timeLeft, setTimeLeft] = useState(WORK_TIME);
     const [isActive, setIsActive] = useState(false);
@@ -135,8 +137,14 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
 
     if (view === 'selection') {
         return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200 cursor-pointer">
-                <div className="bg-custom-header border border-custom-category rounded-2xl shadow-2xl w-full max-w-md p-8 relative cursor-default">
+            <div
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200 cursor-pointer"
+                onClick={onClose}
+            >
+                <div
+                    className="bg-custom-header border border-custom-category rounded-2xl shadow-2xl w-full max-w-md p-8 relative cursor-default"
+                    onClick={(e) => e.stopPropagation()}
+                >
                     <button
                         onClick={onClose}
                         className="absolute top-4 right-4 text-custom-title/40 hover:text-custom-error transition-colors cursor-pointer"
@@ -146,18 +154,54 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
 
                     <h3 className="text-2xl font-bold text-custom-text text-center mb-6">Çalışmaya Başla</h3>
 
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-3 relative">
                         <label className="text-sm text-custom-title/60 font-medium ml-1">Hangi derse çalışacaksın?</label>
-                        <select
-                            value={selectedCourseId}
-                            onChange={(e) => setSelectedCourseId(e.target.value)}
-                            className="w-full p-4 bg-custom-bg border border-custom-category rounded-xl text-custom-text text-base focus:outline-none focus:border-custom-accent transition-colors cursor-pointer"
+
+                        {/* Custom Dropdown Trigger */}
+                        <div
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                            className={`w-full p-4 bg-custom-bg border ${isDropdownOpen ? 'border-custom-accent ring-1 ring-custom-accent/20' : 'border-custom-category'} rounded-xl text-custom-text text-base flex justify-between items-center cursor-pointer transition-all hover:bg-custom-header`}
                         >
-                            <option value="" disabled>Ders Seçiniz</option>
-                            {courses.map(course => (
-                                <option key={course.id} value={course.id}>{course.name}</option>
-                            ))}
-                        </select>
+                            <span className={selectedCourseId ? "text-custom-text" : "text-custom-title/40"}>
+                                {selectedCourseId ? courses.find(c => c.id === selectedCourseId)?.name : "Ders Seçiniz"}
+                            </span>
+                            <ChevronDown
+                                size={20}
+                                className={`text-custom-title/50 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180 text-custom-accent' : ''}`}
+                            />
+                        </div>
+
+                        {/* Dropdown Menu */}
+                        <AnimatePresence>
+                            {isDropdownOpen && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="absolute top-[85px] left-0 right-0 max-h-64 overflow-y-auto custom-scrollbar bg-custom-header border border-custom-category rounded-xl shadow-2xl z-20 flex flex-col p-1"
+                                >
+                                    {courses.map(course => (
+                                        <button
+                                            key={course.id}
+                                            onClick={() => {
+                                                setSelectedCourseId(course.id);
+                                                setIsDropdownOpen(false);
+                                            }}
+                                            className={`p-3 text-left rounded-lg text-sm font-medium transition-colors flex items-center justify-between group ${selectedCourseId === course.id
+                                                ? 'bg-custom-accent/10 text-custom-accent'
+                                                : 'text-custom-title/80 hover:bg-custom-bg hover:text-custom-text'
+                                                }`}
+                                        >
+                                            {course.name}
+                                            {selectedCourseId === course.id && (
+                                                <Check size={16} className="text-custom-accent" />
+                                            )}
+                                        </button>
+                                    ))}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
 
                     <div className="mt-8 flex gap-3">

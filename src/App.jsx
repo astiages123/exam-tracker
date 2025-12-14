@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, CheckCircle, Circle, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar } from 'lucide-react';
+import { ChevronDown, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check } from 'lucide-react';
 import ScheduleModal from './components/ScheduleModal';
 
 
@@ -20,7 +20,7 @@ import PomodoroTimer from './components/PomodoroTimer';
 import ReportModal from './components/ReportModal';
 import RankModal from './components/RankModal';
 import StreakDisplay from './components/StreakDisplay';
-import { calculateStreak, logActivity } from './utils/streakUtils';
+import { calculateStreak, logActivity, removeActivity } from './utils/streakUtils';
 
 // --- Components ---
 
@@ -83,11 +83,11 @@ const LevelUpModal = ({ title, onClose }) => {
   );
 };
 
-const CategoryProgressBar = ({ percentage }) => {
+const CategoryProgressBar = ({ percentage, colorClass }) => {
   return (
     <div className="w-full bg-custom-category/50 rounded-full h-1.5 mt-2 overflow-hidden">
       <motion.div
-        className="h-full bg-custom-accent"
+        className={cn("h-full", colorClass || "bg-custom-accent")}
         initial={{ width: 0 }}
         animate={{ width: `${percentage}%` }}
         transition={{ duration: 0.5 }}
@@ -104,6 +104,14 @@ const formatHours = (decimalHours) => {
   return `${hours}sa ${minutes}dk`;
 };
 
+const CATEGORY_STYLES = {
+  'EKONOMİ': { bg: 'bg-sky-500/10 hover:bg-sky-500/20', border: 'border-sky-500/20', accent: 'text-sky-300', iconBg: 'bg-sky-500/20' },
+  'HUKUK': { bg: 'bg-rose-500/10 hover:bg-rose-500/20', border: 'border-rose-500/20', accent: 'text-rose-300', iconBg: 'bg-rose-500/20' },
+  'MUHASEBE-MALİYE': { bg: 'bg-emerald-500/10 hover:bg-emerald-500/20', border: 'border-emerald-500/20', accent: 'text-emerald-300', iconBg: 'bg-emerald-500/20' },
+  'YETENEK-BANKA': { bg: 'bg-violet-500/10 hover:bg-violet-500/20', border: 'border-violet-500/20', accent: 'text-violet-300', iconBg: 'bg-violet-500/20' },
+  'DEFAULT': { bg: 'bg-custom-header', border: 'border-custom-category/30', accent: 'text-custom-accent', iconBg: 'bg-custom-accent/10' }
+};
+
 export default function App() {
   const { user, logout, loading } = useAuth();
 
@@ -113,6 +121,11 @@ export default function App() {
   const [schedule, setSchedule] = useState({}); // { "Pazartesi": [{ time: "09:00", subject: "Math" }] }
   const [activityLog, setActivityLog] = useState({}); // { "YYYY-MM-DD": true }
   const [lastActiveCourseId, setLastActiveCourseId] = useState(null); // Track last interacted course
+  const [isDataLoaded, setIsDataLoaded] = useState(false); // [FIX] Prevent autosave race condition
+
+  // Accordion States
+  const [expandedCategories, setExpandedCategories] = useState(new Set());
+  const [expandedCourses, setExpandedCourses] = useState(new Set()); // [NEW] Track expanded courses
 
   const [showTimer, setShowTimer] = useState(false);
   const [showReport, setShowReport] = useState(false);
@@ -156,6 +169,17 @@ export default function App() {
 
   // Initialize data when user changes
   useEffect(() => {
+    // Reset state immediately to prevent data leakage from previous user
+    setProgressData({});
+    setSessions([]);
+    setSchedule({});
+    // Reset state immediately to prevent data leakage from previous user
+    setIsDataLoaded(false);
+    setProgressData({});
+    setSessions([]);
+    setSchedule({});
+    setActivityLog({});
+
     async function loadData() {
       if (user) {
         const { data, error } = await supabase
@@ -165,28 +189,29 @@ export default function App() {
           .single();
 
         if (data) {
-          if (data.progress_data) setProgressData(data.progress_data);
-          if (data.sessions) setSessions(data.sessions);
-          if (data.schedule) setSchedule(data.schedule);
-          if (data.activity_log) setActivityLog(data.activity_log);
+          setProgressData(data.progress_data || {});
+          setSessions(data.sessions || []);
+          setSchedule(data.schedule || {});
+          setActivityLog(data.activity_log || {});
         } else if (error && error.code !== 'PGRST116') { // PGRST116 is "no rows returned"
           console.error('Error loading data:', error);
         }
+        setIsDataLoaded(true); // [FIX] Enable autosave only after load
       }
     }
     loadData();
   }, [user]);
 
-  const [expandedCategories, setExpandedCategories] = useState(new Set());
+
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [newTitle, setNewTitle] = useState("");
 
   // Calculate total videos and hours
-  const totalVideos = courseData.reduce((acc, cat) =>
-    acc + cat.courses.reduce((cAcc, course) => cAcc + course.totalVideos, 0), 0);
+  const totalVideos = useMemo(() => courseData.reduce((acc, cat) =>
+    acc + cat.courses.reduce((cAcc, course) => cAcc + course.totalVideos, 0), 0), []);
 
-  const totalHours = courseData.reduce((acc, cat) =>
-    acc + cat.courses.reduce((cAcc, course) => cAcc + course.totalHours, 0), 0);
+  const totalHours = useMemo(() => courseData.reduce((acc, cat) =>
+    acc + cat.courses.reduce((cAcc, course) => cAcc + course.totalHours, 0), 0), []);
 
   // Calculate stats using derived state (useMemo) to avoid useEffect cascading
   const { totalPercentage, rankInfo, nextRank, completedHours, completedCount } = useMemo(() => {
@@ -237,7 +262,7 @@ export default function App() {
 
 
   useEffect(() => {
-    if (user) {
+    if (user && isDataLoaded) {
       const saveData = async () => {
         const { error } = await supabase
           .from('user_progress')
@@ -253,11 +278,11 @@ export default function App() {
         if (error) console.error('Error saving data:', error);
       };
 
-      // Debounce save to avoid too many requests
-      const timer = setTimeout(saveData, 2000);
-      return () => clearTimeout(timer);
+      // Debounce save to avoid too many writes (Reduced to 300ms for responsiveness)
+      const timeoutId = setTimeout(saveData, 300);
+      return () => clearTimeout(timeoutId);
     }
-  }, [progressData, sessions, schedule, activityLog, user]);
+  }, [user, progressData, sessions, schedule, activityLog, isDataLoaded]);
 
   const handleSessionComplete = (duration, type, overrideCourseId) => {
     if (type !== 'work') return; // Don't record break sessions
@@ -279,41 +304,56 @@ export default function App() {
   // Refactored Toggle Handler for specific video index with auto-complete previous and auto-uncheck subsequent
   const handleVideoToggle = (courseId, videoIndex) => {
     setLastActiveCourseId(courseId); // Update active context
+
+    // Determine the action based on CURRENT state via callback to be safe, 
+    // but execute side effects distinctly.
     setProgressData(prev => {
-      const courseProgress = prev[courseId] || []; // Array of indices
-      let newCourseProgress;
+      const courseProgress = prev[courseId] || [];
+      const isUnchecking = courseProgress.includes(videoIndex);
 
-      if (courseProgress.includes(videoIndex)) {
+      if (isUnchecking) {
         // Uncheck this one AND all subsequent ones
-        newCourseProgress = courseProgress.filter(i => i < videoIndex);
+        setTimeout(() => setActivityLog(prevLog => removeActivity(prevLog)), 0);
+        return {
+          ...prev,
+          [courseId]: courseProgress.filter(i => i < videoIndex)
+        };
       } else {
-        // Check this one AND all previous ones (logic from checking)
+        // Check this one AND all previous ones
         const newSet = new Set(courseProgress);
-        for (let i = 1; i <= videoIndex; i++) {
-          newSet.add(i);
-        }
-        newCourseProgress = Array.from(newSet);
+        for (let i = 1; i <= videoIndex; i++) newSet.add(i);
 
-        // Log activity only when marking as done
-        setActivityLog(prev => logActivity(prev));
+        setTimeout(() => setActivityLog(prevLog => logActivity(prevLog)), 0);
+        return {
+          ...prev,
+          [courseId]: Array.from(newSet)
+        };
       }
-      return {
-        ...prev,
-        [courseId]: newCourseProgress
-      };
     });
   };
 
   // Re-calculate stats with new data structure
   // const getCompletedCount = () ... removed as now derived
 
-  const toggleCategory = (index) => {
+  const toggleCategory = (categoryId) => {
     setExpandedCategories(prev => {
       const next = new Set(prev);
-      if (next.has(index)) {
-        next.delete(index);
+      if (next.has(categoryId)) {
+        next.delete(categoryId);
       } else {
-        next.add(index);
+        next.add(categoryId);
+      }
+      return next;
+    });
+  };
+
+  const toggleCourse = (courseId) => {
+    setExpandedCourses(prev => {
+      const next = new Set(prev);
+      if (next.has(courseId)) {
+        next.delete(courseId);
+      } else {
+        next.add(courseId);
       }
       return next;
     });
@@ -503,9 +543,9 @@ export default function App() {
       </header >
 
       {/* Main Content Grid */}
-      < main className="max-w-6xl mx-auto p-4 md:p-8" >
+      <main className="max-w-6xl mx-auto p-4 md:p-8">
         {/* Progress Stats (Relocated) */}
-        < div className="max-w-2xl mx-auto mb-10 bg-custom-header/50 p-6 rounded-2xl border border-custom-category/30 shadow-lg shadow-black/5" >
+        <div className="max-w-2xl mx-auto mb-10 bg-custom-header/50 p-6 rounded-2xl border border-custom-category/30 shadow-lg shadow-black/5">
           <div className="flex justify-between items-end mb-2">
             <div className="flex flex-col">
               <span className="text-xs font-bold text-custom-title/50 uppercase tracking-wider mb-1">Mevcut Hedef</span>
@@ -532,7 +572,7 @@ export default function App() {
             </span>
             <span>% {nextRank.min} için devam et</span>
           </div>
-        </div >
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-20 items-start">
           {courseData.map((category, catIdx) => {
@@ -540,35 +580,38 @@ export default function App() {
             const categoryTotalVideos = category.courses.reduce((acc, c) => acc + c.totalVideos, 0);
             const categoryCompletedVideos = category.courses.reduce((acc, c) => acc + (progressData[c.id] || []).length, 0);
 
-            const categoryPercent = categoryTotalVideos > 0 ? Math.round((categoryCompletedVideos / categoryTotalVideos) * 100) : 0; // Better to use video count for percent now since we shifted focus
+            const categoryPercent = categoryTotalVideos > 0 ? Math.round((categoryCompletedVideos / categoryTotalVideos) * 100) : 0;
+
+            const categoryNameRaw = category.category.split('(')[0].replace(/^\d+\.\s*/, '').trim();
+            const styles = CATEGORY_STYLES[categoryNameRaw] || CATEGORY_STYLES['DEFAULT'];
 
             return (
-              <div key={catIdx} className="bg-custom-header rounded-2xl border border-custom-category/30 overflow-hidden hover:border-custom-accent/30 transition-all duration-300 hover:shadow-lg hover:shadow-custom-accent/5 group">
+              <div key={catIdx} className={cn("rounded-2xl border overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-black/20 group", styles.bg, styles.border)}>
                 {/* Category Header */}
                 <button
                   onClick={() => toggleCategory(catIdx)}
-                  className="w-full p-6 bg-custom-header hover:bg-custom-header/80 transition-colors cursor-pointer block text-left"
+                  className="w-full p-6 bg-transparent transition-colors cursor-pointer block text-left"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-4">
-                      <div className="bg-custom-accent/10 p-3 rounded-xl group-hover:scale-105 transition-transform duration-300">
-                        <BookOpen size={24} className="text-custom-accent" />
+                      <div className={cn("p-3 rounded-xl transition-transform duration-300 group-hover:scale-105", styles.iconBg)}>
+                        <BookOpen size={24} className={styles.accent} />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-custom-text text-lg tracking-tight group-hover:text-custom-accent transition-colors">{category.category.split('(')[0]}</h3>
+                        <h3 className={cn("font-semibold text-lg tracking-tight transition-colors", styles.accent)}>{category.category.split('(')[0]}</h3>
                         <p className="text-xs text-custom-title/60 font-medium mt-1">
                           Toplam: {formatHours(categoryTotalHours)} • {categoryCompletedVideos} / {categoryTotalVideos} Video
                         </p>
                       </div>
                     </div>
-                    <div className={cn("bg-custom-bg p-2 rounded-full transition-transform duration-300", expandedCategories.has(catIdx) ? "rotate-180" : "")}>
+                    <div className={cn("bg-black/20 p-2 rounded-full transition-transform duration-300", expandedCategories.has(catIdx) ? "rotate-180" : "")}>
                       <ChevronDown size={20} className="text-custom-title/50" />
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3 mt-3">
-                    <CategoryProgressBar percentage={categoryPercent} />
-                    <span className="text-xs font-bold text-custom-accent min-w-[3rem] text-right">%{categoryPercent}</span>
+                    <CategoryProgressBar percentage={categoryPercent} colorClass={styles.accent.replace('text-', 'bg-')} />
+                    <span className={cn("text-xs font-bold min-w-[3rem] text-right", styles.accent)}>%{categoryPercent}</span>
                   </div>
                 </button>
 
@@ -578,82 +621,119 @@ export default function App() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      className="border-t border-custom-category/30 bg-custom-bg/30"
+                      className={cn("border-t bg-black/10", styles.border)}
                     >
                       <div className="p-4 space-y-4">
                         {category.courses.map(course => {
                           const courseCompleted = (progressData[course.id] || []).length;
                           const coursePercent = Math.round((courseCompleted / course.totalVideos) * 100);
+                          const courseProgress = {
+                            completed: courseCompleted,
+                            total: course.totalVideos,
+                            percentage: coursePercent,
+                            completedVideos: progressData[course.id] || []
+                          };
 
                           return (
-                            <div key={course.id} className="bg-custom-header/50 rounded-xl p-4 border border-custom-category/30 hover:border-custom-category/60 transition-colors">
-                              <div className="flex justify-between items-center mb-4 pb-3 border-b border-custom-category/30">
-                                <div className="flex flex-col">
-                                  <span className="font-semibold text-sm text-custom-title">{course.name}</span>
-                                  <span className="text-[10px] text-custom-title/60 font-medium mt-1">
-                                    Toplam: {formatHours(course.totalHours)} • {courseCompleted} / {course.totalVideos} Video
-                                  </span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <a
-                                    href={course.playlistUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-red-500 bg-red-100 hover:bg-red-600 hover:text-white transition-colors p-2 rounded-full cursor-pointer shadow-sm hover:shadow-red-500/30"
-                                    title="YouTube Oynatma Listesi"
-                                  >
-                                    <Youtube size={20} />
-                                  </a>
-                                  <span className={cn(
-                                    "text-xs font-bold px-2.5 py-1 rounded-lg min-w-[3rem] text-center",
-                                    coursePercent === 100 ? "bg-custom-accent/20 text-custom-accent" : "bg-custom-bg text-custom-title/60"
-                                  )}>
-                                    %{coursePercent}
-                                  </span>
-                                </div>
-                              </div>
-
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
-                                {Array.from({ length: course.totalVideos }).map((_, vIdx) => {
-                                  const videoNum = vIdx + 1;
-                                  const isDone = (progressData[course.id] || []).includes(videoNum);
-
-                                  return (
-                                    <button
-                                      key={videoNum}
-                                      onClick={() => handleVideoToggle(course.id, videoNum)}
-                                      className={cn(
-                                        "flex items-center gap-3 p-2.5 rounded-lg transition-all group text-left border cursor-pointer relative overflow-hidden",
-                                        isDone
-                                          ? "bg-custom-accent/10 border-custom-accent/20"
-                                          : "bg-custom-bg/50 border-transparent hover:bg-custom-bg hover:border-custom-category/50"
-                                      )}
-                                    >
-                                      <div className="shrink-0 relative z-10">
-                                        {isDone ? (
-                                          <CheckCircle size={18} className="text-custom-accent fill-custom-accent/20" />
-                                        ) : (
-                                          <Circle size={18} className="text-custom-category group-hover:text-custom-accent transition-colors" />
-                                        )}
-                                      </div>
-                                      <span className={cn("text-xs font-medium z-10 relative transition-all duration-300", isDone ? "text-custom-title/50 line-through opacity-70" : "text-custom-title/80 group-hover:text-custom-text")}>
-                                        Ders {videoNum}
+                            <div key={course.id} className={cn("border rounded-xl overflow-hidden shadow-lg shadow-black/20", styles.bg, styles.border)}>
+                              <div
+                                className="p-3 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
+                                onClick={() => toggleCourse(course.id)}
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className={cn("p-2 rounded-lg", styles.iconBg)}>
+                                    <BookOpen className={styles.accent} size={20} />
+                                  </div>
+                                  <div>
+                                    <h3 className="font-bold text-sm text-custom-title/80">{course.name}</h3>
+                                    <div className="flex items-center gap-2 mt-0.5">
+                                      <span className="text-xs text-custom-title/60 font-medium tracking-wide">
+                                        Toplam: {formatHours(course.totalHours)} • {courseProgress.completed}/{courseProgress.total} Video
                                       </span>
-                                    </button>
-                                  );
-                                })}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="flex items-center gap-3">
+                                  {course.playlistUrl && (
+                                    <a
+                                      href={course.playlistUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      onClick={(e) => e.stopPropagation()}
+                                      className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center hover:bg-rose-200 transition-all hover:scale-105 shadow-sm group/yt"
+                                      title="Oynatma Listesine Git"
+                                    >
+                                      <Youtube size={20} className="text-red-600 group-hover/yt:text-red-700" strokeWidth={2} />
+                                    </a>
+                                  )}
+
+                                  <div className="px-3 py-1.5 rounded-lg bg-zinc-800/80 backdrop-blur-sm border border-white/5 shadow-inner">
+                                    <span className={cn("text-sm font-bold tracking-tight", styles.accent)}>
+                                      %{Math.round(courseProgress.percentage)}
+                                    </span>
+                                  </div>
+
+                                  <ChevronDown
+                                    className={`text-custom-title/50 transition-transform duration-300 ${expandedCourses.has(course.id) ? 'rotate-180' : ''}`}
+                                    size={18}
+                                  />
+                                </div>
                               </div>
+
+                              <AnimatePresence>
+                                {expandedCourses.has(course.id) && (
+                                  <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: 'auto', opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                                  >
+                                    <div className={cn("p-4 border-t bg-black/20", styles.border)}>
+                                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
+                                        {Array.from({ length: course.totalVideos }, (_, i) => i + 1).map((videoNum) => {
+                                          const isCompleted = courseProgress.completedVideos.includes(videoNum);
+                                          return (
+                                            <div
+                                              key={videoNum}
+                                              onClick={() => handleVideoToggle(course.id, videoNum)}
+                                              className={cn(
+                                                "group relative p-2 rounded-lg border border-dashed transition-all duration-300 flex flex-col items-center justify-center gap-1.5 cursor-pointer",
+                                                isCompleted
+                                                  ? `${styles.iconBg} ${styles.border.replace('border-', 'border-solid border-')} shadow-sm`
+                                                  : 'bg-custom-bg/50 border-custom-category/40 hover:border-custom-accent/50 hover:bg-custom-header hover:shadow-md hover:-translate-y-0.5'
+                                              )}
+                                            >
+                                              <span className={cn("font-mono text-xs font-bold tracking-tight", isCompleted ? styles.accent : 'text-custom-title/70 group-hover:text-custom-text')}>
+                                                #{videoNum}
+                                              </span>
+                                              <div className={cn(
+                                                "w-5 h-5 rounded-full flex items-center justify-center border transition-all duration-300",
+                                                isCompleted
+                                                  ? `${styles.accent.replace('text-', 'bg-')} ${styles.accent.replace('text-', 'border-')}`
+                                                  : 'border-custom-category/50 group-hover:border-custom-accent'
+                                              )}>
+                                                {isCompleted && <Check size={12} className="text-white" strokeWidth={3} />}
+                                              </div>
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+                                    </div>
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
                             </div>
-                          )
+                          );
                         })}
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
-            )
+            );
           })}
-        </div>
+        </div >
       </main >
     </div >
   );

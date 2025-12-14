@@ -12,7 +12,7 @@ function cn(...inputs) {
 const DAYS = ['PAZARTESİ', 'SALI', 'ÇARŞAMBA', 'PERŞEMBE', 'CUMA', 'CUMARTESİ / PAZAR'];
 
 const SUBJECT_STYLES = {
-    'EKONOMİ': { bg: 'bg-blue-500/20', text: 'text-blue-100', border: 'border-blue-500/30', badge: 'bg-blue-500/30' },
+    'EKONOMİ': { bg: 'bg-sky-500/20', text: 'text-sky-100', border: 'border-sky-500/30', badge: 'bg-sky-500/30' },
     'HUKUK': { bg: 'bg-rose-500/20', text: 'text-rose-100', border: 'border-rose-500/30', badge: 'bg-rose-500/30' },
     'MUHASEBE - MALİYE': { bg: 'bg-emerald-500/20', text: 'text-emerald-100', border: 'border-emerald-500/30', badge: 'bg-emerald-500/30' },
     'YETENEK - BANKA': { bg: 'bg-violet-500/20', text: 'text-violet-100', border: 'border-violet-500/30', badge: 'bg-violet-500/30' },

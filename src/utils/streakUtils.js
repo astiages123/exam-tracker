@@ -82,14 +82,37 @@ export const calculateStreak = (activityLog, referenceDate = new Date()) => {
 
 /**
  * Adds an entry to the activity log for "today".
+ * Stores a count of activities to support undo operations.
  * @param {Object} currentLog 
  */
 export const logActivity = (currentLog) => {
     const todayStr = getLocalYMD(new Date());
-    if (currentLog[todayStr]) return currentLog; // Already logged
+    const currentCount = currentLog[todayStr] === true ? 1 : (currentLog[todayStr] || 0); // Handle legacy boolean 'true'
 
     return {
         ...currentLog,
-        [todayStr]: true
+        [todayStr]: currentCount + 1
+    };
+};
+
+/**
+ * Removes an activity from the log for "today".
+ * Used when user unchecks a video.
+ * @param {Object} currentLog 
+ */
+export const removeActivity = (currentLog) => {
+    const todayStr = getLocalYMD(new Date());
+    const currentVal = currentLog[todayStr] === true ? 1 : (currentLog[todayStr] || 0); // Handle legacy boolean
+
+    if (currentVal <= 1) {
+        // If count goes to 0 or was 1 (or true), remove the key
+        const newLog = { ...currentLog };
+        delete newLog[todayStr];
+        return newLog;
+    }
+
+    return {
+        ...currentLog,
+        [todayStr]: currentVal - 1
     };
 };
