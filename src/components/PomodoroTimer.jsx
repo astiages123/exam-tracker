@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw, X, ChevronDown, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { playNotificationSound, initAudio } from '../utils/sound';
+import { requestNotificationPermission, sendNotification } from '../utils/notification';
 
 const WORK_TIME = 0.05 * 60;
 const BREAK_TIME = 10 * 60;
@@ -97,8 +98,11 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         }
     }, [view, onClose]);
 
-    const handleStartSession = () => {
+    const handleStartSession = async () => {
         if (!selectedCourseId) return;
+
+        await requestNotificationPermission();
+
         initAudio();
         setView('timer');
         // Set target time based on CURRENT timeLeft
@@ -117,10 +121,18 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         // We set isActive false above, which will update storage in the useEffect.
 
         if (mode === 'work') {
+            sendNotification("Çalışma Tamamlandı!", {
+                body: `${selectedCourseName || 'Ders'} çalışması bitti. Mola zamanı!`,
+                tag: 'pomodoro-complete'
+            });
             onSessionComplete(WORK_TIME, 'work', selectedCourseId);
             setMode('break');
             setTimeLeft(BREAK_TIME);
         } else {
+            sendNotification("Mola Bitti!", {
+                body: "Dinlenme süresi doldu. Çalışmaya geri dön!",
+                tag: 'break-complete'
+            });
             onSessionComplete(BREAK_TIME, 'break', null);
             setMode('work');
             setTimeLeft(WORK_TIME);
