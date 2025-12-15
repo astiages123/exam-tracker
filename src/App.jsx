@@ -464,64 +464,61 @@ export default function App() {
         <div className="max-w-6xl mx-auto px-4 py-4">
 
           {/* --- MOBILE LAYOUT --- */}
-          <div className="md:hidden flex flex-col gap-4">
-            {/* Row 1: Title (Full Width) */}
-            <div
-              className="w-full border-b border-custom-category/20 pb-3 cursor-pointer hover:bg-custom-header/50 transition-colors rounded-lg px-2 -mx-2"
-              onClick={() => setShowRankModal(true)}
-            >
-              <h1 className={cn("text-2xl font-bold tracking-tight text-custom-text leading-tight", rankInfo.color)}>
-                {rankInfo.title}
-              </h1>
-            </div>
+          <div className="md:hidden flex flex-col gap-3">
 
-            {/* Row 2: Icon | Badge | Buttons */}
+            {/* Row 1: Rank Info (Left) + Streak (Right) */}
             <div className="flex items-center justify-between">
-
-              {/* Left: Icon & Badge */}
-              <div className="flex items-center gap-3">
-                <div
-                  className="relative cursor-pointer hover:scale-105 transition-transform"
-                  onClick={() => setShowRankModal(true)}
-                >
-                  <div className="bg-custom-header p-2.5 rounded-xl border border-custom-category/50 relative">
-                    <Trophy size={24} className="text-custom-accent" />
-                  </div>
+              <div
+                className="flex items-center gap-3 cursor-pointer group"
+                onClick={() => setShowRankModal(true)}
+              >
+                <div className="bg-custom-header p-2 rounded-xl border border-custom-category/50 relative group-hover:border-custom-accent/30 transition-colors shadow-sm">
+                  <Trophy size={20} className="text-custom-accent" />
                 </div>
-
-                <div className="inline-flex items-center gap-2 bg-custom-accent/5 px-3 py-1.5 rounded-lg border border-custom-accent/10 w-fit">
-                  <Calendar size={14} className="text-custom-accent" />
-                  <span className="text-[10px] font-bold text-custom-accent uppercase tracking-wide">
-                    {dailyFocus}
-                  </span>
-                </div>
-
-                <StreakDisplay streak={currentStreak} />
+                <h1 className={cn("text-xl font-bold tracking-tight text-custom-text leading-tight", rankInfo.color)}>
+                  {rankInfo.title}
+                </h1>
               </div>
 
-              {/* Right: Action Buttons */}
-              <div className="flex items-center gap-2">
+              <StreakDisplay streak={currentStreak} />
+            </div>
+
+            {/* Row 2: Daily Focus (Left) + Actions (Right) */}
+            <div className="flex items-center justify-between gap-2">
+
+              <div className="inline-flex items-center gap-2 bg-custom-accent/5 px-3 py-2 rounded-lg border border-custom-accent/10 w-fit shrink-0">
+                <Calendar size={14} className="text-custom-accent" />
+                <span className="text-[10px] font-bold text-custom-accent uppercase tracking-wide truncate max-w-[100px]">
+                  {dailyFocus}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth">
                 <button
                   onClick={() => setShowTimer(true)}
-                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30 cursor-pointer"
+                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30 cursor-pointer hover:bg-custom-accent/5 transition-all active:scale-95"
+                  title="Sayaç"
                 >
                   <Timer size={18} />
                 </button>
                 <button
                   onClick={() => setShowReport(true)}
-                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30 cursor-pointer"
+                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30 cursor-pointer hover:bg-custom-accent/5 transition-all active:scale-95"
+                  title="Rapor"
                 >
                   <BarChart2 size={18} />
                 </button>
                 <button
                   onClick={() => setShowSchedule(true)}
-                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30 cursor-pointer"
+                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30 cursor-pointer hover:bg-custom-accent/5 transition-all active:scale-95"
+                  title="Program"
                 >
                   <Calendar size={18} />
                 </button>
                 <button
                   onClick={logout}
-                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-error border border-custom-category/30 cursor-pointer"
+                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-error border border-custom-category/30 cursor-pointer hover:bg-red-500/10 transition-all active:scale-95"
+                  title="Çıkış"
                 >
                   <LogOut size={18} />
                 </button>
