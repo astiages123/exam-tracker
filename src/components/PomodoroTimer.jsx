@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { playNotificationSound, initAudio } from '../utils/sound';
 import { requestNotificationPermission, sendNotification } from '../utils/notification';
 
-const WORK_TIME = 0.05 * 60;
+const WORK_TIME = 50 * 60;
 const BREAK_TIME = 10 * 60;
 
 const STORAGE_KEYS = {
