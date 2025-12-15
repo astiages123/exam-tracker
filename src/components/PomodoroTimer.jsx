@@ -1,30 +1,91 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw, X, ChevronDown, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { playNotificationSound, initAudio } from '../utils/sound';
 
-const WORK_TIME = 50 * 60;
+const WORK_TIME = 0.05 * 60;
 const BREAK_TIME = 10 * 60;
 
-export default function PomodoroTimer({ initialCourse, courses, sessionsCount, onSessionComplete, onClose }) {
-    const [view, setView] = useState('selection'); // 'selection' | 'timer'
-    const [selectedCourseId, setSelectedCourseId] = useState(initialCourse ? initialCourse.id : '');
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // [NEW] Dropdown state
+const STORAGE_KEYS = {
+    END_TIME: 'pomo_endTime',
+    IS_ACTIVE: 'pomo_isActive',
+    MODE: 'pomo_mode',
+    TIME_LEFT: 'pomo_timeLeft',
+    COURSE_ID: 'pomo_courseId',
+    VIEW: 'pomo_view'
+};
 
-    const [timeLeft, setTimeLeft] = useState(WORK_TIME);
-    const [isActive, setIsActive] = useState(false);
-    const [mode, setMode] = useState('work'); // 'work' | 'break'
+export default function PomodoroTimer({ initialCourse, courses, sessionsCount, onSessionComplete, onClose }) {
+    // Initialize state from localStorage if available, else defaults
+    const [view, setView] = useState(() => localStorage.getItem(STORAGE_KEYS.VIEW) || 'selection');
+    const [selectedCourseId, setSelectedCourseId] = useState(() => {
+        const saved = localStorage.getItem(STORAGE_KEYS.COURSE_ID);
+        return (saved && saved !== 'null') ? saved : (initialCourse ? initialCourse.id : '');
+    });
+
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    const [mode, setMode] = useState(() => localStorage.getItem(STORAGE_KEYS.MODE) || 'work');
+    const [timeLeft, setTimeLeft] = useState(() => {
+        const saved = localStorage.getItem(STORAGE_KEYS.TIME_LEFT);
+        return saved ? parseInt(saved, 10) : WORK_TIME;
+    });
+    const [isActive, setIsActive] = useState(() => localStorage.getItem(STORAGE_KEYS.IS_ACTIVE) === 'true');
 
     const endTimeRef = useRef(null);
     const timerRef = useRef(null);
+    const completeRef = useRef();
+
+
+    // --- Persistence & Restoration Logic ---
+
+    // 1. Restore Timer State on Mount
+    useEffect(() => {
+        const savedEndTime = localStorage.getItem(STORAGE_KEYS.END_TIME);
+        const savedIsActive = localStorage.getItem(STORAGE_KEYS.IS_ACTIVE) === 'true';
+
+        if (savedIsActive && savedEndTime) {
+            const end = parseInt(savedEndTime, 10);
+            const now = Date.now();
+            const remaining = Math.ceil((end - now) / 1000);
+
+            if (remaining > 0) {
+                // Resume timer
+                endTimeRef.current = end;
+                setTimeLeft(remaining); // Visual update
+                // Interval will be started by the useEffect([isActive]) below
+            } else {
+                // Expired while away!
+                // We rely on the interval effect to catch this immediately
+                endTimeRef.current = end;
+            }
+        }
+    }, []);
+
+    // 2. Save State Changes
+    useEffect(() => {
+        localStorage.setItem(STORAGE_KEYS.VIEW, view);
+        localStorage.setItem(STORAGE_KEYS.MODE, mode);
+        localStorage.setItem(STORAGE_KEYS.COURSE_ID, selectedCourseId || '');
+        localStorage.setItem(STORAGE_KEYS.IS_ACTIVE, isActive);
+        localStorage.setItem(STORAGE_KEYS.TIME_LEFT, timeLeft);
+
+        if (isActive && endTimeRef.current) {
+            localStorage.setItem(STORAGE_KEYS.END_TIME, endTimeRef.current);
+        } else {
+            localStorage.removeItem(STORAGE_KEYS.END_TIME);
+        }
+    }, [view, mode, selectedCourseId, isActive, timeLeft]);
+
 
     useEffect(() => {
-        // If we have an initial course, pre-select it but still show selection screen for confirmation/change
-        if (initialCourse) {
+        // If we have an initial course, pre-select it ONLY if we are in selection mode 
+        // and haven't already selected something (or maybe always if user just opened it from clicking a course?)
+        // The previous logic was: if initialCourse changes, update selection.
+        if (initialCourse && view === 'selection') {
             setSelectedCourseId(initialCourse.id);
         }
-    }, [initialCourse]);
+    }, [initialCourse, view]);
 
     useEffect(() => {
         if (view === 'selection') {
@@ -40,46 +101,20 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         if (!selectedCourseId) return;
         initAudio();
         setView('timer');
-        // Set target time based on CURRENT timeLeft (which is full duration initially)
+        // Set target time based on CURRENT timeLeft
         endTimeRef.current = Date.now() + timeLeft * 1000;
         setIsActive(true);
     };
 
-    useEffect(() => {
-        if (isActive) {
-            timerRef.current = setInterval(() => {
-                const now = Date.now();
-                const remaining = Math.ceil((endTimeRef.current - now) / 1000);
-
-                if (remaining <= 0) {
-                    // Prevent negative or zero sticking
-                    setTimeLeft(0);
-                    handleTimerComplete();
-                } else {
-                    setTimeLeft(remaining);
-                }
-            }, 100); // Check every 100ms to be accurate
-        } else {
-            clearInterval(timerRef.current);
-        }
-
-        return () => clearInterval(timerRef.current);
-    }, [isActive]); // removed timeLeft dependency to avoid re-interval
-
-    // We need handleTimerComplete to be accessible in the effect
-    // But if we put it in dependency, effect re-runs. 
-    // We can use a ref for the latest handleTimerComplete or just rely on state closures if careful.
-    // Actually, simply invoking it works if the closure captures the *latest* render scope? 
-    // No, setInterval closure is stale.
-    // The safest classic way:
-    // Check remaining inside. If 0, Call a ref-stored callback or just trigger completion logic.
-
-    // Let's use a Mutable Ref for the callback to ensure the interval calls the FRESH function
-    const completeRef = useRef();
+    // Define completion logic
     completeRef.current = () => {
         setIsActive(false);
         clearInterval(timerRef.current);
         playNotificationSound();
+
+        // Clear timer specific storage to prevent "resuming" a finished session on reload
+        localStorage.removeItem(STORAGE_KEYS.END_TIME);
+        // We set isActive false above, which will update storage in the useEffect.
 
         if (mode === 'work') {
             onSessionComplete(WORK_TIME, 'work', selectedCourseId);
@@ -92,17 +127,50 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         }
     };
 
-    // Now the effect just calls completeRef.current()
     const handleTimerComplete = () => {
         if (completeRef.current) completeRef.current();
     };
 
+    useEffect(() => {
+        if (isActive) {
+            // If endTimeRef is null (e.g. fresh reload active=true), reconstruct it from storage or timeLeft
+            if (!endTimeRef.current) {
+                const savedEndTime = localStorage.getItem(STORAGE_KEYS.END_TIME);
+                if (savedEndTime) {
+                    endTimeRef.current = parseInt(savedEndTime, 10);
+                } else {
+                    // Fallback if missing? Should not happen if isActive is true.
+                    endTimeRef.current = Date.now() + timeLeft * 1000;
+                }
+            }
+
+            timerRef.current = setInterval(() => {
+                const now = Date.now();
+                const remaining = Math.ceil((endTimeRef.current - now) / 1000);
+
+                if (remaining <= 0) {
+                    setTimeLeft(0);
+                    handleTimerComplete();
+                } else {
+                    setTimeLeft(remaining);
+                }
+            }, 100);
+        } else {
+            clearInterval(timerRef.current);
+            endTimeRef.current = null; // Reset ref when not active
+        }
+
+        return () => clearInterval(timerRef.current);
+    }, [isActive]);
+
     const toggleTimer = () => {
         if (isActive) {
-            // Pausing: isActive becomes false. timeLeft remains as 'remaining'.
             setIsActive(false);
+            // timeLeft is already up to date from interval
         } else {
-            // Resuming: Set new target based on current timeLeft
+            // Resume
+            // initAudio() helps ioS unlock audio
+            initAudio();
             endTimeRef.current = Date.now() + timeLeft * 1000;
             setIsActive(true);
         }
@@ -110,17 +178,19 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
 
     const resetTimer = () => {
         setIsActive(false);
-        setTimeLeft(mode === 'work' ? WORK_TIME : BREAK_TIME);
+        const defaultTime = mode === 'work' ? WORK_TIME : BREAK_TIME;
+        setTimeLeft(defaultTime);
+        // Clear storage for reset
+        localStorage.setItem(STORAGE_KEYS.TIME_LEFT, defaultTime);
+        localStorage.removeItem(STORAGE_KEYS.END_TIME);
     };
 
     const handleSkipBreak = () => {
         if (mode === 'break') {
             setIsActive(false);
             clearInterval(timerRef.current);
-            // Log the break session as completed
             onSessionComplete(BREAK_TIME, 'break', null);
 
-            // Switch to work mode
             setMode('work');
             setTimeLeft(WORK_TIME);
             playNotificationSound();

@@ -91,7 +91,12 @@ export default function App() {
   const [expandedCategories, setExpandedCategories] = useState(new Set());
   const [expandedCourses, setExpandedCourses] = useState(new Set()); // [NEW] Track expanded courses
 
-  const [showTimer, setShowTimer] = useState(false);
+  const [showTimer, setShowTimer] = useState(() => localStorage.getItem('pomo_isVisible') === 'true');
+
+  useEffect(() => {
+    localStorage.setItem('pomo_isVisible', showTimer);
+  }, [showTimer]);
+
   const [showReport, setShowReport] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
   const [showRankModal, setShowRankModal] = useState(false);
