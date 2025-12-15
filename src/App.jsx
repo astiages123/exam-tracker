@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check } from 'lucide-react';
 import ScheduleModal from './components/ScheduleModal';
@@ -11,6 +11,16 @@ import { twMerge } from 'tailwind-merge';
 function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
+
+// Hook to track previous value
+function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
+
 // --- Data ---
 import { courseData, RANKS } from './data';
 import { useAuth } from './context/AuthContext';
@@ -20,7 +30,7 @@ import PomodoroTimer from './components/PomodoroTimer';
 import ReportModal from './components/ReportModal';
 import RankModal from './components/RankModal';
 import StreakDisplay from './components/StreakDisplay';
-import { calculateStreak, logActivity, removeActivity } from './utils/streakUtils';
+import { calculateStreak, logActivity, removeActivity, getLocalYMD } from './utils/streakUtils';
 
 // --- Components ---
 
@@ -105,11 +115,11 @@ const formatHours = (decimalHours) => {
 };
 
 const CATEGORY_STYLES = {
-  'EKONOMİ': { bg: 'bg-sky-500/10 hover:bg-sky-500/20', border: 'border-sky-500/20', accent: 'text-sky-300', iconBg: 'bg-sky-500/20' },
-  'HUKUK': { bg: 'bg-rose-500/10 hover:bg-rose-500/20', border: 'border-rose-500/20', accent: 'text-rose-300', iconBg: 'bg-rose-500/20' },
-  'MUHASEBE-MALİYE': { bg: 'bg-emerald-500/10 hover:bg-emerald-500/20', border: 'border-emerald-500/20', accent: 'text-emerald-300', iconBg: 'bg-emerald-500/20' },
-  'YETENEK-BANKA': { bg: 'bg-violet-500/10 hover:bg-violet-500/20', border: 'border-violet-500/20', accent: 'text-violet-300', iconBg: 'bg-violet-500/20' },
-  'DEFAULT': { bg: 'bg-custom-header', border: 'border-custom-category/30', accent: 'text-custom-accent', iconBg: 'bg-custom-accent/10' }
+  'EKONOMİ': { bg: 'bg-sky-500/10 hover:bg-sky-500/20', border: 'border-sky-500/20', accent: 'text-sky-300', iconBg: 'bg-sky-500/20', barColor: 'bg-sky-300' },
+  'HUKUK': { bg: 'bg-rose-500/10 hover:bg-rose-500/20', border: 'border-rose-500/20', accent: 'text-rose-300', iconBg: 'bg-rose-500/20', barColor: 'bg-rose-300' },
+  'MUHASEBE-MALİYE': { bg: 'bg-emerald-500/10 hover:bg-emerald-500/20', border: 'border-emerald-500/20', accent: 'text-emerald-300', iconBg: 'bg-emerald-500/20', barColor: 'bg-emerald-300' },
+  'YETENEK-BANKA': { bg: 'bg-violet-500/10 hover:bg-violet-500/20', border: 'border-violet-500/20', accent: 'text-violet-300', iconBg: 'bg-violet-500/20', barColor: 'bg-violet-300' },
+  'DEFAULT': { bg: 'bg-custom-header', border: 'border-custom-category/30', accent: 'text-custom-accent', iconBg: 'bg-custom-accent/10', barColor: 'bg-custom-accent' }
 };
 
 export default function App() {
@@ -300,35 +310,79 @@ export default function App() {
     setSessions(prev => prev.filter(s => !sessionIdsToDelete.includes(s.timestamp)));
   };
 
+  // Helper function for local date string
+  const getLocalYMD = (date) => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // --- Activity Tracking Logic (Refactored to Sticky Baseline) ---
+  useEffect(() => {
+    if (!isDataLoaded) return;
+
+    // Helper to count total items
+    const countItems = (data) => Object.values(data).reduce((acc, courseItems) => acc + (courseItems?.length || 0), 0);
+    const currentTotal = countItems(progressData);
+
+    // Sticky Baseline Logic
+    const todayStr = getLocalYMD(new Date());
+    const storageKey = `exam_tracker_baseline_${todayStr}`;
+
+    let baseline = parseInt(localStorage.getItem(storageKey));
+
+    if (isNaN(baseline)) {
+      // First load of the day: Set baseline to current total
+      // The user verified rule: "If NOT exists: Save current video counts"
+      baseline = currentTotal;
+      localStorage.setItem(storageKey, baseline.toString());
+      // Also cleanup old keys from yesterday to keep storage clean? Optional.
+    }
+
+    // NOTE: We do NOT update baseline if it exists. It is sticky (immutable downwards).
+
+    // Calculate net points
+    // Rule: Points = Max(0, Current_Count - Daily_Baseline)
+    const netProgress = Math.max(0, currentTotal - baseline);
+
+    setActivityLog(prev => {
+      const currentVal = prev[todayStr];
+
+      if (netProgress > 0) {
+        if (currentVal !== netProgress) {
+          return { ...prev, [todayStr]: netProgress };
+        }
+      } else {
+        // If 0, remove the day's record (so streak assumes 0 activity)
+        if (currentVal !== undefined) {
+          const next = { ...prev };
+          delete next[todayStr];
+          return next;
+        }
+      }
+      return prev;
+    });
+
+  }, [progressData, isDataLoaded]);
 
   // Refactored Toggle Handler for specific video index with auto-complete previous and auto-uncheck subsequent
+  // Logic: Clicking video N ensures 1..N are checked, and N+1..End are unchecked.
+  // It effectively sets the progress "level" to N.
   const handleVideoToggle = (courseId, videoIndex) => {
     setLastActiveCourseId(courseId); // Update active context
 
-    // Determine the action based on CURRENT state via callback to be safe, 
-    // but execute side effects distinctly.
     setProgressData(prev => {
-      const courseProgress = prev[courseId] || [];
-      const isUnchecking = courseProgress.includes(videoIndex);
-
-      if (isUnchecking) {
-        // Uncheck this one AND all subsequent ones
-        setTimeout(() => setActivityLog(prevLog => removeActivity(prevLog)), 0);
-        return {
-          ...prev,
-          [courseId]: courseProgress.filter(i => i < videoIndex)
-        };
-      } else {
-        // Check this one AND all previous ones
-        const newSet = new Set(courseProgress);
-        for (let i = 1; i <= videoIndex; i++) newSet.add(i);
-
-        setTimeout(() => setActivityLog(prevLog => logActivity(prevLog)), 0);
-        return {
-          ...prev,
-          [courseId]: Array.from(newSet)
-        };
+      // Create a set of 1..videoIndex
+      const newSet = new Set();
+      for (let i = 1; i <= videoIndex; i++) {
+        newSet.add(i);
       }
+
+      return {
+        ...prev,
+        [courseId]: Array.from(newSet)
+      };
     });
   };
 
@@ -610,7 +664,7 @@ export default function App() {
                   </div>
 
                   <div className="flex items-center gap-3 mt-3">
-                    <CategoryProgressBar percentage={categoryPercent} colorClass={styles.accent.replace('text-', 'bg-')} />
+                    <CategoryProgressBar percentage={categoryPercent} colorClass={styles.barColor} />
                     <span className={cn("text-xs font-bold min-w-[3rem] text-right", styles.accent)}>%{categoryPercent}</span>
                   </div>
                 </button>
