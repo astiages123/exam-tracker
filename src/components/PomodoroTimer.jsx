@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw, X, ChevronDown, Check } from 'lucide-react';
+import { Play, Pause, RotateCcw, X, ChevronDown, Check, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { playNotificationSound, initAudio } from '../utils/sound';
 import { requestNotificationPermission, sendNotification } from '../utils/notification';
@@ -197,6 +197,24 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         localStorage.removeItem(STORAGE_KEYS.END_TIME);
     };
 
+    const handleEndSession = () => {
+        setIsActive(false);
+        clearInterval(timerRef.current);
+
+        // Clear all session specific storage
+        localStorage.removeItem(STORAGE_KEYS.END_TIME);
+        localStorage.removeItem(STORAGE_KEYS.IS_ACTIVE);
+        localStorage.removeItem(STORAGE_KEYS.MODE);
+        localStorage.removeItem(STORAGE_KEYS.TIME_LEFT);
+        localStorage.removeItem(STORAGE_KEYS.COURSE_ID);
+
+        // Reset local state
+        setMode('work');
+        setTimeLeft(WORK_TIME);
+        setSelectedCourseId(initialCourse ? initialCourse.id : '');
+        setView('selection');
+    };
+
     const handleSkipBreak = () => {
         if (mode === 'break') {
             setIsActive(false);
@@ -346,6 +364,14 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                         className="p-4 rounded-xl bg-custom-bg border border-custom-category/30 text-custom-title/70 hover:text-custom-text hover:bg-custom-category/20 transition-all hover:scale-105 active:scale-95 cursor-pointer"
                     >
                         <RotateCcw size={24} />
+                    </button>
+
+                    <button
+                        onClick={handleEndSession}
+                        className="p-4 rounded-xl bg-custom-bg border border-custom-category/30 text-custom-error/70 hover:text-custom-error hover:bg-custom-error/10 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                        title="Oturumu Bitir / Yeni Ders"
+                    >
+                        <LogOut size={24} />
                     </button>
                 </div>
 
