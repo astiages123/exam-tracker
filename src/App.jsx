@@ -12,14 +12,7 @@ function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-// Hook to track previous value
-function usePrevious(value) {
-  const ref = useRef();
-  useEffect(() => {
-    ref.current = value;
-  });
-  return ref.current;
-}
+
 
 // --- Data ---
 import { courseData, RANKS } from './data';
@@ -52,46 +45,7 @@ const ProgressBar = ({ progress, nextLevelMin, currentLevelMin }) => {
   );
 };
 
-const LevelUpModal = ({ title, onClose }) => {
-  return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 cursor-pointer"
-        onClick={onClose}
-      >
-        <motion.div
-          initial={{ scale: 0.5, y: 50, rotateX: 90 }}
-          animate={{ scale: 1, y: 0, rotateX: 0 }}
-          exit={{ scale: 0.5, y: 50, rotateX: 90 }}
-          className="bg-custom-header border border-custom-category rounded-2xl p-8 text-center max-w-sm w-full shadow-2xl shadow-custom-accent/10"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <motion.div
-            animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.1, 1] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-            className="inline-block mb-4"
-          >
-            <Trophy size={80} className="text-yellow-400 mx-auto drop-shadow-md" />
-          </motion.div>
-          <h2 className="text-3xl font-bold text-white mb-2">TERFİ!</h2>
-          <p className="text-custom-title/70 mb-6 font-medium">Yeni Ünvanınız:</p>
-          <div className="text-xl font-medium text-custom-text mb-8 border-y border-custom-category py-4 bg-custom-bg/30 rounded-lg">
-            {title}
-          </div>
-          <button
-            onClick={onClose}
-            className="w-full bg-custom-accent hover:bg-custom-accent/90 text-white font-semibold py-3 px-6 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-custom-accent/20 cursor-pointer"
-          >
-            MÜKEMMEL
-          </button>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
-  );
-};
+
 
 const CategoryProgressBar = ({ percentage, colorClass }) => {
   return (
@@ -143,7 +97,7 @@ export default function App() {
   const [showRankModal, setShowRankModal] = useState(false);
 
   // Daily Focus Logic
-  // Daily Focus Logic
+
   const getDailyFocus = () => {
     const now = new Date();
     const dayIndex = now.getDay();
@@ -179,10 +133,7 @@ export default function App() {
 
   // Initialize data when user changes
   useEffect(() => {
-    // Reset state immediately to prevent data leakage from previous user
-    setProgressData({});
-    setSessions([]);
-    setSchedule({});
+
     // Reset state immediately to prevent data leakage from previous user
     setIsDataLoaded(false);
     setProgressData({});
@@ -213,8 +164,7 @@ export default function App() {
   }, [user]);
 
 
-  const [showLevelUp, setShowLevelUp] = useState(false);
-  const [newTitle, setNewTitle] = useState("");
+
 
   // Calculate total videos and hours
   const totalVideos = useMemo(() => courseData.reduce((acc, cat) =>
@@ -268,7 +218,6 @@ export default function App() {
 
 
 
-  // Level Up Check
 
 
   useEffect(() => {
@@ -387,7 +336,7 @@ export default function App() {
   };
 
   // Re-calculate stats with new data structure
-  // const getCompletedCount = () ... removed as now derived
+
 
   const toggleCategory = (categoryId) => {
     setExpandedCategories(prev => {
@@ -423,7 +372,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-custom-bg text-custom-text font-sans selection:bg-custom-accent/30">
-      {showLevelUp && <LevelUpModal title={newTitle} onClose={() => setShowLevelUp(false)} />}
+
 
       {showTimer && (
         <PomodoroTimer
