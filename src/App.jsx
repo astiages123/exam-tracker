@@ -429,7 +429,7 @@ export default function App() {
         <PomodoroTimer
           initialCourse={activeCourse}
           courses={flatCourses}
-          sessionsCount={sessions.filter(s => s.type === 'work').length}
+          sessionsCount={sessions.filter(s => s.type === 'work' && getLocalYMD(new Date(s.timestamp)) === getLocalYMD(new Date())).length}
           onSessionComplete={handleSessionComplete}
           onClose={() => setShowTimer(false)}
         />
