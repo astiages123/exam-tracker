@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check } from 'lucide-react';
 import ScheduleModal from './components/ScheduleModal';
