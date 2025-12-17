@@ -304,33 +304,46 @@ export default function App() {
 
     setActivityLog(prev => {
       const nextLog = { ...prev };
-      let hasChanges = false;
-
-      // 1. Sync Video Progress
       const currentVal = nextLog[todayStr];
-      if (netProgress > 0) {
-        if (currentVal !== netProgress) {
-          nextLog[todayStr] = netProgress; // Update if video progress exists
-          hasChanges = true;
+
+      // 1. Calculate Session Count for Today
+      const sessionCount = sessions.reduce((acc, session) => {
+        if (session.type === 'work' && getLocalYMD(new Date(session.timestamp)) === todayStr) {
+          return acc + 1;
+        }
+        return acc;
+      }, 0);
+
+      // 2. Total Daily Activity
+      const totalDailyActivity = netProgress + sessionCount;
+
+      if (totalDailyActivity > 0) {
+        if (currentVal !== totalDailyActivity) {
+          nextLog[todayStr] = totalDailyActivity;
+          return nextLog; // Update
+        }
+      } else {
+        // If 0 activity, remove the day's record
+        if (currentVal !== undefined) {
+          delete nextLog[todayStr];
+          return nextLog; // Remove
         }
       }
-      // Note: We don't delete if 0 here because we might have session activity below
 
-      // 2. Backfill / Merge from Sessions
-      // Iterate all work sessions and ensure they are marked in the log
+      // 3. Backfill / Merge from Past Sessions (preserve history)
+      let hasBackfillChanges = false;
       sessions.forEach(session => {
         if (session.type === 'work') {
           const sessionDate = getLocalYMD(new Date(session.timestamp));
-          if (!nextLog[sessionDate]) {
-            nextLog[sessionDate] = 1; // Mark as active if not already
-            hasChanges = true;
+          // Don't overwrite today's logic above, only backfill past
+          if (sessionDate !== todayStr && !nextLog[sessionDate]) {
+            nextLog[sessionDate] = 1;
+            hasBackfillChanges = true;
           }
         }
       });
 
-      // 3. Ensure today is marked if we just finished a session (handled by handleSessionComplete mostly, but good redundancy)
-
-      return hasChanges ? nextLog : prev;
+      return hasBackfillChanges ? nextLog : prev;
     });
 
   }, [progressData, isDataLoaded, sessions]); // Added sessions dependency
