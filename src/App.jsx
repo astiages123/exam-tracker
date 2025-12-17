@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check } from 'lucide-react';
 import ScheduleModal from './components/ScheduleModal';
@@ -258,6 +258,13 @@ export default function App() {
       courseId: overrideCourseId || lastActiveCourseId
     };
     setSessions(prev => [...prev, newSession]);
+
+    // [FIX] Immediately mark today as active
+    const todayStr = getLocalYMD(new Date());
+    setActivityLog(prev => ({
+      ...prev,
+      [todayStr]: (prev[todayStr] || 0) + 1
+    }));
   };
 
   const handleDeleteSessions = (sessionIdsToDelete) => {
@@ -272,7 +279,7 @@ export default function App() {
     return `${year}-${month}-${day}`;
   };
 
-  // --- Activity Tracking Logic (Refactored to Sticky Baseline) ---
+  // --- Activity Tracking Logic (Refactored to Sticky Baseline + Session Integration) ---
   useEffect(() => {
     if (!isDataLoaded) return;
 
@@ -288,37 +295,45 @@ export default function App() {
 
     if (isNaN(baseline)) {
       // First load of the day: Set baseline to current total
-      // The user verified rule: "If NOT exists: Save current video counts"
       baseline = currentTotal;
       localStorage.setItem(storageKey, baseline.toString());
-      // Also cleanup old keys from yesterday to keep storage clean? Optional.
     }
 
-    // NOTE: We do NOT update baseline if it exists. It is sticky (immutable downwards).
-
-    // Calculate net points
-    // Rule: Points = Max(0, Current_Count - Daily_Baseline)
+    // Calculate net points from videos
     const netProgress = Math.max(0, currentTotal - baseline);
 
     setActivityLog(prev => {
-      const currentVal = prev[todayStr];
+      const nextLog = { ...prev };
+      let hasChanges = false;
 
+      // 1. Sync Video Progress
+      const currentVal = nextLog[todayStr];
       if (netProgress > 0) {
         if (currentVal !== netProgress) {
-          return { ...prev, [todayStr]: netProgress };
-        }
-      } else {
-        // If 0, remove the day's record (so streak assumes 0 activity)
-        if (currentVal !== undefined) {
-          const next = { ...prev };
-          delete next[todayStr];
-          return next;
+          nextLog[todayStr] = netProgress; // Update if video progress exists
+          hasChanges = true;
         }
       }
-      return prev;
+      // Note: We don't delete if 0 here because we might have session activity below
+
+      // 2. Backfill / Merge from Sessions
+      // Iterate all work sessions and ensure they are marked in the log
+      sessions.forEach(session => {
+        if (session.type === 'work') {
+          const sessionDate = getLocalYMD(new Date(session.timestamp));
+          if (!nextLog[sessionDate]) {
+            nextLog[sessionDate] = 1; // Mark as active if not already
+            hasChanges = true;
+          }
+        }
+      });
+
+      // 3. Ensure today is marked if we just finished a session (handled by handleSessionComplete mostly, but good redundancy)
+
+      return hasChanges ? nextLog : prev;
     });
 
-  }, [progressData, isDataLoaded]);
+  }, [progressData, isDataLoaded, sessions]); // Added sessions dependency
 
   // Refactored Toggle Handler for specific video index with auto-complete previous and auto-uncheck subsequent
   // Logic: Clicking video N ensures 1..N are checked, and N+1..End are unchecked.
