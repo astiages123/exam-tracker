@@ -22,7 +22,7 @@ export const courseData = [
         ]
     },
     {
-        category: "3. MUHASEBE-MALİYE (Toplam: 82 Saat)",
+        category: "3. MUHASEBE - İŞLETME - MALİYE (Toplam: 82 Saat)",
         courses: [
             { id: "muhasebe_1", name: "Genel Muhasebe - Sinan Öztürk", totalVideos: 123, totalHours: 42.42, playlistUrl: "https://youtube.com/playlist?list=PLPhEmM6X--WfpyELg1RTSCI6zqpe8lTCV&si=YUeLZcBv-GH2wmHG" },
             { id: "muhasebe_2", name: "İşletme Yönetimi (AÖF)", totalVideos: 8, totalHours: 1.4, playlistUrl: "https://www.youtube.com/playlist?list=PLfFz63YLe29oga382t4p0ACkU9PTErzIR" },
@@ -32,7 +32,7 @@ export const courseData = [
         ]
     },
     {
-        category: "4. YETENEK-BANKA (Toplam: 63 Saat)",
+        category: "4. MATEMATİK - BANKA (Toplam: 63 Saat)",
         courses: [
             { id: "yetenek_1", name: "Finans Matematiği - BUders", totalVideos: 32, totalHours: 4.6, playlistUrl: "https://youtube.com/playlist?list=PLcNWqzWzYG2sHIneJFRvfHCtFifbtQU3A&si=zFjseeSlFtpVPzTp" },
             { id: "yetenek_2", name: "Matematik & Sayısal Mantık - İlyas Güneş", totalVideos: 72, totalHours: 50.07, playlistUrl: "https://youtube.com/playlist?list=PLPlLdubQ1fMsIk3Kujy9yqJOyFLHsfQlp&si=xEU2K9BmKlCcxtOX" },

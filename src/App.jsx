@@ -71,8 +71,8 @@ const formatHours = (decimalHours) => {
 const CATEGORY_STYLES = {
   'EKONOMİ': { bg: 'bg-sky-500/10 hover:bg-sky-500/20', border: 'border-sky-500/20', accent: 'text-sky-300', iconBg: 'bg-sky-500/20', barColor: 'bg-sky-300' },
   'HUKUK': { bg: 'bg-rose-500/10 hover:bg-rose-500/20', border: 'border-rose-500/20', accent: 'text-rose-300', iconBg: 'bg-rose-500/20', barColor: 'bg-rose-300' },
-  'MUHASEBE-MALİYE': { bg: 'bg-emerald-500/10 hover:bg-emerald-500/20', border: 'border-emerald-500/20', accent: 'text-emerald-300', iconBg: 'bg-emerald-500/20', barColor: 'bg-emerald-300' },
-  'YETENEK-BANKA': { bg: 'bg-violet-500/10 hover:bg-violet-500/20', border: 'border-violet-500/20', accent: 'text-violet-300', iconBg: 'bg-violet-500/20', barColor: 'bg-violet-300' },
+  'MUHASEBE - İŞLETME - MALİYE': { bg: 'bg-emerald-500/10 hover:bg-emerald-500/20', border: 'border-emerald-500/20', accent: 'text-emerald-300', iconBg: 'bg-emerald-500/20', barColor: 'bg-emerald-300' },
+  'MATEMATİK - BANKA': { bg: 'bg-violet-500/10 hover:bg-violet-500/20', border: 'border-violet-500/20', accent: 'text-violet-300', iconBg: 'bg-violet-500/20', barColor: 'bg-violet-300' },
   'DEFAULT': { bg: 'bg-custom-header', border: 'border-custom-category/30', accent: 'text-custom-accent', iconBg: 'bg-custom-accent/10', barColor: 'bg-custom-accent' }
 };
 
@@ -127,10 +127,10 @@ export default function App() {
     const defaultSchedule = {
       'PAZARTESİ': 'EKONOMİ',
       'SALI': 'HUKUK',
-      'ÇARŞAMBA': 'MUHASEBE - MALİYE',
+      'ÇARŞAMBA': 'MUHASEBE - İŞLETME - MALİYE',
       'PERŞEMBE': 'EKONOMİ',
       'CUMA': 'HUKUK',
-      'CUMARTESİ / PAZAR': 'YETENEK - BANKA',
+      'CUMARTESİ / PAZAR': 'MATEMATİK - BANKA',
     };
     return defaultSchedule[todayKey] || 'BELİRSİZ';
   };
