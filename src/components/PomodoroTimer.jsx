@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw, X, ChevronDown, Check, LogOut } from 'lucide-react';
+import { Play, Pause, RotateCcw, X, ChevronDown, Check, LogOut, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { playNotificationSound, initAudio } from '../utils/sound';
 import { requestNotificationPermission, sendNotification } from '../utils/notification';
@@ -227,6 +227,28 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         }
     };
 
+    const handleFinishEarly = () => {
+        if (mode !== 'work') return;
+
+        setIsActive(false);
+        clearInterval(timerRef.current);
+        playNotificationSound();
+
+        // Clear timer specific storage
+        localStorage.removeItem(STORAGE_KEYS.END_TIME);
+
+        const elapsedTime = WORK_TIME - timeLeft;
+
+        sendNotification("Oturum Kaydedildi", {
+            body: `${selectedCourseName || 'Ders'} çalışması ${Math.floor(elapsedTime / 60)} dk olarak kaydedildi. Mola zamanı!`,
+            tag: 'pomodoro-early-complete'
+        });
+
+        onSessionComplete(elapsedTime, 'work', selectedCourseId);
+        setMode('break');
+        setTimeLeft(BREAK_TIME);
+    };
+
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
@@ -373,6 +395,16 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                     >
                         <LogOut size={24} />
                     </button>
+
+                    {mode === 'work' && (
+                        <button
+                            onClick={handleFinishEarly}
+                            className="p-4 rounded-xl bg-custom-bg border border-custom-category/30 text-custom-success/70 hover:text-custom-success hover:bg-custom-success/10 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                            title="Şimdi Bitir (Hemen Kaydet)"
+                        >
+                            <CheckCircle size={24} />
+                        </button>
+                    )}
                 </div>
 
                 {mode === 'break' && (

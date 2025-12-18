@@ -587,7 +587,7 @@ export default function App() {
                 {nextRank.title}
               </span>
             </div>
-            <span className="text-3xl font-mono font-bold text-custom-text tracking-tighter">%{totalPercentage.toFixed(1)}</span>
+            <span className="text-3xl font-mono font-bold text-custom-text tracking-tighter"><span className="mr-1">%</span>{totalPercentage.toFixed(1)}</span>
           </div>
           <ProgressBar
             progress={totalPercentage}
