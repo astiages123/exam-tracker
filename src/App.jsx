@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check } from 'lucide-react';
+import { ChevronDown, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay } from 'lucide-react';
 import ScheduleModal from './components/ScheduleModal';
 
 
@@ -655,9 +655,20 @@ export default function App() {
                       </div>
                       <div>
                         <h3 className={cn("font-semibold text-lg tracking-tight transition-colors", styles.accent)}>{category.category.split('(')[0]}</h3>
-                        <p className="text-xs text-custom-title/60 font-medium mt-1">
-                          Süre: {formatHours(categoryCompletedHours)} / {formatHours(categoryTotalHours)} • {categoryCompletedVideos} / {categoryTotalVideos} Video
-                        </p>
+                        <div className="flex flex-wrap items-center gap-3 mt-2">
+                          <div className="flex items-center gap-2 text-xs font-semibold text-custom-title/80 bg-black/5 px-2.5 py-1.5 rounded-lg border border-black/5">
+                            <Timer size={14} className={styles.accent} />
+                            <span>{formatHours(categoryCompletedHours)}</span>
+                            <span className="text-custom-title/30 mx-0.5">/</span>
+                            <span className="opacity-60">{formatHours(categoryTotalHours)}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs font-semibold text-custom-title/80 bg-black/5 px-2.5 py-1.5 rounded-lg border border-black/5">
+                            <MonitorPlay size={14} className={styles.accent} />
+                            <span>{categoryCompletedVideos}</span>
+                            <span className="text-custom-title/30 mx-0.5">/</span>
+                            <span className="opacity-60">{categoryTotalVideos} Video</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div className={cn("bg-black/20 p-2 rounded-full transition-transform duration-300", expandedCategories.has(catIdx) ? "rotate-180" : "")}>
@@ -713,9 +724,22 @@ export default function App() {
                                   <div>
                                     <h3 className="font-bold text-sm text-custom-title/80">{course.name}</h3>
                                     <div className="flex items-center gap-2 mt-0.5">
-                                      <span className="text-xs text-custom-title/60 font-medium tracking-wide">
-                                        Süre: {formatHours(courseCompletedHours)} / {formatHours(course.totalHours)} • {courseProgress.completed}/{courseProgress.total} Video
-                                      </span>
+                                      <div className="flex items-center gap-3 mt-1.5">
+                                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-custom-title/70 bg-black/5 px-2 py-1 rounded-md">
+                                          <Timer size={12} className="text-custom-title/50" />
+                                          <span>{formatHours(courseCompletedHours)}</span>
+                                          <span className="text-custom-title/30">/</span>
+                                          <span className="opacity-70">{formatHours(course.totalHours)}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-custom-title/70 bg-black/5 px-2 py-1 rounded-md">
+                                          <MonitorPlay size={12} className="text-custom-title/50" />
+                                          <span className={courseProgress.completed === courseProgress.total ? "text-custom-success" : ""}>
+                                            {courseProgress.completed}
+                                          </span>
+                                          <span className="text-custom-title/30">/</span>
+                                          <span className="opacity-70">{courseProgress.total} Video</span>
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
