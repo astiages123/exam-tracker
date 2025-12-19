@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { X, Calendar, Plus, Trash2, ChevronDown, Save, Edit2, Clock } from 'lucide-react';
-import { motion } from 'framer-motion';
+
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -39,6 +39,7 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
     // Initialize local state when modal opens
     useEffect(() => {
         if (schedule) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setLocalSchedule(JSON.parse(JSON.stringify(schedule)));
             setIsEditing(false); // Start in view mode
             setNewItems({}); // Reset inputs
@@ -111,9 +112,7 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 cursor-pointer"
             onClick={onClose}
         >
-            <motion.div
-                initial={{ scale: 0.95, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
+            <div
                 className="bg-custom-bg border border-custom-category/20 rounded-3xl w-full max-w-5xl flex flex-col shadow-2xl shadow-black/50 cursor-default overflow-hidden max-h-[90vh]"
                 onClick={(e) => e.stopPropagation()}
             >
@@ -273,7 +272,7 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
                         </button>
                     )}
                 </div>
-            </motion.div>
+            </div>
         </div>
     );
 }

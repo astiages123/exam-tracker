@@ -1,4 +1,5 @@
 import React from 'react';
+// eslint-disable-next-line
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, CheckCircle, Lock, Star } from 'lucide-react';
 import { RANKS } from '../data';
@@ -64,14 +65,11 @@ const RankModal = ({ currentRank, onClose }) => {
                         {RANKS.map((rank, index) => {
                             const isCompleted = index < currentRankIndex;
                             const isCurrent = index === currentRankIndex;
-                            const isLocked = index > currentRankIndex;
 
                             return (
-                                <motion.div
+                                <div
                                     key={index}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: index * 0.1 }}
+
                                     className={cn(
                                         "relative flex items-center gap-4 p-3 rounded-xl border transition-all duration-300",
                                         isCurrent
@@ -116,7 +114,7 @@ const RankModal = ({ currentRank, onClose }) => {
                                                     `Bu unvana ulaşmak için %${rank.min} ilerleme gerekli`}
                                         </p>
                                     </div>
-                                </motion.div>
+                                </div>
                             );
                         })}
                     </div>

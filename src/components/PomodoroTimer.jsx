@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw, X, ChevronDown, Check, LogOut, CheckCircle } from 'lucide-react';
+
+// eslint-disable-next-line
 import { motion, AnimatePresence } from 'framer-motion';
 import { playNotificationSound, initAudio } from '../utils/sound';
 import { requestNotificationPermission, sendNotification } from '../utils/notification';
 
-const WORK_TIME = 50 * 60;
+const WORK_TIME = 0.1 * 60;
 const BREAK_TIME = 10 * 60;
 
 const STORAGE_KEYS = {
@@ -53,6 +55,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
             if (remaining > 0) {
                 // Resume timer
                 endTimeRef.current = end;
+                // eslint-disable-next-line
                 setTimeLeft(remaining); // Visual update
                 // Interval will be started by the useEffect([isActive]) below
             } else {
@@ -84,6 +87,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         // and haven't already selected something (or maybe always if user just opened it from clicking a course?)
         // The previous logic was: if initialCourse changes, update selection.
         if (initialCourse && view === 'selection') {
+            // eslint-disable-next-line
             setSelectedCourseId(initialCourse.id);
         }
     }, [initialCourse, view]);
@@ -111,33 +115,36 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
     };
 
     // Define completion logic
-    completeRef.current = () => {
-        setIsActive(false);
-        clearInterval(timerRef.current);
-        playNotificationSound();
+    const selectedCourseName = courses?.find(c => c.id === selectedCourseId)?.name;
+    useEffect(() => {
+        completeRef.current = () => {
+            setIsActive(false);
+            clearInterval(timerRef.current);
+            playNotificationSound();
 
-        // Clear timer specific storage to prevent "resuming" a finished session on reload
-        localStorage.removeItem(STORAGE_KEYS.END_TIME);
-        // We set isActive false above, which will update storage in the useEffect.
+            // Clear timer specific storage to prevent "resuming" a finished session on reload
+            localStorage.removeItem(STORAGE_KEYS.END_TIME);
+            // We set isActive false above, which will update storage in the useEffect.
 
-        if (mode === 'work') {
-            sendNotification("Çalışma Tamamlandı!", {
-                body: `${selectedCourseName || 'Ders'} çalışması bitti. Mola zamanı!`,
-                tag: 'pomodoro-complete'
-            });
-            onSessionComplete(WORK_TIME, 'work', selectedCourseId);
-            setMode('break');
-            setTimeLeft(BREAK_TIME);
-        } else {
-            sendNotification("Mola Bitti!", {
-                body: "Dinlenme süresi doldu. Çalışmaya geri dön!",
-                tag: 'break-complete'
-            });
-            onSessionComplete(BREAK_TIME, 'break', null);
-            setMode('work');
-            setTimeLeft(WORK_TIME);
-        }
-    };
+            if (mode === 'work') {
+                sendNotification("Çalışma Tamamlandı!", {
+                    body: `${selectedCourseName || 'Ders'} çalışması bitti. Mola zamanı!`,
+                    tag: 'pomodoro-complete'
+                });
+                onSessionComplete(WORK_TIME, 'work', selectedCourseId);
+                setMode('break');
+                setTimeLeft(BREAK_TIME);
+            } else {
+                sendNotification("Mola Bitti!", {
+                    body: "Dinlenme süresi doldu. Çalışmaya geri dön!",
+                    tag: 'break-complete'
+                });
+                onSessionComplete(BREAK_TIME, 'break', null);
+                setMode('work');
+                setTimeLeft(WORK_TIME);
+            }
+        };
+    }, [mode, selectedCourseName, selectedCourseId, onSessionComplete, timeLeft]);
 
     const handleTimerComplete = () => {
         if (completeRef.current) completeRef.current();
@@ -173,7 +180,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         }
 
         return () => clearInterval(timerRef.current);
-    }, [isActive]);
+    }, [isActive, timeLeft]);
 
     const toggleTimer = () => {
         if (isActive) {
@@ -255,7 +262,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')} `;
     };
 
-    const selectedCourseName = courses?.find(c => c.id === selectedCourseId)?.name;
+
 
     if (view === 'selection') {
         return (

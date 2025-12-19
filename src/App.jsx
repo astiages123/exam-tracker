@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+// eslint-disable-next-line
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay } from 'lucide-react';
 import ScheduleModal from './components/ScheduleModal';
@@ -23,7 +24,7 @@ import PomodoroTimer from './components/PomodoroTimer';
 import ReportModal from './components/ReportModal';
 import RankModal from './components/RankModal';
 import StreakDisplay from './components/StreakDisplay';
-import { calculateStreak, logActivity, removeActivity, getLocalYMD } from './utils/streakUtils';
+import { calculateStreak } from './utils/streakUtils';
 
 // --- Components ---
 
@@ -229,7 +230,7 @@ export default function App() {
       completedHours: completedHrs,
       completedCount: totalCompletedVideos
     };
-  }, [progressData, totalVideos, totalHours]);
+  }, [progressData, totalHours]);
 
   const currentStreak = useMemo(() => calculateStreak(activityLog), [activityLog]);
 
@@ -264,6 +265,7 @@ export default function App() {
     if (type !== 'work') return; // Don't record break sessions
 
     const newSession = {
+      // eslint-disable-next-line react-hooks/purity
       timestamp: Date.now(),
       duration,
       type,
@@ -606,16 +608,21 @@ export default function App() {
             currentLevelMin={rankInfo.min}
             nextLevelMin={nextRank.min}
           />
-          <div className="flex justify-between mt-3 text-xs font-medium text-custom-title/60 border-t border-custom-category/20 pt-3">
-            <span className="flex items-center gap-1.5">
-              <Youtube size={14} className="text-red-500/70" />
+          <div className="flex justify-end mt-2">
+            <span className="text-xs font-bold text-custom-accent/80 tracking-tight">
+              % {nextRank.min} için devam et
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between gap-3 mt-2 text-xs font-medium text-custom-title/60 border-t border-custom-category/20 pt-4">
+            <span className="flex items-center gap-1.5 whitespace-nowrap">
+              <Youtube size={14} className="text-red-500/70 shrink-0" />
               {completedCount} / {totalVideos} Video
             </span>
-            <span className="flex items-center gap-1.5">
-              <Timer size={14} className="text-custom-accent/70" />
+            <span className="flex items-center gap-1.5 whitespace-nowrap">
+              <Timer size={14} className="text-custom-accent/70 shrink-0" />
               {formatHours(completedHours)} / {formatHours(totalHours)}
             </span>
-            <span>% {nextRank.min} için devam et</span>
           </div>
         </div>
 
@@ -655,14 +662,14 @@ export default function App() {
                       </div>
                       <div>
                         <h3 className={cn("font-semibold text-lg tracking-tight transition-colors", styles.accent)}>{category.category.split('(')[0]}</h3>
-                        <div className="flex flex-wrap items-center gap-3 mt-2">
-                          <div className="flex items-center gap-2 text-xs font-semibold text-custom-title/80 bg-black/5 px-2.5 py-1.5 rounded-lg border border-black/5">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-2">
+                          <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold text-custom-title/80 bg-black/5 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg border border-black/5 whitespace-nowrap">
                             <Timer size={14} className={styles.accent} />
                             <span>{formatHours(categoryCompletedHours)}</span>
                             <span className="text-custom-title/30 mx-0.5">/</span>
                             <span className="opacity-60">{formatHours(categoryTotalHours)}</span>
                           </div>
-                          <div className="flex items-center gap-2 text-xs font-semibold text-custom-title/80 bg-black/5 px-2.5 py-1.5 rounded-lg border border-black/5">
+                          <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold text-custom-title/80 bg-black/5 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg border border-black/5 whitespace-nowrap">
                             <MonitorPlay size={14} className={styles.accent} />
                             <span>{categoryCompletedVideos}</span>
                             <span className="text-custom-title/30 mx-0.5">/</span>
@@ -717,21 +724,21 @@ export default function App() {
                                 className="p-3 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
                                 onClick={() => toggleCourse(course.id)}
                               >
-                                <div className="flex items-center gap-3">
-                                  <div className={cn("p-2 rounded-lg", styles.iconBg)}>
+                                <div className="flex items-center gap-3 min-w-0 flex-1">
+                                  <div className={cn("p-2 rounded-lg shrink-0", styles.iconBg)}>
                                     <BookOpen className={styles.accent} size={20} />
                                   </div>
-                                  <div>
-                                    <h3 className="font-bold text-sm text-custom-title/80">{course.name}</h3>
+                                  <div className="min-w-0">
+                                    <h3 className="font-bold text-sm text-custom-title/80 truncate">{course.name}</h3>
                                     <div className="flex items-center gap-2 mt-0.5">
-                                      <div className="flex items-center gap-3 mt-1.5">
-                                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-custom-title/70 bg-black/5 px-2 py-1 rounded-md">
+                                      <div className="flex flex-col items-start gap-1.5 mt-1.5">
+                                        <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-custom-title/70 bg-black/5 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md whitespace-nowrap">
                                           <Timer size={12} className="text-custom-title/50" />
                                           <span>{formatHours(courseCompletedHours)}</span>
                                           <span className="text-custom-title/30">/</span>
                                           <span className="opacity-70">{formatHours(course.totalHours)}</span>
                                         </div>
-                                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-custom-title/70 bg-black/5 px-2 py-1 rounded-md">
+                                        <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-custom-title/70 bg-black/5 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md whitespace-nowrap">
                                           <MonitorPlay size={12} className="text-custom-title/50" />
                                           <span className={courseProgress.completed === courseProgress.total ? "text-custom-success" : ""}>
                                             {courseProgress.completed}
@@ -744,22 +751,22 @@ export default function App() {
                                   </div>
                                 </div>
 
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-2">
                                   {course.playlistUrl && (
                                     <a
                                       href={course.playlistUrl}
                                       target="_blank"
                                       rel="noopener noreferrer"
                                       onClick={(e) => e.stopPropagation()}
-                                      className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center hover:bg-rose-200 transition-all hover:scale-105 shadow-sm group/yt"
+                                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-rose-100 flex items-center justify-center hover:bg-rose-200 transition-all hover:scale-105 shadow-sm group/yt"
                                       title="Oynatma Listesine Git"
                                     >
-                                      <Youtube size={20} className="text-red-600 group-hover/yt:text-red-700" strokeWidth={2} />
+                                      <Youtube size={16} className="text-red-600 group-hover/yt:text-red-700 sm:w-5 sm:h-5" strokeWidth={2} />
                                     </a>
                                   )}
 
-                                  <div className="px-3 py-1.5 rounded-lg bg-zinc-800/80 backdrop-blur-sm border border-white/5 shadow-inner">
-                                    <span className={cn("text-sm font-bold tracking-tight", styles.accent)}>
+                                  <div className="px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg bg-zinc-800/80 backdrop-blur-sm border border-white/5 shadow-inner">
+                                    <span className={cn("text-xs sm:text-sm font-bold tracking-tight", styles.accent)}>
                                       %{Math.round(courseProgress.percentage)}
                                     </span>
                                   </div>

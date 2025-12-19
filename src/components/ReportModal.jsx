@@ -1,6 +1,7 @@
 
 import React, { useMemo, useEffect } from 'react';
 import { X, Clock, Calendar, BookOpen, Trash2 } from 'lucide-react';
+// eslint-disable-next-line
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ReportModal({ sessions = [], onClose, courses = [], onDelete }) {
