@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check } from 'lucide-react';
 import ScheduleModal from './components/ScheduleModal';
@@ -178,14 +178,38 @@ export default function App() {
   const totalHours = useMemo(() => courseData.reduce((acc, cat) =>
     acc + cat.courses.reduce((cAcc, course) => cAcc + course.totalHours, 0), 0), []);
 
-  // Calculate stats using derived state (useMemo) to avoid useEffect cascading
+  // Calculate stats using derived state (useMemo) based on DURATION for percentage
   const { totalPercentage, rankInfo, nextRank, completedHours, completedCount } = useMemo(() => {
-    const completedTotal = Object.values(progressData).reduce((acc, val) => {
-      if (Array.isArray(val)) return acc + val.length;
-      return acc;
-    }, 0);
+    let totalCompletedMinutes = 0;
+    let totalCompletedVideos = 0;
 
-    const percent = totalVideos > 0 ? (completedTotal / totalVideos) * 100 : 0;
+    // Iterate all courses to sum up activity
+    courseData.forEach(category => {
+      category.courses.forEach(course => {
+        const completedIds = progressData[course.id] || [];
+        totalCompletedVideos += completedIds.length;
+
+        // Sum duration of completed videos
+        // We need to look up the video object to get its durationMinutes
+        const courseVideos = course.videos || []; // Ensure videos exist
+        completedIds.forEach(vidId => {
+          const video = courseVideos.find(v => v.id === vidId);
+          // If video data isn't fully populated yet (e.g. fallback), handle gracefully
+          if (video && video.durationMinutes) {
+            totalCompletedMinutes += video.durationMinutes;
+          } else {
+            // Fallback if individual video duration is missing: average duration
+            const avgDuration = (course.totalHours * 60) / course.totalVideos;
+            totalCompletedMinutes += avgDuration;
+          }
+        });
+      });
+    });
+
+    const completedHrs = totalCompletedMinutes / 60;
+
+    // Percentage based on TIME
+    const percent = totalHours > 0 ? (completedHrs / totalHours) * 100 : 0;
 
     let currentRank = RANKS[0];
     for (let i = RANKS.length - 1; i >= 0; i--) {
@@ -198,26 +222,14 @@ export default function App() {
     const nextRankIndex = RANKS.findIndex(r => r.title === currentRank.title) + 1;
     const nextR = RANKS[nextRankIndex] || { min: 100, title: "Zirve" };
 
-    // Hours
-    let hours = 0;
-    Object.keys(progressData).forEach(courseId => {
-      const course = courseData.flatMap(cat => cat.courses).find(c => c.id === courseId);
-      if (course) {
-        const cCount = progressData[courseId].length;
-        if (cCount > 0) {
-          hours += (cCount / course.totalVideos) * course.totalHours;
-        }
-      }
-    });
-
     return {
       totalPercentage: percent,
       rankInfo: currentRank,
       nextRank: nextR,
-      completedHours: hours,
-      completedCount: completedTotal
+      completedHours: completedHrs,
+      completedCount: totalCompletedVideos
     };
-  }, [progressData, totalVideos]);
+  }, [progressData, totalVideos, totalHours]);
 
   const currentStreak = useMemo(() => calculateStreak(activityLog), [activityLog]);
 
@@ -601,7 +613,7 @@ export default function App() {
             </span>
             <span className="flex items-center gap-1.5">
               <Timer size={14} className="text-custom-accent/70" />
-              {formatHours(totalHours)} İzleme
+              {formatHours(completedHours)} / {formatHours(totalHours)}
             </span>
             <span>% {nextRank.min} için devam et</span>
           </div>
@@ -613,7 +625,18 @@ export default function App() {
             const categoryTotalVideos = category.courses.reduce((acc, c) => acc + c.totalVideos, 0);
             const categoryCompletedVideos = category.courses.reduce((acc, c) => acc + (progressData[c.id] || []).length, 0);
 
-            const categoryPercent = categoryTotalVideos > 0 ? Math.round((categoryCompletedVideos / categoryTotalVideos) * 100) : 0;
+            // Calculate Category Completed Hours
+            const categoryCompletedHours = category.courses.reduce((acc, c) => {
+              const completedIds = progressData[c.id] || [];
+              const cVideos = c.videos || [];
+              const dur = completedIds.reduce((dAcc, vidId) => {
+                const v = cVideos.find(video => video.id === vidId);
+                return dAcc + (v ? v.durationMinutes : (c.totalHours * 60 / (c.totalVideos || 1)));
+              }, 0);
+              return acc + (dur / 60);
+            }, 0);
+
+            const categoryPercent = categoryTotalHours > 0 ? Math.round((categoryCompletedHours / categoryTotalHours) * 100) : 0;
 
             const categoryNameRaw = category.category.split('(')[0].replace(/^\d+\.\s*/, '').trim();
             const styles = CATEGORY_STYLES[categoryNameRaw] || CATEGORY_STYLES['DEFAULT'];
@@ -633,7 +656,7 @@ export default function App() {
                       <div>
                         <h3 className={cn("font-semibold text-lg tracking-tight transition-colors", styles.accent)}>{category.category.split('(')[0]}</h3>
                         <p className="text-xs text-custom-title/60 font-medium mt-1">
-                          Toplam: {formatHours(categoryTotalHours)} • {categoryCompletedVideos} / {categoryTotalVideos} Video
+                          Süre: {formatHours(categoryCompletedHours)} / {formatHours(categoryTotalHours)} • {categoryCompletedVideos} / {categoryTotalVideos} Video
                         </p>
                       </div>
                     </div>
@@ -658,13 +681,23 @@ export default function App() {
                     >
                       <div className="p-4 space-y-4">
                         {category.courses.map(course => {
-                          const courseCompleted = (progressData[course.id] || []).length;
-                          const coursePercent = Math.round((courseCompleted / course.totalVideos) * 100);
+                          const completedIds = progressData[course.id] || [];
+                          const courseCompletedCount = completedIds.length;
+
+                          const courseVideos = course.videos || [];
+                          const courseCompletedMinutes = completedIds.reduce((acc, vidId) => {
+                            const v = courseVideos.find(video => video.id === vidId);
+                            return acc + (v ? v.durationMinutes : 0);
+                          }, 0);
+                          const courseCompletedHours = courseCompletedMinutes / 60;
+
+                          const coursePercent = course.totalHours > 0 ? Math.round((courseCompletedHours / course.totalHours) * 100) : 0;
+
                           const courseProgress = {
-                            completed: courseCompleted,
+                            completed: courseCompletedCount,
                             total: course.totalVideos,
                             percentage: coursePercent,
-                            completedVideos: progressData[course.id] || []
+                            completedVideos: completedIds
                           };
 
                           return (
@@ -681,7 +714,7 @@ export default function App() {
                                     <h3 className="font-bold text-sm text-custom-title/80">{course.name}</h3>
                                     <div className="flex items-center gap-2 mt-0.5">
                                       <span className="text-xs text-custom-title/60 font-medium tracking-wide">
-                                        Toplam: {formatHours(course.totalHours)} • {courseProgress.completed}/{courseProgress.total} Video
+                                        Süre: {formatHours(courseCompletedHours)} / {formatHours(course.totalHours)} • {courseProgress.completed}/{courseProgress.total} Video
                                       </span>
                                     </div>
                                   </div>
@@ -723,31 +756,40 @@ export default function App() {
                                     transition={{ duration: 0.3, ease: 'easeInOut' }}
                                   >
                                     <div className={cn("p-4 border-t bg-black/20", styles.border)}>
-                                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
-                                        {Array.from({ length: course.totalVideos }, (_, i) => i + 1).map((videoNum) => {
-                                          const isCompleted = courseProgress.completedVideos.includes(videoNum);
+                                      <div className="flex flex-col gap-2">
+                                        {courseVideos.map((video) => {
+                                          const isCompleted = courseProgress.completedVideos.includes(video.id);
                                           return (
                                             <div
-                                              key={videoNum}
-                                              onClick={() => handleVideoToggle(course.id, videoNum)}
+                                              key={video.id}
+                                              onClick={() => handleVideoToggle(course.id, video.id)}
                                               className={cn(
-                                                "group relative p-2 rounded-lg border border-dashed transition-all duration-300 flex flex-col items-center justify-center gap-1.5 cursor-pointer",
+                                                "group relative p-3 rounded-lg border border-dashed transition-all duration-300 flex items-center justify-between cursor-pointer",
                                                 isCompleted
                                                   ? `${styles.iconBg} ${styles.border.replace('border-', 'border-solid border-')} shadow-sm`
                                                   : 'bg-custom-bg/50 border-custom-category/40 hover:border-custom-accent/50 hover:bg-custom-header hover:shadow-md hover:-translate-y-0.5'
                                               )}
                                             >
-                                              <span className={cn("font-mono text-xs font-bold tracking-tight", isCompleted ? styles.accent : 'text-custom-title/70 group-hover:text-custom-text')}>
-                                                #{videoNum}
-                                              </span>
-                                              <div className={cn(
-                                                "w-5 h-5 rounded-full flex items-center justify-center border transition-all duration-300",
-                                                isCompleted
-                                                  ? `${styles.accent.replace('text-', 'bg-')} ${styles.accent.replace('text-', 'border-')}`
-                                                  : 'border-custom-category/50 group-hover:border-custom-accent'
-                                              )}>
-                                                {isCompleted && <Check size={12} className="text-white" strokeWidth={3} />}
+                                              <div className="flex items-center gap-3 overflow-hidden">
+                                                <div className={cn(
+                                                  "w-6 h-6 rounded-full flex items-center justify-center border transition-all duration-300 shrink-0",
+                                                  isCompleted
+                                                    ? `${styles.accent.replace('text-', 'bg-')} ${styles.accent.replace('text-', 'border-')}`
+                                                    : 'border-custom-category/50 group-hover:border-custom-accent'
+                                                )}>
+                                                  {isCompleted && <Check size={14} className="text-white" strokeWidth={3} />}
+                                                </div>
+                                                <span className={cn("font-mono text-xs font-bold tracking-tight shrink-0", isCompleted ? styles.accent : 'text-custom-title/70')}>
+                                                  #{video.id}
+                                                </span>
+                                                <span className={cn("text-sm font-medium truncate", isCompleted ? 'text-custom-text/90' : 'text-custom-title/80 group-hover:text-custom-text')}>
+                                                  {video.title}
+                                                </span>
                                               </div>
+
+                                              <span className={cn("text-xs font-mono font-medium ml-2 px-2 py-1 rounded-md bg-black/10 shrink-0", styles.accent)}>
+                                                {video.duration}
+                                              </span>
                                             </div>
                                           );
                                         })}
