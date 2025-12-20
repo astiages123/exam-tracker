@@ -262,7 +262,8 @@ export default function App() {
   }, [user, progressData, sessions, schedule, activityLog, isDataLoaded]);
 
   const handleSessionComplete = (duration, type, overrideCourseId) => {
-    if (type !== 'work') return; // Don't record break sessions
+    // [MODIFIED] Now we record 'break' sessions too
+    // if (type !== 'work') return;
 
     const newSession = {
       // eslint-disable-next-line react-hooks/purity
@@ -369,6 +370,16 @@ export default function App() {
     setLastActiveCourseId(courseId); // Update active context
 
     setProgressData(prev => {
+      const currentProgress = prev[courseId] || [];
+
+      // If toggling the first video and it's already the only one completed, clear everything
+      if (videoIndex === 1 && currentProgress.length === 1 && currentProgress[0] === 1) {
+        return {
+          ...prev,
+          [courseId]: []
+        };
+      }
+
       // Create a set of 1..videoIndex
       const newSet = new Set();
       for (let i = 1; i <= videoIndex; i++) {
@@ -426,6 +437,10 @@ export default function App() {
           initialCourse={activeCourse}
           courses={flatCourses}
           sessionsCount={sessions.filter(s => s.type === 'work' && getLocalYMD(new Date(s.timestamp)) === getLocalYMD(new Date())).length}
+          // [NEW] Calculate total break duration for today in minutes
+          totalBreakDuration={Math.round(sessions
+            .filter(s => s.type === 'break' && getLocalYMD(new Date(s.timestamp)) === getLocalYMD(new Date()))
+            .reduce((acc, s) => acc + (s.duration || 0), 0) / 60)}
           onSessionComplete={handleSessionComplete}
           onClose={() => setShowTimer(false)}
         />
@@ -451,6 +466,9 @@ export default function App() {
       {showRankModal && (
         <RankModal
           currentRank={rankInfo}
+          totalHours={totalHours}
+          completedHours={completedHours}
+          sessions={sessions}
           onClose={() => setShowRankModal(false)}
         />
       )}

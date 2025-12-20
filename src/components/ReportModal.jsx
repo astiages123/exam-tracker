@@ -1,8 +1,13 @@
 
 import React, { useMemo, useEffect } from 'react';
 import { X, Clock, Calendar, BookOpen, Trash2 } from 'lucide-react';
+import { courseData } from '../data';
 // eslint-disable-next-line
 import { motion, AnimatePresence } from 'framer-motion';
+
+const CATEGORY_STYLES = {
+    'DEFAULT': { bg: 'bg-white/5', border: 'border-white/10', text: 'text-custom-title/80' }
+};
 
 export default function ReportModal({ sessions = [], onClose, courses = [], onDelete }) {
     useEffect(() => {
@@ -13,7 +18,13 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [onClose]);
 
-    // Helper to find course name
+    // Helper to find course category
+    const getCourseCategory = (courseId) => {
+        if (!courseId) return '';
+        const categoryGroup = courseData.find(cat => cat.courses.some(c => c.id === courseId));
+        return categoryGroup ? categoryGroup.category.split('(')[0].replace(/^\d+\.\s*/, '').trim() : '';
+    };
+
     const getCourseName = (courseId) => {
         if (!courseId) return 'Genel Çalışma';
         if (!Array.isArray(courses)) return 'Bilinmeyen Ders';
@@ -23,6 +34,16 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
 
     const safeSessions = Array.isArray(sessions) ? sessions : [];
     const workSessions = safeSessions.filter(s => s && s.type === 'work');
+    const breakSessions = safeSessions.filter(s => s && s.type === 'break');
+
+    // Stats Calculations
+    const totalMinutes = workSessions.reduce((acc, s) => acc + ((s.duration || 0) / 60), 0);
+    const totalHours = Math.floor(totalMinutes / 60);
+    const remainingMins = Math.round(totalMinutes % 60);
+
+    const totalBreakMinutesRaw = breakSessions.reduce((acc, s) => acc + ((s.duration || 0) / 60), 0);
+    const totalBreakHours = Math.floor(totalBreakMinutesRaw / 60);
+    const remainingBreakMins = Math.round(totalBreakMinutesRaw % 60);
 
     // Aggregate sessions by Date and Course
     const aggregatedSessions = useMemo(() => {
@@ -51,10 +72,6 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
         return Object.values(groups).sort((a, b) => b.date - a.date);
     }, [workSessions]);
 
-    const totalMinutes = workSessions.reduce((acc, s) => acc + ((s.duration || 0) / 60), 0);
-    const totalHours = Math.floor(totalMinutes / 60);
-    const remainingMins = Math.round(totalMinutes % 60);
-
     return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 cursor-pointer"
@@ -63,7 +80,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
             <motion.div
                 initial={{ scale: 0.9, opacity: 0, y: 20 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
-                className="bg-custom-bg border border-custom-category rounded-2xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl cursor-default"
+                className="bg-custom-bg border border-custom-category rounded-2xl w-[95%] sm:w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl cursor-default"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
@@ -84,7 +101,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                 </div>
 
                 {/* Stats */}
-                <div className="p-6 grid grid-cols-2 gap-4 border-b border-custom-category bg-custom-bg/50">
+                <div className="p-4 md:p-6 grid grid-cols-2 gap-3 md:gap-4 border-b border-custom-category bg-custom-bg/50">
                     <div className="bg-custom-header p-4 rounded-xl border border-custom-category/30">
                         <span className="text-xs text-custom-title/50 uppercase tracking-wider font-bold">Toplam Çalışma</span>
                         <div className="text-2xl font-mono font-bold text-custom-text mt-1">
@@ -92,9 +109,9 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                         </div>
                     </div>
                     <div className="bg-custom-header p-4 rounded-xl border border-custom-category/30">
-                        <span className="text-xs text-custom-title/50 uppercase tracking-wider font-bold">Oturum Sayısı</span>
+                        <span className="text-xs text-custom-title/50 uppercase tracking-wider font-bold">Toplam Mola Süresi</span>
                         <div className="text-2xl font-mono font-bold text-custom-text mt-1">
-                            {workSessions.length}
+                            {totalBreakHours}sa {remainingBreakMins}dk
                         </div>
                     </div>
                 </div>
@@ -108,39 +125,49 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                         </div>
                     ) : (
                         <div className="space-y-3">
-                            {aggregatedSessions.map((group) => (
-                                <div key={group.key} className="flex items-center justify-between p-4 bg-custom-header/40 rounded-xl border border-custom-category/20 hover:border-custom-category/50 transition-colors group">
-                                    <div className="flex items-center gap-4">
-                                        <div className="p-3 rounded-full bg-custom-accent/10 text-custom-accent">
-                                            <BookOpen size={16} />
-                                        </div>
-                                        <div>
-                                            <h4 className="font-semibold text-custom-text text-sm">
-                                                {getCourseName(group.courseId)}
-                                            </h4>
-                                            <div className="flex items-center gap-2 text-xs text-custom-title/50 mt-1">
-                                                <Calendar size={12} />
-                                                {new Date(group.date).toLocaleDateString('tr-TR')}
+                            {aggregatedSessions.map((group) => {
+                                const style = CATEGORY_STYLES['DEFAULT'];
+
+                                return (
+                                    <div key={group.key} className="relative flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 bg-custom-header/40 rounded-xl border border-custom-category/20 hover:border-custom-category/50 transition-colors group gap-3 sm:gap-0">
+
+                                        <div className="flex items-center gap-4"> {/* Removed mt-2 mb-1 as absolute label is gone */}
+                                            <div className="p-3 rounded-full bg-custom-accent/10 text-custom-accent">
+                                                <BookOpen size={16} />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-semibold text-custom-text text-sm w-full sm:max-w-[300px] truncate"> {/* Removed pr-16 */}
+                                                    {getCourseName(group.courseId)}
+                                                </h4>
+                                                <div className="flex items-center gap-2 text-xs text-custom-title/80 font-semibold mt-1">
+                                                    <Calendar size={12} />
+                                                    {new Date(group.date).toLocaleDateString('tr-TR')}
+                                                    {getCourseCategory(group.courseId) && (
+                                                        <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-none border-[0.5px] ${style.bg} ${style.border} ${style.text} ml-2 whitespace-nowrap`}>
+                                                            {getCourseCategory(group.courseId)}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div className="flex items-center gap-4">
-                                        <div className="text-right">
-                                            <span className="font-mono font-bold text-custom-text">{Math.round(group.totalDuration / 60)}</span>
-                                            <span className="text-xs text-custom-title/50 ml-1">dk</span>
+                                        <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 mt-2 sm:mt-0">
+                                            <div className="text-right">
+                                                <span className="font-mono font-bold text-custom-text">{Math.round(group.totalDuration / 60)}</span>
+                                                <span className="text-xs text-custom-title/50 ml-1">dk</span>
+                                            </div>
+
+                                            <button
+                                                onClick={() => onDelete && onDelete(group.sessionIds)}
+                                                className="p-2 text-custom-title/30 hover:text-custom-error hover:bg-custom-error/10 rounded-lg transition-colors cursor-pointer"
+                                                title="Kaydı Sil"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
                                         </div>
-
-                                        <button
-                                            onClick={() => onDelete && onDelete(group.sessionIds)}
-                                            className="p-2 text-custom-title/30 hover:text-custom-error hover:bg-custom-error/10 rounded-lg transition-colors cursor-pointer"
-                                            title="Kaydı Sil"
-                                        >
-                                            <Trash2 size={18} />
-                                        </button>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     )}
                 </div>

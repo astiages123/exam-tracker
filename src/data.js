@@ -1113,11 +1113,11 @@ export const courseData = [
 ];
 
 export const RANKS = [
-    { title: "Stajyer", min: 0, color: "text-gray-400" },
-    { title: "Gişe Asistanı", min: 10, color: "text-emerald-400" },
-    { title: "Müfettiş Yardımcısı", min: 25, color: "text-blue-400" },
-    { title: "Kıdemli Müfettiş Yardımcısı", min: 50, color: "text-violet-400" },
-    { title: "Müfettiş", min: 75, color: "text-amber-400" },
-    { title: "Kıdemli Müfettiş", min: 100, color: "text-rose-500 font-bold" }
+    { title: "Stajyer", min: 0, color: "text-gray-400", icon: "User" },
+    { title: "Gişe Asistanı", min: 10, color: "text-emerald-400", icon: "CreditCard" },
+    { title: "Müfettiş Yardımcısı", min: 25, color: "text-blue-400", icon: "Search" },
+    { title: "Kıdemli Müfettiş Yardımcısı", min: 50, color: "text-violet-400", icon: "Shield" },
+    { title: "Müfettiş", min: 75, color: "text-amber-400", icon: "Award" },
+    { title: "Kıdemli Müfettiş", min: 100, color: "text-rose-500 font-bold", icon: "Crown" }
 ];
 

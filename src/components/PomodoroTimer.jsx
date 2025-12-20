@@ -11,14 +11,16 @@ const BREAK_TIME = 10 * 60;
 
 const STORAGE_KEYS = {
     END_TIME: 'pomo_endTime',
+    START_TIME: 'pomo_startTime', // NEW: for count-up
     IS_ACTIVE: 'pomo_isActive',
     MODE: 'pomo_mode',
-    TIME_LEFT: 'pomo_timeLeft',
+    TIME_LEFT: 'pomo_timeLeft', // Used as "elapsed" for work, "remaining" for break
     COURSE_ID: 'pomo_courseId',
-    VIEW: 'pomo_view'
+    VIEW: 'pomo_view',
+    NOTIFIED_50: 'pomo_notified50' // To track if we notified at 50m
 };
 
-export default function PomodoroTimer({ initialCourse, courses, sessionsCount, onSessionComplete, onClose }) {
+export default function PomodoroTimer({ initialCourse, courses, sessionsCount, totalBreakDuration, onSessionComplete, onClose }) {
     // Initialize state from localStorage if available, else defaults
     const [view, setView] = useState(() => localStorage.getItem(STORAGE_KEYS.VIEW) || 'selection');
     const [selectedCourseId, setSelectedCourseId] = useState(() => {
@@ -35,7 +37,11 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
     });
     const [isActive, setIsActive] = useState(() => localStorage.getItem(STORAGE_KEYS.IS_ACTIVE) === 'true');
 
-    const endTimeRef = useRef(null);
+    // Refs
+    const endTimeRef = useRef(null); // For Break (Countdown)
+    const startTimeRef = useRef(null); // For Work (Count-up)
+    const notified50MinRef = useRef(false); // Track 50m notification
+
     const timerRef = useRef(null);
     const completeRef = useRef();
 
@@ -45,23 +51,35 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
     // 1. Restore Timer State on Mount
     useEffect(() => {
         const savedEndTime = localStorage.getItem(STORAGE_KEYS.END_TIME);
+        const savedStartTime = localStorage.getItem(STORAGE_KEYS.START_TIME);
         const savedIsActive = localStorage.getItem(STORAGE_KEYS.IS_ACTIVE) === 'true';
+        const savedMode = localStorage.getItem(STORAGE_KEYS.MODE) || 'work';
+        const savedNotified50 = localStorage.getItem(STORAGE_KEYS.NOTIFIED_50) === 'true';
 
-        if (savedIsActive && savedEndTime) {
-            const end = parseInt(savedEndTime, 10);
+        if (savedIsActive) {
             const now = Date.now();
-            const remaining = Math.ceil((end - now) / 1000);
 
-            if (remaining > 0) {
-                // Resume timer
-                endTimeRef.current = end;
-                // eslint-disable-next-line
-                setTimeLeft(remaining); // Visual update
-                // Interval will be started by the useEffect([isActive]) below
-            } else {
-                // Expired while away!
-                // We rely on the interval effect to catch this immediately
-                endTimeRef.current = end;
+            if (savedMode === 'work' && savedStartTime) {
+                // RESTORE COUNT-UP
+                const start = parseInt(savedStartTime, 10);
+                startTimeRef.current = start;
+                notified50MinRef.current = savedNotified50;
+
+                const elapsed = Math.floor((now - start) / 1000);
+                setTimeLeft(elapsed); // Visual update (shows elapsed time)
+            }
+            else if (savedMode === 'break' && savedEndTime) {
+                // RESTORE COUNTDOWN
+                const end = parseInt(savedEndTime, 10);
+                const remaining = Math.ceil((end - now) / 1000);
+
+                if (remaining > 0) {
+                    endTimeRef.current = end;
+                    setTimeLeft(remaining);
+                } else {
+                    endTimeRef.current = end;
+                    // Will be caught by interval
+                }
             }
         }
     }, []);
@@ -74,10 +92,17 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         localStorage.setItem(STORAGE_KEYS.IS_ACTIVE, isActive);
         localStorage.setItem(STORAGE_KEYS.TIME_LEFT, timeLeft);
 
-        if (isActive && endTimeRef.current) {
-            localStorage.setItem(STORAGE_KEYS.END_TIME, endTimeRef.current);
+        if (isActive) {
+            if (mode === 'work' && startTimeRef.current) {
+                localStorage.setItem(STORAGE_KEYS.START_TIME, startTimeRef.current);
+                localStorage.setItem(STORAGE_KEYS.NOTIFIED_50, notified50MinRef.current);
+            } else if (mode === 'break' && endTimeRef.current) {
+                localStorage.setItem(STORAGE_KEYS.END_TIME, endTimeRef.current);
+            }
         } else {
             localStorage.removeItem(STORAGE_KEYS.END_TIME);
+            localStorage.removeItem(STORAGE_KEYS.START_TIME);
+            localStorage.removeItem(STORAGE_KEYS.NOTIFIED_50);
         }
     }, [view, mode, selectedCourseId, isActive, timeLeft]);
 
@@ -109,8 +134,18 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
 
         initAudio();
         setView('timer');
-        // Set target time based on CURRENT timeLeft
-        endTimeRef.current = Date.now() + timeLeft * 1000;
+
+        // WORK MODE: Count UP
+        // If we are starting fresh work mode
+        setMode('work');
+        // If there was previous elapsed time in timeLeft (from pause), subtract it from now to get "original" start time
+        // But usually handleStartSession is for FRESH start or from selection.
+        // Let's assume fresh start from Selection view implies 0 start.
+        const now = Date.now();
+        startTimeRef.current = now;
+        notified50MinRef.current = false;
+
+        setTimeLeft(0); // working leads to increasing time
         setIsActive(true);
     };
 
@@ -122,26 +157,24 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
             clearInterval(timerRef.current);
             playNotificationSound();
 
-            // Clear timer specific storage to prevent "resuming" a finished session on reload
             localStorage.removeItem(STORAGE_KEYS.END_TIME);
-            // We set isActive false above, which will update storage in the useEffect.
+            localStorage.removeItem(STORAGE_KEYS.START_TIME);
+            localStorage.removeItem(STORAGE_KEYS.NOTIFIED_50);
 
             if (mode === 'work') {
-                sendNotification("Çalışma Tamamlandı!", {
-                    body: `${selectedCourseName || 'Ders'} çalışması bitti. Mola zamanı!`,
-                    tag: 'pomodoro-complete'
-                });
-                onSessionComplete(WORK_TIME, 'work', selectedCourseId);
-                setMode('break');
-                setTimeLeft(BREAK_TIME);
+                // This path might be called if we enforce a hard limit, but user wants infinite.
+                // We'll keep it for robustness, but "Work" doesn't auto-stop anymore.
+                // If it DOES auto-stop (e.g. max limit?), logic is here.
+                // For now, Work only stops manually. Logic moved to handleFinishEarly (now just "Finish")
             } else {
+                // Break ending naturally
                 sendNotification("Mola Bitti!", {
                     body: "Dinlenme süresi doldu. Çalışmaya geri dön!",
                     tag: 'break-complete'
                 });
                 onSessionComplete(BREAK_TIME, 'break', null);
                 setMode('work');
-                setTimeLeft(WORK_TIME);
+                setTimeLeft(0); // Reset for next work session (count up)
             }
         };
     }, [mode, selectedCourseName, selectedCourseId, onSessionComplete, timeLeft]);
@@ -152,31 +185,54 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
 
     useEffect(() => {
         if (isActive) {
-            // If endTimeRef is null (e.g. fresh reload active=true), reconstruct it from storage or timeLeft
-            if (!endTimeRef.current) {
+            // RECOVERY LOGIC
+            if (mode === 'break' && !endTimeRef.current) {
                 const savedEndTime = localStorage.getItem(STORAGE_KEYS.END_TIME);
-                if (savedEndTime) {
-                    endTimeRef.current = parseInt(savedEndTime, 10);
-                } else {
-                    // Fallback if missing? Should not happen if isActive is true.
-                    endTimeRef.current = Date.now() + timeLeft * 1000;
-                }
+                endTimeRef.current = savedEndTime ? parseInt(savedEndTime, 10) : Date.now() + timeLeft * 1000;
+            }
+            if (mode === 'work' && !startTimeRef.current) {
+                const savedStartTime = localStorage.getItem(STORAGE_KEYS.START_TIME);
+                // If we have timeLeft (elapsed), construct start time: now - elapsed
+                startTimeRef.current = savedStartTime ? parseInt(savedStartTime, 10) : Date.now() - (timeLeft * 1000);
             }
 
             timerRef.current = setInterval(() => {
                 const now = Date.now();
-                const remaining = Math.ceil((endTimeRef.current - now) / 1000);
 
-                if (remaining <= 0) {
-                    setTimeLeft(0);
-                    handleTimerComplete();
+                if (mode === 'work') {
+                    // COUNT UP
+                    const elapsed = Math.floor((now - startTimeRef.current) / 1000);
+                    setTimeLeft(elapsed);
+
+                    // Check for 50 min notification (50 * 60 = 3000 seconds)
+                    if (elapsed >= 3000 && !notified50MinRef.current) {
+                        playNotificationSound();
+                        sendNotification("50 Dakika Doldu!", {
+                            body: "Çalışma süren 50 dakikayı geçti. Devam edebilir veya molaya çıkabilirsin.",
+                            tag: 'pomodoro-50min'
+                        });
+                        notified50MinRef.current = true;
+                        // DO NOT STOP - continue counting
+                    }
+
                 } else {
-                    setTimeLeft(remaining);
+                    // COUNT DOWN (Break)
+                    const remaining = Math.ceil((endTimeRef.current - now) / 1000);
+                    if (remaining <= 0) {
+                        setTimeLeft(0);
+                        handleTimerComplete();
+                    } else {
+                        setTimeLeft(remaining);
+                    }
                 }
             }, 100);
         } else {
             clearInterval(timerRef.current);
-            endTimeRef.current = null; // Reset ref when not active
+            // Only reset refs if we are truly resetting/done? 
+            // No, keeping them allows resume.
+            // But if we toggle off, we want to clear interval.
+            // For count-up resume: new start = now - prev_elapsed. 
+            // This is handled in toggleTimer.
         }
 
         return () => clearInterval(timerRef.current);
@@ -185,23 +241,36 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
     const toggleTimer = () => {
         if (isActive) {
             setIsActive(false);
-            // timeLeft is already up to date from interval
+            // timeLeft is current elapsed (work) or remaining (break)
         } else {
-            // Resume
-            // initAudio() helps ioS unlock audio
             initAudio();
-            endTimeRef.current = Date.now() + timeLeft * 1000;
+            const now = Date.now();
+            if (mode === 'work') {
+                // Resume Count Up
+                // startTime = now - elapsed
+                startTimeRef.current = now - (timeLeft * 1000);
+            } else {
+                // Resume Count Down
+                // endTime = now + remaining
+                endTimeRef.current = now + (timeLeft * 1000);
+            }
             setIsActive(true);
         }
     };
 
     const resetTimer = () => {
         setIsActive(false);
-        const defaultTime = mode === 'work' ? WORK_TIME : BREAK_TIME;
+        const defaultTime = mode === 'work' ? 0 : BREAK_TIME; // Work resets to 0
         setTimeLeft(defaultTime);
-        // Clear storage for reset
+
         localStorage.setItem(STORAGE_KEYS.TIME_LEFT, defaultTime);
         localStorage.removeItem(STORAGE_KEYS.END_TIME);
+        localStorage.removeItem(STORAGE_KEYS.START_TIME);
+        localStorage.removeItem(STORAGE_KEYS.NOTIFIED_50);
+
+        startTimeRef.current = null;
+        endTimeRef.current = null;
+        notified50MinRef.current = false;
     };
 
     const handleEndSession = () => {
@@ -210,14 +279,16 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
 
         // Clear all session specific storage
         localStorage.removeItem(STORAGE_KEYS.END_TIME);
+        localStorage.removeItem(STORAGE_KEYS.START_TIME);
         localStorage.removeItem(STORAGE_KEYS.IS_ACTIVE);
         localStorage.removeItem(STORAGE_KEYS.MODE);
         localStorage.removeItem(STORAGE_KEYS.TIME_LEFT);
         localStorage.removeItem(STORAGE_KEYS.COURSE_ID);
+        localStorage.removeItem(STORAGE_KEYS.NOTIFIED_50);
 
         // Reset local state
         setMode('work');
-        setTimeLeft(WORK_TIME);
+        setTimeLeft(0); // Works starts at 0
         setSelectedCourseId(initialCourse ? initialCourse.id : '');
         setView('selection');
     };
@@ -229,7 +300,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
             onSessionComplete(BREAK_TIME, 'break', null);
 
             setMode('work');
-            setTimeLeft(WORK_TIME);
+            setTimeLeft(0);
             playNotificationSound();
         }
     };
@@ -242,9 +313,12 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         playNotificationSound();
 
         // Clear timer specific storage
-        localStorage.removeItem(STORAGE_KEYS.END_TIME);
+        localStorage.removeItem(STORAGE_KEYS.START_TIME);
+        localStorage.removeItem(STORAGE_KEYS.NOTIFIED_50);
 
-        const elapsedTime = WORK_TIME - timeLeft;
+        // Calculate actual duration
+        // For count-up, timeLeft IS the elapsed time
+        const elapsedTime = timeLeft; // In seconds
 
         sendNotification("Oturum Kaydedildi", {
             body: `${selectedCourseName || 'Ders'} çalışması ${Math.floor(elapsedTime / 60)} dk olarak kaydedildi. Mola zamanı!`,
@@ -377,7 +451,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                 </div>
 
                 <div className="mb-6 px-3 py-1 bg-custom-bg/50 rounded-lg border border-custom-category/20 text-[10px] text-custom-title/50">
-                    Tamamlanan Oturum: <span className="text-custom-text font-bold">{sessionsCount}</span>
+                    Toplam Mola: <span className="text-custom-text font-bold">{totalBreakDuration || 0} dk</span>
                 </div>
 
                 <div className="flex items-center gap-4">

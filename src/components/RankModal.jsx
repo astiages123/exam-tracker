@@ -1,7 +1,7 @@
 import React from 'react';
 // eslint-disable-next-line
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, CheckCircle, Lock, Star } from 'lucide-react';
+import { Trophy, CheckCircle, Lock, Star, User, CreditCard, Search, Shield, Award, Crown } from 'lucide-react';
 import { RANKS } from '../data';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -10,8 +10,39 @@ function cn(...inputs) {
     return twMerge(clsx(inputs));
 }
 
-const RankModal = ({ currentRank, onClose }) => {
+const RANK_ICONS = {
+    User,
+    CreditCard,
+    Search,
+    Shield,
+    Award,
+    Crown
+};
+
+const RankModal = ({ currentRank, onClose, totalHours = 0, completedHours = 0, sessions = [] }) => {
     const currentRankIndex = RANKS.findIndex(r => r.title === currentRank.title);
+
+    // Calculate daily average study hours
+    const stats = React.useMemo(() => {
+        const workSessions = sessions.filter(s => s.type === 'work' && s.duration);
+        if (workSessions.length === 0) return { avg: 0, uniqueDays: 0 };
+
+        const totalWorkMins = workSessions.reduce((acc, s) => acc + (s.duration / 60), 0);
+        const daySet = new Set(workSessions.map(s => new Date(s.timestamp).toLocaleDateString()));
+        const uniqueDays = daySet.size;
+
+        return {
+            avg: totalWorkMins / (uniqueDays || 1) / 60, // in hours
+            uniqueDays
+        };
+    }, [sessions]);
+
+    const formatAvg = (h) => {
+        const hrs = Math.floor(h);
+        const mins = Math.round((h - hrs) * 60);
+        if (hrs === 0) return `${mins}dk`;
+        return `${hrs}sa ${mins}dk`;
+    };
 
     React.useEffect(() => {
         const handleKeyDown = (e) => {
@@ -47,7 +78,13 @@ const RankModal = ({ currentRank, onClose }) => {
                             </div>
                             <div>
                                 <h2 className="text-2xl font-bold text-custom-text">Unvan Yolculuğu</h2>
-                                <p className="text-custom-title/70 text-sm">Kariyer basamakların</p>
+                                <p className="text-custom-title/70 text-sm">
+                                    {stats.uniqueDays > 0 ? (
+                                        <>Günlük Ortalama: <span className="text-custom-accent font-bold">{formatAvg(stats.avg)}</span></>
+                                    ) : (
+                                        "Kariyer basamakların"
+                                    )}
+                                </p>
                             </div>
                         </div>
                         <button
@@ -66,10 +103,18 @@ const RankModal = ({ currentRank, onClose }) => {
                             const isCompleted = index < currentRankIndex;
                             const isCurrent = index === currentRankIndex;
 
+                            // Calculate remaining days for this rank
+                            let daysText = "";
+                            if (!isCompleted && !isCurrent && stats.avg > 0) {
+                                const targetHours = totalHours * (rank.min / 100);
+                                const remainingHours = Math.max(0, targetHours - completedHours);
+                                const days = Math.ceil(remainingHours / stats.avg);
+                                daysText = `~${days} gün kaldı`;
+                            }
+
                             return (
                                 <div
                                     key={index}
-
                                     className={cn(
                                         "relative flex items-center gap-4 p-3 rounded-xl border transition-all duration-300",
                                         isCurrent
@@ -84,9 +129,10 @@ const RankModal = ({ currentRank, onClose }) => {
                                             isCurrent ? "bg-custom-header text-custom-accent border-custom-accent" :
                                                 "bg-custom-header text-custom-title/30 border-custom-category/50"
                                     )}>
-                                        {isCompleted ? <CheckCircle size={20} /> :
-                                            isCurrent ? <Star size={20} className="fill-current" /> :
-                                                <Lock size={20} />}
+                                        {(() => {
+                                            const IconComponent = RANK_ICONS[rank.icon] || Star;
+                                            return <IconComponent size={24} className={isCurrent ? "fill-current" : ""} />;
+                                        })()}
                                     </div>
 
                                     {/* Content */}
@@ -98,12 +144,19 @@ const RankModal = ({ currentRank, onClose }) => {
                                             )}>
                                                 {rank.title}
                                             </h3>
-                                            <span className={cn(
-                                                "text-xs font-bold px-2 py-1 rounded-md",
-                                                isCurrent ? "bg-custom-accent/10 text-custom-accent" : "bg-custom-bg text-custom-title/40"
-                                            )}>
-                                                %{rank.min}+
-                                            </span>
+                                            <div className="flex flex-col items-end">
+                                                <span className={cn(
+                                                    "text-xs font-bold px-2 py-1 rounded-md",
+                                                    isCurrent ? "bg-custom-accent/10 text-custom-accent" : "bg-custom-bg text-custom-title/40"
+                                                )}>
+                                                    %{rank.min}+
+                                                </span>
+                                                {daysText && (
+                                                    <span className="text-[10px] font-bold text-custom-accent/60 mt-1 uppercase tracking-wider">
+                                                        {daysText}
+                                                    </span>
+                                                )}
+                                            </div>
                                         </div>
                                         <p className={cn(
                                             "text-sm",
