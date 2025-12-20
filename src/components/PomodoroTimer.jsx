@@ -441,7 +441,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, t
                 </div>
 
                 <div className="mb-6 px-3 py-1 bg-custom-bg/50 rounded-lg border border-custom-category/20 text-[10px] text-custom-title/50">
-                    Toplam Mola: <span className="text-custom-text font-bold">{totalBreakDuration || 0} dk</span>
+                    Oturum Sayısı: <span className="text-custom-text font-bold">{sessionsCount || 0}</span>
                 </div>
 
                 <div className="flex items-center gap-4">
