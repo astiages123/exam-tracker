@@ -1,6 +1,6 @@
 export const courseData = [
     {
-        category: "1. EKONOMİ (Toplam: 144 Saat)",
+        category: "1. İKTİSAT (Toplam: 144 Saat)",
         courses: [
             {
                 id: "ekonomi_1",
