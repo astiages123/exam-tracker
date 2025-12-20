@@ -21,7 +21,7 @@ const STORAGE_KEYS = {
     NOTIFIED_10: 'pomo_notified10'  // To track if we notified at 10m (break)
 };
 
-export default function PomodoroTimer({ initialCourse, courses, sessionsCount, totalBreakDuration, onSessionComplete, onClose }) {
+export default function PomodoroTimer({ initialCourse, courses, sessionsCount, onSessionComplete, onClose }) {
     // Initialize state from localStorage if available, else defaults
     const [view, setView] = useState(() => localStorage.getItem(STORAGE_KEYS.VIEW) || 'selection');
     const [selectedCourseId, setSelectedCourseId] = useState(() => {
@@ -39,7 +39,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, t
     const [isActive, setIsActive] = useState(() => localStorage.getItem(STORAGE_KEYS.IS_ACTIVE) === 'true');
 
     // Refs
-    const endTimeRef = useRef(null); // No longer used for Break (using count-up)
+    // endTimeRef removed
     const startTimeRef = useRef(null); // Used for both Work and Break (Count-up)
     const notified50MinRef = useRef(false); // Track 50m notification (work)
     const notified10MinRef = useRef(false); // Track 10m notification (break)
@@ -52,14 +52,14 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, t
 
     // 1. Restore Timer State on Mount
     useEffect(() => {
-        const savedEndTime = localStorage.getItem(STORAGE_KEYS.END_TIME);
+        // savedEndTime removed
         const savedStartTime = localStorage.getItem(STORAGE_KEYS.START_TIME);
         const savedIsActive = localStorage.getItem(STORAGE_KEYS.IS_ACTIVE) === 'true';
         const savedMode = localStorage.getItem(STORAGE_KEYS.MODE) || 'work';
         const savedNotified50 = localStorage.getItem(STORAGE_KEYS.NOTIFIED_50) === 'true';
 
         if (savedIsActive) {
-            const now = Date.now();
+            // const now = Date.now(); // Removed unused variable
 
             if (savedStartTime) {
                 // RESTORE COUNT-UP (for both Work and Break)
@@ -72,8 +72,8 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, t
                     notified10MinRef.current = localStorage.getItem(STORAGE_KEYS.NOTIFIED_10) === 'true';
                 }
 
-                const elapsed = Math.floor((now - start) / 1000);
-                setTimeLeft(elapsed); // Visual update (shows elapsed time)
+                // const elapsed = Math.floor((now - start) / 1000);
+                // setTimeLeft(elapsed); // Removed to avoid synchronous update warning; interval will update this shortly.
             }
         }
     }, []);
@@ -170,9 +170,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, t
         };
     }, [mode, selectedCourseName, selectedCourseId, onSessionComplete, timeLeft]);
 
-    const handleTimerComplete = () => {
-        if (completeRef.current) completeRef.current();
-    };
+    // handleTimerComplete removed
 
     useEffect(() => {
         if (isActive) {
@@ -223,7 +221,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, t
         }
 
         return () => clearInterval(timerRef.current);
-    }, [isActive, timeLeft]);
+    }, [isActive, timeLeft, mode]);
 
     const toggleTimer = () => {
         if (isActive) {
