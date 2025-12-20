@@ -48,9 +48,13 @@ const CelebrationOverlay = ({ courseName, onComplete }) => {
             onComplete();
         }, 6000);
 
+        // Modal scroll lock
+        document.body.style.overflow = 'hidden';
+
         return () => {
             clearInterval(interval);
             clearTimeout(timer);
+            document.body.style.overflow = 'unset';
         };
     }, [onComplete]);
 

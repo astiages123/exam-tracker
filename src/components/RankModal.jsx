@@ -51,8 +51,14 @@ const RankModal = ({ currentRank, onClose, totalHours = 0, completedHours = 0, s
             }
         };
 
+        // Modal scroll lock
+        document.body.style.overflow = 'hidden';
+
         window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = 'unset';
+        };
     }, [onClose]);
 
     return (

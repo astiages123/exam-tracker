@@ -14,8 +14,15 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
         const handleKeyDown = (e) => {
             if (e.key === 'Escape') onClose();
         };
+
+        // Modal scroll lock
+        document.body.style.overflow = 'hidden';
+
         window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = 'unset';
+        };
     }, [onClose]);
 
     // Helper to find course category

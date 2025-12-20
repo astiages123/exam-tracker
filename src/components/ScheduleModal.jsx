@@ -50,8 +50,15 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
         const handleKeyDown = (e) => {
             if (e.key === 'Escape') onClose();
         };
+
+        // Modal scroll lock
+        document.body.style.overflow = 'hidden';
+
         window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = 'unset';
+        };
     }, [onClose]);
 
     const handleNewItemChange = (day, field, value) => {

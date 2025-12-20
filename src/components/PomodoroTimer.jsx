@@ -118,8 +118,15 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
             const handleKeyDown = (e) => {
                 if (e.key === 'Escape') onClose();
             };
+
+            // Modal scroll lock
+            document.body.style.overflow = 'hidden';
+
             window.addEventListener('keydown', handleKeyDown);
-            return () => window.removeEventListener('keydown', handleKeyDown);
+            return () => {
+                window.removeEventListener('keydown', handleKeyDown);
+                document.body.style.overflow = 'unset';
+            };
         }
     }, [view, onClose]);
 
