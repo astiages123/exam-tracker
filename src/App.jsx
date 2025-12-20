@@ -25,6 +25,7 @@ import ReportModal from './components/ReportModal';
 import RankModal from './components/RankModal';
 import StreakDisplay from './components/StreakDisplay';
 import { calculateStreak } from './utils/streakUtils';
+import CelebrationOverlay from './components/CelebrationOverlay';
 
 // --- Components ---
 
@@ -101,6 +102,7 @@ export default function App() {
   const [showReport, setShowReport] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
   const [showRankModal, setShowRankModal] = useState(false);
+  const [celebratingCourse, setCelebratingCourse] = useState(null);
 
   // Daily Focus Logic
 
@@ -386,9 +388,20 @@ export default function App() {
         newSet.add(i);
       }
 
+      const newProgress = Array.from(newSet);
+
+      // Check for completion celebration
+      const course = courseData.flatMap(cat => cat.courses).find(c => c.id === courseId);
+      if (course && newProgress.length === course.totalVideos) {
+        const wasCompletedBefore = (prev[courseId] || []).length === course.totalVideos;
+        if (!wasCompletedBefore) {
+          setCelebratingCourse(course.name);
+        }
+      }
+
       return {
         ...prev,
-        [courseId]: Array.from(newSet)
+        [courseId]: newProgress
       };
     });
   };
@@ -430,6 +443,15 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-custom-bg text-custom-text font-sans selection:bg-custom-accent/30">
+      <AnimatePresence>
+        {celebratingCourse && (
+          <CelebrationOverlay
+            courseName={celebratingCourse}
+            onComplete={() => setCelebratingCourse(null)}
+          />
+        )}
+      </AnimatePresence>
+
 
 
       {showTimer && (
