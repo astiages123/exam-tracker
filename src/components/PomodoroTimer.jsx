@@ -6,8 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { playNotificationSound, initAudio } from '../utils/sound';
 import { requestNotificationPermission, sendNotification } from '../utils/notification';
 
-const WORK_TIME = 0;
-const BREAK_TIME = 0; // Constants no longer used for timing logic
+const WORK_DURATION = 50 * 60;
+const BREAK_DURATION = 10 * 60;
 
 const STORAGE_KEYS = {
     END_TIME: 'pomo_endTime',
@@ -34,7 +34,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
     const [mode, setMode] = useState(() => localStorage.getItem(STORAGE_KEYS.MODE) || 'work');
     const [timeLeft, setTimeLeft] = useState(() => {
         const saved = localStorage.getItem(STORAGE_KEYS.TIME_LEFT);
-        return saved ? parseInt(saved, 10) : WORK_TIME;
+        return saved ? parseInt(saved, 10) : 0;
     });
     const [isActive, setIsActive] = useState(() => localStorage.getItem(STORAGE_KEYS.IS_ACTIVE) === 'true');
 
@@ -197,8 +197,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                 setTimeLeft(elapsed);
 
                 if (mode === 'work') {
-                    // Check for 50 min notification (50 * 60 = 3000 seconds)
-                    if (elapsed >= 3000 && !notified50MinRef.current) {
+                    if (elapsed >= WORK_DURATION && !notified50MinRef.current) {
                         playNotificationSound();
                         sendNotification("50 Dakika Doldu!", {
                             body: "Çalışma süren 50 dakikayı geçti. Devam edebilir veya molaya çıkabilirsin.",
@@ -207,8 +206,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                         notified50MinRef.current = true;
                     }
                 } else {
-                    // Mola Modu: Check for 10 min notification (10 * 60 = 600 seconds)
-                    if (elapsed >= 600 && !notified10MinRef.current) {
+                    if (elapsed >= BREAK_DURATION && !notified10MinRef.current) {
                         playNotificationSound();
                         sendNotification("10 Dakika Doldu!", {
                             body: "Mola süren 10 dakikayı geçti. Çalışmaya geri dönebilir veya dinlenmeye devam edebilirsin.",
@@ -325,11 +323,20 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         setIsActive(true); // Automatically start break timer
     };
 
-    const formatTime = (seconds) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    const getDisplayState = () => {
+        const target = mode === 'work' ? WORK_DURATION : BREAK_DURATION;
+        const remaining = target - timeLeft;
+        const isOvertime = remaining < 0;
+        const absSeconds = Math.abs(remaining);
+
+        const mins = Math.floor(absSeconds / 60);
+        const secs = absSeconds % 60;
+        const timeStr = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+        return { text: isOvertime ? `+${timeStr}` : timeStr, isOvertime };
     };
+
+    const { text: timeText, isOvertime } = getDisplayState();
 
 
 
@@ -436,8 +443,8 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                     {mode === 'work' ? 'Çalışma Modu' : 'Mola Zamanı'}
                 </div>
 
-                <div className="text-5xl font-mono font-bold text-custom-text mb-4 tracking-tighter">
-                    {formatTime(timeLeft)}
+                <div className={`text-5xl font-mono font-bold mb-4 tracking-tighter ${isOvertime ? 'text-custom-warning animate-pulse' : 'text-custom-text'}`}>
+                    {timeText}
                 </div>
 
                 <div className="text-sm text-custom-title/70 mb-2 text-center truncate w-full px-2">

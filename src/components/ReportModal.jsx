@@ -1,6 +1,5 @@
-
-import React, { useMemo, useEffect } from 'react';
-import { X, Clock, Calendar, BookOpen, Trash2 } from 'lucide-react';
+import React, { useMemo, useEffect, useState } from 'react';
+import { X, Clock, Calendar, BookOpen, Trash2, ChevronDown } from 'lucide-react';
 import { courseData } from '../data';
 // eslint-disable-next-line
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,9 +9,11 @@ const CATEGORY_STYLES = {
 };
 
 export default function ReportModal({ sessions = [], onClose, courses = [], onDelete }) {
+    const [selectedGroup, setSelectedGroup] = useState(null);
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if (e.key === 'Escape') onClose();
+            // Only close if ESC is pressed AND no sub-modal (highlighted chart) is open
+            if (e.key === 'Escape' && !selectedGroup) onClose();
         };
 
         // Modal scroll lock
@@ -23,7 +24,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
             window.removeEventListener('keydown', handleKeyDown);
             document.body.style.overflow = 'unset';
         };
-    }, [onClose]);
+    }, [onClose, selectedGroup]);
 
     // Helper to find course category
     const getCourseCategory = (courseId) => {
@@ -136,14 +137,18 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                 const style = CATEGORY_STYLES['DEFAULT'];
 
                                 return (
-                                    <div key={group.key} className="relative flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 bg-custom-header/40 rounded-xl border border-custom-category/20 hover:border-custom-category/50 transition-colors group gap-3 sm:gap-0">
+                                    <div
+                                        key={group.key}
+                                        className="relative flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 bg-custom-header/40 rounded-xl border border-custom-category/20 hover:border-custom-accent/30 hover:bg-custom-header/60 transition-all duration-300 group gap-3 sm:gap-0 cursor-pointer shadow-sm hover:shadow-md"
+                                        onClick={() => setSelectedGroup(group)}
+                                    >
 
-                                        <div className="flex items-center gap-4"> {/* Removed mt-2 mb-1 as absolute label is gone */}
+                                        <div className="flex items-center gap-4">
                                             <div className="p-3 rounded-full bg-custom-accent/10 text-custom-accent">
                                                 <BookOpen size={16} />
                                             </div>
                                             <div>
-                                                <h4 className="font-semibold text-custom-text text-sm w-full sm:max-w-[300px] truncate"> {/* Removed pr-16 */}
+                                                <h4 className="font-semibold text-custom-text text-sm w-full sm:max-w-[300px] truncate">
                                                     {getCourseName(group.courseId)}
                                                 </h4>
                                                 <div className="flex items-center gap-2 text-xs text-custom-title/80 font-semibold mt-1">
@@ -165,7 +170,10 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                             </div>
 
                                             <button
-                                                onClick={() => onDelete && onDelete(group.sessionIds)}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    if (onDelete) onDelete(group.sessionIds);
+                                                }}
                                                 className="p-2 text-custom-title/30 hover:text-custom-error hover:bg-custom-error/10 rounded-lg transition-colors cursor-pointer"
                                                 title="Kaydı Sil"
                                             >
@@ -177,6 +185,262 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                             })}
                         </div>
                     )}
+                </div>
+            </motion.div>
+
+            {/* Sub-Modal for Detailed Chart */}
+            <AnimatePresence>
+                {selectedGroup && (
+                    <SessionChartModal
+                        group={selectedGroup}
+                        courseName={getCourseName(selectedGroup.courseId)}
+                        workSessions={workSessions}
+                        breakSessions={breakSessions}
+                        onClose={() => setSelectedGroup(null)}
+                    />
+                )}
+            </AnimatePresence>
+        </div>
+    );
+}
+
+function SessionChartModal({ group, courseName, workSessions, breakSessions, onClose }) {
+    // Esc key to close
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [onClose]);
+
+    // Prepare Timeline Data
+    const { timelineItems, startHour, endHour, isToday } = useMemo(() => {
+        const items = [];
+
+        // Helper to check same day
+        const isSameDay = (d1, d2) => {
+            const date1 = new Date(d1);
+            const date2 = new Date(d2);
+            return date1.getDate() === date2.getDate() &&
+                date1.getMonth() === date2.getMonth() &&
+                date1.getFullYear() === date2.getFullYear();
+        };
+
+        // Filter and Process Work Sessions
+        workSessions.forEach(s => {
+            if (s.courseId === group.courseId && isSameDay(s.timestamp, group.date)) {
+                // User's data indicates timestamp is START TIME
+                const start = new Date(s.timestamp);
+                const end = new Date(start.getTime() + (s.duration * 1000));
+
+                items.push({
+                    type: 'work',
+                    start: start,
+                    end: end,
+                    duration: s.duration,
+                    courseId: s.courseId
+                });
+            }
+        });
+
+        // Filter and Process Break Sessions
+        breakSessions.forEach(s => {
+            if (isSameDay(s.timestamp, group.date)) {
+                // User's data indicates timestamp is START TIME
+                const start = new Date(s.timestamp);
+                const end = new Date(start.getTime() + (s.duration * 1000));
+
+                items.push({
+                    type: 'break',
+                    start: start,
+                    end: end,
+                    duration: s.duration
+                });
+            }
+        });
+
+        // Sort by start time
+        items.sort((a, b) => a.start - b.start);
+
+        // Determine Range (Earliest Start -> Latest End)
+        let minTime = new Date(group.date).setHours(24, 0, 0, 0);
+        let maxTime = new Date(group.date).setHours(0, 0, 0, 0);
+        let hasData = false;
+
+        items.forEach(item => {
+            if (item.start < minTime) minTime = item.start;
+            if (item.end > maxTime) maxTime = item.end;
+            hasData = true;
+        });
+
+        // Default range if no data
+        let sHour = 9;
+        let eHour = 18;
+
+        if (hasData) {
+            sHour = new Date(minTime).getHours();
+            eHour = new Date(maxTime).getHours() + 1; // Round up
+
+            // Add padding
+            sHour = Math.max(0, sHour - 1);
+            eHour = Math.min(24, eHour + 1);
+        }
+
+        // Check if viewed date is today
+        const today = new Date();
+        const viewedDate = new Date(group.date);
+        const isTodayDate = isSameDay(today, viewedDate);
+
+        return {
+            timelineItems: items,
+            startHour: sHour,
+            endHour: eHour,
+            isToday: isTodayDate
+        };
+    }, [group, workSessions, breakSessions]);
+
+    // Current Time Position Calculation
+    const getCurrentTimePosition = () => {
+        const now = new Date();
+        const currentHour = now.getHours() + (now.getMinutes() / 60);
+
+        if (currentHour < startHour || currentHour > endHour) return null;
+
+        return ((currentHour - startHour) / (endHour - startHour)) * 100;
+    };
+
+    const currentTimePos = isToday ? getCurrentTimePosition() : null;
+
+    return (
+        <div
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-[2px] p-4 animate-in fade-in duration-200"
+            onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+            }}
+        >
+            <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="bg-custom-header border border-custom-category rounded-xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col max-h-[90vh] cursor-default"
+                onClick={(e) => e.stopPropagation()}
+            >
+                {/* Header */}
+                <div className="p-4 border-b border-custom-category bg-custom-bg/30 flex justify-between items-center shrink-0">
+                    <div>
+                        <h3 className="font-bold text-custom-text">Günlük Zaman Çizelgesi</h3>
+                        <p className="text-xs text-custom-title/60">{new Date(group.date).toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    </div>
+                    <button onClick={onClose} className="p-2 hover:bg-custom-bg rounded-lg text-custom-title/50 hover:text-custom-text transition-colors">
+                        <X size={18} />
+                    </button>
+                </div>
+
+                {/* Timeline Container */}
+                <div className="p-6 overflow-x-auto overflow-y-visible custom-scrollbar">
+                    <div className="relative min-w-[800px] h-64 pt-32">
+
+                        {/* Grid & Time Labels */}
+                        <div className="absolute inset-0 w-full h-full pointer-events-none">
+                            {Array.from({ length: endHour - startHour + 1 }).map((_, i) => {
+                                const hour = startHour + i;
+                                const leftPercent = (i / (endHour - startHour)) * 100;
+
+                                return (
+                                    <div
+                                        key={hour}
+                                        className="absolute top-0 bottom-0 border-l border-white/5 flex flex-col justify-end pb-0"
+                                        style={{ left: `${leftPercent}%` }}
+                                    >
+                                        <span className="absolute top-4 -translate-x-1/2 text-xs text-custom-title/30 font-mono font-medium">
+                                            {hour.toString().padStart(2, '0')}:00
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Current Time Indicator */}
+                        {currentTimePos !== null && (
+                            <div
+                                className="absolute top-[-24px] bottom-0 w-[2px] bg-red-500/80 z-20 pointer-events-none shadow-[0_0_8px_rgba(239,68,68,0.6)]"
+                                style={{ left: `${currentTimePos}%` }}
+                            >
+                                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-red-500 rounded-full"></div>
+                                <div className="absolute top-1 left-2 text-[10px] font-bold text-red-500 bg-black/80 px-1 rounded">Şimdi</div>
+                            </div>
+                        )}
+
+                        {/* Session Blocks */}
+                        <div className="absolute top-0 bottom-0 left-0 right-0">
+                            {timelineItems.map((item, index) => {
+                                // Calculate Position
+                                const itemStartHour = item.start.getHours() + (item.start.getMinutes() / 60);
+                                const itemEndHour = item.end.getHours() + (item.end.getMinutes() / 60);
+
+                                const startPercent = ((itemStartHour - startHour) / (endHour - startHour)) * 100;
+                                const durationPercent = ((itemEndHour - itemStartHour) / (endHour - startHour)) * 100;
+
+                                // Colors & Styles
+                                const isWork = item.type === 'work';
+                                const bgClass = isWork ? 'bg-custom-accent/80' : 'bg-custom-success/80';
+                                const borderClass = isWork ? 'border-custom-accent' : 'border-custom-success';
+                                const shadowClass = isWork ? 'shadow-custom-accent/20' : 'shadow-custom-success/20';
+
+                                return (
+                                    <div
+                                        key={index}
+                                        className={`absolute h-12 rounded-lg border-2 ${bgClass} ${borderClass} shadow-lg ${shadowClass} transition-all duration-200 hover:scale-105 hover:z-30 cursor-pointer group/block flex items-center justify-center`}
+                                        style={{
+                                            left: `${startPercent}%`,
+                                            width: `calc(${Math.max(durationPercent, 0.5)}% - 2px)`, // -2px for visual gap
+                                            top: '96px' // Fixed top position for single lane (approx center of remaining space)
+                                        }}
+                                    >
+                                        {/* Icon (only if width permits) */}
+                                        {durationPercent > 3 && (
+                                            <div className="text-white/90">
+                                                {isWork ? <BookOpen size={14} /> : <Clock size={14} />}
+                                            </div>
+                                        )}
+
+                                        {/* Tooltip */}
+                                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 bg-custom-header border border-custom-category text-xs p-3 rounded-lg shadow-xl whitespace-nowrap z-50 opacity-0 group-hover/block:opacity-100 transition-opacity pointer-events-none min-w-[140px]">
+                                            <div className="font-bold mb-1 text-center text-custom-text border-b border-white/10 pb-2">
+                                                {item.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {item.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            </div>
+                                            <div className="flex items-center justify-center gap-2 mt-2">
+                                                <div className={`w-2 h-2 rounded-full ${isWork ? 'bg-custom-accent' : 'bg-custom-success'}`}></div>
+                                                <span className={`${isWork ? 'text-custom-accent' : 'text-custom-success'} font-bold`}>
+                                                    {isWork ? 'Çalışma Bloğu' : 'Mola'}
+                                                </span>
+                                            </div>
+                                            <div className="text-center text-custom-title/60 mt-1">
+                                                {Math.round(item.duration / 60)} dakika
+                                            </div>
+
+                                            {/* Tooltip Arrow */}
+                                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-custom-header"></div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Footer Legend */}
+                <div className="p-4 border-t border-custom-category bg-custom-bg/30 flex justify-center gap-8 text-xs font-medium text-custom-title/60 shrink-0">
+                    <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 rounded-md bg-custom-accent/80 border border-custom-accent"></div>
+                        <span>Çalışma Oturumu ({courseName})</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 rounded-md bg-custom-success/80 border border-custom-success"></div>
+                        <span>Mola</span>
+                    </div>
                 </div>
             </motion.div>
         </div>
