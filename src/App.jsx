@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 // eslint-disable-next-line
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay } from 'lucide-react';
+import { ChevronDown, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay, BadgeCheck } from 'lucide-react';
 import ScheduleModal from './components/ScheduleModal';
 
 
@@ -26,6 +26,7 @@ import RankModal from './components/RankModal';
 import StreakDisplay from './components/StreakDisplay';
 import { calculateStreak } from './utils/streakUtils';
 import CelebrationOverlay from './components/CelebrationOverlay';
+import ActionPopover from './components/ActionPopover';
 
 // --- Components ---
 
@@ -102,7 +103,18 @@ export default function App() {
   const [showReport, setShowReport] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
   const [showRankModal, setShowRankModal] = useState(false);
+
   const [celebratingCourse, setCelebratingCourse] = useState(null);
+  const [activePopover, setActivePopover] = useState(null); // { courseId, videoId }
+
+  // ESC key to close popover
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') setActivePopover(null);
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, []);
 
   // Daily Focus Logic
 
@@ -368,31 +380,14 @@ export default function App() {
   // Refactored Toggle Handler for specific video index with auto-complete previous and auto-uncheck subsequent
   // Logic: Clicking video N ensures 1..N are checked, and N+1..End are unchecked.
   // It effectively sets the progress "level" to N.
-  const handleVideoToggle = (courseId, videoIndex) => {
-    setLastActiveCourseId(courseId); // Update active context
-
+  // Renamed and refactored for Smart Logic
+  const updateProgress = (courseId, newCompletedIds) => {
+    setLastActiveCourseId(courseId);
     setProgressData(prev => {
-      const currentProgress = prev[courseId] || [];
-
-      // If toggling the first video and it's already the only one completed, clear everything
-      if (videoIndex === 1 && currentProgress.length === 1 && currentProgress[0] === 1) {
-        return {
-          ...prev,
-          [courseId]: []
-        };
-      }
-
-      // Create a set of 1..videoIndex
-      const newSet = new Set();
-      for (let i = 1; i <= videoIndex; i++) {
-        newSet.add(i);
-      }
-
-      const newProgress = Array.from(newSet);
-
-      // Check for completion celebration
       const course = courseData.flatMap(cat => cat.courses).find(c => c.id === courseId);
-      if (course && newProgress.length === course.totalVideos) {
+
+      // Celebration Check
+      if (course && newCompletedIds.length === course.totalVideos) {
         const wasCompletedBefore = (prev[courseId] || []).length === course.totalVideos;
         if (!wasCompletedBefore) {
           setCelebratingCourse(course.name);
@@ -401,9 +396,71 @@ export default function App() {
 
       return {
         ...prev,
-        [courseId]: newProgress
+        [courseId]: newCompletedIds
       };
     });
+  };
+
+  const handleVideoClick = (courseId, videoId) => {
+    // e.stopPropagation(); // Handled in render
+
+    const currentCompleted = progressData[courseId] || [];
+    const isCompleted = currentCompleted.includes(videoId);
+
+    // If already completed: Toggle OFF (Simple toggle to preserve gaps)
+    if (isCompleted) {
+      updateProgress(courseId, currentCompleted.filter(id => id !== videoId));
+      return;
+    }
+
+    // Find video index and check sequentiality
+    const course = courseData.flatMap(cat => cat.courses).find(c => c.id === courseId);
+    const videos = course?.videos || [];
+    const index = videos.findIndex(v => v.id === videoId);
+
+    if (index === -1) return;
+
+    const prevVideo = index > 0 ? videos[index - 1] : null;
+    const isSequential = !prevVideo || currentCompleted.includes(prevVideo.id);
+
+    if (isSequential) {
+      // Just mark this one
+      updateProgress(courseId, [...currentCompleted, videoId]);
+    } else {
+      // GAP detected! Show Popover
+      setActivePopover({ courseId, videoId });
+    }
+  };
+
+  const handlePopoverAction = (action) => {
+    if (!activePopover) return;
+    const { courseId, videoId } = activePopover;
+    const currentCompleted = progressData[courseId] || [];
+
+    if (action === 'single') {
+      updateProgress(courseId, [...currentCompleted, videoId]);
+    } else if (action === 'range') {
+      // Mark all from "Last Completed BEFORE this" up to "this"
+      // Actually, logic is: Find all videos up to `videoId`. 
+      // Filter those that are NOT already completed. Add them.
+      const course = courseData.flatMap(cat => cat.courses).find(c => c.id === courseId);
+      const videos = course?.videos || []; // Assuming videos are sorted
+      const targetIndex = videos.findIndex(v => v.id === videoId);
+
+      const newIds = [...currentCompleted];
+
+      // We only fill the gap backwards until we hit a completed one or the start
+      // Actually, user said "Buraya kadar hepsini işaretle".
+      // Usually implies filling the immediate gap.
+      for (let i = 0; i <= targetIndex; i++) {
+        const vId = videos[i].id;
+        if (!newIds.includes(vId)) {
+          newIds.push(vId);
+        }
+      }
+      updateProgress(courseId, newIds);
+    }
+    setActivePopover(null);
   };
 
   // Re-calculate stats with new data structure
@@ -448,6 +505,19 @@ export default function App() {
           <CelebrationOverlay
             courseName={celebratingCourse}
             onComplete={() => setCelebratingCourse(null)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Popover Backdrop - Closes when clicking anywhere outside the popover */}
+      <AnimatePresence>
+        {activePopover && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setActivePopover(null)}
+            className="fixed inset-0 z-40 bg-black/5 backdrop-blur-[1px] cursor-default"
           />
         )}
       </AnimatePresence>
@@ -701,7 +771,12 @@ export default function App() {
                         <BookOpen size={24} className={styles.accent} />
                       </div>
                       <div>
-                        <h3 className={cn("font-semibold text-lg tracking-tight transition-colors", styles.accent)}>{category.category.split('(')[0]}</h3>
+                        <div className="flex items-center gap-2">
+                          <h3 className={cn("font-semibold text-lg tracking-tight transition-colors", categoryPercent === 100 ? "text-amber-400" : styles.accent)}>
+                            {category.category.split('(')[0]}
+                          </h3>
+                          {categoryPercent === 100 && <Trophy size={18} className="text-amber-400 animate-bounce" />}
+                        </div>
                         <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-2">
                           <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold text-custom-title/80 bg-black/5 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg border border-black/5 whitespace-nowrap">
                             <Timer size={14} className={styles.accent} />
@@ -758,8 +833,19 @@ export default function App() {
                             completedVideos: completedIds
                           };
 
+                          const isCourseCompleted = courseProgress.completed === courseProgress.total && courseProgress.total > 0;
+
                           return (
-                            <div key={course.id} className={cn("border rounded-xl overflow-hidden shadow-lg shadow-black/20", styles.bg, styles.border)}>
+                            <div
+                              key={course.id}
+                              className={cn(
+                                "border rounded-xl overflow-hidden shadow-lg shadow-black/20 transition-all duration-300",
+                                isCourseCompleted
+                                  ? "border-amber-400/40 bg-amber-400/5 shadow-amber-400/10"
+                                  : styles.border,
+                                isCourseCompleted ? "" : styles.bg
+                              )}
+                            >
                               <div
                                 className="p-3 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
                                 onClick={() => toggleCourse(course.id)}
@@ -768,8 +854,15 @@ export default function App() {
                                   <div className={cn("p-2 rounded-lg shrink-0", styles.iconBg)}>
                                     <BookOpen className={styles.accent} size={20} />
                                   </div>
-                                  <div className="min-w-0">
-                                    <h3 className="font-bold text-sm text-custom-title/80 truncate">{course.name}</h3>
+                                  <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-2">
+                                      <h3 className={cn("font-bold text-sm truncate", isCourseCompleted ? "text-amber-200" : "text-custom-title/80")}>
+                                        {course.name}
+                                      </h3>
+                                      {isCourseCompleted && (
+                                        <BadgeCheck size={16} className="text-amber-400 shrink-0" />
+                                      )}
+                                    </div>
                                     <div className="flex items-center gap-2 mt-0.5">
                                       <div className="flex flex-col items-start gap-1.5 mt-1.5">
                                         <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-custom-title/70 bg-black/5 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md whitespace-nowrap">
@@ -806,7 +899,7 @@ export default function App() {
                                   )}
 
                                   <div className="px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg bg-zinc-800/80 backdrop-blur-sm border border-white/5 shadow-inner">
-                                    <span className={cn("text-xs sm:text-sm font-bold tracking-tight", styles.accent)}>
+                                    <span className={cn("text-xs sm:text-sm font-bold tracking-tight", isCourseCompleted ? "text-amber-400" : styles.accent)}>
                                       %{Math.round(courseProgress.percentage)}
                                     </span>
                                   </div>
@@ -830,10 +923,23 @@ export default function App() {
                                       <div className="flex flex-col gap-2">
                                         {courseVideos.map((video) => {
                                           const isCompleted = courseProgress.completedVideos.includes(video.id);
+                                          const isGap = isCompleted &&
+                                            (() => {
+                                              const vIndex = courseVideos.findIndex(v => v.id === video.id);
+                                              if (vIndex <= 0) return false;
+                                              const prevId = courseVideos[vIndex - 1].id;
+                                              return !courseProgress.completedVideos.includes(prevId);
+                                            })();
+
                                           return (
                                             <div
                                               key={video.id}
-                                              onClick={() => handleVideoToggle(course.id, video.id)}
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                // If popover is open elsewhere, close it
+                                                if (activePopover) setActivePopover(null);
+                                                handleVideoClick(course.id, video.id);
+                                              }}
                                               className={cn(
                                                 "group relative p-3 rounded-lg border border-dashed transition-all duration-300 flex items-center justify-between cursor-pointer",
                                                 isCompleted
@@ -845,10 +951,10 @@ export default function App() {
                                                 <div className={cn(
                                                   "w-6 h-6 rounded-full flex items-center justify-center border transition-all duration-300 shrink-0",
                                                   isCompleted
-                                                    ? `${styles.accent.replace('text-', 'bg-')} ${styles.accent.replace('text-', 'border-')}`
+                                                    ? (isGap ? 'bg-amber-500/20 border-amber-500' : `${styles.accent.replace('text-', 'bg-')} ${styles.accent.replace('text-', 'border-')}`)
                                                     : 'border-custom-category/50 group-hover:border-custom-accent'
                                                 )}>
-                                                  {isCompleted && <Check size={14} className="text-white" strokeWidth={3} />}
+                                                  {isCompleted && <Check size={14} className={isGap ? 'text-amber-500' : 'text-white'} strokeWidth={3} />}
                                                 </div>
                                                 <span className={cn("font-mono text-xs font-bold tracking-tight shrink-0", isCompleted ? styles.accent : 'text-custom-title/70')}>
                                                   #{video.id}
@@ -861,6 +967,25 @@ export default function App() {
                                               <span className={cn("text-xs font-mono font-medium ml-2 px-2 py-1 rounded-md bg-black/10 shrink-0", styles.accent)}>
                                                 {video.duration}
                                               </span>
+
+                                              {/* POPOVER RENDER */}
+                                              <AnimatePresence>
+                                                {activePopover?.courseId === course.id && activePopover?.videoId === video.id && (
+                                                  <motion.div
+                                                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                    exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                                                    className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 z-50"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                  >
+                                                    <ActionPopover
+                                                      videoId={video.id}
+                                                      onMarkSingle={() => handlePopoverAction('single')}
+                                                      onMarkRange={() => handlePopoverAction('range')}
+                                                    />
+                                                  </motion.div>
+                                                )}
+                                              </AnimatePresence>
                                             </div>
                                           );
                                         })}
