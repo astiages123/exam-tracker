@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-// eslint-disable-next-line
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay, BadgeCheck } from 'lucide-react';
 import ScheduleModal from './components/ScheduleModal';
 
@@ -37,13 +36,13 @@ const ProgressBar = ({ progress, nextLevelMin, currentLevelMin }) => {
 
   return (
     <div className="w-full bg-custom-header rounded-full h-3 mt-4 overflow-hidden">
-      <motion.div
+      <Motion.div
         className="h-full bg-custom-accent rounded-full relative"
         initial={{ width: 0 }}
         animate={{ width: `${percentage}%` }}
         transition={{ duration: 0.5 }}
       >
-      </motion.div>
+      </Motion.div>
     </div>
   );
 };
@@ -53,7 +52,7 @@ const ProgressBar = ({ progress, nextLevelMin, currentLevelMin }) => {
 const CategoryProgressBar = ({ percentage, colorClass }) => {
   return (
     <div className="w-full bg-custom-category/50 rounded-full h-1.5 mt-2 overflow-hidden">
-      <motion.div
+      <Motion.div
         className={cn("h-full", colorClass || "bg-custom-accent")}
         initial={{ width: 0 }}
         animate={{ width: `${percentage}%` }}
@@ -512,7 +511,7 @@ export default function App() {
       {/* Popover Backdrop - Closes when clicking anywhere outside the popover */}
       <AnimatePresence>
         {activePopover && (
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -806,7 +805,7 @@ export default function App() {
 
                 <AnimatePresence>
                   {expandedCategories.has(catIdx) && (
-                    <motion.div
+                    <Motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
@@ -913,7 +912,7 @@ export default function App() {
 
                               <AnimatePresence>
                                 {expandedCourses.has(course.id) && (
-                                  <motion.div
+                                  <Motion.div
                                     initial={{ height: 0, opacity: 0 }}
                                     animate={{ height: 'auto', opacity: 1 }}
                                     exit={{ height: 0, opacity: 0 }}
@@ -971,7 +970,7 @@ export default function App() {
                                               {/* POPOVER RENDER */}
                                               <AnimatePresence>
                                                 {activePopover?.courseId === course.id && activePopover?.videoId === video.id && (
-                                                  <motion.div
+                                                  <Motion.div
                                                     initial={{ opacity: 0, scale: 0.9, y: 10 }}
                                                     animate={{ opacity: 1, scale: 1, y: 0 }}
                                                     exit={{ opacity: 0, scale: 0.9, y: 10 }}
@@ -983,7 +982,7 @@ export default function App() {
                                                       onMarkSingle={() => handlePopoverAction('single')}
                                                       onMarkRange={() => handlePopoverAction('range')}
                                                     />
-                                                  </motion.div>
+                                                  </Motion.div>
                                                 )}
                                               </AnimatePresence>
                                             </div>
@@ -991,14 +990,14 @@ export default function App() {
                                         })}
                                       </div>
                                     </div>
-                                  </motion.div>
+                                  </Motion.div>
                                 )}
                               </AnimatePresence>
                             </div>
                           );
                         })}
                       </div>
-                    </motion.div>
+                    </Motion.div>
                   )}
                 </AnimatePresence>
               </div>
