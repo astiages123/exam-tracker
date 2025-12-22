@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { X, Clock, Calendar, BookOpen, Trash2, ChevronDown } from 'lucide-react';
+import { X, Clock, Calendar, BookOpen, Trash2, ChevronDown, BarChart2, List } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { courseData } from '../data';
 // eslint-disable-next-line
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,6 +11,7 @@ const CATEGORY_STYLES = {
 
 export default function ReportModal({ sessions = [], onClose, courses = [], onDelete }) {
     const [selectedGroup, setSelectedGroup] = useState(null);
+    const [activeTab, setActiveTab] = useState('list'); // 'list' or 'graph'
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -81,6 +83,92 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
         return Object.values(groups).sort((a, b) => b.date - a.date);
     }, [workSessions]);
 
+    // Graph Data Calculation
+    const chartData = useMemo(() => {
+        const dailyData = {};
+
+        workSessions.forEach(session => {
+            if (!session.timestamp) return;
+            // Use local date string to group by day safely
+            const dateObj = new Date(session.timestamp);
+            const dateKey = dateObj.toLocaleDateString("en-CA"); // YYYY-MM-DD
+
+            if (!dailyData[dateKey]) {
+                dailyData[dateKey] = { seconds: 0, courseIds: new Set() };
+            }
+            dailyData[dateKey].seconds += (session.duration || 0);
+            if (session.courseId) {
+                dailyData[dateKey].courseIds.add(session.courseId);
+            }
+        });
+
+        // Generate last 6 days
+        const result = [];
+        for (let i = 5; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            const dateKey = d.toLocaleDateString("en-CA");
+
+            const dayInfo = dailyData[dateKey] || { seconds: 0, courseIds: new Set() };
+            const courseNames = Array.from(dayInfo.courseIds).map(id => getCourseName(id));
+
+            result.push({
+                date: dateKey,
+                hours: parseFloat((dayInfo.seconds / 3600).toFixed(1)), // Hours with 1 decimal
+                fullDate: d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }),
+                displayDate: d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }),
+                dayIndex: d.getDay(), // 0 = Sun, 6 = Sat
+                courses: courseNames
+            });
+        }
+
+        // Weekend Logic: If one weekend day has work and the other is 0, hide the 0 day.
+        const satIndex = result.findIndex(r => r.dayIndex === 6);
+        const sunIndex = result.findIndex(r => r.dayIndex === 0);
+
+        if (satIndex !== -1 && sunIndex !== -1) {
+            const satHours = result[satIndex].hours;
+            const sunHours = result[sunIndex].hours;
+
+            if (satHours > 0 && sunHours === 0) {
+                // Remove Sunday
+                result.splice(sunIndex, 1);
+            } else if (sunHours > 0 && satHours === 0) {
+                // Remove Saturday
+                result.splice(satIndex, 1);
+            }
+        }
+
+        return result;
+    }, [workSessions, courses]);
+
+    // Custom Tooltip for Chart
+    const CustomTooltip = ({ active, payload, label }) => {
+        if (active && payload && payload.length) {
+            const data = payload[0].payload;
+            return (
+                <div className="bg-custom-header border border-custom-category p-3 rounded-lg shadow-xl min-w-[150px]">
+                    <p className="text-custom-title/80 text-xs mb-1 font-medium border-b border-white/5 pb-1">{data.fullDate}</p>
+                    <p className="text-custom-accent font-bold text-sm mt-1">
+                        {payload[0].value} Saat
+                    </p>
+                    {data.courses && data.courses.length > 0 && (
+                        <div className="mt-2 space-y-1">
+                            <p className="text-[10px] text-custom-title/40 uppercase font-bold tracking-wider">Çalışılan Dersler:</p>
+                            {data.courses.map((course, idx) => (
+                                <div key={idx} className="text-xs text-custom-text flex items-center gap-1.5 font-medium">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-custom-accent/40" />
+                                    {course}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            );
+        }
+        return null;
+    };
+
     return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 cursor-pointer"
@@ -89,7 +177,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
             <motion.div
                 initial={{ scale: 0.9, opacity: 0, y: 20 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
-                className="bg-custom-bg border border-custom-category rounded-2xl w-[95%] sm:w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl cursor-default"
+                className="bg-custom-bg border border-custom-category rounded-2xl w-[95%] sm:w-full max-w-5xl max-h-[90vh] flex flex-col shadow-2xl cursor-default"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
@@ -99,7 +187,29 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                             <BookOpen className="text-custom-accent" />
                             Çalışma Raporu
                         </h2>
-                        <p className="text-sm text-custom-title/60">Kaydedilen oturum detayları</p>
+                        {/* Tab Navigation */}
+                        <div className="flex items-center gap-2 mt-2">
+                            <button
+                                onClick={() => setActiveTab('list')}
+                                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'list'
+                                    ? 'bg-custom-accent/10 text-custom-accent ring-1 ring-custom-accent/50'
+                                    : 'text-custom-title/60 hover:bg-custom-header hover:text-custom-text'
+                                    }`}
+                            >
+                                <List size={16} />
+                                Oturumlar
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('graph')}
+                                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'graph'
+                                    ? 'bg-custom-accent/10 text-custom-accent ring-1 ring-custom-accent/50'
+                                    : 'text-custom-title/60 hover:bg-custom-header hover:text-custom-text'
+                                    }`}
+                            >
+                                <BarChart2 size={16} />
+                                Performans Grafiği
+                            </button>
+                        </div>
                     </div>
                     <button
                         onClick={onClose}
@@ -126,65 +236,122 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                     </div>
                 </div>
 
-                {/* List Content */}
+                {/* Content Area */}
                 <div className="flex-1 overflow-y-auto p-4 md:p-6 custom-scrollbar">
-                    {aggregatedSessions.length === 0 ? (
-                        <div className="text-center py-12 text-custom-title/40">
-                            <Clock size={48} className="mx-auto mb-4 opacity-20" />
-                            <p>Henüz kayıtlı bir çalışma oturumu bulunmuyor.</p>
-                        </div>
-                    ) : (
-                        <div className="space-y-3">
-                            {aggregatedSessions.map((group) => {
-                                const style = CATEGORY_STYLES['DEFAULT'];
+                    {activeTab === 'list' ? (
+                        /* List View */
+                        <>
+                            {aggregatedSessions.length === 0 ? (
+                                <div className="text-center py-12 text-custom-title/40">
+                                    <Clock size={48} className="mx-auto mb-4 opacity-20" />
+                                    <p>Henüz kayıtlı bir çalışma oturumu bulunmuyor.</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-3">
+                                    {aggregatedSessions.map((group) => {
+                                        const style = CATEGORY_STYLES['DEFAULT'];
 
-                                return (
-                                    <div
-                                        key={group.key}
-                                        className="relative flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 bg-custom-header/40 rounded-xl border border-custom-category/20 hover:border-custom-accent/30 hover:bg-custom-header/60 transition-all duration-300 group gap-3 sm:gap-0 cursor-pointer shadow-sm hover:shadow-md"
-                                        onClick={() => setSelectedGroup(group)}
-                                    >
+                                        return (
+                                            <div
+                                                key={group.key}
+                                                className="relative flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 bg-custom-header/40 rounded-xl border border-custom-category/20 hover:border-custom-accent/30 hover:bg-custom-header/60 transition-all duration-300 group gap-3 sm:gap-0 cursor-pointer shadow-sm hover:shadow-md"
+                                                onClick={() => setSelectedGroup(group)}
+                                            >
 
-                                        <div className="flex items-center gap-4">
-                                            <div className="p-3 rounded-full bg-custom-accent/10 text-custom-accent">
-                                                <BookOpen size={16} />
-                                            </div>
-                                            <div>
-                                                <h4 className="font-semibold text-custom-text text-sm w-full sm:max-w-[300px] truncate">
-                                                    {getCourseName(group.courseId)}
-                                                </h4>
-                                                <div className="flex items-center gap-2 text-xs text-custom-title/80 font-semibold mt-1">
-                                                    <Calendar size={12} />
-                                                    {new Date(group.date).toLocaleDateString('tr-TR')}
-                                                    {getCourseCategory(group.courseId) && (
-                                                        <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-none border-[0.5px] ${style.bg} ${style.border} ${style.text} ml-2 whitespace-nowrap`}>
-                                                            {getCourseCategory(group.courseId)}
-                                                        </span>
-                                                    )}
+                                                <div className="flex items-center gap-4">
+                                                    <div className="p-3 rounded-full bg-custom-accent/10 text-custom-accent">
+                                                        <BookOpen size={16} />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-semibold text-custom-text text-sm w-full sm:max-w-[300px] truncate">
+                                                            {getCourseName(group.courseId)}
+                                                        </h4>
+                                                        <div className="flex items-center gap-2 text-xs text-custom-title/80 font-semibold mt-1">
+                                                            <Calendar size={12} />
+                                                            {new Date(group.date).toLocaleDateString('tr-TR')}
+                                                            {getCourseCategory(group.courseId) && (
+                                                                <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-none border-[0.5px] ${style.bg} ${style.border} ${style.text} ml-2 whitespace-nowrap`}>
+                                                                    {getCourseCategory(group.courseId)}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 mt-2 sm:mt-0">
+                                                    <div className="text-right">
+                                                        <span className="font-mono font-bold text-custom-text">{Math.round(group.totalDuration / 60)}</span>
+                                                        <span className="text-xs text-custom-title/50 ml-1">dk</span>
+                                                    </div>
+
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            if (onDelete) onDelete(group.sessionIds);
+                                                        }}
+                                                        className="p-2 text-custom-title/30 hover:text-custom-error hover:bg-custom-error/10 rounded-lg transition-colors cursor-pointer"
+                                                        title="Kaydı Sil"
+                                                    >
+                                                        <Trash2 size={18} />
+                                                    </button>
                                                 </div>
                                             </div>
-                                        </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </>
+                    ) : (
+                        /* Graph View */
+                        <div className="h-full min-h-[400px] flex flex-col">
+                            <div className="flex justify-between items-center mb-6">
+                                <div>
+                                    <h3 className="text-lg font-bold text-custom-text">Günlük Çalışma Performansı</h3>
+                                    <p className="text-sm text-custom-title/60">Son 6 gün içindeki günlük çalışma süreleri</p>
+                                </div>
+                            </div>
 
-                                        <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 mt-2 sm:mt-0">
-                                            <div className="text-right">
-                                                <span className="font-mono font-bold text-custom-text">{Math.round(group.totalDuration / 60)}</span>
-                                                <span className="text-xs text-custom-title/50 ml-1">dk</span>
-                                            </div>
-
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    if (onDelete) onDelete(group.sessionIds);
-                                                }}
-                                                className="p-2 text-custom-title/30 hover:text-custom-error hover:bg-custom-error/10 rounded-lg transition-colors cursor-pointer"
-                                                title="Kaydı Sil"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                            {chartData.length > 0 ? (
+                                <div className="w-full h-[400px] min-h-[400px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <LineChart
+                                            data={chartData}
+                                            margin={{ top: 20, right: 30, left: 10, bottom: 5 }}
+                                        >
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                                            <XAxis
+                                                dataKey="displayDate"
+                                                stroke="#ffffff50"
+                                                fontSize={12}
+                                                tickLine={false}
+                                                axisLine={false}
+                                                tickMargin={10}
+                                            />
+                                            <YAxis
+                                                stroke="#ffffff50"
+                                                fontSize={12}
+                                                tickLine={false}
+                                                axisLine={false}
+                                                tickFormatter={(value) => `${value}s`}
+                                            />
+                                            <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#ffffff20', strokeWidth: 2 }} />
+                                            <Line
+                                                type="monotone"
+                                                dataKey="hours"
+                                                stroke="#a855f7" // custom-accent color hardcoded or use variable if possible, but hex is safer for recharts
+                                                strokeWidth={3}
+                                                dot={{ fill: '#a855f7', strokeWidth: 2, r: 4, stroke: '#1a1a1a' }}
+                                                activeDot={{ r: 6, strokeWidth: 0 }}
+                                            />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center h-full text-custom-title/40">
+                                    <BarChart2 size={48} className="mx-auto mb-4 opacity-20" />
+                                    <p>Görüntülenecek veri bulunamadı.</p>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
