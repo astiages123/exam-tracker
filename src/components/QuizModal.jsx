@@ -13,6 +13,7 @@ export default function QuizModal({ isOpen, onClose, courseId, courseName, noteP
     const [score, setScore] = useState(0);
     const [showResult, setShowResult] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [isAutoGenerating, setIsAutoGenerating] = useState(false); // Background generation state
     const [activeTab, setActiveTab] = useState('quiz'); // 'quiz' | 'stats'
 
     // State to track answers: { [questionIndex]: selectedOptionIndex }
@@ -134,7 +135,7 @@ export default function QuizModal({ isOpen, onClose, courseId, courseName, noteP
             // Filter out duplicates if any
             const existingIds = new Set(selectedQuestions.map(q => q.id));
             const availableGeneral = allData.filter(q => !existingIds.has(q.id));
-            const neededCount = 10 - selectedQuestions.length;
+            const neededCount = 20 - selectedQuestions.length;
 
             const shuffledGeneral = shuffleArray(availableGeneral).slice(0, neededCount);
             selectedQuestions = [...selectedQuestions, ...shuffledGeneral];
@@ -232,18 +233,45 @@ export default function QuizModal({ isOpen, onClose, courseId, courseName, noteP
         await Promise.all(updates);
     };
 
+    const triggerAutoGenerate = async () => {
+        if (isAutoGenerating || !notePath) return;
+        setIsAutoGenerating(true);
+        console.log("Auto-generating 50 more questions in background...");
+        try {
+            const rawText = await fetchNoteContent(notePath);
+            if (!rawText || rawText.length < 100) return;
+
+            const weak = userStats
+                .sort((a, b) => a.success_rate - b.success_rate)
+                .slice(0, 3)
+                .map(s => s.topic);
+
+            const newQuestions = await generateQuestions(courseId, courseName, rawText, questions.length, weak);
+
+            if (newQuestions && newQuestions.length > 0) {
+                setQuestions(prev => [...prev, ...newQuestions]);
+                console.log(`Successfully added ${newQuestions.length} auto-generated questions.`);
+            }
+        } catch (err) {
+            console.error("Auto generation background error:", err);
+        } finally {
+            setIsAutoGenerating(false);
+        }
+    };
+
     const handleNextQuestion = () => {
+        // Auto-generate if 10 questions left
+        const remaining = questions.length - (currentIndex + 1);
+        if (remaining <= 10 && !isAutoGenerating) {
+            triggerAutoGenerate();
+        }
+
         if (currentIndex < questions.length - 1) {
             setCurrentIndex(prev => prev + 1);
             setIsSubmitted(false);
         } else {
-            if (currentIndex < questions.length - 1) {
-                setCurrentIndex(prev => prev + 1);
-                setIsSubmitted(false);
-            } else {
-                setShowResult(true);
-                saveResultsToDb(); // Fire and forget or await? Better to await if we want to show updated stats immediately
-            }
+            setShowResult(true);
+            saveResultsToDb();
         }
     };
 
@@ -318,7 +346,15 @@ export default function QuizModal({ isOpen, onClose, courseId, courseName, noteP
                                     <HelpCircle className="w-6 h-6 text-purple-500" />
                                     Soru Bankası
                                 </h2>
-                                <p className="text-sm text-gray-400">{courseName}</p>
+                                <p className="text-sm text-gray-400 flex items-center gap-2">
+                                    {courseName}
+                                    {isAutoGenerating && (
+                                        <span className="flex items-center gap-1 text-xs text-purple-400 animate-pulse">
+                                            <div className="w-2 h-2 bg-purple-500 rounded-full" />
+                                            Yeni sorular hazırlanıyor...
+                                        </span>
+                                    )}
+                                </p>
                             </div>
                             <button
                                 onClick={onClose}
@@ -615,9 +651,12 @@ export default function QuizModal({ isOpen, onClose, courseId, courseName, noteP
                             ) : (
                                 <button
                                     onClick={handleNextQuestion}
-                                    className="px-6 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-500 transition-colors flex items-center gap-2"
+                                    disabled={currentIndex === questions.length - 1 && isAutoGenerating}
+                                    className="px-6 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-500 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {currentIndex === questions.length - 1 ? 'Sonucu Gör' : 'Sonraki Soru'}
+                                    {currentIndex === questions.length - 1
+                                        ? (isAutoGenerating ? 'Yeni Sorular Üretiliyor...' : 'Sonucu Gör')
+                                        : 'Sonraki Soru'}
                                     <ChevronRight size={18} />
                                 </button>
                             )}
