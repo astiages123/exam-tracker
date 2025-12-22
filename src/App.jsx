@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay, BadgeCheck } from 'lucide-react';
+import { ChevronDown, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay, BadgeCheck, FileText } from 'lucide-react';
 import ScheduleModal from './components/ScheduleModal';
 
 
@@ -22,6 +22,7 @@ import Login from './components/Login';
 import PomodoroTimer from './components/PomodoroTimer';
 import ReportModal from './components/ReportModal';
 import RankModal from './components/RankModal';
+import NotesModal from './components/NotesModal';
 import StreakDisplay from './components/StreakDisplay';
 import { calculateStreak } from './utils/streakUtils';
 import CelebrationOverlay from './components/CelebrationOverlay';
@@ -105,6 +106,7 @@ export default function App() {
 
   const [celebratingCourse, setCelebratingCourse] = useState(null);
   const [activePopover, setActivePopover] = useState(null); // { courseId, videoId }
+  const [activeNoteCourse, setActiveNoteCourse] = useState(null); // { name, path }
 
   // ESC key to close popover
   useEffect(() => {
@@ -274,16 +276,17 @@ export default function App() {
     }
   }, [user, progressData, sessions, schedule, activityLog, isDataLoaded]);
 
-  const handleSessionComplete = (duration, type, overrideCourseId) => {
+  const handleSessionComplete = (duration, type, overrideCourseId, startTime, pauses) => {
     // [MODIFIED] Now we record 'break' sessions too
     // if (type !== 'work') return;
 
     const newSession = {
       // eslint-disable-next-line react-hooks/purity
-      timestamp: Date.now(),
+      timestamp: startTime || Date.now(), // [MODIFIED] Use passed start time if available
       duration,
       type,
-      courseId: overrideCourseId || lastActiveCourseId
+      courseId: overrideCourseId || lastActiveCourseId,
+      pauses: pauses || [] // [NEW] Store pauses
     };
     setSessions(prev => [...prev, newSession]);
 
@@ -561,6 +564,14 @@ export default function App() {
           completedHours={completedHours}
           sessions={sessions}
           onClose={() => setShowRankModal(false)}
+        />
+      )}
+
+      {activeNoteCourse && (
+        <NotesModal
+          courseName={activeNoteCourse.name}
+          notePath={activeNoteCourse.path}
+          onClose={() => setActiveNoteCourse(null)}
         />
       )}
 
@@ -895,6 +906,19 @@ export default function App() {
                                     >
                                       <Youtube size={16} className="text-red-600 group-hover/yt:text-red-700 sm:w-5 sm:h-5" strokeWidth={2} />
                                     </a>
+                                  )}
+
+                                  {course.notePath && (
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setActiveNoteCourse({ name: course.name, path: course.notePath });
+                                      }}
+                                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-emerald-100 flex items-center justify-center hover:bg-emerald-200 transition-all hover:scale-105 shadow-sm group/note"
+                                      title="Ders Notları"
+                                    >
+                                      <FileText size={16} className="text-emerald-600 group-hover/note:text-emerald-700 sm:w-5 sm:h-5" strokeWidth={2} />
+                                    </button>
                                   )}
 
                                   <div className="px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg bg-zinc-800/80 backdrop-blur-sm border border-white/5 shadow-inner">

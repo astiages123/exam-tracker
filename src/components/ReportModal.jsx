@@ -230,17 +230,71 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
         // Filter and Process Work Sessions
         workSessions.forEach(s => {
             if (s.courseId === group.courseId && isSameDay(s.timestamp, group.date)) {
-                // User's data indicates timestamp is START TIME
-                const start = new Date(s.timestamp);
-                const end = new Date(start.getTime() + (s.duration * 1000));
 
-                items.push({
-                    type: 'work',
-                    start: start,
-                    end: end,
-                    duration: s.duration,
-                    courseId: s.courseId
-                });
+                const start = new Date(s.timestamp);
+                const pauses = s.pauses || [];
+
+                if (pauses.length === 0) {
+                    // Standard continuous session
+                    const end = new Date(start.getTime() + (s.duration * 1000));
+                    items.push({
+                        type: 'work',
+                        start: start,
+                        end: end,
+                        duration: s.duration,
+                        courseId: s.courseId
+                    });
+                } else {
+                    // Session with pauses - fragment it
+                    let currentStart = start.getTime();
+                    let accumulatedWork = 0;
+
+                    // Sort pauses to be safe
+                    const sortedPauses = [...pauses].sort((a, b) => a.start - b.start);
+
+                    sortedPauses.forEach(pause => {
+                        // 1. Work Segment before pause
+                        // Check if there is actual work time before this pause starts
+                        if (pause.start > currentStart) {
+                            const segDuration = (pause.start - currentStart) / 1000;
+                            if (segDuration > 0) {
+                                items.push({
+                                    type: 'work',
+                                    start: new Date(currentStart),
+                                    end: new Date(pause.start),
+                                    duration: segDuration,
+                                    courseId: s.courseId
+                                });
+                                accumulatedWork += segDuration;
+                            }
+                        }
+
+                        // 2. Pause Segment
+                        const pauseDuration = (pause.end - pause.start) / 1000;
+                        if (pauseDuration > 0) {
+                            items.push({
+                                type: 'pause-interval', // Distinct from 'break' (standard pomodoro break)
+                                start: new Date(pause.start),
+                                end: new Date(pause.end),
+                                duration: pauseDuration
+                            });
+                        }
+
+                        currentStart = pause.end;
+                    });
+
+                    // 3. Remaining Work Segment after last pause
+                    const remainingWork = s.duration - accumulatedWork;
+                    if (remainingWork > 0) {
+                        items.push({
+                            type: 'work',
+                            start: new Date(currentStart),
+                            end: new Date(currentStart + (remainingWork * 1000)),
+                            duration: remainingWork,
+                            courseId: s.courseId
+                        });
+                    }
+                }
             }
         });
 
@@ -385,9 +439,26 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
 
                                 // Colors & Styles
                                 const isWork = item.type === 'work';
-                                const bgClass = isWork ? 'bg-custom-accent/80' : 'bg-custom-success/80';
-                                const borderClass = isWork ? 'border-custom-accent' : 'border-custom-success';
-                                const shadowClass = isWork ? 'shadow-custom-accent/20' : 'shadow-custom-success/20';
+                                const isBreak = item.type === 'break';
+                                const isPause = item.type === 'pause-interval';
+
+                                let bgClass = '';
+                                let borderClass = '';
+                                let shadowClass = '';
+
+                                if (isWork) {
+                                    bgClass = 'bg-custom-accent/80';
+                                    borderClass = 'border-custom-accent';
+                                    shadowClass = 'shadow-custom-accent/20';
+                                } else if (isBreak) {
+                                    bgClass = 'bg-custom-success/80';
+                                    borderClass = 'border-custom-success';
+                                    shadowClass = 'shadow-custom-success/20';
+                                } else if (isPause) {
+                                    bgClass = 'bg-custom-title/10'; // Gray for pause
+                                    borderClass = 'border-custom-title/20';
+                                    shadowClass = 'shadow-none';
+                                }
 
                                 return (
                                     <div
@@ -402,7 +473,9 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                         {/* Icon (only if width permits) */}
                                         {durationPercent > 3 && (
                                             <div className="text-white/90">
-                                                {isWork ? <BookOpen size={14} /> : <Clock size={14} />}
+                                                {isWork && <BookOpen size={14} />}
+                                                {isBreak && <Clock size={14} />}
+                                                {/* No icon for pause or maybe a pause icon? */}
                                             </div>
                                         )}
 
@@ -412,9 +485,9 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                                 {item.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {item.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                             </div>
                                             <div className="flex items-center justify-center gap-2 mt-2">
-                                                <div className={`w-2 h-2 rounded-full ${isWork ? 'bg-custom-accent' : 'bg-custom-success'}`}></div>
-                                                <span className={`${isWork ? 'text-custom-accent' : 'text-custom-success'} font-bold`}>
-                                                    {isWork ? 'Çalışma Bloğu' : 'Mola'}
+                                                <div className={`w-2 h-2 rounded-full ${isWork ? 'bg-custom-accent' : (isBreak ? 'bg-custom-success' : 'bg-custom-title/50')}`}></div>
+                                                <span className={`${isWork ? 'text-custom-accent' : (isBreak ? 'text-custom-success' : 'text-custom-title')} font-bold`}>
+                                                    {isWork ? 'Çalışma Bloğu' : (isBreak ? 'Mola' : 'Durduruldu')}
                                                 </span>
                                             </div>
                                             <div className="text-center text-custom-title/60 mt-1">

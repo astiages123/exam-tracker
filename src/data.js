@@ -946,6 +946,7 @@ export const courseData = [
                 name: "Finans Matematiği - BUders",
                 totalVideos: 32,
                 totalHours: 4.61,
+                notePath: "/notlar/yetenek_1.html",
                 playlistUrl: "https://youtube.com/playlist?list=PLcNWqzWzYG2sHIneJFRvfHCtFifbtQU3A&si=zFjseeSlFtpVPzTp",
                 videos: [
                     { id: 1, title: "Finans Matematiğine Giriş", duration: "07:10", durationMinutes: 7.17 },

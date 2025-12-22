@@ -18,7 +18,11 @@ const STORAGE_KEYS = {
     COURSE_ID: 'pomo_courseId',
     VIEW: 'pomo_view',
     NOTIFIED_50: 'pomo_notified50', // To track if we notified at 50m
-    NOTIFIED_10: 'pomo_notified10'  // To track if we notified at 10m (break)
+    NOTIFIED_10: 'pomo_notified10',  // To track if we notified at 10m (break)
+    // [NEW] Pause Tracking Keys
+    ORIGINAL_START_TIME: 'pomo_originalStartTime', // Wall-clock start time
+    PAUSES: 'pomo_pauses',                         // Array of {start, end}
+    PAUSE_START_TIME: 'pomo_pauseStartTime'        // To track "current" pause start if refreshing while paused
 };
 
 export default function PomodoroTimer({ initialCourse, courses, sessionsCount, onSessionComplete, onClose }) {
@@ -40,7 +44,11 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
 
     // Refs
     // endTimeRef removed
-    const startTimeRef = useRef(null); // Used for both Work and Break (Count-up)
+    const startTimeRef = useRef(null); // Effective start time (shifted by pauses to calc net duration)
+    const originalStartTimeRef = useRef(null); // [NEW] Actual wall-clock start time
+    const pausesRef = useRef([]);              // [NEW] Store pause intervals
+    const pauseStartRef = useRef(null);        // [NEW] store current pause start time
+
     const notified50MinRef = useRef(false); // Track 50m notification (work)
     const notified10MinRef = useRef(false); // Track 10m notification (break)
 
@@ -54,9 +62,18 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
     useEffect(() => {
         // savedEndTime removed
         const savedStartTime = localStorage.getItem(STORAGE_KEYS.START_TIME);
+        const savedOriginalStart = localStorage.getItem(STORAGE_KEYS.ORIGINAL_START_TIME);
+        const savedPauses = localStorage.getItem(STORAGE_KEYS.PAUSES);
+        const savedPauseStart = localStorage.getItem(STORAGE_KEYS.PAUSE_START_TIME);
+
         const savedIsActive = localStorage.getItem(STORAGE_KEYS.IS_ACTIVE) === 'true';
         const savedMode = localStorage.getItem(STORAGE_KEYS.MODE) || 'work';
         const savedNotified50 = localStorage.getItem(STORAGE_KEYS.NOTIFIED_50) === 'true';
+
+        // Restore generic refs
+        if (savedOriginalStart) originalStartTimeRef.current = parseInt(savedOriginalStart, 10);
+        if (savedPauses) pausesRef.current = JSON.parse(savedPauses);
+        if (savedPauseStart) pauseStartRef.current = parseInt(savedPauseStart, 10);
 
         if (savedIsActive) {
             // const now = Date.now(); // Removed unused variable
@@ -85,6 +102,17 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         localStorage.setItem(STORAGE_KEYS.COURSE_ID, selectedCourseId || '');
         localStorage.setItem(STORAGE_KEYS.IS_ACTIVE, isActive);
         localStorage.setItem(STORAGE_KEYS.TIME_LEFT, timeLeft);
+
+        if (originalStartTimeRef.current) {
+            localStorage.setItem(STORAGE_KEYS.ORIGINAL_START_TIME, originalStartTimeRef.current);
+        }
+        localStorage.setItem(STORAGE_KEYS.PAUSES, JSON.stringify(pausesRef.current));
+
+        if (pauseStartRef.current) {
+            localStorage.setItem(STORAGE_KEYS.PAUSE_START_TIME, pauseStartRef.current);
+        } else {
+            localStorage.removeItem(STORAGE_KEYS.PAUSE_START_TIME);
+        }
 
         if (isActive) {
             if (startTimeRef.current) {
@@ -146,6 +174,10 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         // Let's assume fresh start from Selection view implies 0 start.
         const now = Date.now();
         startTimeRef.current = now;
+        originalStartTimeRef.current = now; // [NEW] Set original start
+        pausesRef.current = [];             // [NEW] Clear pauses
+        pauseStartRef.current = null;       // [NEW] Clear pause start
+
         notified50MinRef.current = false;
         notified10MinRef.current = false;
 
@@ -165,6 +197,11 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
             localStorage.removeItem(STORAGE_KEYS.START_TIME);
             localStorage.removeItem(STORAGE_KEYS.NOTIFIED_50);
             localStorage.removeItem(STORAGE_KEYS.NOTIFIED_10);
+
+            // [NEW] Clear pause storage on complete
+            localStorage.removeItem(STORAGE_KEYS.ORIGINAL_START_TIME);
+            localStorage.removeItem(STORAGE_KEYS.PAUSES);
+            localStorage.removeItem(STORAGE_KEYS.PAUSE_START_TIME);
 
             if (mode === 'work') {
                 // This path might be called if we enforce a hard limit, but user wants infinite.
@@ -229,15 +266,25 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
     }, [isActive, timeLeft, mode]);
 
     const toggleTimer = () => {
+        const now = Date.now();
         if (isActive) {
+            // PAUSING
             setIsActive(false);
+            pauseStartRef.current = now; // [NEW] Start pause
             // timeLeft is current elapsed (work) or remaining (break)
         } else {
+            // RESUMING
             initAudio();
-            const now = Date.now();
             // Resume Count Up (Both modes)
             // startTime = now - elapsed
             startTimeRef.current = now - (timeLeft * 1000);
+
+            // [NEW] End pause
+            if (pauseStartRef.current) {
+                pausesRef.current.push({ start: pauseStartRef.current, end: now });
+                pauseStartRef.current = null;
+            }
+
             setIsActive(true);
         }
     };
@@ -252,7 +299,16 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         localStorage.removeItem(STORAGE_KEYS.NOTIFIED_50);
         localStorage.removeItem(STORAGE_KEYS.NOTIFIED_10);
 
+        // [NEW] Clear pause storage
+        localStorage.removeItem(STORAGE_KEYS.ORIGINAL_START_TIME);
+        localStorage.removeItem(STORAGE_KEYS.PAUSES);
+        localStorage.removeItem(STORAGE_KEYS.PAUSE_START_TIME);
+
         startTimeRef.current = null;
+        originalStartTimeRef.current = null; // [NEW]
+        pausesRef.current = [];              // [NEW]
+        pauseStartRef.current = null;        // [NEW]
+
         notified50MinRef.current = false;
         notified10MinRef.current = false;
     };
@@ -271,6 +327,11 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         localStorage.removeItem(STORAGE_KEYS.NOTIFIED_50);
         localStorage.removeItem(STORAGE_KEYS.NOTIFIED_10);
 
+        // [NEW] Clear pause storage
+        localStorage.removeItem(STORAGE_KEYS.ORIGINAL_START_TIME);
+        localStorage.removeItem(STORAGE_KEYS.PAUSES);
+        localStorage.removeItem(STORAGE_KEYS.PAUSE_START_TIME);
+
         // Reset local state
         setMode('work');
         setTimeLeft(0); // Works starts at 0
@@ -284,11 +345,18 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
             clearInterval(timerRef.current);
 
             const breakElapsedTime = timeLeft;
-            onSessionComplete(breakElapsedTime, 'break', null);
+            // [MODIFIED] Pass start time and pauses for break if needed (ignoring mostly, but keeping signature clean)
+            // Ideally we'd track break pauses too but let's stick to Work focus for now or just pass what we have
+            onSessionComplete(breakElapsedTime, 'break', null, originalStartTimeRef.current, pausesRef.current);
 
             setMode('work');
             setTimeLeft(0);
-            startTimeRef.current = Date.now(); // Start new work session immediately
+            const now = Date.now();
+            startTimeRef.current = now; // Start new work session immediately
+            originalStartTimeRef.current = now; // [NEW]
+            pausesRef.current = [];             // [NEW]
+            pauseStartRef.current = null;       // [NEW]
+
             notified50MinRef.current = false;
             setIsActive(true); // Automatically start new work session
             playNotificationSound();
@@ -305,6 +373,10 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         // Clear timer specific storage
         localStorage.removeItem(STORAGE_KEYS.START_TIME);
         localStorage.removeItem(STORAGE_KEYS.NOTIFIED_50);
+        // [NEW] Keep generic storage for break, but clear work specific intermediate stuff? 
+        // Actually we transition to BREAK, so we need to RESET refs for the break session?
+        // OR does Break share same refs?
+        // Breaks usually start fresh. So we should flush work data.
 
         // Calculate actual duration
         // For count-up, timeLeft IS the elapsed time
@@ -315,10 +387,19 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
             tag: 'pomodoro-early-complete'
         });
 
-        onSessionComplete(elapsedTime, 'work', selectedCourseId);
+        // [MODIFIED] Pass originalStartTime and pauses
+        onSessionComplete(elapsedTime, 'work', selectedCourseId, originalStartTimeRef.current, pausesRef.current);
+
+        // Reset for Break
         setMode('break');
         setTimeLeft(0);
-        startTimeRef.current = Date.now(); // Start break timer (count up from 0)
+
+        const now = Date.now();
+        startTimeRef.current = now; // Start break timer (count up from 0)
+        originalStartTimeRef.current = now; // [NEW] Start break tracking
+        pausesRef.current = [];             // [NEW]
+        pauseStartRef.current = null;       // [NEW]
+
         notified10MinRef.current = false;
         setIsActive(true); // Automatically start break timer
     };
