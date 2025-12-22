@@ -15,7 +15,7 @@ const ANCHOR_DATE = new Date('2025-12-08T00:00:00');
  * Returns the date string in YYYY-MM-DD format for a given date object
  * using local time to avoid timezone issues.
  */
-export const getLocalYMD = (date) => {
+const getLocalYMD = (date) => {
     const d = new Date(date);
     d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
     return d.toISOString().split('T')[0];
@@ -25,7 +25,7 @@ export const getLocalYMD = (date) => {
  * Checks if a date string represents a weekend (Saturday or Sunday).
  * @param {string} dateStr - YYYY-MM-DD
  */
-export const isWeekend = (dateStr) => {
+const isWeekend = (dateStr) => {
     const d = new Date(dateStr);
     const day = d.getDay(); // 0 is Sunday, 6 is Saturday
     return day === 0 || day === 6;
@@ -78,43 +78,4 @@ export const calculateStreak = (activityLog, referenceDate = new Date()) => {
     }
 
     return currentStreak;
-};
-
-/**
- * Adds an entry to the activity log for "today".
- * Stores a count of activities to support undo operations.
- * @param {Object} currentLog 
- */
-export const logActivity = (currentLog, amount = 1) => {
-    const todayStr = getLocalYMD(new Date());
-    const currentCount = currentLog[todayStr] === true ? 1 : (currentLog[todayStr] || 0); // Handle legacy boolean 'true'
-
-    return {
-        ...currentLog,
-        [todayStr]: currentCount + amount
-    };
-};
-
-/**
- * Removes an activity from the log for "today".
- * Used when user unchecks a video.
- * @param {Object} currentLog 
- */
-export const removeActivity = (currentLog, amount = 1) => {
-    const todayStr = getLocalYMD(new Date());
-    const currentVal = currentLog[todayStr] === true ? 1 : (currentLog[todayStr] || 0); // Handle legacy boolean
-
-    const newVal = currentVal - amount;
-
-    if (newVal <= 0) {
-        // If count goes to 0 or less, remove the key
-        const newLog = { ...currentLog };
-        delete newLog[todayStr];
-        return newLog;
-    }
-
-    return {
-        ...currentLog,
-        [todayStr]: newVal
-    };
 };

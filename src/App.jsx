@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay, BadgeCheck, FileText } from 'lucide-react';
+import { ChevronDown, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay, BadgeCheck, FileText, HelpCircle } from 'lucide-react';
 import ScheduleModal from './components/ScheduleModal';
 
 
@@ -26,6 +26,7 @@ import NotesModal from './components/NotesModal';
 import StreakDisplay from './components/StreakDisplay';
 import { calculateStreak } from './utils/streakUtils';
 import CelebrationOverlay from './components/CelebrationOverlay';
+import QuizModal from './components/QuizModal';
 
 
 // --- Components ---
@@ -106,6 +107,7 @@ export default function App() {
 
   const [celebratingCourse, setCelebratingCourse] = useState(null);
   const [activeNoteCourse, setActiveNoteCourse] = useState(null); // { name, path }
+  const [activeQuizCourse, setActiveQuizCourse] = useState(null); // { name, path, id }
 
 
   // Daily Focus Logic
@@ -556,8 +558,19 @@ export default function App() {
       {activeNoteCourse && (
         <NotesModal
           courseName={activeNoteCourse.name}
+          courseId={activeNoteCourse.id}
           notePath={activeNoteCourse.path}
           onClose={() => setActiveNoteCourse(null)}
+        />
+      )}
+
+      {activeQuizCourse && (
+        <QuizModal
+          isOpen={!!activeQuizCourse}
+          onClose={() => setActiveQuizCourse(null)}
+          courseId={activeQuizCourse.id}
+          courseName={activeQuizCourse.name}
+          notePath={activeQuizCourse.path}
         />
       )}
 
@@ -917,7 +930,7 @@ export default function App() {
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           if (course.notePath) {
-                                            setActiveNoteCourse({ name: course.name, path: course.notePath });
+                                            setActiveNoteCourse({ name: course.name, path: course.notePath, id: course.id });
                                           } else {
                                             alert("Henüz not bulunamadı");
                                           }
@@ -926,6 +939,20 @@ export default function App() {
                                         title="Ders Notları"
                                       >
                                         <FileText size={16} className="text-emerald-600 group-hover/note:text-emerald-700" strokeWidth={2} />
+                                      </button>
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (course.notePath) {
+                                            setActiveQuizCourse({ name: course.name, path: course.notePath, id: course.id });
+                                          } else {
+                                            alert("Önce ders notu yüklenmelidir");
+                                          }
+                                        }}
+                                        className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center hover:bg-purple-200 transition-all hover:scale-105 shadow-sm group/quiz"
+                                        title="Soru Çöz"
+                                      >
+                                        <HelpCircle size={16} className="text-purple-600 group-hover/quiz:text-purple-700" strokeWidth={2} />
                                       </button>
                                     </div>
                                   </div>
@@ -949,7 +976,7 @@ export default function App() {
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         if (course.notePath) {
-                                          setActiveNoteCourse({ name: course.name, path: course.notePath });
+                                          setActiveNoteCourse({ name: course.name, path: course.notePath, id: course.id });
                                         } else {
                                           alert("Henüz not bulunamadı");
                                         }
@@ -958,6 +985,21 @@ export default function App() {
                                       title="Ders Notları"
                                     >
                                       <FileText size={20} className="text-emerald-600 group-hover/note:text-emerald-700" strokeWidth={2} />
+                                    </button>
+
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (course.notePath) {
+                                          setActiveQuizCourse({ name: course.name, path: course.notePath, id: course.id });
+                                        } else {
+                                          alert("Önce ders notu yüklenmelidir");
+                                        }
+                                      }}
+                                      className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center hover:bg-purple-200 transition-all hover:scale-105 shadow-sm group/quiz"
+                                      title="Soru Çöz"
+                                    >
+                                      <HelpCircle size={20} className="text-purple-600 group-hover/quiz:text-purple-700" strokeWidth={2} />
                                     </button>
 
                                     <div className="px-3 py-1.5 rounded-lg bg-zinc-800/80 backdrop-blur-sm border border-white/5 shadow-inner">

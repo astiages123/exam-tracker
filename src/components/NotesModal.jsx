@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
-import { X, ExternalLink, FileQuestion, Loader2 } from 'lucide-react';
+import { X, ExternalLink, FileQuestion, Loader2, HelpCircle } from 'lucide-react';
+import QuizModal from './QuizModal';
 
-export default function NotesModal({ courseName, notePath, onClose }) {
+export default function NotesModal({ courseName, notePath, onClose, courseId }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    const [showQuiz, setShowQuiz] = useState(false);
 
     // Close on Escape key
     useEffect(() => {
@@ -72,6 +74,15 @@ export default function NotesModal({ courseName, notePath, onClose }) {
                             {courseName} - Ders Notları
                         </h2>
                         <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => setShowQuiz(true)}
+                                className="p-2 text-custom-title/70 hover:text-purple-400 hover:bg-purple-400/10 rounded-lg transition-colors flex items-center gap-2"
+                                title="Soru Çöz"
+                            >
+                                <HelpCircle size={20} />
+                                <span className="text-sm font-semibold hidden sm:inline">Soru Çöz</span>
+                            </button>
+                            <div className="w-px h-6 bg-custom-category/30 mx-1" />
                             <a
                                 href={notePath}
                                 target="_blank"
@@ -127,6 +138,15 @@ export default function NotesModal({ courseName, notePath, onClose }) {
                         )}
                     </div>
                 </Motion.div>
+
+                {/* Quiz Modal Integration */}
+                <QuizModal
+                    isOpen={showQuiz}
+                    onClose={() => setShowQuiz(false)}
+                    courseId={courseId}
+                    courseName={courseName}
+                    notePath={notePath}
+                />
             </div>
         </AnimatePresence>
     );

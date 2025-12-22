@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { X, Clock, Calendar, BookOpen, Trash2, ChevronDown } from 'lucide-react';
 import { courseData } from '../data';
 // eslint-disable-next-line
@@ -10,6 +10,7 @@ const CATEGORY_STYLES = {
 
 export default function ReportModal({ sessions = [], onClose, courses = [], onDelete }) {
     const [selectedGroup, setSelectedGroup] = useState(null);
+
     useEffect(() => {
         const handleKeyDown = (e) => {
             // Only close if ESC is pressed AND no sub-modal (highlighted chart) is open
@@ -108,6 +109,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                     </button>
                 </div>
 
+
                 {/* Stats */}
                 <div className="p-4 md:p-6 grid grid-cols-2 gap-3 md:gap-4 border-b border-custom-category bg-custom-bg/50">
                     <div className="bg-custom-header p-4 rounded-xl border border-custom-category/30">
@@ -124,8 +126,8 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                     </div>
                 </div>
 
-                {/* List */}
-                <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+                {/* List Content */}
+                <div className="flex-1 overflow-y-auto p-4 md:p-6 custom-scrollbar">
                     {aggregatedSessions.length === 0 ? (
                         <div className="text-center py-12 text-custom-title/40">
                             <Clock size={48} className="mx-auto mb-4 opacity-20" />
