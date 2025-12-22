@@ -7,6 +7,7 @@ export const courseData = [
                 name: "Mikro İktisat - Bilge Beyaz",
                 totalVideos: 111,
                 totalHours: 60.67,
+                notePath: "/notlar/ekonomi_1.html",
                 playlistUrl: "https://www.youtube.com/playlist?list=PLPhEmM6X--Wefl2MTmJ67Uv851yYQTfB4",
                 videos: [
                     { id: 1, title: "Ders Tanıtımı", duration: "07:29", durationMinutes: 7.48 },
@@ -127,6 +128,7 @@ export const courseData = [
                 name: "Makro İktisat - Mesut Güzelli",
                 totalVideos: 91,
                 totalHours: 46.48,
+                notePath: "/notlar/ekonomi_2.html",
                 playlistUrl: "https://www.youtube.com/playlist?list=PLPhEmM6X--WfdZ2ntwO2Kmw6J285ajpTG",
                 videos: [
                     { id: 1, title: "Makro İktisada Giriş", duration: "12:36", durationMinutes: 12.6 },
@@ -227,6 +229,7 @@ export const courseData = [
                 name: "Para, Banka ve Kredi - Emel Aksaç",
                 totalVideos: 31,
                 totalHours: 11.90,
+                notePath: "/notlar/ekonomi_3.html",
                 playlistUrl: "https://www.youtube.com/playlist?list=PLPhEmM6X--WfGpm2Hn2g0YnRuHmp3UwL6",
                 videos: [
                     { id: 1, title: "Ders Tanıtımı", duration: "02:53", durationMinutes: 2.88 },
@@ -267,6 +270,7 @@ export const courseData = [
                 name: "Uluslararası Ticaret - Emel Aksaç",
                 totalVideos: 33,
                 totalHours: 12.64,
+                notePath: "/notlar/ekonomi_4.html",
                 playlistUrl: "https://youtube.com/playlist?list=PLPhEmM6X--WencoL45la-rJqdjP6MQ6ce&si=QRfrSYIzub-VrZkp",
                 videos: [
                     { id: 1, title: "Ders Tanıtımı", duration: "01:58", durationMinutes: 1.97 },
@@ -309,6 +313,7 @@ export const courseData = [
                 name: "Türkiye Ekonomisi - Emel Aksaç",
                 totalVideos: 31,
                 totalHours: 11.85,
+                notePath: "/notlar/ekonomi_5.html",
                 playlistUrl: "https://www.youtube.com/playlist?list=PLPhEmM6X--Wf28W5rVGC5mp8BE4eNNODX",
                 videos: [
                     { id: 1, title: "Ders Tanıtımıı", duration: "01:58", durationMinutes: 1.97 },
@@ -354,6 +359,7 @@ export const courseData = [
                 name: "Medeni Hukuk - Eyüp İpek",
                 totalVideos: 61,
                 totalHours: 41.25,
+                notePath: "/notlar/hukuk_1.html",
                 playlistUrl: "https://youtube.com/playlist?list=PLPhEmM6X--WcZPK4H0J9OLNwvxLh_pU_5&si=KNpiTQYkvc6SX4U5",
                 videos: [
                     { id: 1, title: "Ders Tanıtımı", duration: "03:28", durationMinutes: 3.47 },
@@ -424,6 +430,7 @@ export const courseData = [
                 name: "Borçlar Hukuku - Eyüp İpek",
                 totalVideos: 49,
                 totalHours: 31.31,
+                notePath: "/notlar/hukuk_2.html",
                 playlistUrl: "https://www.youtube.com/playlist?list=PLPhEmM6X--WdUk5T5GDpER6-00xTX--2s",
                 videos: [
                     { id: 1, title: "Ders Tanıtımı", duration: "03:01", durationMinutes: 3.02 },
@@ -482,6 +489,7 @@ export const courseData = [
                 name: "Ticaret Hukuku - Elif Kendüzler",
                 totalVideos: 68,
                 totalHours: 29.33,
+                notePath: "/notlar/hukuk_3.html",
                 playlistUrl: "https://youtube.com/playlist?list=PLPhEmM6X--WccJilJRVA_BMRqKV_zsx9H&si=qbFKaDTQ-Ov2ddmL",
                 videos: [
                     { id: 1, title: "Seri Tanıtımı", duration: "08:26", durationMinutes: 8.43 },
@@ -559,6 +567,7 @@ export const courseData = [
                 name: "Bankacılık Hukuku - Davut Gürses",
                 totalVideos: 7,
                 totalHours: 3.93,
+                notePath: "/notlar/hukuk_4.html",
                 playlistUrl: "https://youtube.com/playlist?list=PLc6OXSkSGbhf4kW77b8v0iB0cIR2_LNpr&si=oxug-AFNHy3m4OgP",
                 videos: [
                     { id: 1, title: "Bankacılık Hukukuna Giriş", duration: "38:07", durationMinutes: 38.12 },
@@ -575,6 +584,7 @@ export const courseData = [
                 name: "İcra ve İflas - Muhammet Özekes",
                 totalVideos: 24,
                 totalHours: 18.68,
+                notePath: "/notlar/hukuk_5.html",
                 playlistUrl: "https://youtube.com/playlist?list=PLc6OXSkSGbheXlJKwuHzl4hce6LwvxDrk&si=0PiAN2Y-2S9bMACf",
                 videos: [
                     { id: 1, title: "İcra Hukukuna Giriş ve Teşkilat", duration: "1:03:20", durationMinutes: 63.33 },
@@ -608,6 +618,7 @@ export const courseData = [
                 name: "Türk Ceza Kanunu - Hukuk Öğretir",
                 totalVideos: 36,
                 totalHours: 13.86,
+                notePath: "/notlar/hukuk_6.html",
                 playlistUrl: "https://youtube.com/playlist?list=PLQQ4ignJI779FA95yMNPjp6uhLEUC4A3E&si=escVX-_q6O9IjIDS",
                 videos: [
                     { id: 1, title: "Ceza Hukukuna Giriş", duration: "26:55", durationMinutes: 26.92 },
@@ -653,6 +664,7 @@ export const courseData = [
                 name: "İş Hukuku - Mehmet Bağcı",
                 totalVideos: 9,
                 totalHours: 5.94,
+                notePath: "/notlar/hukuk_7.html",
                 playlistUrl: "https://www.youtube.com/playlist?list=PLQQ4ignJI778D3I0O-f_7KkQ6QByayR0l",
                 videos: [
                     { id: 1, title: "İş Hukuku: Temel Kavramlar ve Giriş", duration: "59:08", durationMinutes: 59.13 },
@@ -676,6 +688,7 @@ export const courseData = [
                 name: "Genel Muhasebe - Sinan Öztürk",
                 totalVideos: 124,
                 totalHours: 42.61,
+                notePath: "/notlar/muhasebe_1.html",
                 playlistUrl: "https://youtube.com/playlist?list=PLPhEmM6X--WfpyELg1RTSCI6zqpe8lTCV&si=YUeLZcBv-GH2wmHG",
                 videos: [
                     { id: 1, title: "Ders Tanıtımı", duration: "10:54", durationMinutes: 10.9 },
@@ -809,6 +822,7 @@ export const courseData = [
                 name: "İşletme Yönetimi (AÖF)",
                 totalVideos: 8,
                 totalHours: 1.39,
+                notePath: "/notlar/muhasebe_2.html",
                 playlistUrl: "https://www.youtube.com/playlist?list=PLfFz63YLe29oga382t4p0ACkU9PTErzIR",
                 videos: [
                     { id: 1, title: "Yönetim ve Yönetici", duration: "09:19", durationMinutes: 9.32 },
@@ -826,6 +840,7 @@ export const courseData = [
                 name: "Pazarlama Yönetimi (AÖF)",
                 totalVideos: 8,
                 totalHours: 1.41,
+                notePath: "/notlar/muhasebe_3.html",
                 playlistUrl: "https://www.youtube.com/playlist?list=PLfFz63YLe29qFsfcr0xu43U0_EycrMYEP",
                 videos: [
                     { id: 1, title: "Değer Yaratım Süreci Olarak Pazarlama", duration: "10:21", durationMinutes: 10.35 },
@@ -843,6 +858,7 @@ export const courseData = [
                 name: "Finansal Yönetim (AÖF)",
                 totalVideos: 8,
                 totalHours: 1.57,
+                notePath: "/notlar/muhasebe_4.html",
                 playlistUrl: "https://youtube.com/playlist?list=PLfFz63YLe29pGOq7BTtyqrVpx8E1l9aXA&si=HxiyG8eKl5pYmx-E",
                 videos: [
                     { id: 1, title: "Finansal Yönetime Giriş", duration: "10:41", durationMinutes: 10.68 },
@@ -860,6 +876,7 @@ export const courseData = [
                 name: "Maliye Teorisi - Murat Güzelli",
                 totalVideos: 72,
                 totalHours: 34.58,
+                notePath: "/notlar/muhasebe_5.html",
                 playlistUrl: "https://www.youtube.com/playlist?list=PLPhEmM6X--WfxX96Dz0lfKLeRKWS8YTOd",
                 videos: [
                     { id: 1, title: "Ders Tanıtımı", duration: "12:48", durationMinutes: 12.8 },
@@ -988,6 +1005,7 @@ export const courseData = [
                 name: "Matematik & Sayısal Mantık - İlyas Güneş",
                 totalVideos: 79,
                 totalHours: 59.41,
+                notePath: "/notlar/yetenek_2.html",
                 playlistUrl: "https://youtube.com/playlist?list=PLPlLdubQ1fMsIk3Kujy9yqJOyFLHsfQlp&si=xEU2K9BmKlCcxtOX",
                 videos: [
                     { id: 1, title: "Ders Tanıtımı", duration: "17:28", durationMinutes: 17.47 },
@@ -1076,6 +1094,7 @@ export const courseData = [
                 name: "İstatistik - XDERS",
                 totalVideos: 15,
                 totalHours: 6.52,
+                notePath: "/notlar/yetenek_3.html",
                 playlistUrl: "https://www.youtube.com/playlist?list=PL4G1-wcRc1jG1tCySPIJTT_gdQ0I8fwGP",
                 videos: [
                     { id: 1, title: "Temel Kavramlar ve Ölçekler", duration: "26:46", durationMinutes: 26.77 },
@@ -1100,6 +1119,7 @@ export const courseData = [
                 name: "Banka Muhasebesi - Cemal Hoca",
                 totalVideos: 5,
                 totalHours: 1.89,
+                notePath: "/notlar/yetenek_4.html",
                 playlistUrl: "https://youtube.com/playlist?list=PLYBtq65-tdImjW164SnSprjf0OMVITkE_&si=9W2QlBM8uStvblgg",
                 videos: [
                     { id: 1, title: "Bankaların Sınıflandırılması", duration: "12:33", durationMinutes: 12.55 },

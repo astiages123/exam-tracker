@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Mikro İktisat Notları</title>
+  <link rel="stylesheet" href="notes.css">
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer src="notes.js"></script>
+</head>
+
+<body>
+
+  <!-- Sidebar / TOC -->
+  <nav class="sidebar">
+    <h3>İçindekiler</h3>
+    <ul class="toc-list">
+      <li>
+        <a href="#egim">1. Eğim</a>
+        <ul class="toc-sublist">
+          <li><a href="#negatif-egim">Negatif Eğimli Eğriler</a></li>
+          <li><a href="#pozitif-egim">Pozitif Eğimli Eğriler</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#toplam-marjinal">2. Toplam, Marjinal ve Ortalama</a>
+        <ul class="toc-sublist">
+          <li><a href="#marjinal">Marjinal</a></li>
+          <li><a href="#ortalama">Ortalama</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#kardinalist">3. Kardinalist Tüketim Kuramı</a>
+        <ul class="toc-sublist">
+          <li><a href="#toplam-fayda">Toplam Fayda (TU)</a></li>
+          <li><a href="#marjinal-fayda">Marjinal Fayda (MU)</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#ordinalist">4. Ordinalist Tüketim Kuramı</a>
+        <ul class="toc-sublist">
+          <li><a href="#farksizlik">Farksızlık Eğrisi</a></li>
+          <li><a href="#mrs">Marjinal İkame Oranı (MRS)</a></li>
+          <li><a href="#atipik">Atipik Farksızlık Eğrileri</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#butce">5. Bütçe Doğrusu</a>
+        <ul class="toc-sublist">
+          <li><a href="#butce-denklemi">Bütçe Denklemi</a></li>
+          <li><a href="#mal-turleri">Mal Türleri</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#denge">6. Tüketici Dengesi</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="content">
+    <h1>Mikro İktisat</h1>
+
+    <h2 id="egim">1. Eğim</h2>
+    <p>Bağımsız değişkenin bir birim arttırılmasıyla bağımlı değişkenin kaç birim değişeceğini anlatır.</p>
+
+    <div class="math-block">
+      <span class="math display">\[m = \frac{\Delta y}{\Delta x} = \frac{y_{2} - y_{1}}{x_{2} - x_{1}}\]</span>
+    </div>
+
+    <div class="note-card">
+      <span class="example-title">Temel Kurallar</span>
+      <ul>
+        <li>Doğrusal fonksiyonlarda (X’in üssü 1 ise) katsayı eğimi verir.</li>
+        <li>Bir doğru dikleştikçe eğimi artar.</li>
+        <li>Eğimi bulmak için grafikteki doğrulara teğetler çizmek gereklidir.</li>
+      </ul>
+    </div>
+
+    <h3 id="negatif-egim">Negatif Eğimli Eğriler</h3>
+    <div class="note-card">
+      <img src="/notlar/ekonomi_1_media/media/image1.png" alt="Negatif Eğimli Eğriler" />
+    </div>
+
+    <h3 id="pozitif-egim">Pozitif Eğimli Eğriler</h3>
+    <div class="note-card">
+      <img src="/notlar/ekonomi_1_media/media/image2.png" alt="Pozitif Eğimli Eğriler" />
+    </div>
+
+    <h2 id="toplam-marjinal">2. Toplam, Marjinal ve Ortalama</h2>
+
+    <h3 id="marjinal">Marjinal</h3>
+    <p>Miktarın 1 birim arttırılmasıyla toplamda ortaya çıkan değişimdir. İktisatta <strong>eğimin</strong>
+      karşılığıdır. Türev ile bulunur.</p>
+    <div class="math-block">
+      <span class="math display">\[M = \frac{dT}{dQ}\]</span>
+    </div>
+    <div class="note-card">
+      <img src="/notlar/ekonomi_1_media/media/image3.png" alt="Marjinal Gösterim" />
+    </div>
+
+    <h3 id="ortalama">Ortalama</h3>
+    <p>Bağımsız değişken başına düşen değeri ifade eder. Orijinden çıkan doğrunun yatay eksenle yaptığı açının
+      tanjantıdır.</p>
+    <div class="math-block">
+      <span class="math display">\[A = \frac{\text{Toplam}}{\text{Miktar}}\]</span>
+    </div>
+
+    <h2 id="kardinalist">3. Kardinalist Tüketim Kuramı</h2>
+    <p>Faydanın ölçülebileceğini (Util birimiyle) öne sürer.</p>
+
+    <h3 id="toplam-fayda">Toplam Fayda (Total Utility, TU)</h3>
+    <p>Bir malın tüketilen tüm birimlerinin faydalarının toplamıdır. Toplam fayda azalarak artandır.</p>
+    <div class="math-block">
+      <span class="math display">\[TU = f(Q)\]</span>
+    </div>
+    <div class="note-card">
+      <img src="/notlar/ekonomi_1_media/media/image4.png" alt="Toplam Fayda Eğrisi" />
+    </div>
+
+    <h3 id="marjinal-fayda">Marjinal Fayda (MU)</h3>
+    <p>Tüketimin bir birim artmasıyla TU'da meydana gelen değişimdir. Son birim faydasıdır.</p>
+    <div class="math-block">
+      <span class="math display">\[MU = \frac{dTU}{dQ} = \frac{\Delta TU}{\Delta Q}\]</span>
+    </div>
+    <div class="note-card">
+      <span class="example-title">Püf Noktası</span>
+      <p>Marjinal fayda sıfırken toplam fayda maksimumdur. Buna <strong>“doyum noktası”</strong> denir.</p>
+      <img src="/notlar/ekonomi_1_media/media/image5.png" alt="Marjinal Fayda Eğrisi" />
+    </div>
+
+    <div class="note-card">
+      <span class="example-title">Gossen 1. Yasası (Azalan Marjinal Fayda)</span>
+      <p>Tüketilen miktar arttıkça marjinal fayda azalır. Bu kurala uymayan durumlara "atipik durumlar" denir.</p>
+    </div>
+
+    <h2 id="ordinalist">4. Ordinalist Tüketim Kuramı</h2>
+    <p>Faydanın ölçülemeyeceğini ancak sıralanabileceğini (Prefers) savunur.</p>
+
+    <h3 id="farksizlik">Farksızlık Eğrisi (Eş Fayda Eğrisi)</h3>
+    <p>Tüketiciye tamamen aynı toplam fayda düzeyini sağlayan iki farklı mal bileşimlerinin noktalar kümesidir.</p>
+    <div class="note-card">
+      <img src="/notlar/ekonomi_1_media/media/image6.png" alt="Farksızlık Eğrisi" />
+      <span class="example-title">Özellikleri</span>
+      <ul>
+        <li>Üzerindeki her noktada fayda aynıdır.</li>
+        <li>Orijinden uzaklaştıkça toplam fayda (TU) artar.</li>
+        <li>Birbirlerini asla kesmezler (Geçişkenlik İlkesi).</li>
+        <li>Negatif eğimlidirler ve orijine göre dış bükeydirler.</li>
+      </ul>
+    </div>
+
+    <h3 id="mrs">Marjinal İkame Oranı (MRS)</h3>
+    <p>X tüketimi 1 birim artarken faydanın değişmemesi için vazgeçilen Y miktarıdır. Eğrinin eğimine eşittir.</p>
+    <div class="math-block">
+      <span class="math display">\[MRS_{x,y} = - \frac{MU_{x}}{MU_{y}}\]</span>
+    </div>
+    <div class="note-card">
+      <img src="/notlar/ekonomi_1_media/media/image7.png" alt="MRS Gösterimi" />
+    </div>
+
+    <h3 id="atipik">A Tipik Farksızlık Eğrileri</h3>
+
+    <div class="note-card">
+      <span class="example-title">Tam İkame (Doğrusal)</span>
+      <p>X ve Y arasında fark yoktur. MRS sabittir. <span class="math inline">\(U = aX + bY\)</span></p>
+      <img src="/notlar/ekonomi_1_media/media/image8.png" alt="Tam İkame" />
+    </div>
+
+    <div class="note-card">
+      <span class="example-title">Tam Tamamlayıcı (L Şeklinde)</span>
+      <p>Mallar sabit oranda birlikte tüketilir. <span class="math inline">\(U = min(aX, bY)\)</span></p>
+      <img src="/notlar/ekonomi_1_media/media/image9.png" alt="Tam Tamamlayıcı" />
+    </div>
+
+    <div class="note-card">
+      <span class="example-title">Kötü Mal (Pozitif Eğimli)</span>
+      <p>Mallardan biri "kötü" (çöp, risk) ise eğri pozitif eğimlidir.</p>
+      <img src="/notlar/ekonomi_1_media/media/image10.png" alt="Kötü Mal" />
+    </div>
+
+    <h2 id="butce">5. Bütçe Doğrusu</h2>
+    <p>Mevcut bütçe ile alınabilecek mal sepetlerini gösterir.</p>
+    <div class="note-card">
+      <img src="/notlar/ekonomi_1_media/media/image14.png" alt="Bütçe Doğrusu" />
+    </div>
+
+    <h3 id="butce-denklemi">Bütçe Denklemi</h3>
+    <div class="math-block">
+      <span class="math display">\[I = (P_{x} \cdot Q_{x}) + (P_{y} \cdot Q_{y})\]</span>
+      <span class="math display">\[\text{Eğim} = - \frac{P_{x}}{P_{y}}\]</span>
+    </div>
+
+    <h3 id="mal-turleri">Mal Türleri ve Gelir Etkisi</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Mal Türü</th>
+          <th>Gelir (M) ↑</th>
+          <th>Fiyat (P) ↑</th>
+          <th>Temel Mantık</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Normal Mal</strong></td>
+          <td>Talep Artar</td>
+          <td>Talep Azalır</td>
+          <td>Gelirle doğru orantılı.</td>
+        </tr>
+        <tr>
+          <td><strong>Lüks Mal</strong></td>
+          <td>Talep Çok Artar</td>
+          <td>Talep Azalır</td>
+          <td>Gelir artışına duyarlı.</td>
+        </tr>
+        <tr>
+          <td><strong>Düşük Mal</strong></td>
+          <td>Talep Azalır</td>
+          <td>Talep Azalır</td>
+          <td>Gelir artınca terk edilir.</td>
+        </tr>
+        <tr>
+          <td><strong>Giffen Mal</strong></td>
+          <td>Talep Azalır</td>
+          <td>Talep Artar</td>
+          <td>Düşük malın ekstrem hali.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="denge">6. Tüketici Dengesi</h2>
+    <p>Bütçe doğrusunun, orijine en uzak farksızlık eğrisine teğet olduğu noktadır.</p>
+    <div class="math-block">
+      <span class="math display">\[\frac{MU_{x}}{P_{x}} = \frac{MU_{y}}{P_{y}} \quad \text{veya} \quad MRS_{xy} =
+        \frac{P_{x}}{P_{y}}\]</span>
+    </div>
+    <div class="note-card">
+      <img src="/notlar/ekonomi_1_media/media/image22.png" alt="Tüketici Dengesi" />
+    </div>
+
+    <div class="note-card">
+      <span class="example-title">Doğrusal (Tam İkame) Denge</span>
+      <ul>
+        <li><span class="math inline">\(MRS > Px/Py\)</span>: Sadece X tüketir (Köşe Dengesi).</li>
+        <li><span class="math inline">\(MRS < Px/Py\)</span>: Sadece Y tüketir (Köşe Dengesi).</li>
+        <li><span class="math inline">\(MRS = Px/Py\)</span>: Doğru üzerindeki her nokta dengedir.</li>
+      </ul>
+      <img src="/notlar/ekonomi_1_media/media/image23.png" alt="Köşe Dengesi X" />
+      <img src="/notlar/ekonomi_1_media/media/image24.png" alt="Köşe Dengesi Y" />
+    </div>
+
+  </main>
+
+</body>
+
+</html>
