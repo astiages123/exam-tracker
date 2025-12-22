@@ -26,7 +26,7 @@ import NotesModal from './components/NotesModal';
 import StreakDisplay from './components/StreakDisplay';
 import { calculateStreak } from './utils/streakUtils';
 import CelebrationOverlay from './components/CelebrationOverlay';
-import ActionPopover from './components/ActionPopover';
+
 
 // --- Components ---
 
@@ -105,17 +105,8 @@ export default function App() {
   const [showRankModal, setShowRankModal] = useState(false);
 
   const [celebratingCourse, setCelebratingCourse] = useState(null);
-  const [activePopover, setActivePopover] = useState(null); // { courseId, videoId }
   const [activeNoteCourse, setActiveNoteCourse] = useState(null); // { name, path }
 
-  // ESC key to close popover
-  useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === 'Escape') setActivePopover(null);
-    };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
-  }, []);
 
   // Daily Focus Logic
 
@@ -281,7 +272,7 @@ export default function App() {
     // if (type !== 'work') return;
 
     const newSession = {
-      // eslint-disable-next-line react-hooks/purity
+
       timestamp: startTime || Date.now(), // [MODIFIED] Use passed start time if available
       duration,
       type,
@@ -403,67 +394,72 @@ export default function App() {
     });
   };
 
-  const handleVideoClick = (courseId, videoId) => {
+  const handleVideoClick = (e, courseId, videoId) => {
     // e.stopPropagation(); // Handled in render
+
+    // [NEW] Ctrl + Click (or Cmd + Click) -> Single Toggle
+    if (e.ctrlKey || e.metaKey) {
+      const currentCompleted = progressData[courseId] || [];
+      const isCompleted = currentCompleted.includes(videoId);
+
+      if (isCompleted) {
+        updateProgress(courseId, currentCompleted.filter(id => id !== videoId));
+      } else {
+        updateProgress(courseId, [...currentCompleted, videoId]);
+      }
+      return;
+    }
 
     const currentCompleted = progressData[courseId] || [];
     const isCompleted = currentCompleted.includes(videoId);
 
-    // If already completed: Toggle OFF (Simple toggle to preserve gaps)
-    if (isCompleted) {
-      updateProgress(courseId, currentCompleted.filter(id => id !== videoId));
-      return;
-    }
-
-    // Find video index and check sequentiality
+    // Find video index
     const course = courseData.flatMap(cat => cat.courses).find(c => c.id === courseId);
     const videos = course?.videos || [];
     const index = videos.findIndex(v => v.id === videoId);
 
     if (index === -1) return;
 
-    const prevVideo = index > 0 ? videos[index - 1] : null;
-    const isSequential = !prevVideo || currentCompleted.includes(prevVideo.id);
-
-    if (isSequential) {
-      // Just mark this one
-      updateProgress(courseId, [...currentCompleted, videoId]);
-    } else {
-      // GAP detected! Show Popover
-      setActivePopover({ courseId, videoId });
-    }
-  };
-
-  const handlePopoverAction = (action) => {
-    if (!activePopover) return;
-    const { courseId, videoId } = activePopover;
-    const currentCompleted = progressData[courseId] || [];
-
-    if (action === 'single') {
-      updateProgress(courseId, [...currentCompleted, videoId]);
-    } else if (action === 'range') {
-      // Mark all from "Last Completed BEFORE this" up to "this"
-      // Actually, logic is: Find all videos up to `videoId`. 
-      // Filter those that are NOT already completed. Add them.
-      const course = courseData.flatMap(cat => cat.courses).find(c => c.id === courseId);
-      const videos = course?.videos || []; // Assuming videos are sorted
-      const targetIndex = videos.findIndex(v => v.id === videoId);
-
-      const newIds = [...currentCompleted];
-
-      // We only fill the gap backwards until we hit a completed one or the start
-      // Actually, user said "Buraya kadar hepsini işaretle".
-      // Usually implies filling the immediate gap.
-      for (let i = 0; i <= targetIndex; i++) {
-        const vId = videos[i].id;
-        if (!newIds.includes(vId)) {
-          newIds.push(vId);
+    // If already completed: Uncheck "Forward Chain"
+    // Remove the clicked video AND any immediately following completed videos (contiguous chain).
+    // Stop removing when a gap or uncompleted video is found.
+    // This preserves isolated videos further down the list (e.g., clicking 1 clears 1-5 but keeps 10).
+    if (isCompleted) {
+      let chainEndIndex = index;
+      // Find the end of the contiguous chain starting at 'index'
+      while (chainEndIndex < videos.length - 1) {
+        const nextVideoId = videos[chainEndIndex + 1].id;
+        if (currentCompleted.includes(nextVideoId)) {
+          chainEndIndex++;
+        } else {
+          break;
         }
       }
+
+      // Remove everything from index to chainEndIndex (inclusive)
+      const newIds = currentCompleted.filter(cId => {
+        const cIndex = videos.findIndex(v => v.id === cId);
+        return cIndex < index || cIndex > chainEndIndex;
+      });
+
       updateProgress(courseId, newIds);
+      return;
     }
-    setActivePopover(null);
+
+    // Smart Fill Logic: Always fill up to this video (Left Click default)
+    const newIds = [...currentCompleted];
+
+    // Fill from 0 to index if not present
+    for (let i = 0; i <= index; i++) {
+      const vId = videos[i].id;
+      if (!newIds.includes(vId)) {
+        newIds.push(vId);
+      }
+    }
+    updateProgress(courseId, newIds);
   };
+
+
 
   // Re-calculate stats with new data structure
 
@@ -512,17 +508,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* Popover Backdrop - Closes when clicking anywhere outside the popover */}
-      <AnimatePresence>
-        {activePopover && (
-          <Motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setActivePopover(null)}
-            className="fixed inset-0 z-40 bg-black/5 backdrop-blur-[1px] cursor-default"
-          />
-        )}
-      </AnimatePresence>
+
 
 
 
@@ -857,24 +843,45 @@ export default function App() {
                               )}
                             >
                               <div
-                                className="p-3 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
+                                className="p-3 cursor-pointer hover:bg-white/5 transition-colors relative"
                                 onClick={() => toggleCourse(course.id)}
                               >
-                                <div className="flex items-center gap-3 min-w-0 flex-1">
-                                  <div className={cn("p-2 rounded-lg shrink-0", styles.iconBg)}>
+                                <div className="flex gap-3">
+                                  {/* Icon - Fixed Width */}
+                                  <div className={cn("p-2 rounded-lg shrink-0 h-fit", styles.iconBg)}>
                                     <BookOpen className={styles.accent} size={20} />
                                   </div>
-                                  <div className="min-w-0 flex-1">
-                                    <div className="flex items-center gap-2">
-                                      <h3 className={cn("font-bold text-sm truncate", isCourseCompleted ? "text-amber-200" : "text-custom-title/80")}>
-                                        {course.name}
-                                      </h3>
-                                      {isCourseCompleted && (
-                                        <BadgeCheck size={16} className="text-amber-400 shrink-0" />
-                                      )}
+
+                                  {/* Main Content Column */}
+                                  <div className="flex-1 min-w-0">
+                                    {/* Header: Title + Mobile Right Elements */}
+                                    <div className="flex items-center justify-between gap-2">
+                                      <div className="flex items-center gap-2 min-w-0">
+                                        <h3 className={cn("font-bold text-sm truncate", isCourseCompleted ? "text-amber-200" : "text-custom-title/80")}>
+                                          {course.name}
+                                        </h3>
+                                        {isCourseCompleted && (
+                                          <BadgeCheck size={16} className="text-amber-400 shrink-0" />
+                                        )}
+                                      </div>
+
+                                      {/* Mobile: Percent + Chevron (Top Right) */}
+                                      <div className="flex sm:hidden items-center gap-2 shrink-0">
+                                        <div className="px-2 py-1 rounded-lg bg-zinc-800/80 backdrop-blur-sm border border-white/5 shadow-inner">
+                                          <span className={cn("text-xs font-bold tracking-tight", isCourseCompleted ? "text-amber-400" : styles.accent)}>
+                                            %{Math.round(courseProgress.percentage)}
+                                          </span>
+                                        </div>
+                                        <ChevronDown
+                                          className={`text-custom-title/50 transition-transform duration-300 ${expandedCourses.has(course.id) ? 'rotate-180' : ''}`}
+                                          size={18}
+                                        />
+                                      </div>
                                     </div>
-                                    <div className="flex items-center gap-2 mt-0.5">
-                                      <div className="flex flex-col items-start gap-1.5 mt-1.5">
+
+                                    {/* Stats Row */}
+                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-1.5">
+                                      <div className="flex flex-wrap items-center gap-1.5">
                                         <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-custom-title/70 bg-black/5 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md whitespace-nowrap">
                                           <Timer size={12} className="text-custom-title/50" />
                                           <span>{formatHours(courseCompletedHours)}</span>
@@ -891,46 +898,79 @@ export default function App() {
                                         </div>
                                       </div>
                                     </div>
+
+                                    {/* Mobile: Actions Row (Left Aligned, Under Video Count) */}
+                                    <div className="flex sm:hidden items-center gap-2 mt-3">
+                                      {course.playlistUrl && (
+                                        <a
+                                          href={course.playlistUrl}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          onClick={(e) => e.stopPropagation()}
+                                          className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center hover:bg-rose-200 transition-all hover:scale-105 shadow-sm group/yt"
+                                          title="Oynatma Listesine Git"
+                                        >
+                                          <Youtube size={16} className="text-red-600 group-hover/yt:text-red-700" strokeWidth={2} />
+                                        </a>
+                                      )}
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (course.notePath) {
+                                            setActiveNoteCourse({ name: course.name, path: course.notePath });
+                                          } else {
+                                            alert("Henüz not bulunamadı");
+                                          }
+                                        }}
+                                        className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center hover:bg-emerald-200 transition-all hover:scale-105 shadow-sm group/note"
+                                        title="Ders Notları"
+                                      >
+                                        <FileText size={16} className="text-emerald-600 group-hover/note:text-emerald-700" strokeWidth={2} />
+                                      </button>
+                                    </div>
                                   </div>
-                                </div>
 
-                                <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-2">
-                                  {course.playlistUrl && (
-                                    <a
-                                      href={course.playlistUrl}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      onClick={(e) => e.stopPropagation()}
-                                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-rose-100 flex items-center justify-center hover:bg-rose-200 transition-all hover:scale-105 shadow-sm group/yt"
-                                      title="Oynatma Listesine Git"
-                                    >
-                                      <Youtube size={16} className="text-red-600 group-hover/yt:text-red-700 sm:w-5 sm:h-5" strokeWidth={2} />
-                                    </a>
-                                  )}
+                                  {/* Desktop: Right Elements (Actions + Percent + Chevron) */}
+                                  <div className="hidden sm:flex items-center justify-end gap-3 shrink-0 ml-auto self-center">
+                                    {course.playlistUrl && (
+                                      <a
+                                        href={course.playlistUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center hover:bg-rose-200 transition-all hover:scale-105 shadow-sm group/yt"
+                                        title="Oynatma Listesine Git"
+                                      >
+                                        <Youtube size={20} className="text-red-600 group-hover/yt:text-red-700" strokeWidth={2} />
+                                      </a>
+                                    )}
 
-                                  {course.notePath && (
                                     <button
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        setActiveNoteCourse({ name: course.name, path: course.notePath });
+                                        if (course.notePath) {
+                                          setActiveNoteCourse({ name: course.name, path: course.notePath });
+                                        } else {
+                                          alert("Henüz not bulunamadı");
+                                        }
                                       }}
-                                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-emerald-100 flex items-center justify-center hover:bg-emerald-200 transition-all hover:scale-105 shadow-sm group/note"
+                                      className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center hover:bg-emerald-200 transition-all hover:scale-105 shadow-sm group/note"
                                       title="Ders Notları"
                                     >
-                                      <FileText size={16} className="text-emerald-600 group-hover/note:text-emerald-700 sm:w-5 sm:h-5" strokeWidth={2} />
+                                      <FileText size={20} className="text-emerald-600 group-hover/note:text-emerald-700" strokeWidth={2} />
                                     </button>
-                                  )}
 
-                                  <div className="px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg bg-zinc-800/80 backdrop-blur-sm border border-white/5 shadow-inner">
-                                    <span className={cn("text-xs sm:text-sm font-bold tracking-tight", isCourseCompleted ? "text-amber-400" : styles.accent)}>
-                                      %{Math.round(courseProgress.percentage)}
-                                    </span>
+                                    <div className="px-3 py-1.5 rounded-lg bg-zinc-800/80 backdrop-blur-sm border border-white/5 shadow-inner">
+                                      <span className={cn("text-sm font-bold tracking-tight", isCourseCompleted ? "text-amber-400" : styles.accent)}>
+                                        %{Math.round(courseProgress.percentage)}
+                                      </span>
+                                    </div>
+
+                                    <ChevronDown
+                                      className={`text-custom-title/50 transition-transform duration-300 ${expandedCourses.has(course.id) ? 'rotate-180' : ''}`}
+                                      size={18}
+                                    />
                                   </div>
-
-                                  <ChevronDown
-                                    className={`text-custom-title/50 transition-transform duration-300 ${expandedCourses.has(course.id) ? 'rotate-180' : ''}`}
-                                    size={18}
-                                  />
                                 </div>
                               </div>
 
@@ -959,10 +999,9 @@ export default function App() {
                                               key={video.id}
                                               onClick={(e) => {
                                                 e.stopPropagation();
-                                                // If popover is open elsewhere, close it
-                                                if (activePopover) setActivePopover(null);
-                                                handleVideoClick(course.id, video.id);
+                                                handleVideoClick(e, course.id, video.id);
                                               }}
+
                                               className={cn(
                                                 "group relative p-3 rounded-lg border border-dashed transition-all duration-300 flex items-center justify-between cursor-pointer",
                                                 isCompleted
@@ -990,25 +1029,6 @@ export default function App() {
                                               <span className={cn("text-xs font-mono font-medium ml-2 px-2 py-1 rounded-md bg-black/10 shrink-0", styles.accent)}>
                                                 {video.duration}
                                               </span>
-
-                                              {/* POPOVER RENDER */}
-                                              <AnimatePresence>
-                                                {activePopover?.courseId === course.id && activePopover?.videoId === video.id && (
-                                                  <Motion.div
-                                                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
-                                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                    exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                                                    className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 z-50"
-                                                    onClick={(e) => e.stopPropagation()}
-                                                  >
-                                                    <ActionPopover
-                                                      videoId={video.id}
-                                                      onMarkSingle={() => handlePopoverAction('single')}
-                                                      onMarkRange={() => handlePopoverAction('range')}
-                                                    />
-                                                  </Motion.div>
-                                                )}
-                                              </AnimatePresence>
                                             </div>
                                           );
                                         })}

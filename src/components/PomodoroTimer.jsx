@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw, X, ChevronDown, Check, LogOut, CheckCircle } from 'lucide-react';
+import { Play, Pause, X, ChevronDown, Check, LogOut, CircleCheckBig } from 'lucide-react';
 
 // eslint-disable-next-line
 import { motion, AnimatePresence } from 'framer-motion';
@@ -165,24 +165,20 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
 
         initAudio();
         setView('timer');
-
-        // WORK MODE: Count UP
-        // If we are starting fresh work mode
         setMode('work');
-        // If there was previous elapsed time in timeLeft (from pause), subtract it from now to get "original" start time
-        // But usually handleStartSession is for FRESH start or from selection.
-        // Let's assume fresh start from Selection view implies 0 start.
-        const now = Date.now();
-        startTimeRef.current = now;
-        originalStartTimeRef.current = now; // [NEW] Set original start
-        pausesRef.current = [];             // [NEW] Clear pauses
-        pauseStartRef.current = null;       // [NEW] Clear pause start
+
+        // Reset state but DO NOT START automatically
+        setTimeLeft(0);
+        setIsActive(false);
+
+        // Reset refs
+        startTimeRef.current = null;
+        originalStartTimeRef.current = null;
+        pausesRef.current = [];
+        pauseStartRef.current = null;
 
         notified50MinRef.current = false;
         notified10MinRef.current = false;
-
-        setTimeLeft(0); // working leads to increasing time
-        setIsActive(true);
     };
 
     // Define completion logic
@@ -275,6 +271,12 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         } else {
             // RESUMING
             initAudio();
+
+            // [NEW] Set original start if first time
+            if (!originalStartTimeRef.current) {
+                originalStartTimeRef.current = now;
+            }
+
             // Resume Count Up (Both modes)
             // startTime = now - elapsed
             startTimeRef.current = now - (timeLeft * 1000);
@@ -284,59 +286,47 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                 pausesRef.current.push({ start: pauseStartRef.current, end: now });
                 pauseStartRef.current = null;
             }
-
             setIsActive(true);
         }
     };
 
-    const resetTimer = () => {
-        setIsActive(false);
-        const defaultTime = 0; // Both reset to 0
-        setTimeLeft(defaultTime);
 
-        localStorage.setItem(STORAGE_KEYS.TIME_LEFT, defaultTime);
-        localStorage.removeItem(STORAGE_KEYS.START_TIME);
-        localStorage.removeItem(STORAGE_KEYS.NOTIFIED_50);
-        localStorage.removeItem(STORAGE_KEYS.NOTIFIED_10);
 
-        // [NEW] Clear pause storage
-        localStorage.removeItem(STORAGE_KEYS.ORIGINAL_START_TIME);
-        localStorage.removeItem(STORAGE_KEYS.PAUSES);
-        localStorage.removeItem(STORAGE_KEYS.PAUSE_START_TIME);
-
-        startTimeRef.current = null;
-        originalStartTimeRef.current = null; // [NEW]
-        pausesRef.current = [];              // [NEW]
-        pauseStartRef.current = null;        // [NEW]
-
-        notified50MinRef.current = false;
-        notified10MinRef.current = false;
-    };
-
-    const handleEndSession = () => {
-        setIsActive(false);
-        clearInterval(timerRef.current);
-
+    const clearSessionData = () => {
         // Clear all session specific storage
         localStorage.removeItem(STORAGE_KEYS.END_TIME);
         localStorage.removeItem(STORAGE_KEYS.START_TIME);
         localStorage.removeItem(STORAGE_KEYS.IS_ACTIVE);
         localStorage.removeItem(STORAGE_KEYS.MODE);
         localStorage.removeItem(STORAGE_KEYS.TIME_LEFT);
+        localStorage.removeItem(STORAGE_KEYS.VIEW); // Ensure we seek selection on next open
         localStorage.removeItem(STORAGE_KEYS.COURSE_ID);
         localStorage.removeItem(STORAGE_KEYS.NOTIFIED_50);
         localStorage.removeItem(STORAGE_KEYS.NOTIFIED_10);
 
-        // [NEW] Clear pause storage
+        // Clear pause storage
         localStorage.removeItem(STORAGE_KEYS.ORIGINAL_START_TIME);
         localStorage.removeItem(STORAGE_KEYS.PAUSES);
         localStorage.removeItem(STORAGE_KEYS.PAUSE_START_TIME);
+    };
+
+    const handleEndSession = () => {
+        setIsActive(false);
+        clearInterval(timerRef.current);
+        clearSessionData();
 
         // Reset local state
         setMode('work');
         setTimeLeft(0); // Works starts at 0
         setSelectedCourseId(initialCourse ? initialCourse.id : '');
         setView('selection');
+    };
+
+    const handleCancel = () => {
+        setIsActive(false);
+        clearInterval(timerRef.current);
+        clearSessionData();
+        onClose();
     };
 
     const handleSkipBreak = () => {
@@ -363,9 +353,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         }
     };
 
-    const handleFinishEarly = () => {
-        if (mode !== 'work') return;
-
+    const handleFinishSession = () => {
         setIsActive(false);
         clearInterval(timerRef.current);
         playNotificationSound();
@@ -373,35 +361,20 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         // Clear timer specific storage
         localStorage.removeItem(STORAGE_KEYS.START_TIME);
         localStorage.removeItem(STORAGE_KEYS.NOTIFIED_50);
-        // [NEW] Keep generic storage for break, but clear work specific intermediate stuff? 
-        // Actually we transition to BREAK, so we need to RESET refs for the break session?
-        // OR does Break share same refs?
-        // Breaks usually start fresh. So we should flush work data.
 
         // Calculate actual duration
-        // For count-up, timeLeft IS the elapsed time
         const elapsedTime = timeLeft; // In seconds
 
         sendNotification("Oturum Kaydedildi", {
-            body: `${selectedCourseName || 'Ders'} çalışması ${Math.floor(elapsedTime / 60)} dk olarak kaydedildi. Mola zamanı!`,
-            tag: 'pomodoro-early-complete'
+            body: `${selectedCourseName || 'Ders'} çalışması ${Math.floor(elapsedTime / 60)} dk olarak kaydedildi.`,
+            tag: 'pomodoro-complete'
         });
 
-        // [MODIFIED] Pass originalStartTime and pauses
+        // Pass originalStartTime and pauses
         onSessionComplete(elapsedTime, 'work', selectedCourseId, originalStartTimeRef.current, pausesRef.current);
 
-        // Reset for Break
-        setMode('break');
-        setTimeLeft(0);
-
-        const now = Date.now();
-        startTimeRef.current = now; // Start break timer (count up from 0)
-        originalStartTimeRef.current = now; // [NEW] Start break tracking
-        pausesRef.current = [];             // [NEW]
-        pauseStartRef.current = null;       // [NEW]
-
-        notified10MinRef.current = false;
-        setIsActive(true); // Automatically start break timer
+        // Redirect to Selection (Home)
+        handleEndSession();
     };
 
     const getDisplayState = () => {
@@ -500,7 +473,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                         <button
                             onClick={handleStartSession}
                             disabled={!selectedCourseId}
-                            className="flex-[2] py-3 bg-custom-accent text-white rounded-xl font-bold shadow-lg shadow-custom-accent/20 hover:bg-custom-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-lg cursor-pointer"
+                            className="flex-[2] py-3 bg-[#059669] text-white rounded-xl font-bold shadow-lg shadow-emerald-900/20 hover:bg-[#047857] disabled:opacity-50 disabled:cursor-not-allowed transition-all text-lg cursor-pointer"
                         >
                             Başlat
                         </button>
@@ -513,10 +486,11 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
     return (
         <div className="fixed bottom-4 left-4 z-50 bg-custom-header border border-custom-category rounded-2xl shadow-2xl shadow-black/50 p-6 w-80 animate-in slide-in-from-bottom-10 fade-in duration-300">
             <button
-                onClick={onClose}
-                className="absolute top-2 right-2 text-custom-title/40 hover:text-custom-error transition-colors cursor-pointer"
+                onClick={handleCancel}
+                className="absolute top-3 right-3 bg-custom-bg border border-custom-category/30 text-custom-error hover:text-custom-error hover:bg-custom-error/10 hover:scale-110 active:scale-95 transition-all cursor-pointer p-2 rounded-xl"
+                title="İptal Et ve Kapat"
             >
-                <X size={18} />
+                <LogOut size={20} strokeWidth={2.5} />
             </button>
 
             <div className="flex flex-col items-center">
@@ -540,35 +514,19 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                 <div className="flex items-center gap-4">
                     <button
                         onClick={toggleTimer}
-                        className={`p-4 rounded-xl text-white shadow-lg transition-all hover:scale-105 active:scale-95 ${isActive ? 'bg-custom-warning hover:bg-custom-warning/90' : 'bg-custom-accent hover:bg-custom-accent/90'} cursor-pointer`}
+                        className={`p-4 rounded-xl text-white shadow-lg transition-all hover:scale-105 active:scale-95 ${isActive ? 'bg-custom-warning hover:bg-custom-warning/90' : 'bg-[#059669] hover:bg-[#047857]'} cursor-pointer`}
                     >
                         {isActive ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" />}
                     </button>
 
                     <button
-                        onClick={resetTimer}
-                        className="p-4 rounded-xl bg-custom-bg border border-custom-category/30 text-custom-title/70 hover:text-custom-text hover:bg-custom-category/20 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                        onClick={handleFinishSession}
+                        className="p-4 rounded-xl bg-custom-bg border border-custom-category/30 text-custom-success/70 hover:text-custom-success hover:bg-custom-success/10 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                        title="Bitir (Oturumu Kaydet)"
                     >
-                        <RotateCcw size={24} />
+                        <CircleCheckBig size={24} />
                     </button>
 
-                    <button
-                        onClick={handleEndSession}
-                        className="p-4 rounded-xl bg-custom-bg border border-custom-category/30 text-custom-error/70 hover:text-custom-error hover:bg-custom-error/10 transition-all hover:scale-105 active:scale-95 cursor-pointer"
-                        title="Oturumu Bitir / Yeni Ders"
-                    >
-                        <LogOut size={24} />
-                    </button>
-
-                    {mode === 'work' && (
-                        <button
-                            onClick={handleFinishEarly}
-                            className="p-4 rounded-xl bg-custom-bg border border-custom-category/30 text-custom-success/70 hover:text-custom-success hover:bg-custom-success/10 transition-all hover:scale-105 active:scale-95 cursor-pointer"
-                            title="Şimdi Bitir (Hemen Kaydet)"
-                        >
-                            <CheckCircle size={24} />
-                        </button>
-                    )}
                 </div>
 
                 {mode === 'break' && (
