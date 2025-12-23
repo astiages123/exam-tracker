@@ -4,6 +4,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { courseData } from '../data';
 // eslint-disable-next-line
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNotification } from '../context/NotificationContext';
 
 const CATEGORY_STYLES = {
     'DEFAULT': { bg: 'bg-white/5', border: 'border-white/10', text: 'text-custom-title/80' }
@@ -12,11 +13,19 @@ const CATEGORY_STYLES = {
 const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
         const data = payload[0].payload;
+        const totalMinutes = Math.round(payload[0].value * 60);
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+
+        const durationText = hours > 0
+            ? `${hours} sa ${minutes} dk`
+            : `${minutes} dk`;
+
         return (
             <div className="bg-custom-header border border-custom-category p-3 rounded-lg shadow-xl min-w-[150px]">
                 <p className="text-custom-title/80 text-xs mb-1 font-medium border-b border-white/5 pb-1">{data.fullDate}</p>
                 <p className="text-custom-accent font-bold text-sm mt-1">
-                    {payload[0].value} Saat
+                    {durationText}
                 </p>
                 {data.courses && data.courses.length > 0 && (
                     <div className="mt-2 space-y-1">
@@ -333,7 +342,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                                 fontSize={12}
                                                 tickLine={false}
                                                 axisLine={false}
-                                                tickFormatter={(value) => `${value}s`}
+                                                tickFormatter={(value) => `${value} sa`}
                                             />
                                             <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#ffffff20', strokeWidth: 2 }} />
                                             <Line
@@ -367,6 +376,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                         workSessions={workSessions}
                         breakSessions={breakSessions}
                         onClose={() => setSelectedGroup(null)}
+                        onDelete={onDelete}
                     />
                 )}
             </AnimatePresence>
@@ -374,7 +384,9 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
     );
 }
 
-function SessionChartModal({ group, courseName, workSessions, breakSessions, onClose }) {
+function SessionChartModal({ group, courseName, workSessions, breakSessions, onClose, onDelete }) {
+    const { showConfirm } = useNotification(); // [NEW] Use notification hook
+
     // Esc key to close
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -412,7 +424,8 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                         start: start,
                         end: end,
                         duration: s.duration,
-                        courseId: s.courseId
+                        courseId: s.courseId,
+                        sessionId: s.timestamp // [NEW] Add ID
                     });
                 } else {
                     // Session with pauses - fragment it
@@ -433,7 +446,8 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                     start: new Date(currentStart),
                                     end: new Date(pause.start),
                                     duration: segDuration,
-                                    courseId: s.courseId
+                                    courseId: s.courseId,
+                                    sessionId: s.timestamp // [NEW] Add ID
                                 });
                                 accumulatedWork += segDuration;
                             }
@@ -461,7 +475,8 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                             start: new Date(currentStart),
                             end: new Date(currentStart + (remainingWork * 1000)),
                             duration: remainingWork,
-                            courseId: s.courseId
+                            courseId: s.courseId,
+                            sessionId: s.timestamp // [NEW] Add ID
                         });
                     }
                 }
@@ -479,7 +494,8 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                     type: 'break',
                     start: start,
                     end: end,
-                    duration: s.duration
+                    duration: s.duration,
+                    sessionId: s.timestamp // [NEW] Add ID
                 });
             }
         });
@@ -487,12 +503,44 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
         // Sort by start time
         items.sort((a, b) => a.start - b.start);
 
+        // [NEW] Fill Gaps with Idle Time
+        const fullTimelineItems = [];
+        if (items.length > 0) {
+            // Optional: Start from the very beginning of the day? 
+            // Or just between sessions as requested ("ilk çalışma grafiğiyle ilk mola arasında").
+            // User specifically pointed out gaps BETWEEN sessions.
+
+            for (let i = 0; i < items.length; i++) {
+                const current = items[i];
+
+                // Check gap with previous
+                if (i > 0) {
+                    const prev = items[i - 1];
+                    const gap = (current.start - prev.end) / 1000; // seconds
+
+                    // If gap is more than 60 seconds, show it
+                    if (gap > 60) {
+                        fullTimelineItems.push({
+                            type: 'idle',
+                            start: prev.end,
+                            end: current.start,
+                            duration: gap
+                        });
+                    }
+                }
+
+                fullTimelineItems.push(current);
+            }
+        }
+
+        const finalItems = fullTimelineItems.length > 0 ? fullTimelineItems : items;
+
         // Determine Range (Earliest Start -> Latest End)
         let minTime = new Date(group.date).setHours(24, 0, 0, 0);
         let maxTime = new Date(group.date).setHours(0, 0, 0, 0);
         let hasData = false;
 
-        items.forEach(item => {
+        finalItems.forEach(item => {
             if (item.start < minTime) minTime = item.start;
             if (item.end > maxTime) maxTime = item.end;
             hasData = true;
@@ -517,7 +565,7 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
         const isTodayDate = isSameDay(today, viewedDate);
 
         return {
-            timelineItems: items,
+            timelineItems: finalItems,
             startHour: sHour,
             endHour: eHour,
             isToday: isTodayDate
@@ -611,23 +659,33 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                 const isWork = item.type === 'work';
                                 const isBreak = item.type === 'break';
                                 const isPause = item.type === 'pause-interval';
+                                const isIdle = item.type === 'idle';
 
                                 let bgClass = '';
                                 let borderClass = '';
                                 let shadowClass = '';
+                                let label = '';
 
                                 if (isWork) {
                                     bgClass = 'bg-custom-accent/80';
                                     borderClass = 'border-custom-accent';
                                     shadowClass = 'shadow-custom-accent/20';
+                                    label = 'Çalışma Bloğu';
                                 } else if (isBreak) {
                                     bgClass = 'bg-custom-success/80';
                                     borderClass = 'border-custom-success';
                                     shadowClass = 'shadow-custom-success/20';
+                                    label = 'Mola';
                                 } else if (isPause) {
                                     bgClass = 'bg-custom-title/10'; // Gray for pause
                                     borderClass = 'border-custom-title/20';
                                     shadowClass = 'shadow-none';
+                                    label = 'Durduruldu';
+                                } else if (isIdle) {
+                                    bgClass = 'bg-white/5'; // Very subtle gray
+                                    borderClass = 'border-white/5';
+                                    shadowClass = 'shadow-none';
+                                    label = 'Boş Zaman';
                                 }
 
                                 return (
@@ -637,7 +695,23 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                         style={{
                                             left: `${startPercent}%`,
                                             width: `calc(${Math.max(durationPercent, 0.5)}% - 2px)`, // -2px for visual gap
-                                            top: '96px' // Fixed top position for single lane (approx center of remaining space)
+                                            top: '96px' // Fixed top position for single lane
+                                        }}
+                                        onClick={async (e) => {
+                                            if (isWork || isBreak) {
+                                                e.stopPropagation();
+                                                const confirmed = await showConfirm(
+                                                    'Kaydı Sil',
+                                                    'Bu kaydı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.'
+                                                );
+
+                                                if (confirmed) {
+                                                    if (onDelete && item.sessionId) {
+                                                        onDelete([item.sessionId]);
+                                                        onClose(); // Close modal to refresh data
+                                                    }
+                                                }
+                                            }
                                         }}
                                     >
                                         {/* Icon (only if width permits) */}
@@ -645,7 +719,7 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                             <div className="text-white/90">
                                                 {isWork && <BookOpen size={14} />}
                                                 {isBreak && <Clock size={14} />}
-                                                {/* No icon for pause or maybe a pause icon? */}
+                                                {/* Idle/Pause no icon */}
                                             </div>
                                         )}
 
@@ -655,9 +729,9 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                                 {item.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {item.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                             </div>
                                             <div className="flex items-center justify-center gap-2 mt-2">
-                                                <div className={`w-2 h-2 rounded-full ${isWork ? 'bg-custom-accent' : (isBreak ? 'bg-custom-success' : 'bg-custom-title/50')}`}></div>
+                                                <div className={`w-2 h-2 rounded-full ${isWork ? 'bg-custom-accent' : (isBreak ? 'bg-custom-success' : (isIdle ? 'bg-custom-title/20' : 'bg-custom-title/50'))}`}></div>
                                                 <span className={`${isWork ? 'text-custom-accent' : (isBreak ? 'text-custom-success' : 'text-custom-title')} font-bold`}>
-                                                    {isWork ? 'Çalışma Bloğu' : (isBreak ? 'Mola' : 'Durduruldu')}
+                                                    {label}
                                                 </span>
                                             </div>
                                             <div className="text-center text-custom-title/60 mt-1">

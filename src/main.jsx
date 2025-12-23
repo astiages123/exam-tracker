@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext';
 import { supabase } from './lib/supabaseClient';
+import { NotificationProvider } from './context/NotificationContext';
 
 const root = createRoot(document.getElementById('root'));
 
@@ -45,7 +46,9 @@ if (!supabase) {
   root.render(
     <StrictMode>
       <AuthProvider>
-        <App />
+        <NotificationProvider>
+          <App />
+        </NotificationProvider>
       </AuthProvider>
     </StrictMode>,
   );

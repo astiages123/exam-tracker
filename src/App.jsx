@@ -17,6 +17,7 @@ function cn(...inputs) {
 // --- Data ---
 import { courseData, RANKS } from './data';
 import { useAuth } from './context/AuthContext';
+import { useNotification } from './context/NotificationContext'; // [NEW] Import notification hook
 import { supabase } from './lib/supabaseClient';
 import Login from './components/Login';
 import PomodoroTimer from './components/PomodoroTimer';
@@ -82,6 +83,7 @@ const CATEGORY_STYLES = {
 
 export default function App() {
   const { user, logout, loading } = useAuth();
+  const { showToast } = useNotification(); // [NEW] Use notification hook
 
   // State: { [courseId]: completedCount }
   const [progressData, setProgressData] = useState({});
@@ -932,7 +934,7 @@ export default function App() {
                                           if (course.notePath) {
                                             setActiveNoteCourse({ name: course.name, path: course.notePath, id: course.id });
                                           } else {
-                                            alert("Henüz not bulunamadı");
+                                            showToast("Henüz not bulunamadı", 'error');
                                           }
                                         }}
                                         className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center hover:bg-emerald-200 transition-all hover:scale-105 shadow-sm group/note"
@@ -946,7 +948,7 @@ export default function App() {
                                           if (course.notePath) {
                                             setActiveQuizCourse({ name: course.name, path: course.notePath, id: course.id });
                                           } else {
-                                            alert("Önce ders notu yüklenmelidir");
+                                            showToast("Önce ders notu yüklenmelidir", 'warning');
                                           }
                                         }}
                                         className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center hover:bg-purple-200 transition-all hover:scale-105 shadow-sm group/quiz"
@@ -978,7 +980,7 @@ export default function App() {
                                         if (course.notePath) {
                                           setActiveNoteCourse({ name: course.name, path: course.notePath, id: course.id });
                                         } else {
-                                          alert("Henüz not bulunamadı");
+                                          showToast("Henüz not bulunamadı", 'error');
                                         }
                                       }}
                                       className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center hover:bg-emerald-200 transition-all hover:scale-105 shadow-sm group/note"
@@ -993,7 +995,7 @@ export default function App() {
                                         if (course.notePath) {
                                           setActiveQuizCourse({ name: course.name, path: course.notePath, id: course.id });
                                         } else {
-                                          alert("Önce ders notu yüklenmelidir");
+                                          showToast("Önce ders notu yüklenmelidir", 'warning');
                                         }
                                       }}
                                       className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center hover:bg-purple-200 transition-all hover:scale-105 shadow-sm group/quiz"
