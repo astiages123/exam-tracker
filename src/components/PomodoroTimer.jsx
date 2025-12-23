@@ -548,8 +548,10 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                 <div className={`text-6xl font-mono font-bold tracking-tighter mb-2 transition-all duration-300 ${isOvertime ? 'text-custom-error scale-110' : 'text-custom-text'}`}>
                     {timeText}
                 </div>
-                <div className="text-[10px] text-custom-title/40 font-medium">
-                    OTURUM #{sessionsCount || 1}
+                <div className="flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/5 border border-white/5 mt-2">
+                    <span className="text-[11px] font-extrabold text-custom-accent uppercase tracking-[0.15em]">
+                        OTURUM #{(sessionsCount || 0) + 1}
+                    </span>
                 </div>
             </div>
 
