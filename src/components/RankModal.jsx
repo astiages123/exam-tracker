@@ -1,7 +1,7 @@
 import React from 'react';
 // eslint-disable-next-line
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Lock, Star, User, CreditCard, Search, Shield, Award, Crown } from 'lucide-react';
+import { Goal, Lock, Star, User, CreditCard, Search, Shield, Award, Crown } from 'lucide-react';
 import { RANKS } from '../data';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -80,7 +80,7 @@ const RankModal = ({ currentRank, onClose, totalHours = 0, completedHours = 0, s
                     <div className="flex items-start justify-between mb-2 border-b border-custom-category/30 pb-4 shrink-0">
                         <div className="flex items-center gap-4">
                             <div className="bg-custom-accent/10 p-3 rounded-xl">
-                                <Trophy size={32} className="text-custom-accent" />
+                                <Goal size={32} className="text-custom-accent" />
                             </div>
                             <div>
                                 <h2 className="text-2xl font-bold text-custom-text">Unvan Yolculuğu</h2>

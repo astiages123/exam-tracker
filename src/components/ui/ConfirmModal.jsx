@@ -1,49 +1,88 @@
-import React from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { AlertTriangle, X } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
+import { AlertTriangle } from 'lucide-react';
 
-export default function ConfirmModal({ isOpen, title, message, onConfirm, onCancel }) {
-    if (!isOpen) return null;
+export default function ConfirmModal({ isOpen, title, message, onConfirm, onCancel, confirmText = 'Evet, Onayla', cancelText = 'İptal' }) {
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const handleEscape = (e) => {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
+                onCancel();
+            }
+        };
+
+        window.addEventListener('keydown', handleEscape, true);
+        return () => window.removeEventListener('keydown', handleEscape, true);
+    }, [isOpen, onCancel]);
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-[2px]">
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="w-full max-w-md bg-custom-header border border-custom-category rounded-2xl shadow-2xl overflow-hidden"
-            >
-                <div className="p-6">
-                    <div className="flex gap-4">
-                        <div className="shrink-0 w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
-                            <AlertTriangle className="text-amber-500" size={24} />
-                        </div>
-                        <div className="flex-1">
-                            <h3 className="text-lg font-bold text-custom-text">
-                                {title || 'Emin misiniz?'}
-                            </h3>
-                            <p className="mt-2 text-custom-title/80 leading-relaxed">
-                                {message || 'Bu işlemi yapmak istediğinize emin misiniz?'}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="p-4 bg-black/20 flex items-center justify-end gap-3 border-t border-custom-category/50">
-                    <button
+        <AnimatePresence>
+            {isOpen && (
+                <div
+                    className="fixed inset-0 z-[110] flex items-center justify-center p-4"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <Motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.15 }}
                         onClick={onCancel}
-                        className="px-4 py-2 rounded-xl text-custom-title/70 font-medium hover:text-custom-text hover:bg-white/5 transition-colors"
+                        className="absolute inset-0 bg-zinc-950/40 backdrop-blur-[4px]"
+                    />
+                    <Motion.div
+                        initial={{ opacity: 0, scale: 0.98, y: 8 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.98, y: 8 }}
+                        transition={{
+                            type: 'spring',
+                            damping: 25,
+                            stiffness: 400,
+                            mass: 0.8
+                        }}
+                        className="relative w-full max-w-[380px] bg-[#1a1a1c] border border-white/[0.08] rounded-[24px] shadow-2xl overflow-hidden will-change-transform"
                     >
-                        İptal
-                    </button>
-                    <button
-                        onClick={onConfirm}
-                        className="px-4 py-2 rounded-xl bg-custom-accent/10 text-custom-accent border border-custom-accent/20 font-bold hover:bg-custom-accent/20 transition-all active:scale-95"
-                    >
-                        Evet, Onayla
-                    </button>
+                        <div className="p-8 pb-6">
+                            <div className="flex flex-col items-center text-center gap-4">
+                                <Motion.div
+                                    initial={{ scale: 0.8 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: 0.05 }}
+                                    className="w-14 h-14 rounded-full bg-rose-400/10 flex items-center justify-center border border-rose-400/20"
+                                >
+                                    <AlertTriangle className="text-rose-400/80" size={28} />
+                                </Motion.div>
+                                <div className="space-y-2">
+                                    <h3 className="text-xl font-bold text-white tracking-tight">
+                                        {title || 'Emin misiniz?'}
+                                    </h3>
+                                    <p className="text-[#a1a1aa] text-sm leading-relaxed px-2">
+                                        {message || 'Bu işlemi yapmak istediğinize emin misiniz?'}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="px-6 pb-6 pt-2 flex flex-col gap-2">
+                            <button
+                                onClick={onConfirm}
+                                className="w-full py-3.5 rounded-2xl bg-rose-400/10 hover:bg-rose-400/20 text-rose-300 font-bold text-sm transition-colors duration-200 border border-rose-400/20 active:scale-[0.98]"
+                            >
+                                {confirmText}
+                            </button>
+                            <button
+                                onClick={onCancel}
+                                className="w-full py-3.5 rounded-2xl text-[#71717a] hover:text-[#a1a1aa] font-semibold text-sm transition-colors duration-200"
+                            >
+                                {cancelText}
+                            </button>
+                        </div>
+                    </Motion.div>
                 </div>
-            </motion.div>
-        </div>
+            )}
+        </AnimatePresence>
     );
 }

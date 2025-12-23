@@ -76,7 +76,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         if (savedPauseStart) pauseStartRef.current = parseInt(savedPauseStart, 10);
 
         if (savedIsActive) {
-            // const now = Date.now(); // Removed unused variable
+
 
             if (savedStartTime) {
                 // RESTORE COUNT-UP (for both Work and Break)

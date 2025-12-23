@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Trophy, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay, BadgeCheck, FileText, HelpCircle } from 'lucide-react';
+import { ChevronDown, Goal, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay, BadgeCheck, FileText, HelpCircle } from 'lucide-react';
 import ScheduleModal from './components/ScheduleModal';
 
 
@@ -90,6 +90,7 @@ export default function App() {
   const [sessions, setSessions] = useState([]); // [{ timestamp, duration, type, courseId }]
   const [schedule, setSchedule] = useState({}); // { "Pazartesi": [{ time: "09:00", subject: "Math" }] }
   const [activityLog, setActivityLog] = useState({}); // { "YYYY-MM-DD": true }
+  const [videoHistory, setVideoHistory] = useState([]); // [NEW] [{ videoId: string, timestamp: string, courseId: string }]
   const [lastActiveCourseId, setLastActiveCourseId] = useState(null); // Track last interacted course
   const [isDataLoaded, setIsDataLoaded] = useState(false); // [FIX] Prevent autosave race condition
 
@@ -161,7 +162,7 @@ export default function App() {
       if (user) {
         const { data, error } = await supabase
           .from('user_progress')
-          .select('progress_data, sessions, schedule, activity_log')
+          .select('progress_data, sessions, schedule, activity_log, video_history') // [NEW] Fetch video_history
           .eq('user_id', user.id)
           .single();
 
@@ -170,6 +171,7 @@ export default function App() {
           setSessions(data.sessions || []);
           setSchedule(data.schedule || {});
           setActivityLog(data.activity_log || {});
+          setVideoHistory(data.video_history || []); // [NEW] Set history
         } else if (error && error.code !== 'PGRST116') { // PGRST116 is "no rows returned"
           console.error('Error loading data:', error);
         }
@@ -259,6 +261,7 @@ export default function App() {
             sessions: sessions,
             schedule: schedule,
             activity_log: activityLog,
+            video_history: videoHistory, // [NEW] Save history
             updated_at: new Date()
           });
 
@@ -269,7 +272,7 @@ export default function App() {
       const timeoutId = setTimeout(saveData, 300);
       return () => clearTimeout(timeoutId);
     }
-  }, [user, progressData, sessions, schedule, activityLog, isDataLoaded]);
+  }, [user, progressData, sessions, schedule, activityLog, videoHistory, isDataLoaded]); // [NEW] Added videoHistory dep
 
   const handleSessionComplete = (duration, type, overrideCourseId, startTime, pauses) => {
     // [MODIFIED] Now we record 'break' sessions too
@@ -378,14 +381,61 @@ export default function App() {
   // Logic: Clicking video N ensures 1..N are checked, and N+1..End are unchecked.
   // It effectively sets the progress "level" to N.
   // Renamed and refactored for Smart Logic
+  // [MODIFIED] Now also handles videoHistory updates
   const updateProgress = (courseId, newCompletedIds) => {
     setLastActiveCourseId(courseId);
+
+    // --- History Logic ---
     setProgressData(prev => {
+      const oldCompletedIds = prev[courseId] || [];
+
+      // 1. Find newly added videos
+      const addedIds = newCompletedIds.filter(id => !oldCompletedIds.includes(id));
+
+      // 2. Find removed videos
+      const removedIds = oldCompletedIds.filter(id => !newCompletedIds.includes(id));
+
+      if (addedIds.length > 0 || removedIds.length > 0) {
+        setVideoHistory(prevHistory => {
+          let updatedHistory = [...prevHistory];
+
+          // Add new records
+          addedIds.forEach(vidId => {
+            // Check if already exists to prevent dupes (though logic shouldn't allow it usually)
+            // But we might re-watch? For now, if it's "checked", it's "done".
+            // If we want to track re-watching, we'd need more complex logic. 
+            // Here we assume "checked status" maps to history entry.
+            // If it was already in history (maybe from past), we might keep old date or update?
+            // "When did I finish this video?" -> Now.
+            // So we can push a new entry.
+            // However, to keep it clean, let's remove old entry for this video if exists, and push new.
+            // Actually, if I uncheck and recheck tomorrow, I want tomorrow's date. Correct.
+
+            // First remove any existing entry for this specific video (cleanup)
+            // updatedHistory = updatedHistory.filter(h => h.videoId !== vidId); // Optional: keep history clean?
+            // No, let's just append. If I uncheck, we remove.
+
+            updatedHistory.push({
+              videoId: vidId,
+              courseId: courseId,
+              timestamp: new Date().toISOString()
+            });
+          });
+
+          // Remove records for un-checked videos
+          if (removedIds.length > 0) {
+            updatedHistory = updatedHistory.filter(h => !removedIds.includes(h.videoId));
+          }
+
+          return updatedHistory;
+        });
+      }
+
       const course = courseData.flatMap(cat => cat.courses).find(c => c.id === courseId);
 
       // Celebration Check
       if (course && newCompletedIds.length === course.totalVideos) {
-        const wasCompletedBefore = (prev[courseId] || []).length === course.totalVideos;
+        const wasCompletedBefore = oldCompletedIds.length === course.totalVideos;
         if (!wasCompletedBefore) {
           setCelebratingCourse(course.name);
         }
@@ -536,6 +586,7 @@ export default function App() {
           courses={flatCourses}
           onClose={() => setShowReport(false)}
           onDelete={handleDeleteSessions}
+          videoHistory={videoHistory} // [NEW] Pass history
         />
       )}
 
@@ -590,7 +641,7 @@ export default function App() {
                 onClick={() => setShowRankModal(true)}
               >
                 <div className="bg-custom-header p-2 rounded-xl border border-custom-category/50 relative group-hover:border-custom-accent/30 transition-colors shadow-sm">
-                  <Trophy size={20} className="text-custom-accent" />
+                  <Goal size={20} className="text-custom-accent" />
                 </div>
                 <h1 className={cn("text-xl font-bold tracking-tight text-custom-text leading-tight", rankInfo.color)}>
                   {rankInfo.title}
@@ -653,7 +704,7 @@ export default function App() {
                 onClick={() => setShowRankModal(true)}
               >
                 <div className="bg-custom-header p-3 rounded-xl border border-custom-category/50 relative group-hover:border-custom-accent/30 box-border transition-colors">
-                  <Trophy size={28} className="text-custom-accent group-hover:drop-shadow-lg" />
+                  <Goal size={28} className="text-custom-accent group-hover:drop-shadow-lg" />
                 </div>
               </div>
               <div className="flex flex-col gap-2">
@@ -718,7 +769,7 @@ export default function App() {
             <div className="flex flex-col">
               <span className="text-xs font-bold text-custom-title/50 uppercase tracking-wider mb-1">Mevcut Hedef</span>
               <span className="text-lg font-bold text-custom-accent flex items-center gap-2">
-                <Trophy size={18} />
+                <Goal size={18} />
                 {nextRank.title}
               </span>
             </div>
@@ -786,7 +837,7 @@ export default function App() {
                           <h3 className={cn("font-semibold text-lg tracking-tight transition-colors", categoryPercent === 100 ? "text-amber-400" : styles.accent)}>
                             {category.category.split('(')[0]}
                           </h3>
-                          {categoryPercent === 100 && <Trophy size={18} className="text-amber-400 animate-bounce" />}
+                          {categoryPercent === 100 && <BadgeCheck size={18} className="text-amber-400 animate-bounce" />}
                         </div>
                         <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-2">
                           <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold text-custom-title/80 bg-black/5 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg border border-black/5 whitespace-nowrap">

@@ -8,6 +8,7 @@ const NotificationContext = createContext({
     showConfirm: () => Promise.resolve(false)
 });
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useNotification = () => useContext(NotificationContext);
 
 export const NotificationProvider = ({ children }) => {
@@ -59,7 +60,7 @@ export const NotificationProvider = ({ children }) => {
             {children}
 
             {/* Toast Container - Fixed Position */}
-            <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-2 w-full max-w-sm pointer-events-none">
+            <div className="fixed top-4 right-4 z-[9999] flex flex-col items-end gap-3 pointer-events-none">
                 <AnimatePresence>
                     {toasts.map(toast => (
                         <Toast
@@ -72,17 +73,13 @@ export const NotificationProvider = ({ children }) => {
             </div>
 
             {/* Confirm Modal */}
-            <AnimatePresence>
-                {confirmState.isOpen && (
-                    <ConfirmModal
-                        isOpen={confirmState.isOpen}
-                        title={confirmState.title}
-                        message={confirmState.message}
-                        onConfirm={handleConfirm}
-                        onCancel={handleCancel}
-                    />
-                )}
-            </AnimatePresence>
+            <ConfirmModal
+                isOpen={confirmState.isOpen}
+                title={confirmState.title}
+                message={confirmState.message}
+                onConfirm={handleConfirm}
+                onCancel={handleCancel}
+            />
         </NotificationContext.Provider>
     );
 };

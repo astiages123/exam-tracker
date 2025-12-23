@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy, CheckCircle2 } from 'lucide-react';
+import { PartyPopper, CheckCircle2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const CelebrationOverlay = ({ courseName, onComplete }) => {
@@ -76,7 +76,7 @@ const CelebrationOverlay = ({ courseName, onComplete }) => {
                     <div
                         className="w-20 h-20 bg-custom-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-custom-accent/20"
                     >
-                        <Trophy size={40} className="text-custom-accent" />
+                        <PartyPopper size={40} className="text-custom-accent" />
                     </div>
 
                     <h2
