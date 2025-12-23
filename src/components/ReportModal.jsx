@@ -278,7 +278,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                 </div>
 
                 {/* Stats */}
-                <div className="px-4 py-2 md:px-6 grid grid-cols-2 gap-3 border-b border-custom-category bg-custom-bg/50">
+                <div className="px-4 py-6 md:px-6 grid grid-cols-2 gap-4 border-b border-custom-category bg-custom-bg/50">
                     <div className="bg-custom-header p-2.5 rounded-xl border border-custom-category/20">
                         <span className="text-[10px] text-custom-title/40 uppercase tracking-wider font-bold">Toplam Çalışma</span>
                         <div className="text-xl font-mono font-bold text-custom-text mt-0.5">
