@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Goal, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay, BadgeCheck, FileText, HelpCircle } from 'lucide-react';
+import { ChevronDown, Goal, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay, BadgeCheck, FileText, HelpCircle, User, CreditCard, Search, Shield, Award, Crown, Star } from 'lucide-react';
 import ScheduleModal from './components/ScheduleModal';
 
 
@@ -42,7 +42,7 @@ const ProgressBar = ({ progress, nextLevelMin, currentLevelMin }) => {
       <Motion.div
         className="h-full bg-custom-accent rounded-full relative"
         initial={{ width: 0 }}
-        animate={{ width: `${percentage}%` }}
+        animate={{ width: `${percentage}% ` }}
         transition={{ duration: 0.5 }}
       >
       </Motion.div>
@@ -58,7 +58,7 @@ const CategoryProgressBar = ({ percentage, colorClass }) => {
       <Motion.div
         className={cn("h-full", colorClass || "bg-custom-accent")}
         initial={{ width: 0 }}
-        animate={{ width: `${percentage}%` }}
+        animate={{ width: `${percentage}% ` }}
         transition={{ duration: 0.5 }}
       />
     </div>
@@ -70,7 +70,7 @@ const formatHours = (decimalHours) => {
   if (!decimalHours) return "0sa 0dk";
   const hours = Math.floor(decimalHours);
   const minutes = Math.round((decimalHours - hours) * 60);
-  return `${hours}sa ${minutes}dk`;
+  return `${hours}sa ${minutes} dk`;
 };
 
 const CATEGORY_STYLES = {
@@ -79,6 +79,16 @@ const CATEGORY_STYLES = {
   'MUHASEBE - İŞLETME - MALİYE': { bg: 'bg-emerald-500/10 hover:bg-emerald-500/20', border: 'border-emerald-500/20', accent: 'text-emerald-300', iconBg: 'bg-emerald-500/20', barColor: 'bg-emerald-300' },
   'MATEMATİK - BANKA': { bg: 'bg-violet-500/10 hover:bg-violet-500/20', border: 'border-violet-500/20', accent: 'text-violet-300', iconBg: 'bg-violet-500/20', barColor: 'bg-violet-300' },
   'DEFAULT': { bg: 'bg-custom-header', border: 'border-custom-category/30', accent: 'text-custom-accent', iconBg: 'bg-custom-accent/10', barColor: 'bg-custom-accent' }
+};
+
+const RANK_ICONS = {
+  User,
+  CreditCard,
+  Search,
+  Shield,
+  Award,
+  Crown,
+  Star
 };
 
 export default function App() {
@@ -305,7 +315,7 @@ export default function App() {
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return `${year} -${month} -${day} `;
   };
 
   // --- Activity Tracking Logic (Refactored to Sticky Baseline + Session Integration) ---
@@ -318,7 +328,7 @@ export default function App() {
 
     // Sticky Baseline Logic
     const todayStr = getLocalYMD(new Date());
-    const storageKey = `exam_tracker_baseline_${todayStr}`;
+    const storageKey = `exam_tracker_baseline_${todayStr} `;
 
     let baseline = parseInt(localStorage.getItem(storageKey));
 
@@ -641,7 +651,10 @@ export default function App() {
                 onClick={() => setShowRankModal(true)}
               >
                 <div className="bg-custom-header p-2 rounded-xl border border-custom-category/50 relative group-hover:border-custom-accent/30 transition-colors shadow-sm">
-                  <Goal size={20} className="text-custom-accent" />
+                  {(() => {
+                    const Icon = RANK_ICONS[rankInfo.icon] || Goal;
+                    return <Icon size={20} className="text-custom-accent" />;
+                  })()}
                 </div>
                 <h1 className={cn("text-xl font-bold tracking-tight text-custom-text leading-tight", rankInfo.color)}>
                   {rankInfo.title}
@@ -704,7 +717,10 @@ export default function App() {
                 onClick={() => setShowRankModal(true)}
               >
                 <div className="bg-custom-header p-3 rounded-xl border border-custom-category/50 relative group-hover:border-custom-accent/30 box-border transition-colors">
-                  <Goal size={28} className="text-custom-accent group-hover:drop-shadow-lg" />
+                  {(() => {
+                    const Icon = RANK_ICONS[rankInfo.icon] || Goal;
+                    return <Icon size={28} className="text-custom-accent group-hover:drop-shadow-lg" />;
+                  })()}
                 </div>
               </div>
               <div className="flex flex-col gap-2">
@@ -769,7 +785,10 @@ export default function App() {
             <div className="flex flex-col">
               <span className="text-xs font-bold text-custom-title/50 uppercase tracking-wider mb-1">Mevcut Hedef</span>
               <span className="text-lg font-bold text-custom-accent flex items-center gap-2">
-                <Goal size={18} />
+                {(() => {
+                  const Icon = RANK_ICONS[nextRank.icon] || Goal;
+                  return <Icon size={18} />;
+                })()}
                 {nextRank.title}
               </span>
             </div>
@@ -939,7 +958,7 @@ export default function App() {
                                           </span>
                                         </div>
                                         <ChevronDown
-                                          className={`text-custom-title/50 transition-transform duration-300 ${expandedCourses.has(course.id) ? 'rotate-180' : ''}`}
+                                          className={`text - custom - title / 50 transition - transform duration - 300 ${expandedCourses.has(course.id) ? 'rotate-180' : ''} `}
                                           size={18}
                                         />
                                       </div>
@@ -1062,7 +1081,7 @@ export default function App() {
                                     </div>
 
                                     <ChevronDown
-                                      className={`text-custom-title/50 transition-transform duration-300 ${expandedCourses.has(course.id) ? 'rotate-180' : ''}`}
+                                      className={`text - custom - title / 50 transition - transform duration - 300 ${expandedCourses.has(course.id) ? 'rotate-180' : ''} `}
                                       size={18}
                                     />
                                   </div>
@@ -1100,7 +1119,7 @@ export default function App() {
                                               className={cn(
                                                 "group relative p-3 rounded-lg border border-dashed transition-all duration-300 flex items-center justify-between cursor-pointer",
                                                 isCompleted
-                                                  ? `${styles.iconBg} ${styles.border.replace('border-', 'border-solid border-')} shadow-sm`
+                                                  ? `${styles.iconBg} ${styles.border.replace('border-', 'border-solid border-')} shadow - sm`
                                                   : 'bg-custom-bg/50 border-custom-category/40 hover:border-custom-accent/50 hover:bg-custom-header hover:shadow-md hover:-translate-y-0.5'
                                               )}
                                             >
@@ -1108,7 +1127,7 @@ export default function App() {
                                                 <div className={cn(
                                                   "w-6 h-6 rounded-full flex items-center justify-center border transition-all duration-300 shrink-0",
                                                   isCompleted
-                                                    ? (isGap ? 'bg-amber-500/20 border-amber-500' : `${styles.accent.replace('text-', 'bg-')} ${styles.accent.replace('text-', 'border-')}`)
+                                                    ? (isGap ? 'bg-amber-500/20 border-amber-500' : `${styles.accent.replace('text-', 'bg-')} ${styles.accent.replace('text-', 'border-')} `)
                                                     : 'border-custom-category/50 group-hover:border-custom-accent'
                                                 )}>
                                                   {isCompleted && <Check size={14} className={isGap ? 'text-amber-500' : 'text-white'} strokeWidth={3} />}
