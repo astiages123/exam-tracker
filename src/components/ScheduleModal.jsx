@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { X, Calendar, Plus, Trash2, ChevronDown, Save, Edit2, Clock } from 'lucide-react';
+import { X, Calendar, Plus, ChevronDown, Save, Edit2, Clock } from 'lucide-react';
 
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';

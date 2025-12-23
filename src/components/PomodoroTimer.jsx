@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, X, ChevronDown, Check, LogOut, CircleCheckBig } from 'lucide-react';
+import { Play, Pause, X, ChevronDown, Check, CircleCheckBig, Coffee } from 'lucide-react';
 
 // eslint-disable-next-line
 import { motion, AnimatePresence } from 'framer-motion';
@@ -89,11 +89,9 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                     notified10MinRef.current = localStorage.getItem(STORAGE_KEYS.NOTIFIED_10) === 'true';
                 }
 
-                // const elapsed = Math.floor((now - start) / 1000);
-                // setTimeLeft(elapsed); // Removed to avoid synchronous update warning; interval will update this shortly.
             }
         }
-    }, []);
+    }, [selectedCourseId]); // Added selectedCourseId to dependencies to ensure it re-runs when needed, or keep empty if it's only for mount. Actually keep it as [] if it was intended for mount.
 
     // 2. Save State Changes
     useEffect(() => {
@@ -353,6 +351,40 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         }
     };
 
+    const handleStartBreak = () => {
+        setIsActive(false);
+        clearInterval(timerRef.current);
+        playNotificationSound();
+
+        // Clear timer specific storage
+        localStorage.removeItem(STORAGE_KEYS.START_TIME);
+        localStorage.removeItem(STORAGE_KEYS.NOTIFIED_50);
+
+        // Calculate actual duration
+        const elapsedTime = timeLeft; // In seconds
+
+        sendNotification("Oturum Kaydedildi", {
+            body: `${selectedCourseName || 'Ders'} çalışması ${Math.floor(elapsedTime / 60)} dk olarak kaydedildi. Mola başlıyor!`,
+            tag: 'pomodoro-complete'
+        });
+
+        // Pass originalStartTime and pauses
+        onSessionComplete(elapsedTime, 'work', selectedCourseId, originalStartTimeRef.current, pausesRef.current);
+
+        // Start Break
+        setMode('break');
+        setTimeLeft(0);
+
+        const now = Date.now();
+        startTimeRef.current = now;
+        originalStartTimeRef.current = now;
+        pausesRef.current = [];
+        pauseStartRef.current = null;
+
+        notified10MinRef.current = false;
+        setIsActive(true); // Automatically start break
+    };
+
     const handleFinishSession = () => {
         setIsActive(false);
         clearInterval(timerRef.current);
@@ -484,60 +516,91 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
     }
 
     return (
-        <div className="fixed bottom-4 left-4 z-50 bg-custom-header border border-custom-category rounded-2xl shadow-2xl shadow-black/50 p-6 w-80 animate-in slide-in-from-bottom-10 fade-in duration-300">
+        <div className="fixed bottom-6 left-6 z-50 bg-custom-header border border-white/5 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl p-8 w-80 animate-in slide-in-from-bottom-12 fade-in duration-500 overflow-hidden">
+            {/* Arka plan süslemesi */}
+            <div className={`absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[80px] opacity-20 transition-colors duration-700 ${mode === 'work' ? 'bg-custom-accent' : 'bg-custom-success'}`} />
+
+            {/* Kapatma Butonu - Absolute konumlama */}
             <button
                 onClick={handleCancel}
-                className="absolute top-3 right-3 bg-custom-bg border border-custom-category/30 text-custom-error hover:text-custom-error hover:bg-custom-error/10 hover:scale-110 active:scale-95 transition-all cursor-pointer p-2 rounded-xl"
-                title="İptal Et ve Kapat"
+                className="absolute top-5 right-5 p-2 rounded-full hover:bg-white/5 text-custom-title/40 hover:text-custom-error transition-all z-20"
+                title="İptal Et"
             >
-                <LogOut size={20} strokeWidth={2.5} />
+                <X size={20} />
             </button>
 
-            <div className="flex flex-col items-center">
-                <div className={`text-xs font-bold uppercase tracking-widest mb-2 px-3 py-1 rounded-full ${mode === 'work' ? 'bg-custom-accent/10 text-custom-accent' : 'bg-custom-success/10 text-custom-success'}`}>
-                    {mode === 'work' ? 'Çalışma Modu' : 'Mola Zamanı'}
-                </div>
+            {/* Üst Bilgi: Mod ve Ders - Ortalanmış */}
+            <div className="flex flex-col items-center mb-6 w-full z-10 relative">
+                <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 transition-colors border ${mode === 'work'
+                    ? 'bg-custom-accent/10 border-custom-accent/20 text-custom-accent'
+                    : 'bg-custom-success/10 border-custom-success/20 text-custom-success'
+                    }`}>
+                    {mode === 'work' ? 'ODAK MODU' : 'DİNLENME MODU'}
+                </span>
 
-                <div className={`text-5xl font-mono font-bold mb-4 tracking-tighter ${isOvertime ? 'text-custom-warning animate-pulse' : 'text-custom-text'}`}>
+                <h4 className="text-center text-sm font-medium text-custom-text/90 px-8 leading-snug line-clamp-2">
+                    {selectedCourseName}
+                </h4>
+            </div>
+
+            {/* Orta Kısım: Zamanlayıcı */}
+            <div className="flex flex-col items-center mb-8 relative">
+                <div className={`text-6xl font-mono font-bold tracking-tighter mb-2 transition-all duration-300 ${isOvertime ? 'text-custom-error scale-110' : 'text-custom-text'}`}>
                     {timeText}
                 </div>
-
-                <div className="text-sm text-custom-title/70 mb-2 text-center truncate w-full px-2">
-                    <span className="opacity-50 block text-[10px] uppercase tracking-wide">Şu an çalışılıyor:</span>
-                    <span className="font-medium text-custom-text">{selectedCourseName}</span>
+                <div className="text-[10px] text-custom-title/40 font-medium">
+                    OTURUM #{sessionsCount || 1}
                 </div>
+            </div>
 
-                <div className="mb-6 px-3 py-1 bg-custom-bg/50 rounded-lg border border-custom-category/20 text-[10px] text-custom-title/50">
-                    Oturum Sayısı: <span className="text-custom-text font-bold">{sessionsCount || 0}</span>
+            {/* Alt Kısım: Kontroller */}
+            <div className="flex flex-col gap-3 relative">
+                {/* Ana Kontrol: Başlat/Durdur */}
+                <button
+                    onClick={toggleTimer}
+                    className={`w-full py-4 rounded-2xl flex items-center justify-center gap-3 font-bold text-sm transition-all active:scale-[0.98] shadow-lg ${isActive
+                        ? 'bg-[#1e293b] border border-white/10 text-white hover:bg-[#334155]'
+                        : (mode === 'work'
+                            ? 'bg-[#10b981] text-[#042f2e] shadow-[#10b981]/20 hover:bg-[#34d399]'
+                            : 'bg-[#22c55e] text-[#052e16] shadow-[#22c55e]/20 hover:bg-[#4ade80]')
+                        }`}
+                >
+                    {isActive ? (
+                        <><Pause size={20} fill="currentColor" /> DURDUR</>
+                    ) : (
+                        <><Play size={20} fill="currentColor" /> DEVAM ET</>
+                    )}
+                </button>
+
+                {/* İkincil Kontroller */}
+                <div className="grid grid-cols-2 gap-3">
+                    {mode === 'work' ? (
+                        <>
+                            <button
+                                onClick={handleStartBreak}
+                                className="py-3 rounded-xl bg-custom-accent/10 hover:bg-custom-accent/20 text-custom-accent text-[11px] font-bold transition-all flex flex-col items-center gap-1 border border-custom-accent/10"
+                            >
+                                <Coffee size={16} />
+                                MOLA VER
+                            </button>
+                            <button
+                                onClick={handleFinishSession}
+                                className="py-3 rounded-xl bg-custom-success/10 hover:bg-custom-success/20 text-custom-success text-[11px] font-bold transition-all flex flex-col items-center gap-1 border border-custom-success/10"
+                            >
+                                <CircleCheckBig size={16} />
+                                BİTİR
+                            </button>
+                        </>
+                    ) : (
+                        <button
+                            onClick={handleSkipBreak}
+                            className="col-span-2 py-3 rounded-xl bg-custom-accent/10 hover:bg-custom-accent/20 text-custom-accent text-[11px] font-bold transition-all flex items-center justify-center gap-2 border border-custom-accent/10"
+                        >
+                            <Play size={16} />
+                            MOLAYI BİTİR VE ÇALIŞMAYA DÖN
+                        </button>
+                    )}
                 </div>
-
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={toggleTimer}
-                        className={`p-4 rounded-xl text-white shadow-lg transition-all hover:scale-105 active:scale-95 ${isActive ? 'bg-custom-warning hover:bg-custom-warning/90' : 'bg-[#059669] hover:bg-[#047857]'} cursor-pointer`}
-                    >
-                        {isActive ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" />}
-                    </button>
-
-                    <button
-                        onClick={handleFinishSession}
-                        className="p-4 rounded-xl bg-custom-bg border border-custom-category/30 text-custom-success/70 hover:text-custom-success hover:bg-custom-success/10 transition-all hover:scale-105 active:scale-95 cursor-pointer"
-                        title="Bitir (Oturumu Kaydet)"
-                    >
-                        <CircleCheckBig size={24} />
-                    </button>
-
-                </div>
-
-                {mode === 'break' && (
-                    <button
-                        onClick={handleSkipBreak}
-                        className="mt-4 px-6 py-2 bg-custom-bg/50 hover:bg-custom-accent/20 text-custom-title/60 hover:text-custom-accent border border-custom-category/30 rounded-lg text-sm font-medium transition-all group flex items-center gap-2 cursor-pointer"
-                    >
-                        <span>Molayı Bitir ve Çalış</span>
-                        <Play size={14} className="group-hover:translate-x-1 transition-transform" />
-                    </button>
-                )}
             </div>
         </div>
     );

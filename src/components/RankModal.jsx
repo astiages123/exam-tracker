@@ -1,7 +1,7 @@
 import React from 'react';
 // eslint-disable-next-line
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, CheckCircle, Lock, Star, User, CreditCard, Search, Shield, Award, Crown } from 'lucide-react';
+import { Trophy, Lock, Star, User, CreditCard, Search, Shield, Award, Crown } from 'lucide-react';
 import { RANKS } from '../data';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';

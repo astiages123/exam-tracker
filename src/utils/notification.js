@@ -21,9 +21,7 @@ export const sendNotification = (title, options = {}) => {
 
     if (Notification.permission === "granted") {
         const notification = new Notification(title, {
-            icon: '/icon.png', // Fallback, though we might not have one yet
             vibrate: [200, 100, 200], // Vibration pattern for mobile
-            badge: '/icon.png',
             ...options
         });
 

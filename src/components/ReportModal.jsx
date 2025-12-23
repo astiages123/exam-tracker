@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { X, Clock, Calendar, BookOpen, Trash2, ChevronDown, BarChart2, List } from 'lucide-react';
+import { X, Clock, Calendar, BookOpen, Trash2, BarChart2, List } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { courseData } from '../data';
 // eslint-disable-next-line
@@ -7,6 +7,32 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const CATEGORY_STYLES = {
     'DEFAULT': { bg: 'bg-white/5', border: 'border-white/10', text: 'text-custom-title/80' }
+};
+
+const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+        const data = payload[0].payload;
+        return (
+            <div className="bg-custom-header border border-custom-category p-3 rounded-lg shadow-xl min-w-[150px]">
+                <p className="text-custom-title/80 text-xs mb-1 font-medium border-b border-white/5 pb-1">{data.fullDate}</p>
+                <p className="text-custom-accent font-bold text-sm mt-1">
+                    {payload[0].value} Saat
+                </p>
+                {data.courses && data.courses.length > 0 && (
+                    <div className="mt-2 space-y-1">
+                        <p className="text-[10px] text-custom-title/40 uppercase font-bold tracking-wider">Çalışılan Dersler:</p>
+                        {data.courses.map((course, idx) => (
+                            <div key={idx} className="text-xs text-custom-text flex items-center gap-1.5 font-medium">
+                                <div className="w-1.5 h-1.5 rounded-full bg-custom-accent/40" />
+                                {course}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        );
+    }
+    return null;
 };
 
 export default function ReportModal({ sessions = [], onClose, courses = [], onDelete }) {
@@ -142,32 +168,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
         return result;
     }, [workSessions, courses]);
 
-    // Custom Tooltip for Chart
-    const CustomTooltip = ({ active, payload, label }) => {
-        if (active && payload && payload.length) {
-            const data = payload[0].payload;
-            return (
-                <div className="bg-custom-header border border-custom-category p-3 rounded-lg shadow-xl min-w-[150px]">
-                    <p className="text-custom-title/80 text-xs mb-1 font-medium border-b border-white/5 pb-1">{data.fullDate}</p>
-                    <p className="text-custom-accent font-bold text-sm mt-1">
-                        {payload[0].value} Saat
-                    </p>
-                    {data.courses && data.courses.length > 0 && (
-                        <div className="mt-2 space-y-1">
-                            <p className="text-[10px] text-custom-title/40 uppercase font-bold tracking-wider">Çalışılan Dersler:</p>
-                            {data.courses.map((course, idx) => (
-                                <div key={idx} className="text-xs text-custom-text flex items-center gap-1.5 font-medium">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-custom-accent/40" />
-                                    {course}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            );
-        }
-        return null;
-    };
+
 
     return (
         <div
