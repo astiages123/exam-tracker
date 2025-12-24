@@ -180,7 +180,16 @@ export default function App() {
           setProgressData(data.progress_data || {});
           setSessions(data.sessions || []);
           setSchedule(data.schedule || {});
-          setActivityLog(data.activity_log || {});
+
+          // Normalize activity_log keys (remove spaces from previous bug)
+          const rawLog = data.activity_log || {};
+          const normalizedLog = {};
+          Object.keys(rawLog).forEach(key => {
+            const cleanKey = key.replace(/\s+/g, ''); // "2025 -12 -25 " -> "2025-12-25"
+            normalizedLog[cleanKey] = rawLog[key];
+          });
+          setActivityLog(normalizedLog);
+
           setVideoHistory(data.video_history || []); // [NEW] Set history
         } else if (error && error.code !== 'PGRST116') { // PGRST116 is "no rows returned"
           console.error('Error loading data:', error);
@@ -310,12 +319,12 @@ export default function App() {
     setSessions(prev => prev.filter(s => !sessionIdsToDelete.includes(s.timestamp)));
   };
 
-  // Helper function for local date string
+  // Helper function for local date string (Standardized to YYYY-MM-DD)
   const getLocalYMD = (date) => {
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
-    return `${year} -${month} -${day} `;
+    return `${year}-${month}-${day}`;
   };
 
   // --- Activity Tracking Logic (Refactored to Sticky Baseline + Session Integration) ---
@@ -328,7 +337,7 @@ export default function App() {
 
     // Sticky Baseline Logic
     const todayStr = getLocalYMD(new Date());
-    const storageKey = `exam_tracker_baseline_${todayStr} `;
+    const storageKey = `exam_tracker_baseline_${todayStr}`;
 
     let baseline = parseInt(localStorage.getItem(storageKey));
 
