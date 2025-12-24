@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { X, Clock, Calendar, BookOpen, Trash2, BarChart2, List, MonitorPlay } from 'lucide-react';
+import { X, Clock, Calendar, BookOpen, Trash2, BarChart2, List, MonitorPlay, Pause } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { courseData } from '../data';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
@@ -313,22 +313,22 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                 {aggregatedSessions.map((group) => (
                                     <div
                                         key={group.key}
-                                        className="relative flex flex-col sm:flex-row sm:items-center justify-between p-2.5 sm:px-4 sm:py-3 bg-custom-header/40 rounded-xl border border-custom-category/20 hover:border-custom-accent/30 hover:bg-custom-header/60 transition-all duration-300 group gap-2 sm:gap-0 cursor-pointer shadow-sm"
+                                        className="relative flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:px-6 sm:py-5 bg-custom-header/40 rounded-2xl border border-custom-category/20 hover:border-custom-accent/40 hover:bg-custom-header/60 transition-all duration-300 group gap-3 sm:gap-0 cursor-pointer shadow-sm"
                                         onClick={() => setSelectedGroup(group)}
                                     >
                                         <div className="flex items-center gap-4">
-                                            <div className="p-2.5 rounded-full bg-custom-accent/10 text-custom-accent">
-                                                <BookOpen size={14} />
+                                            <div className="p-3.5 rounded-full bg-custom-accent/10 text-custom-accent">
+                                                <BookOpen size={18} />
                                             </div>
                                             <div>
-                                                <h4 className="font-semibold text-custom-text text-sm w-full sm:max-w-[250px] truncate leading-tight">
+                                                <h4 className="font-bold text-custom-text text-base w-full sm:max-w-[350px] truncate leading-tight">
                                                     {getCourseName(group.courseId)}
                                                 </h4>
-                                                <div className="flex items-center gap-2 text-[11px] text-custom-title/60 font-medium mt-0.5">
-                                                    <Calendar size={10} />
+                                                <div className="flex items-center gap-2.5 text-xs text-custom-title/60 font-medium mt-1">
+                                                    <Calendar size={12} />
                                                     {new Date(group.date).toLocaleDateString('tr-TR')}
                                                     {getCourseCategory(group.courseId) && (
-                                                        <span className="text-[8px] font-bold uppercase tracking-wider px-1 py-0.5 rounded border-[0.5px] bg-white/5 border-white/10 text-custom-title/50 ml-1 whitespace-nowrap">
+                                                        <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded border-[0.5px] bg-white/5 border-white/10 text-custom-title/50 ml-1 whitespace-nowrap">
                                                             {getCourseCategory(group.courseId)}
                                                         </span>
                                                     )}
@@ -337,8 +337,8 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                         </div>
                                         <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 mt-2 sm:mt-0">
                                             <div className="text-right">
-                                                <span className="font-mono font-bold text-custom-text text-sm">{Math.round(group.totalDuration / 60)}</span>
-                                                <span className="text-[10px] text-custom-title/40 ml-0.5 uppercase">dk</span>
+                                                <span className="font-mono font-bold text-custom-text text-lg">{Math.round(group.totalDuration / 60)}</span>
+                                                <span className="text-xs text-custom-title/40 ml-1 uppercase font-bold">dk</span>
                                             </div>
                                             <button
                                                 onClick={(e) => {
@@ -581,20 +581,46 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
         let finalItems = [];
 
         dayWork.forEach(s => {
-            const start = new Date(s.timestamp);
-            const end = new Date(s.timestamp + (s.duration * 1000));
-            finalItems.push({ start, end, type: 'work', duration: s.duration, sessionId: s.timestamp });
+            const pauses = [...(s.pauses || [])].sort((a, b) => a.start - b.start);
+            const totalPauseMs = pauses.reduce((acc, p) => acc + (p.end - p.start), 0);
+            const sessionEndMs = s.timestamp + (s.duration * 1000) + totalPauseMs;
 
-            if (s.pauses && s.pauses.length > 0) {
-                s.pauses.forEach((p, idx) => {
-                    if (p.start && p.end) {
-                        finalItems.push({
-                            start: new Date(p.start),
-                            end: new Date(p.end),
-                            type: 'pause-interval',
-                            duration: (p.end - p.start) / 1000
-                        });
-                    }
+            let currentStart = s.timestamp;
+            let segmentIndex = 1;
+            const hasPauses = pauses.length > 0;
+
+            pauses.forEach(p => {
+                // Add work period before the pause
+                if (p.start > currentStart) {
+                    finalItems.push({
+                        start: new Date(currentStart),
+                        end: new Date(p.start),
+                        type: 'work',
+                        duration: (p.start - currentStart) / 1000,
+                        sessionId: s.timestamp,
+                        segmentLabel: hasPauses ? (segmentIndex === 1 ? 'Başlangıç' : 'Devam') : null
+                    });
+                    segmentIndex++;
+                }
+                // Add the pause period
+                finalItems.push({
+                    start: new Date(p.start),
+                    end: new Date(p.end),
+                    type: 'pause-interval',
+                    duration: (p.end - p.start) / 1000
+                });
+                currentStart = p.end;
+            });
+
+            // Add remaining work period after the last pause
+            if (sessionEndMs > currentStart) {
+                finalItems.push({
+                    start: new Date(currentStart),
+                    end: new Date(sessionEndMs),
+                    type: 'work',
+                    duration: (sessionEndMs - currentStart) / 1000,
+                    sessionId: s.timestamp,
+                    segmentLabel: hasPauses ? (segmentIndex === 1 ? 'Başlangıç' : 'Devam') : null
                 });
             }
         });
@@ -619,12 +645,6 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
         const viewedDate = new Date(group.date);
         const isTodayDate = isSameDay(today, viewedDate);
 
-        // Eğer bugünse, mevcut saati de görünür alan içinde tutalım
-        if (isTodayDate) {
-            if (!minTime || today < minTime) minTime = today;
-            if (!maxTime || today > maxTime) maxTime = today;
-        }
-
         let sHour = 9;
         let eHour = 18;
 
@@ -645,14 +665,7 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
         };
     }, [group, workSessions, breakSessions]);
 
-    const getCurrentTimePosition = () => {
-        const now = new Date();
-        const currentHour = now.getHours() + (now.getMinutes() / 60);
-        if (currentHour < startHour || currentHour > endHour) return null;
-        return ((currentHour - startHour) / (endHour - startHour)) * 100;
-    };
 
-    const currentTimePos = isToday ? getCurrentTimePosition() : null;
 
     return (
         <div
@@ -666,139 +679,138 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-custom-header border border-custom-category rounded-xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[85vh] cursor-default"
+                className="bg-custom-header border border-custom-category rounded-xl shadow-2xl w-full max-w-5xl overflow-hidden flex flex-col max-h-[90vh] cursor-default"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="p-3 border-b border-custom-category bg-custom-bg/30 flex justify-between items-center shrink-0">
+                <div className="p-3 border-b border-custom-category bg-custom-bg/90 flex justify-between items-center shrink-0 relative z-20 backdrop-blur-md">
                     <div>
-                        <h3 className="font-bold text-custom-text text-sm">Günlük Zaman Çizelgesi</h3>
-                        <p className="text-[10px] text-custom-title/40">{new Date(group.date).toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                        <h3 className="font-bold text-custom-text text-lg">Günlük Zaman Çizelgesi</h3>
+                        <p className="text-xs text-custom-title/50 font-medium">{new Date(group.date).toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
                     </div>
                     <button onClick={onClose} className="p-1.5 hover:bg-custom-bg rounded-lg text-custom-title/40 hover:text-custom-text transition-colors">
                         <X size={16} />
                     </button>
                 </div>
 
-                <div className="p-4 overflow-x-auto overflow-y-visible custom-scrollbar">
-                    <div className="relative min-w-[700px] h-48 pt-20">
-                        <div className="absolute inset-0 w-full h-full pointer-events-none">
-                            {Array.from({ length: (endHour - startHour) * 2 + 1 }).map((_, i) => {
-                                const totalMinutes = (startHour * 60) + (i * 30);
-                                const hour = Math.floor(totalMinutes / 60);
-                                const minute = totalMinutes % 60;
-                                const leftPercent = (i / ((endHour - startHour) * 2)) * 100;
-                                return (
-                                    <div
-                                        key={i}
-                                        className={`absolute top-0 bottom-0 border-l ${minute === 30 ? 'border-white/5' : 'border-white/10'} flex flex-col justify-end pb-0`}
-                                        style={{ left: `${leftPercent}%` }}
-                                    >
-                                        <span className="absolute top-4 -translate-x-1/2 text-[10px] text-custom-title/30 font-mono font-bold whitespace-nowrap">
-                                            {hour.toString().padStart(2, '0')}:{minute.toString().padStart(2, '0')}
-                                        </span>
-                                    </div>
-                                );
-                            })}
-                        </div>
-
-                        {currentTimePos !== null && (
-                            <div
-                                className="absolute top-[-24px] bottom-0 w-[2px] bg-red-500/80 z-20 pointer-events-none shadow-[0_0_8px_rgba(239,68,68,0.6)]"
-                                style={{ left: `${currentTimePos}%` }}
-                            >
-                                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-red-500 rounded-full"></div>
-                                <div className="absolute top-1 left-2 text-[9px] font-bold text-red-500 bg-black/60 px-1 rounded">Şimdi</div>
-                            </div>
-                        )}
-
-                        <div className="absolute top-0 bottom-0 left-0 right-0">
-                            {timelineItems.map((item, index) => {
-                                const itemStartHour = item.start.getHours() + (item.start.getMinutes() / 60);
-                                const itemEndHour = item.end.getHours() + (item.end.getMinutes() / 60);
-                                const startPercent = ((itemStartHour - startHour) / (endHour - startHour)) * 100;
-                                const durationPercent = ((itemEndHour - itemStartHour) / (endHour - startHour)) * 100;
-
-                                const isWork = item.type === 'work';
-                                const isBreak = item.type === 'break';
-                                const isPause = item.type === 'pause-interval';
-
-                                let bgClass = 'bg-white/5';
-                                let borderClass = 'border-white/5';
-                                let shadowClass = 'shadow-none';
-                                let label = 'Boş Zaman';
-
-                                if (isWork) {
-                                    bgClass = 'bg-indigo-500/30';
-                                    borderClass = 'border-indigo-500/40';
-                                    shadowClass = 'shadow-none';
-                                    label = 'Çalışma Bloğu';
-                                } else if (isBreak) {
-                                    bgClass = 'bg-emerald-500/30';
-                                    borderClass = 'border-emerald-500/40';
-                                    shadowClass = 'shadow-none';
-                                    label = 'Mola';
-                                } else if (isPause) {
-                                    bgClass = 'bg-custom-title/10';
-                                    borderClass = 'border-custom-title/20';
-                                    label = 'Durduruldu';
-                                }
-
-                                return (
-                                    <div
-                                        key={index}
-                                        className={`absolute h-12 rounded-lg border-2 ${bgClass} ${borderClass} shadow-lg ${shadowClass} transition-all duration-200 hover:scale-105 hover:z-30 cursor-pointer group/block flex items-center justify-center`}
-                                        style={{
-                                            left: `${startPercent}%`,
-                                            width: `calc(${Math.max(durationPercent, 0.5)}% - 2px)`,
-                                            top: '64px'
-                                        }}
-                                        onClick={async (e) => {
-                                            if (isWork || isBreak) {
-                                                e.stopPropagation();
-                                                setConfirmDelete({ sessionId: item.sessionId });
-                                            }
-                                        }}
-                                    >
-                                        {durationPercent > 3 && (
-                                            <div className="text-white/90">
-                                                {isWork && <BookOpen size={14} />}
-                                                {isBreak && <Clock size={14} />}
-                                            </div>
-                                        )}
-
-                                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 bg-custom-header border border-custom-category text-xs p-3 rounded-lg shadow-xl whitespace-nowrap z-50 opacity-0 group-hover/block:opacity-100 transition-opacity pointer-events-none min-w-[140px]">
-                                            <div className="font-bold mb-1 text-center text-custom-text border-b border-white/10 pb-2">
-                                                {item.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {item.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                            </div>
-                                            <div className="flex items-center justify-center gap-2 mt-2">
-                                                <div className={`w-2 h-2 rounded-full ${isWork ? 'bg-indigo-400' : (isBreak ? 'bg-emerald-400' : 'bg-custom-title/20')}`}></div>
-                                                <span className={`${isWork ? 'text-indigo-400' : (isBreak ? 'text-emerald-400' : 'text-custom-title')} font-bold`}>
-                                                    {label}
-                                                </span>
-                                            </div>
-                                            <div className="text-center text-custom-title/60 mt-1">
-                                                {Math.round(item.duration / 60)} dakika
-                                            </div>
-                                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-custom-header"></div>
+                <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar relative z-10">
+                    <div className="p-4 overflow-x-auto overflow-y-visible custom-scrollbar relative">
+                        <div className="relative min-w-[700px] h-60 pt-24">
+                            <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+                                {Array.from({ length: (endHour - startHour) * 2 + 1 }).map((_, i) => {
+                                    const totalMinutes = (startHour * 60) + (i * 30);
+                                    const hour = Math.floor(totalMinutes / 60);
+                                    const minute = totalMinutes % 60;
+                                    const leftPercent = (i / ((endHour - startHour) * 2)) * 100;
+                                    return (
+                                        <div
+                                            key={i}
+                                            className={`absolute top-0 bottom-0 border-l ${minute === 30 ? 'border-white/5' : 'border-white/10'} flex flex-col justify-end pb-0`}
+                                            style={{ left: `${leftPercent}%` }}
+                                        >
+                                            <span className="absolute top-4 -translate-x-1/2 text-[10px] text-custom-title/30 font-mono font-bold whitespace-nowrap">
+                                                {hour.toString().padStart(2, '0')}:{minute.toString().padStart(2, '0')}
+                                            </span>
                                         </div>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
+                            </div>
+
+
+
+                            <div className="absolute top-0 bottom-0 left-0 right-0">
+                                {timelineItems.map((item, index) => {
+                                    const itemStartHour = item.start.getHours() + (item.start.getMinutes() / 60);
+                                    const itemEndHour = item.end.getHours() + (item.end.getMinutes() / 60);
+                                    const startPercent = ((itemStartHour - startHour) / (endHour - startHour)) * 100;
+                                    const durationPercent = ((itemEndHour - itemStartHour) / (endHour - startHour)) * 100;
+
+                                    const isWork = item.type === 'work';
+                                    const isBreak = item.type === 'break';
+                                    const isPause = item.type === 'pause-interval';
+
+                                    let bgClass = 'bg-white/5';
+                                    let borderClass = 'border-white/5';
+                                    let shadowClass = 'shadow-none';
+                                    let label = 'Boş Zaman';
+
+                                    if (isWork) {
+                                        bgClass = 'bg-indigo-500/30';
+                                        borderClass = 'border-indigo-500/40';
+                                        shadowClass = 'shadow-none';
+                                        label = `Çalışma (${courseName}${item.segmentLabel ? ` - ${item.segmentLabel}` : ''})`;
+                                    } else if (isBreak) {
+                                        bgClass = 'bg-emerald-500/30';
+                                        borderClass = 'border-emerald-500/40';
+                                        shadowClass = 'shadow-none';
+                                        label = 'Mola';
+                                    } else if (isPause) {
+                                        bgClass = 'bg-custom-title/10';
+                                        borderClass = 'border-custom-title/20';
+                                        label = 'Duraklatma';
+                                    }
+
+                                    return (
+                                        <div
+                                            key={index}
+                                            className={`absolute h-12 rounded-lg border-2 ${bgClass} ${borderClass} shadow-lg ${shadowClass} transition-[transform,z-index] duration-150 hover:scale-[1.02] hover:z-30 cursor-pointer group/block flex items-center justify-center will-change-transform`}
+                                            style={{
+                                                left: `${startPercent}%`,
+                                                width: `calc(${Math.max(durationPercent, 0.5)}% - 2px)`,
+                                                top: '84px'
+                                            }}
+                                            onClick={async (e) => {
+                                                if (isWork || isBreak) {
+                                                    e.stopPropagation();
+                                                    setConfirmDelete({ sessionId: item.sessionId });
+                                                }
+                                            }}
+                                        >
+                                            {durationPercent > 3 && (
+                                                <div className="text-white/90">
+                                                    {isWork && <BookOpen size={14} />}
+                                                    {isBreak && <Clock size={14} />}
+                                                    {isPause && <Pause size={14} />}
+                                                </div>
+                                            )}
+
+                                            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-custom-header border border-custom-category text-xs p-3 rounded-lg shadow-xl whitespace-nowrap z-50 opacity-0 group-hover/block:opacity-100 transition-opacity duration-75 pointer-events-none min-w-[140px] will-change-opacity">
+                                                <div className="font-bold mb-1 text-center text-custom-text border-b border-white/10 pb-2">
+                                                    {item.start.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })} - {item.end.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                                                </div>
+                                                <div className="flex items-center justify-center gap-2 mt-2">
+                                                    <div className={`w-2 h-2 rounded-full ${isWork ? 'bg-indigo-400' : (isBreak ? 'bg-emerald-400' : 'bg-custom-title/20')}`}></div>
+                                                    <span className={`${isWork ? 'text-indigo-400' : (isBreak ? 'text-emerald-400' : 'text-custom-title')} font-bold`}>
+                                                        {label}
+                                                    </span>
+                                                </div>
+                                                <div className="text-center text-custom-title/60 mt-1">
+                                                    {Math.round(item.duration / 60)} dakika
+                                                </div>
+                                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-custom-header"></div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="p-3 border-t border-custom-category bg-custom-bg/30 flex justify-center gap-6 text-[10px] font-medium text-custom-title/40 shrink-0">
-                    <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded-md bg-indigo-500/40 border border-indigo-500/50"></div>
-                        <span>Çalışma Oturumu ({courseName})</span>
+                <div className="p-4 border-t border-custom-category bg-custom-bg/60 flex justify-center flex-wrap gap-x-8 gap-y-3 text-[11px] font-bold text-custom-text shrink-0 backdrop-blur-sm">
+                    <div className="flex items-center gap-2.5">
+                        <div className="w-5 h-5 rounded-md bg-indigo-500/40 border border-indigo-500/50 shadow-[0_0_10px_rgba(99,102,241,0.2)]"></div>
+                        <span className="opacity-80">Çalışma Oturumu</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded-md bg-emerald-500/40 border border-emerald-500/50"></div>
-                        <span>Mola</span>
+                    <div className="flex items-center gap-2.5">
+                        <div className="w-5 h-5 rounded-md bg-emerald-500/40 border border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.2)]"></div>
+                        <span className="opacity-80">Mola</span>
+                    </div>
+                    <div className="flex items-center gap-2.5">
+                        <div className="w-5 h-5 rounded-md bg-custom-title/20 border border-custom-title/30 shadow-sm"></div>
+                        <span className="opacity-80">Duraklatma</span>
                     </div>
                 </div>
-            </Motion.div>
+            </Motion.div >
 
             <ConfirmModal
                 isOpen={!!confirmDelete}
@@ -815,6 +827,6 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                 }}
                 onCancel={() => setConfirmDelete(null)}
             />
-        </div>
+        </div >
     );
 }
