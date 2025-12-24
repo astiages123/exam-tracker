@@ -47,7 +47,7 @@ const CustomTooltip = ({ active, payload }) => {
     return null;
 };
 
-export default function ReportModal({ sessions = [], onClose, courses = [], onDelete, videoHistory = [] }) {
+export default function ReportModal({ sessions = [], onClose, courses = [], onDelete, videoHistory = [], progressData = {} }) {
     const [selectedGroup, setSelectedGroup] = useState(null);
     const [showFullHistory, setShowFullHistory] = useState(null); // 'duration', 'videos' or null
     const [activeTab, setActiveTab] = useState('list'); // 'list' or 'graph'
@@ -94,6 +94,13 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
     const totalBreakMinutesRaw = breakSessions.reduce((acc, s) => acc + ((s.duration || 0) / 60), 0);
     const totalBreakHours = Math.floor(totalBreakMinutesRaw / 60);
     const remainingBreakMins = Math.round(totalBreakMinutesRaw % 60);
+
+    const filteredVideoHistory = useMemo(() => {
+        return (videoHistory || []).filter(h => {
+            const completedIds = progressData[h.courseId] || [];
+            return completedIds.includes(h.videoId);
+        });
+    }, [videoHistory, progressData]);
 
     const aggregatedSessions = useMemo(() => {
         const groups = {};
@@ -172,7 +179,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
 
     const videoChartData = useMemo(() => {
         const dailyCounts = {};
-        (videoHistory || []).forEach(history => {
+        filteredVideoHistory.forEach(history => {
             if (!history.timestamp) return;
             const dateKey = new Date(history.timestamp).toLocaleDateString("en-CA");
             if (!dailyCounts[dateKey]) {
@@ -199,7 +206,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
             });
         }
         return filterWeekends(result);
-    }, [videoHistory, getCourseName]);
+    }, [filteredVideoHistory, getCourseName]);
 
     const fullChartData = useMemo(() => {
         const dates = {};
@@ -210,7 +217,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
             dates[dateStr].hours += (s.duration || 0) / 3600;
             if (s.courseId) dates[dateStr].courseIds.add(s.courseId);
         });
-        (videoHistory || []).forEach(h => {
+        filteredVideoHistory.forEach(h => {
             if (!h.timestamp) return;
             const dateStr = new Date(h.timestamp).toLocaleDateString("en-CA");
             if (!dates[dateStr]) dates[dateStr] = { hours: 0, count: 0, date: dateStr, courseIds: new Set() };
@@ -226,7 +233,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                 fullDate: new Date(item.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }),
                 courses: Array.from(item.courseIds).map(id => getCourseName(id))
             }));
-    }, [workSessions, videoHistory, getCourseName]);
+    }, [workSessions, filteredVideoHistory, getCourseName]);
 
     return (
         <div

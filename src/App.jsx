@@ -409,33 +409,25 @@ export default function App() {
         setVideoHistory(prevHistory => {
           let updatedHistory = [...prevHistory];
 
-          // Add new records
+          // Add new records ONLY if they don't already exist in history
           addedIds.forEach(vidId => {
-            // Check if already exists to prevent dupes (though logic shouldn't allow it usually)
-            // But we might re-watch? For now, if it's "checked", it's "done".
-            // If we want to track re-watching, we'd need more complex logic. 
-            // Here we assume "checked status" maps to history entry.
-            // If it was already in history (maybe from past), we might keep old date or update?
-            // "When did I finish this video?" -> Now.
-            // So we can push a new entry.
-            // However, to keep it clean, let's remove old entry for this video if exists, and push new.
-            // Actually, if I uncheck and recheck tomorrow, I want tomorrow's date. Correct.
-
-            // First remove any existing entry for this specific video (cleanup)
-            // updatedHistory = updatedHistory.filter(h => h.videoId !== vidId); // Optional: keep history clean?
-            // No, let's just append. If I uncheck, we remove.
-
-            updatedHistory.push({
-              videoId: vidId,
-              courseId: courseId,
-              timestamp: new Date().toISOString()
-            });
+            const alreadyExists = updatedHistory.some(h => h.courseId === courseId && h.videoId === vidId);
+            if (!alreadyExists) {
+              updatedHistory.push({
+                videoId: vidId,
+                courseId: courseId,
+                timestamp: new Date().toISOString()
+              });
+            }
           });
 
-          // Remove records for un-checked videos
+          // [MODIFIED] Do not remove records for un-checked videos to preserve history
+          // Filtering for reports is now handled in ReportModal using progressData
+          /*
           if (removedIds.length > 0) {
-            updatedHistory = updatedHistory.filter(h => !removedIds.includes(h.videoId));
+            updatedHistory = updatedHistory.filter(h => h.courseId !== courseId || !removedIds.includes(h.videoId));
           }
+          */
 
           return updatedHistory;
         });
@@ -597,6 +589,7 @@ export default function App() {
           onClose={() => setShowReport(false)}
           onDelete={handleDeleteSessions}
           videoHistory={videoHistory} // [NEW] Pass history
+          progressData={progressData} // [NEW] Pass progress data for filtering
         />
       )}
 
