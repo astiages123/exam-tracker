@@ -82,6 +82,7 @@ export default function App() {
   const { user, logout, loading } = useAuth();
   const { showToast } = useNotification(); // [NEW] Use notification hook
 
+  const [isDataLoaded, setIsDataLoaded] = useState(false); // [FIX] Prevent autosave race condition
   // State: { [courseId]: completedCount }
   const [progressData, setProgressData] = useState({});
   const [sessions, setSessions] = useState([]); // [{ timestamp, duration, type, courseId }]
@@ -91,7 +92,6 @@ export default function App() {
   // [REFACTORED] Activity Log is now derived from sessions and history
   const activityLog = useActivityTracking(sessions, videoHistory, isDataLoaded);
   const [lastActiveCourseId, setLastActiveCourseId] = useState(null); // Track last interacted course
-  const [isDataLoaded, setIsDataLoaded] = useState(false); // [FIX] Prevent autosave race condition
 
   // Accordion States
   const [expandedCategories, setExpandedCategories] = useState(new Set());
