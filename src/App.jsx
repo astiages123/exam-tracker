@@ -407,58 +407,64 @@ export default function App() {
   const updateProgress = (courseId, newCompletedIds) => {
     setLastActiveCourseId(courseId);
 
+    // Get old state from current closure (consistent with how newCompletedIds is dervied)
+    const oldCompletedIds = progressData[courseId] || [];
+
+    // 1. Find newly added videos
+    const addedIds = newCompletedIds.filter(id => !oldCompletedIds.includes(id));
+
+    // 2. Find removed videos
+    const removedIds = oldCompletedIds.filter(id => !newCompletedIds.includes(id));
+
     // --- History Logic ---
-    setProgressData(prev => {
-      const oldCompletedIds = prev[courseId] || [];
+    if (addedIds.length > 0 || removedIds.length > 0) {
+      setVideoHistory(prevHistory => {
+        let updatedHistory = [...prevHistory];
 
-      // 1. Find newly added videos
-      const addedIds = newCompletedIds.filter(id => !oldCompletedIds.includes(id));
-
-      // 2. Find removed videos
-      const removedIds = oldCompletedIds.filter(id => !newCompletedIds.includes(id));
-
-      if (addedIds.length > 0 || removedIds.length > 0) {
-        setVideoHistory(prevHistory => {
-          let updatedHistory = [...prevHistory];
-
-          // Add new records ONLY if they don't already exist in history
-          addedIds.forEach(vidId => {
-            const alreadyExists = updatedHistory.some(h => h.courseId === courseId && h.videoId === vidId);
-            if (!alreadyExists) {
-              updatedHistory.push({
-                videoId: vidId,
-                courseId: courseId,
-                timestamp: new Date().toISOString()
-              });
-            }
-          });
-
-          // Remove records for un-checked videos to keep database clean
-          if (removedIds.length > 0) {
-            updatedHistory = updatedHistory.filter(h =>
-              !(h.courseId === courseId && removedIds.includes(h.videoId))
-            );
+        // Add new records ONLY if they don't already exist in history
+        addedIds.forEach(vidId => {
+          const alreadyExists = updatedHistory.some(h => h.courseId === courseId && h.videoId === vidId);
+          if (!alreadyExists) {
+            updatedHistory.push({
+              videoId: vidId,
+              courseId: courseId,
+              timestamp: new Date().toISOString()
+            });
           }
-
-          return updatedHistory;
         });
-      }
 
-      const course = courseData.flatMap(cat => cat.courses).find(c => c.id === courseId);
-
-      // Celebration Check
-      if (course && newCompletedIds.length === course.totalVideos) {
-        const wasCompletedBefore = oldCompletedIds.length === course.totalVideos;
-        if (!wasCompletedBefore) {
-          setCelebratingCourse(course.name);
+        // Remove records for un-checked videos
+        if (removedIds.length > 0) {
+          updatedHistory = updatedHistory.filter(h =>
+            !(h.courseId === courseId && removedIds.includes(h.videoId))
+          );
         }
-      }
 
+        return updatedHistory;
+      });
+    }
+
+    // --- Progress Logic ---
+    setProgressData(prev => {
+      if (newCompletedIds.length === 0) {
+        const newState = { ...prev };
+        delete newState[courseId];
+        return newState;
+      }
       return {
         ...prev,
         [courseId]: newCompletedIds
       };
     });
+
+    // --- Celebration Logic ---
+    const course = courseData.flatMap(cat => cat.courses).find(c => c.id === courseId);
+    if (course && newCompletedIds.length === course.totalVideos) {
+      const wasCompletedBefore = oldCompletedIds.length === course.totalVideos;
+      if (!wasCompletedBefore) {
+        setCelebratingCourse(course.name);
+      }
+    }
   };
 
   const handleVideoClick = (e, courseId, videoId) => {
