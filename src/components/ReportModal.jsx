@@ -95,6 +95,46 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
     const totalBreakHours = Math.floor(totalBreakMinutesRaw / 60);
     const remainingBreakMins = Math.round(totalBreakMinutesRaw % 60);
 
+    const totalPauseMinutes = useMemo(() => {
+        let totalMs = 0;
+
+        // 1. İş oturumları içindeki duraklatmalar
+        workSessions.forEach(s => {
+            if (s.pauses) {
+                s.pauses.forEach(p => {
+                    totalMs += (p.end - p.start);
+                });
+            }
+        });
+
+        // 2. Aynı gün içindeki oturumlar arası boşluklar
+        const sessionsByDay = {};
+        [...workSessions, ...breakSessions].forEach(s => {
+            if (!s.timestamp) return;
+            const dateStr = new Date(s.timestamp).toLocaleDateString("en-CA");
+            if (!sessionsByDay[dateStr]) sessionsByDay[dateStr] = [];
+
+            const internalPauseMs = s.pauses ? s.pauses.reduce((acc, p) => acc + (p.end - p.start), 0) : 0;
+            const start = s.timestamp;
+            const end = s.timestamp + ((s.duration || 0) * 1000) + internalPauseMs;
+
+            sessionsByDay[dateStr].push({ start, end });
+        });
+
+        Object.values(sessionsByDay).forEach(daySessions => {
+            daySessions.sort((a, b) => a.start - b.start);
+            for (let i = 0; i < daySessions.length - 1; i++) {
+                const gap = daySessions[i + 1].start - daySessions[i].end;
+                if (gap > 1000) totalMs += gap;
+            }
+        });
+
+        return Math.floor(totalMs / 1000 / 60);
+    }, [workSessions, breakSessions]);
+
+    const totalPauseHours = Math.floor(totalPauseMinutes / 60);
+    const remainingPauseMins = totalPauseMinutes % 60;
+
     const filteredVideoHistory = useMemo(() => {
         return (videoHistory || []).filter(h => {
             const completedIds = progressData[h.courseId] || [];
@@ -285,17 +325,23 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                 </div>
 
                 {/* Stats */}
-                <div className="px-4 py-6 md:px-6 grid grid-cols-2 gap-4 border-b border-custom-category bg-custom-bg/50">
+                <div className="px-4 py-6 md:px-6 grid grid-cols-3 gap-3 border-b border-custom-category bg-custom-bg/50">
                     <div className="bg-custom-header p-2.5 rounded-xl border border-custom-category/20">
                         <span className="text-[10px] text-custom-title/40 uppercase tracking-wider font-bold">Toplam Çalışma</span>
-                        <div className="text-xl font-mono font-bold text-custom-text mt-0.5">
+                        <div className="text-base sm:text-xl font-mono font-bold text-custom-text mt-0.5">
                             {totalHours}sa {remainingMins}dk
                         </div>
                     </div>
                     <div className="bg-custom-header p-2.5 rounded-xl border border-custom-category/20">
                         <span className="text-[10px] text-custom-title/40 uppercase tracking-wider font-bold">Toplam Mola</span>
-                        <div className="text-xl font-mono font-bold text-custom-text mt-0.5">
+                        <div className="text-base sm:text-xl font-mono font-bold text-custom-text mt-0.5">
                             {totalBreakHours}sa {remainingBreakMins}dk
+                        </div>
+                    </div>
+                    <div className="bg-custom-header p-2.5 rounded-xl border border-custom-category/20">
+                        <span className="text-[10px] text-custom-title/40 uppercase tracking-wider font-bold">Toplam Duraklatma</span>
+                        <div className="text-base sm:text-xl font-mono font-bold text-custom-text mt-0.5 whitespace-nowrap">
+                            {totalPauseHours > 0 ? `${totalPauseHours}sa ` : ''}{remainingPauseMins}dk
                         </div>
                     </div>
                 </div>
@@ -573,7 +619,7 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
             date1.getDate() === date2.getDate();
     };
 
-    const { timelineItems, startHour, endHour, isToday } = useMemo(() => {
+    const { timelineItems, startHour, endHour, isToday, dayStats } = useMemo(() => {
         const targetDate = new Date(group.date);
         const dayWork = workSessions.filter(s => isSameDay(s.timestamp, targetDate) && s.courseId === group.courseId);
         const dayBreaks = breakSessions.filter(s => isSameDay(s.timestamp, targetDate));
@@ -633,12 +679,43 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
 
         finalItems.sort((a, b) => a.start - b.start);
 
+        // Oturumlar arasındaki boşlukları "duraklatma" olarak doldur
+        const gapItems = [];
+        for (let i = 0; i < finalItems.length - 1; i++) {
+            const currentItem = finalItems[i];
+            const nextItem = finalItems[i + 1];
+
+            // Eğer iki öğe arasında boşluk varsa (1 saniyeden fazla)
+            const gapMs = nextItem.start.getTime() - currentItem.end.getTime();
+            if (gapMs > 1000) {
+                gapItems.push({
+                    start: new Date(currentItem.end),
+                    end: new Date(nextItem.start),
+                    type: 'pause-interval',
+                    duration: gapMs / 1000,
+                    label: 'Boşluk (Duraklatıldı)'
+                });
+            }
+        }
+
+        if (gapItems.length > 0) {
+            finalItems = [...finalItems, ...gapItems].sort((a, b) => a.start - b.start);
+        }
+
         let minTime = null;
         let maxTime = null;
+
+        let workTime = 0;
+        let breakTime = 0;
+        let pauseTime = 0;
 
         finalItems.forEach(item => {
             if (!minTime || item.start < minTime) minTime = item.start;
             if (!maxTime || item.end > maxTime) maxTime = item.end;
+
+            if (item.type === 'work') workTime += item.duration;
+            else if (item.type === 'break') breakTime += item.duration;
+            else if (item.type === 'pause-interval') pauseTime += item.duration;
         });
 
         const today = new Date();
@@ -661,7 +738,12 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
             timelineItems: finalItems,
             startHour: sHour,
             endHour: eHour,
-            isToday: isTodayDate
+            isToday: isTodayDate,
+            dayStats: {
+                work: Math.round(workTime / 60),
+                break: Math.round(breakTime / 60),
+                pause: Math.round(pauseTime / 60)
+            }
         };
     }, [group, workSessions, breakSessions]);
 
@@ -690,6 +772,22 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                     <button onClick={onClose} className="p-1.5 hover:bg-custom-bg rounded-lg text-custom-title/40 hover:text-custom-text transition-colors">
                         <X size={16} />
                     </button>
+                </div>
+
+                {/* Günlük Özet */}
+                <div className="px-6 py-3 bg-custom-bg/50 border-b border-custom-category/10 flex items-center justify-start gap-8 shrink-0 relative z-20">
+                    <div className="flex flex-col">
+                        <span className="text-[9px] text-custom-title/40 uppercase font-bold tracking-wider">Toplam Çalışma</span>
+                        <span className="text-sm font-mono font-bold text-custom-text">{dayStats.work} dk</span>
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-[9px] text-custom-title/40 uppercase font-bold tracking-wider">Toplam Mola</span>
+                        <span className="text-sm font-mono font-bold text-custom-text">{dayStats.break} dk</span>
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-[9px] text-custom-title/40 uppercase font-bold tracking-wider">Duraklatma</span>
+                        <span className="text-sm font-mono font-bold text-custom-accent">{dayStats.pause} dk</span>
+                    </div>
                 </div>
 
                 <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar relative z-10">
