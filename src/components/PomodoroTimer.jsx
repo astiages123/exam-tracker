@@ -433,32 +433,32 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                 onClick={onClose}
             >
                 <div
-                    className="bg-custom-header border border-custom-category rounded-2xl shadow-2xl w-full max-w-md p-8 relative cursor-default"
+                    className="bg-card border border-secondary rounded-2xl shadow-2xl w-full max-w-md p-8 relative cursor-default"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <button
                         onClick={onClose}
-                        className="absolute top-4 right-4 text-custom-title/40 hover:text-custom-error transition-colors cursor-pointer"
+                        className="absolute top-4 right-4 text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
                     >
                         <X size={20} />
                     </button>
 
-                    <h3 className="text-2xl font-bold text-custom-text text-center mb-6">Çalışmaya Başla</h3>
+                    <h3 className="text-2xl font-bold text-foreground text-center mb-6">Çalışmaya Başla</h3>
 
                     <div className="flex flex-col gap-3 relative">
-                        <label className="text-sm text-custom-title/60 font-medium ml-1">Hangi derse çalışacaksın?</label>
+                        <label className="text-sm text-muted-foreground font-bold ml-1">Hangi derse çalışacaksın?</label>
 
                         {/* Custom Dropdown Trigger */}
                         <div
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                            className={`w-full p-4 bg-custom-bg border ${isDropdownOpen ? 'border-custom-accent ring-1 ring-custom-accent/20' : 'border-custom-category'} rounded-xl text-custom-text text-base flex justify-between items-center cursor-pointer transition-all hover:bg-custom-header`}
+                            className={`w-full p-4 bg-background border ${isDropdownOpen ? 'border-primary ring-1 ring-primary/20' : 'border-secondary'} rounded-xl text-foreground text-base flex justify-between items-center cursor-pointer transition-all hover:bg-card`}
                         >
-                            <span className={selectedCourseId ? "text-custom-text" : "text-custom-title/40"}>
+                            <span className={selectedCourseId ? "text-foreground" : "text-muted-foreground"}>
                                 {selectedCourseId ? courses.find(c => c.id === selectedCourseId)?.name : "Ders Seçiniz"}
                             </span>
                             <ChevronDown
                                 size={20}
-                                className={`text-custom-title/50 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180 text-custom-accent' : ''}`}
+                                className={`text-muted-foreground transition-transform duration-300 ${isDropdownOpen ? 'rotate-180 text-primary' : ''}`}
                             />
                         </div>
 
@@ -470,7 +470,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
                                     transition={{ duration: 0.2 }}
-                                    className="absolute top-[85px] left-0 right-0 max-h-64 overflow-y-auto custom-scrollbar bg-custom-header border border-custom-category rounded-xl shadow-2xl z-20 flex flex-col p-1"
+                                    className="absolute top-[85px] left-0 right-0 max-h-64 overflow-y-auto custom-scrollbar bg-card border border-secondary rounded-xl shadow-2xl z-20 flex flex-col p-1"
                                 >
                                     {courses.map(course => (
                                         <button
@@ -480,13 +480,13 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                                                 setIsDropdownOpen(false);
                                             }}
                                             className={`p-3 text-left rounded-lg text-sm font-medium transition-colors flex items-center justify-between group ${selectedCourseId === course.id
-                                                ? 'bg-custom-accent/10 text-custom-accent'
-                                                : 'text-custom-title/80 hover:bg-custom-bg hover:text-custom-text'
+                                                ? 'bg-primary/10 text-primary'
+                                                : 'text-muted-foreground hover:bg-background hover:text-foreground'
                                                 }`}
                                         >
                                             {course.name}
                                             {selectedCourseId === course.id && (
-                                                <Check size={16} className="text-custom-accent" />
+                                                <Check size={16} className="text-primary" />
                                             )}
                                         </button>
                                     ))}
@@ -498,7 +498,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                     <div className="mt-8 flex gap-3">
                         <button
                             onClick={onClose}
-                            className="flex-1 py-3 bg-custom-bg/50 text-custom-title hover:text-custom-text rounded-xl font-medium border border-custom-category/30 hover:bg-custom-category/20 transition-all cursor-pointer"
+                            className="flex-1 py-3 bg-background/50 text-muted-foreground hover:text-foreground rounded-xl font-medium border border-secondary/30 hover:bg-secondary/20 transition-all cursor-pointer"
                         >
                             İptal
                         </button>
@@ -516,14 +516,14 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
     }
 
     return (
-        <div className="fixed bottom-6 left-6 z-50 bg-custom-header border border-white/5 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl p-8 w-80 animate-in slide-in-from-bottom-12 fade-in duration-500 overflow-hidden">
+        <div className="fixed bottom-6 left-6 z-50 bg-card border border-white/5 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl p-8 w-80 animate-in slide-in-from-bottom-12 fade-in duration-500 overflow-hidden">
             {/* Arka plan süslemesi */}
-            <div className={`absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[80px] opacity-20 transition-colors duration-700 ${mode === 'work' ? 'bg-custom-accent' : 'bg-custom-success'}`} />
+            <div className={`absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[80px] opacity-20 transition-colors duration-700 ${mode === 'work' ? 'bg-primary' : 'bg-emerald-400'}`} />
 
             {/* Kapatma Butonu - Absolute konumlama */}
             <button
                 onClick={handleCancel}
-                className="absolute top-5 right-5 p-2 rounded-full hover:bg-white/5 text-custom-title/40 hover:text-custom-error transition-all z-20"
+                className="absolute top-5 right-5 p-2 rounded-full hover:bg-white/5 text-muted-foreground hover:text-destructive transition-all z-20"
                 title="İptal Et"
             >
                 <X size={20} />
@@ -532,24 +532,24 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
             {/* Üst Bilgi: Mod ve Ders - Ortalanmış */}
             <div className="flex flex-col items-center mb-6 w-full z-10 relative">
                 <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 transition-colors border ${mode === 'work'
-                    ? 'bg-custom-accent/10 border-custom-accent/20 text-custom-accent'
-                    : 'bg-custom-success/10 border-custom-success/20 text-custom-success'
+                    ? 'bg-primary/10 border-primary/20 text-primary'
+                    : 'bg-emerald-400/10 border-emerald-400/20 text-emerald-400'
                     }`}>
                     {mode === 'work' ? 'ODAK MODU' : 'DİNLENME MODU'}
                 </span>
 
-                <h4 className="text-center text-sm font-medium text-custom-text/90 px-8 leading-snug line-clamp-2">
+                <h4 className="text-center text-sm font-medium text-foreground/90 px-8 leading-snug line-clamp-2">
                     {selectedCourseName}
                 </h4>
             </div>
 
             {/* Orta Kısım: Zamanlayıcı */}
             <div className="flex flex-col items-center mb-8 relative">
-                <div className={`text-6xl font-mono font-bold tracking-tighter mb-2 transition-all duration-300 ${isOvertime ? 'text-custom-error scale-110' : 'text-custom-text'}`}>
+                <div className={`text-6xl font-mono font-bold tracking-tighter mb-2 transition-all duration-300 ${isOvertime ? 'text-destructive scale-110' : 'text-foreground'}`}>
                     {timeText}
                 </div>
                 <div className="flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/5 border border-white/5 mt-2">
-                    <span className="text-[11px] font-extrabold text-custom-accent uppercase tracking-[0.15em]">
+                    <span className="text-[11px] font-extrabold text-primary uppercase tracking-[0.15em]">
                         OTURUM #{(sessionsCount || 0) + 1}
                     </span>
                 </div>
@@ -580,14 +580,14 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                         <>
                             <button
                                 onClick={handleStartBreak}
-                                className="py-3 rounded-xl bg-custom-accent/10 hover:bg-custom-accent/20 text-custom-accent text-[11px] font-bold transition-all flex flex-col items-center gap-1 border border-custom-accent/10"
+                                className="py-3 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-[11px] font-bold transition-all flex flex-col items-center gap-1 border border-primary/10"
                             >
                                 <Coffee size={16} />
                                 MOLA VER
                             </button>
                             <button
                                 onClick={handleFinishSession}
-                                className="py-3 rounded-xl bg-custom-success/10 hover:bg-custom-success/20 text-custom-success text-[11px] font-bold transition-all flex flex-col items-center gap-1 border border-custom-success/10"
+                                className="py-3 rounded-xl bg-emerald-400/10 hover:bg-emerald-400/20 text-emerald-400 text-[11px] font-bold transition-all flex flex-col items-center gap-1 border border-emerald-400/10"
                             >
                                 <CircleCheckBig size={16} />
                                 BİTİR
@@ -596,7 +596,7 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
                     ) : (
                         <button
                             onClick={handleSkipBreak}
-                            className="col-span-2 py-3 rounded-xl bg-custom-accent/10 hover:bg-custom-accent/20 text-custom-accent text-[11px] font-bold transition-all flex items-center justify-center gap-2 border border-custom-accent/10"
+                            className="col-span-2 py-3 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-[11px] font-bold transition-all flex items-center justify-center gap-2 border border-primary/10"
                         >
                             <Play size={16} />
                             MOLAYI BİTİR VE ÇALIŞMAYA DÖN

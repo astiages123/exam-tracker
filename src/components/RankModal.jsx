@@ -1,23 +1,11 @@
 import React from 'react';
-// eslint-disable-next-line
-import { motion, AnimatePresence } from 'framer-motion';
-import { Goal, Lock, Star, User, CreditCard, Search, Shield, Award, Crown } from 'lucide-react';
+import { Goal, Star, X } from 'lucide-react';
 import { RANKS } from '../data';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-function cn(...inputs) {
-    return twMerge(clsx(inputs));
-}
-
-const RANK_ICONS = {
-    User,
-    CreditCard,
-    Search,
-    Shield,
-    Award,
-    Crown
-};
+import { cn } from '@/lib/utils';
+import { RANK_ICONS } from '@/constants/styles';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogDescription } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 
 const RankModal = ({ currentRank, onClose, totalHours = 0, completedHours = 0, sessions = [] }) => {
     const currentRankIndex = RANKS.findIndex(r => r.title === currentRank.title);
@@ -44,66 +32,41 @@ const RankModal = ({ currentRank, onClose, totalHours = 0, completedHours = 0, s
         return `${hrs}sa ${mins}dk`;
     };
 
-    React.useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (e.key === 'Escape') {
-                onClose();
-            }
-        };
-
-        // Modal scroll lock
-        document.body.style.overflow = 'hidden';
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-            document.body.style.overflow = 'unset';
-        };
-    }, [onClose]);
-
     return (
-        <AnimatePresence>
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 overflow-y-auto"
-                onClick={onClose}
-            >
-                <motion.div
-                    initial={{ scale: 0.9, y: 20 }}
-                    animate={{ scale: 1, y: 0 }}
-                    exit={{ scale: 0.9, y: 20 }}
-                    className="bg-custom-header border border-custom-category rounded-2xl p-8 w-full max-w-2xl shadow-2xl shadow-custom-accent/10 relative my-auto flex flex-col"
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <div className="flex items-start justify-between mb-2 border-b border-custom-category/30 pb-4 shrink-0">
-                        <div className="flex items-center gap-4">
-                            <div className="bg-custom-accent/10 p-3 rounded-xl">
-                                <Goal size={32} className="text-custom-accent" />
-                            </div>
-                            <div>
-                                <h2 className="text-2xl font-bold text-custom-text">Unvan Yolculuğu</h2>
-                                <p className="text-custom-title/70 text-sm">
-                                    {stats.uniqueDays > 0 ? (
-                                        <>Günlük Ortalama: <span className="text-custom-accent font-bold">{formatAvg(stats.avg)}</span></>
-                                    ) : (
-                                        "Kariyer basamakların"
-                                    )}
-                                </p>
-                            </div>
+        <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+            <DialogContent className="max-w-2xl h-[85vh] overflow-hidden flex flex-col p-0 gap-0 border-border bg-card">
+                <div className="p-6 border-b border-border flex items-start justify-between bg-card/50">
+                    <div className="flex items-center gap-4">
+                        <div className="bg-primary/10 p-3 rounded-xl border border-primary/10">
+                            <Goal size={32} className="text-primary" />
                         </div>
-                        <button
-                            onClick={onClose}
-                            className="p-2 hover:bg-custom-category/50 rounded-lg transition-colors text-custom-title/50 hover:text-custom-text"
-                        >
-                            <span className="text-3xl leading-none">&times;</span>
-                        </button>
+                        <div>
+                            <DialogHeader>
+                                <DialogTitle className="text-2xl font-bold text-foreground">Unvan Yolculuğu</DialogTitle>
+                                <DialogDescription className="sr-only">
+                                    Kariyer basamaklarınızı ve çalışma hedeflerinize göre ulaştığınız unvanları görün.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <p className="text-muted-foreground text-sm mt-1">
+                                {stats.uniqueDays > 0 ? (
+                                    <>Günlük Ortalama: <span className="text-primary font-bold">{formatAvg(stats.avg)}</span></>
+                                ) : (
+                                    "Kariyer basamakların"
+                                )}
+                            </p>
+                        </div>
                     </div>
+                    <DialogClose asChild>
+                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted text-muted-foreground hover:text-white focus-visible:ring-0 focus-visible:ring-offset-0 outline-none">
+                            <X size={24} />
+                        </Button>
+                    </DialogClose>
+                </div>
 
+                <ScrollArea className="flex-1 p-6 min-h-0">
                     <div className="relative flex flex-col gap-2">
                         {/* Vertical Line */}
-                        <div className="absolute left-6 top-2 bottom-2 w-0.5 bg-custom-category/30 -z-10" />
+                        <div className="absolute left-6 top-2 bottom-2 w-0.5 bg-border/50 -z-10" />
 
                         {RANKS.map((rank, index) => {
                             const isCompleted = index < currentRankIndex;
@@ -124,16 +87,16 @@ const RankModal = ({ currentRank, onClose, totalHours = 0, completedHours = 0, s
                                     className={cn(
                                         "relative flex items-center gap-4 p-3 rounded-xl border transition-all duration-300",
                                         isCurrent
-                                            ? "bg-custom-accent/5 border-custom-accent/30 shadow-lg shadow-custom-accent/5 scale-[1.02]"
-                                            : "bg-custom-header border-transparent hover:bg-custom-bg/50"
+                                            ? "bg-primary/5 border-primary/30 shadow-sm"
+                                            : "bg-card border-transparent hover:bg-muted/50"
                                     )}
                                 >
                                     {/* Status Icon */}
                                     <div className={cn(
                                         "flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center border-4 z-10",
-                                        isCompleted ? "bg-custom-accent text-white border-custom-header" :
-                                            isCurrent ? "bg-custom-header text-custom-accent border-custom-accent" :
-                                                "bg-custom-header text-custom-title/30 border-custom-category/50"
+                                        isCompleted ? "bg-primary text-primary-foreground border-card" :
+                                            isCurrent ? "bg-card text-primary border-primary" :
+                                                "bg-card text-muted-foreground/30 border-muted"
                                     )}>
                                         {(() => {
                                             const IconComponent = RANK_ICONS[rank.icon] || Star;
@@ -146,19 +109,19 @@ const RankModal = ({ currentRank, onClose, totalHours = 0, completedHours = 0, s
                                         <div className="flex items-center justify-between mb-1">
                                             <h3 className={cn(
                                                 "font-bold text-lg",
-                                                isCurrent ? rank.color : isCompleted ? "text-custom-title/70" : "text-custom-title/40"
+                                                isCurrent ? "text-primary" : isCompleted ? "text-foreground/80" : "text-muted-foreground"
                                             )}>
                                                 {rank.title}
                                             </h3>
                                             <div className="flex flex-col items-end">
                                                 <span className={cn(
                                                     "text-xs font-bold px-2 py-1 rounded-md",
-                                                    isCurrent ? "bg-custom-accent/10 text-custom-accent" : "bg-custom-bg text-custom-title/40"
+                                                    isCurrent ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
                                                 )}>
                                                     %{rank.min}+
                                                 </span>
                                                 {daysText && (
-                                                    <span className="text-[10px] font-bold text-custom-accent/60 mt-1 uppercase tracking-wider">
+                                                    <span className="text-[10px] font-bold text-primary/60 mt-1 uppercase tracking-wider">
                                                         {daysText}
                                                     </span>
                                                 )}
@@ -166,7 +129,7 @@ const RankModal = ({ currentRank, onClose, totalHours = 0, completedHours = 0, s
                                         </div>
                                         <p className={cn(
                                             "text-sm",
-                                            isCurrent ? "text-custom-title" : "text-custom-title/50"
+                                            isCurrent ? "text-foreground" : "text-muted-foreground"
                                         )}>
                                             {isCurrent ? "Şu an buradasınız" :
                                                 isCompleted ? "Tamamlandı" :
@@ -177,9 +140,9 @@ const RankModal = ({ currentRank, onClose, totalHours = 0, completedHours = 0, s
                             );
                         })}
                     </div>
-                </motion.div>
-            </motion.div>
-        </AnimatePresence>
+                </ScrollArea>
+            </DialogContent>
+        </Dialog >
     );
 };
 

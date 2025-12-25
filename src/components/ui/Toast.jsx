@@ -1,12 +1,7 @@
 import React, { useEffect } from 'react';
 import { motion as Motion } from 'framer-motion';
 import { CheckCircle, AlertCircle, XCircle, Info, X } from 'lucide-react';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-function cn(...inputs) {
-    return twMerge(clsx(inputs));
-}
+import { cn } from '@/lib/utils';
 
 const TOAST_TYPES = {
     success: {
@@ -35,10 +30,10 @@ const TOAST_TYPES = {
     },
     info: {
         icon: Info,
-        accent: 'text-custom-accent',
-        bg: 'bg-custom-accent/10',
-        border: 'border-custom-accent/20',
-        bar: 'bg-custom-accent',
+        accent: 'text-primary',
+        bg: 'bg-primary/10',
+        border: 'border-primary/20',
+        bar: 'bg-primary',
         title: 'Bilgi'
     }
 };
@@ -65,7 +60,7 @@ export default function Toast({ id, message, type = 'info', onClose }) {
             exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
             className={cn(
                 "pointer-events-auto relative min-w-[300px] max-w-[400px] overflow-hidden rounded-2xl border shadow-2xl backdrop-blur-xl flex flex-col",
-                "bg-custom-header border-custom-category/40"
+                "bg-card border-secondary/40"
             )}
         >
             <div className="p-4 flex items-start gap-4">
@@ -74,17 +69,17 @@ export default function Toast({ id, message, type = 'info', onClose }) {
                 </div>
 
                 <div className="flex-1 min-w-0 pt-0.5">
-                    <p className="text-xs font-bold uppercase tracking-widest text-custom-title/40 mb-1">
+                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">
                         {style.title}
                     </p>
-                    <p className="text-[14px] font-medium text-custom-text leading-relaxed">
+                    <p className="text-[14px] font-medium text-foreground leading-relaxed">
                         {message}
                     </p>
                 </div>
 
                 <button
                     onClick={() => onClose(id)}
-                    className="shrink-0 p-1.5 rounded-lg text-custom-title/30 hover:text-custom-text hover:bg-white/5 transition-colors"
+                    className="shrink-0 p-1.5 rounded-lg text-muted-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
                 >
                     <X size={16} />
                 </button>

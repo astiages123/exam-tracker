@@ -66,33 +66,33 @@ const CelebrationOverlay = ({ courseName, onComplete }) => {
             />
 
             <div
-                className="relative bg-custom-header border border-custom-accent/30 p-8 rounded-3xl shadow-2xl shadow-custom-accent/20 max-w-sm w-full text-center overflow-hidden"
+                className="relative bg-card border border-primary/30 p-8 rounded-3xl shadow-2xl shadow-primary/20 max-w-sm w-full text-center overflow-hidden"
             >
                 {/* Animated Background Glow */}
-                <div className="absolute -top-24 -left-24 w-48 h-48 bg-custom-accent/20 rounded-full blur-3xl animate-pulse" />
-                <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-custom-accent/20 rounded-full blur-3xl animate-pulse delay-700" />
+                <div className="absolute -top-24 -left-24 w-48 h-48 bg-primary/20 rounded-full blur-3xl animate-pulse" />
+                <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-primary/20 rounded-full blur-3xl animate-pulse delay-700" />
 
                 <div className="relative">
                     <div
-                        className="w-20 h-20 bg-custom-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-custom-accent/20"
+                        className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-primary/20"
                     >
-                        <PartyPopper size={40} className="text-custom-accent" />
+                        <PartyPopper size={40} className="text-primary" />
                     </div>
 
                     <h2
-                        className="text-2xl font-bold text-custom-text mb-2"
+                        className="text-2xl font-bold text-foreground mb-2"
                     >
                         Harika İş!
                     </h2>
 
                     <p
-                        className="text-custom-title/70 mb-6"
+                        className="text-muted-foreground mb-6"
                     >
-                        <span className="font-bold text-custom-accent">"{courseName}"</span> konusunu tamamen bitirdin. Bir adım daha yaklaştın!
+                        <span className="font-bold text-primary">"{courseName}"</span> konusunu tamamen bitirdin. Bir adım daha yaklaştın!
                     </p>
 
                     <div
-                        className="flex items-center justify-center gap-2 text-custom-success font-bold text-sm bg-custom-success/10 py-2 px-4 rounded-xl border border-custom-success/20 inline-flex"
+                        className="flex items-center justify-center gap-2 text-emerald-400 font-bold text-sm bg-emerald-400/10 py-2 px-4 rounded-xl border border-emerald-400/20 inline-flex"
                     >
                         <CheckCircle2 size={18} />
                         Konu Tamamlandı
@@ -100,7 +100,7 @@ const CelebrationOverlay = ({ courseName, onComplete }) => {
 
                     <button
                         onClick={onComplete}
-                        className="mt-8 w-full bg-custom-accent text-custom-bg font-bold py-3 rounded-xl shadow-lg shadow-custom-accent/20 hover:shadow-custom-accent/40 transition-all hover:scale-105 active:scale-95"
+                        className="mt-8 w-full bg-primary text-primary-foreground font-bold py-3 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all hover:scale-105 active:scale-95"
                     >
                         Devam Et
                     </button>

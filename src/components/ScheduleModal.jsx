@@ -1,30 +1,13 @@
-
 import React, { useEffect, useState } from 'react';
-import { X, Calendar, Plus, ChevronDown, Save, Edit2, Clock } from 'lucide-react';
-
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-function cn(...inputs) {
-    return twMerge(clsx(inputs));
-}
-
-const DAYS = ['PAZARTESİ', 'SALI', 'ÇARŞAMBA', 'PERŞEMBE', 'CUMA', 'CUMARTESİ / PAZAR'];
-
-const SUBJECT_STYLES = {
-    'EKONOMİ': { bg: 'bg-sky-500/20', text: 'text-sky-100', border: 'border-sky-500/30', badge: 'bg-sky-500/30' },
-    'HUKUK': { bg: 'bg-rose-500/20', text: 'text-rose-100', border: 'border-rose-500/30', badge: 'bg-rose-500/30' },
-    'MUHASEBE - İŞLETME - MALİYE': { bg: 'bg-emerald-500/20', text: 'text-emerald-100', border: 'border-emerald-500/30', badge: 'bg-emerald-500/30' },
-    'MATEMATİK - BANKA': { bg: 'bg-violet-500/20', text: 'text-violet-100', border: 'border-violet-500/30', badge: 'bg-violet-500/30' },
-    'DEFAULT': { bg: 'bg-custom-header', text: 'text-custom-text', border: 'border-custom-category/20', badge: 'bg-custom-category/20' }
-};
-
-const SUBJECT_OPTIONS = [
-    "EKONOMİ",
-    "HUKUK",
-    "MUHASEBE - İŞLETME - MALİYE",
-    "MATEMATİK - BANKA"
-];
+import { Calendar, Plus, Save, Edit2, Clock, X, Trash2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { DAYS, SUBJECT_STYLES, SUBJECT_OPTIONS } from '@/constants/styles';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+// Using native select for simplicity in dynamic lists to avoid perf issues or complex state management for now, or just standard select.
+// Shadcn Select is nice but controlled state for many items can be tricky.
+// Let's us native select but styled like Shadcn Input.
 
 export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
     // Local state for editing before saving
@@ -33,33 +16,18 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
     // Mode state
     const [isEditing, setIsEditing] = useState(false);
 
-    // Temp state for new entries, KEYED BY DAY to avoid mirroring
+    // Temp state for new entries, KEYED BY DAY
     const [newItems, setNewItems] = useState({});
 
     // Initialize local state when modal opens
     useEffect(() => {
         if (schedule) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
+            // eslint-disable-next-line
             setLocalSchedule(JSON.parse(JSON.stringify(schedule)));
             setIsEditing(false); // Start in view mode
             setNewItems({}); // Reset inputs
         }
     }, [schedule]);
-
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (e.key === 'Escape') onClose();
-        };
-
-        // Modal scroll lock
-        document.body.style.overflow = 'hidden';
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-            document.body.style.overflow = 'unset';
-        };
-    }, [onClose]);
 
     const handleNewItemChange = (day, field, value) => {
         setNewItems(prev => ({
@@ -115,53 +83,47 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
     };
 
     return (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 cursor-pointer"
-            onClick={onClose}
-        >
-            <div
-                className="bg-custom-bg border border-custom-category/20 rounded-3xl w-full max-w-5xl flex flex-col shadow-2xl shadow-black/50 cursor-default overflow-hidden max-h-[90vh]"
-                onClick={(e) => e.stopPropagation()}
-            >
-                {/* Header */}
-                <div className="p-6 border-b border-custom-category/20 flex justify-between items-center bg-custom-header sticky top-0 z-10">
+        <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+            <DialogContent className="max-w-5xl max-h-[90vh] flex flex-col p-0 gap-0 bg-card border-border overflow-hidden">
+                <div className="p-6 border-b border-border bg-card/50 flex justify-between items-start">
                     <div className="flex items-center gap-4">
-                        <div className="bg-custom-accent/10 p-3 rounded-xl">
-                            <Calendar className="text-custom-accent" size={24} />
+                        <div className="bg-primary/10 p-3 rounded-xl border border-primary/10">
+                            <Calendar className="text-primary" size={24} />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-custom-text tracking-tight">
-                                {isEditing ? "Programı Düzenle" : "Haftalık Çalışma Programı"}
-                            </h2>
-                            <p className="text-sm text-custom-title/70">
+                            <DialogHeader>
+                                <DialogTitle className="text-xl font-bold text-foreground tracking-tight">
+                                    {isEditing ? "Programı Düzenle" : "Haftalık Çalışma Programı"}
+                                </DialogTitle>
+                                <DialogDescription className="sr-only">Haftalık çalışma programı</DialogDescription>
+                            </DialogHeader>
+                            <p className="text-sm text-muted-foreground mt-1">
                                 {isEditing ? "Değişiklikleri kaydetmeyi unutmayın" : "Ders programınızın genel bakışı"}
                             </p>
                         </div>
                     </div>
-                    <button
-                        onClick={onClose}
-                        className="p-2.5 bg-custom-title/10 rounded-xl text-custom-title/50 hover:text-white hover:bg-white/10 transition-colors"
-                    >
-                        <X size={20} />
-                    </button>
+                    <DialogClose asChild>
+                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted text-muted-foreground hover:text-white">
+                            <X size={24} />
+                        </Button>
+                    </DialogClose>
                 </div>
 
-                {/* Content - Grid Layout */}
-                <div className="p-6 overflow-y-auto custom-scrollbar flex-1 bg-custom-bg">
+                <div className="p-6 overflow-y-auto flex-1 bg-background/50 custom-scrollbar">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {DAYS.map((day) => {
                             const dayItems = localSchedule[day] || [];
                             const currentNewItem = newItems[day] || { time: '', subject: 'EKONOMİ' };
 
                             return (
-                                <div key={day} className="flex flex-col bg-custom-header border border-custom-category/20 rounded-2xl overflow-hidden hover:border-custom-category/30 transition-colors h-full">
+                                <div key={day} className="flex flex-col bg-card border border-border rounded-xl overfloy-hidden hover:border-primary/20 transition-colors h-full shadow-sm">
                                     {/* Day Header */}
-                                    <div className="p-3 bg-custom-bg/20 border-b border-custom-category/20 flex justify-between items-center">
-                                        <span className="font-bold text-custom-text text-sm tracking-wide">
+                                    <div className="p-3 bg-muted/30 border-b border-border flex justify-between items-center rounded-t-xl">
+                                        <span className="font-bold text-foreground text-sm tracking-wide">
                                             {day}
                                         </span>
                                         {dayItems.length > 0 && (
-                                            <span className="text-[10px] font-bold bg-custom-accent/10 text-custom-accent px-2 py-0.5 rounded-full">
+                                            <span className="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full">
                                                 {dayItems.length}
                                             </span>
                                         )}
@@ -170,7 +132,7 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
                                     {/* Items List */}
                                     <div className="p-2 flex-1 space-y-2 min-h-[120px]">
                                         {dayItems.length === 0 && !isEditing ? (
-                                            <div className="h-full flex items-center justify-center text-gray-600 text-xs italic">
+                                            <div className="h-full flex items-center justify-center text-gray-400 font-bold text-xs italic">
                                                 Boş Gün
                                             </div>
                                         ) : (
@@ -180,12 +142,12 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
                                                     <div
                                                         key={idx}
                                                         className={cn(
-                                                            "relative flex items-center gap-3 p-2.5 rounded-xl border transition-all group",
+                                                            "relative flex items-center gap-3 p-2.5 rounded-lg border transition-all group",
                                                             styles.bg,
                                                             styles.border
                                                         )}
                                                     >
-                                                        <div className={cn("text-xs font-mono font-bold px-1.5 py-0.5 rounded-md", styles.badge, styles.text)}>
+                                                        <div className={cn("text-xs font-mono font-bold px-1.5 py-0.5 rounded", styles.badge, styles.text)}>
                                                             {item.time}
                                                         </div>
                                                         <span className={cn("text-xs font-semibold break-words flex-1", styles.text)}>
@@ -195,10 +157,10 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
                                                         {isEditing && (
                                                             <button
                                                                 onClick={() => handleDeleteItem(day, idx)}
-                                                                className="absolute -right-1 -top-1 bg-red-500/90 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:scale-110"
+                                                                className="absolute -right-1 -top-1 bg-destructive text-destructive-foreground p-1 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-sm hover:scale-110"
                                                                 title="Sil"
                                                             >
-                                                                <X size={10} />
+                                                                <Trash2 size={10} />
                                                             </button>
                                                         )}
                                                     </div>
@@ -207,40 +169,41 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
                                         )}
                                     </div>
 
-                                    {/* Add Input - Fixed at bottom of card */}
+                                    {/* Add Input */}
                                     {isEditing && (
-                                        <div className="p-2 border-t border-custom-category/20 bg-custom-bg/20">
+                                        <div className="p-2 border-t border-border bg-muted/10 rounded-b-xl">
                                             <div className="flex flex-col gap-2">
                                                 <div className="flex gap-2">
                                                     <div className="relative flex-1">
-                                                        <Clock size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500" />
-                                                        <input
+                                                        <Clock size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                                                        <Input
                                                             type="text"
                                                             placeholder="09:00"
                                                             value={currentNewItem.time}
                                                             onChange={(e) => handleNewItemChange(day, 'time', e.target.value)}
-                                                            className="w-full bg-custom-bg border border-custom-category/30 rounded-lg pl-6 pr-2 py-1.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-custom-accent/50 focus:bg-custom-header transition-all"
+                                                            className="h-8 pl-6 text-xs bg-background border-input"
                                                         />
                                                     </div>
-                                                    <button
+                                                    <Button
                                                         onClick={() => handleAddItem(day)}
                                                         disabled={!currentNewItem.time || !currentNewItem.subject}
-                                                        className="bg-custom-accent hover:bg-custom-accent/90 disabled:opacity-50 disabled:cursor-not-allowed text-white p-1.5 rounded-lg transition-colors shadow-lg shadow-custom-accent/20"
+                                                        size="icon"
+                                                        className="h-8 w-8"
                                                     >
-                                                        <Plus size={16} />
-                                                    </button>
+                                                        <Plus size={14} />
+                                                    </Button>
                                                 </div>
                                                 <div className="relative">
                                                     <select
                                                         value={currentNewItem.subject}
                                                         onChange={(e) => handleNewItemChange(day, 'subject', e.target.value)}
-                                                        className="w-full bg-custom-bg border border-custom-category/30 rounded-lg px-2 py-1.5 text-[10px] font-medium text-gray-300 focus:outline-none focus:border-custom-accent/50 appearance-none cursor-pointer hover:bg-custom-header transition-colors"
+                                                        className="w-full bg-background border border-input rounded-md px-2 py-1.5 text-[10px] font-medium text-foreground focus:outline-none focus:ring-1 focus:ring-ring appearance-none cursor-pointer hover:bg-accent transition-colors h-8"
                                                     >
                                                         {SUBJECT_OPTIONS.map(opt => (
                                                             <option key={opt} value={opt}>{opt}</option>
                                                         ))}
                                                     </select>
-                                                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" size={12} />
+                                                    {/*  ChevronDown for select */}
                                                 </div>
                                             </div>
                                         </div>
@@ -251,35 +214,25 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
                     </div>
                 </div>
 
-                {/* Footer Actions */}
-                <div className="p-4 border-t border-custom-category/20 bg-custom-header flex justify-end gap-3 sticky bottom-0 z-10">
+                <div className="p-4 border-t border-border bg-card flex justify-end gap-3 sticky bottom-0 z-10">
                     {isEditing ? (
                         <>
-                            <button
-                                onClick={handleCancelEdit}
-                                className="px-5 py-2.5 rounded-xl text-custom-title/70 hover:text-white hover:bg-custom-title/10 transition-colors text-sm font-semibold"
-                            >
+                            <Button variant="ghost" onClick={handleCancelEdit}>
                                 Vazgeç
-                            </button>
-                            <button
-                                onClick={handleSave}
-                                className="flex items-center gap-2 px-6 py-2.5 bg-custom-accent hover:bg-custom-accent/90 text-white rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-custom-accent/20 text-sm font-bold"
-                            >
+                            </Button>
+                            <Button onClick={handleSave} className="gap-2">
                                 <Save size={18} />
                                 Kaydet
-                            </button>
+                            </Button>
                         </>
                     ) : (
-                        <button
-                            onClick={() => setIsEditing(true)}
-                            className="flex items-center gap-2 px-6 py-2.5 bg-custom-title/10 border border-custom-title/10 hover:bg-custom-title/10 hover:border-custom-title/30 text-white rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-black/20 text-sm font-bold"
-                        >
+                        <Button variant="secondary" onClick={() => setIsEditing(true)} className="gap-2">
                             <Edit2 size={16} />
                             Düzenle
-                        </button>
+                        </Button>
                     )}
                 </div>
-            </div>
-        </div>
+            </DialogContent>
+        </Dialog>
     );
 }

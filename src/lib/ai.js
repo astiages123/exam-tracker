@@ -12,7 +12,7 @@ export const generateQuestions = async (courseId, courseName, rawNoteText, exist
     }
 
     // List models for debugging
-    const modelName = "gemini-2.5-flash-lite";
+    const modelName = "gemini-1.5-flash";
 
     const model = genAI.getGenerativeModel({ model: modelName });
 

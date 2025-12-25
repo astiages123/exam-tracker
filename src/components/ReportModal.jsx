@@ -1,12 +1,17 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { X, Clock, Calendar, BookOpen, Trash2, BarChart2, List, MonitorPlay, Pause } from 'lucide-react';
+import { X, Clock, Calendar, BookOpen, Trash2, BarChart2, List, MonitorPlay, Pause, Edit2, Save } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { courseData } from '../data';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import ConfirmModal from './ui/ConfirmModal';
 
 const CATEGORY_STYLES = {
-    'DEFAULT': { bg: 'bg-white/5', border: 'border-white/10', text: 'text-custom-title/80' }
+    'DEFAULT': { bg: 'bg-white/5', border: 'border-white/10', text: 'text-muted-foreground' }
 };
 
 const CustomTooltip = ({ active, payload }) => {
@@ -25,17 +30,17 @@ const CustomTooltip = ({ active, payload }) => {
         }
 
         return (
-            <div className="bg-custom-header border border-custom-category p-3 rounded-lg shadow-xl min-w-[150px]">
-                <p className="text-custom-title/80 text-xs mb-1 font-medium border-b border-white/5 pb-1">{data.fullDate}</p>
-                <p className="text-custom-accent font-bold text-sm mt-1">
+            <div className="bg-card border border-secondary p-3 rounded-lg shadow-xl min-w-[150px]">
+                <p className="text-muted-foreground text-xs mb-1 font-medium border-b border-white/5 pb-1">{data.fullDate}</p>
+                <p className="text-primary font-bold text-sm mt-1">
                     {valueText}
                 </p>
                 {data.courses && data.courses.length > 0 && (
                     <div className="mt-2 space-y-1">
-                        <p className="text-[10px] text-custom-title/40 uppercase font-bold tracking-wider">Çalışılan Dersler:</p>
+                        <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Çalışılan Dersler:</p>
                         {data.courses.map((course, idx) => (
-                            <div key={idx} className="text-xs text-custom-text flex items-center gap-1.5 font-medium">
-                                <div className="w-1.5 h-1.5 rounded-full bg-custom-accent/40" />
+                            <div key={idx} className="text-xs text-foreground flex items-center gap-1.5 font-medium">
+                                <div className="w-1.5 h-1.5 rounded-full bg-primary/40" />
                                 {course}
                             </div>
                         ))}
@@ -47,29 +52,20 @@ const CustomTooltip = ({ active, payload }) => {
     return null;
 };
 
-export default function ReportModal({ sessions = [], onClose, courses = [], onDelete, videoHistory = [], progressData = {} }) {
+export default function ReportModal({ sessions = [], onClose, courses = [], onDelete, onUpdate, videoHistory = [], progressData = {} }) {
     const [selectedGroup, setSelectedGroup] = useState(null);
     const [showFullHistory, setShowFullHistory] = useState(null); // 'duration', 'videos' or null
     const [activeTab, setActiveTab] = useState('list'); // 'list' or 'graph'
     const [confirmDelete, setConfirmDelete] = useState(null); // { sessionIds: [] } or null
 
     useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (e.key === 'Escape' && !selectedGroup && !showFullHistory) onClose();
-            if (e.key === 'Escape') {
-                if (selectedGroup) setSelectedGroup(null);
-                if (showFullHistory) setShowFullHistory(null);
-            }
-        };
-
         document.body.style.overflow = 'hidden';
-        window.addEventListener('keydown', handleKeyDown);
         return () => {
-            window.removeEventListener('keydown', handleKeyDown);
             document.body.style.overflow = 'unset';
         };
-    }, [onClose, selectedGroup, showFullHistory]);
+    }, []);
 
+    // Pre-calculate memoized styles for categories to avoid overhead
     const getCourseCategory = React.useCallback((courseId) => {
         if (!courseId) return '';
         const categoryGroup = courseData.find(cat => cat.courses.some(c => c.id === courseId));
@@ -276,200 +272,234 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
     }, [workSessions, filteredVideoHistory, getCourseName]);
 
     return (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 cursor-pointer"
-            onClick={onClose}
-        >
-            <Motion.div
-                initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                className="bg-custom-bg border border-custom-category rounded-2xl w-[95%] sm:w-full max-w-5xl max-h-[85vh] flex flex-col shadow-2xl cursor-default"
-                onClick={(e) => e.stopPropagation()}
-            >
-                {/* Header */}
-                <div className="p-4 border-b border-custom-category flex justify-between items-center bg-custom-header rounded-t-2xl">
-                    <div>
-                        <h2 className="text-lg font-bold text-custom-text flex items-center gap-2">
-                            <BookOpen className="text-custom-accent" size={20} />
-                            Çalışma Raporu
-                        </h2>
-                        <div className="flex items-center gap-1.5 mt-1.5">
-                            <button
-                                onClick={() => setActiveTab('list')}
-                                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'list'
-                                    ? 'bg-custom-accent/10 text-custom-accent ring-1 ring-custom-accent/30'
-                                    : 'text-custom-title/60 hover:bg-custom-header hover:text-custom-text'
-                                    }`}
-                            >
-                                <List size={16} />
-                                Oturumlar
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('graph')}
-                                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'graph'
-                                    ? 'bg-custom-accent/10 text-custom-accent ring-1 ring-custom-accent/30'
-                                    : 'text-custom-title/60 hover:bg-custom-header hover:text-custom-text'
-                                    }`}
-                            >
-                                <BarChart2 size={16} />
-                                Çalışma Grafiği
-                            </button>
-                        </div>
-                    </div>
-                    <button
-                        onClick={onClose}
-                        className="p-2 bg-custom-bg/50 rounded-lg text-custom-title/50 hover:text-white hover:bg-custom-error/20 transition-colors cursor-pointer"
-                    >
-                        <X size={20} />
-                    </button>
-                </div>
-
-                {/* Stats */}
-                <div className="px-4 py-6 md:px-6 grid grid-cols-3 gap-3 border-b border-custom-category bg-custom-bg/50">
-                    <div className="bg-custom-header p-2.5 rounded-xl border border-custom-category/20">
-                        <span className="text-[10px] text-custom-title/40 uppercase tracking-wider font-bold">Toplam Çalışma</span>
-                        <div className="text-base sm:text-xl font-mono font-bold text-custom-text mt-0.5">
-                            {totalHours}sa {remainingMins}dk
-                        </div>
-                    </div>
-                    <div className="bg-custom-header p-2.5 rounded-xl border border-custom-category/20">
-                        <span className="text-[10px] text-custom-title/40 uppercase tracking-wider font-bold">Toplam Mola</span>
-                        <div className="text-base sm:text-xl font-mono font-bold text-custom-text mt-0.5">
-                            {totalBreakHours}sa {remainingBreakMins}dk
-                        </div>
-                    </div>
-                    <div className="bg-custom-header p-2.5 rounded-xl border border-custom-category/20">
-                        <span className="text-[10px] text-custom-title/40 uppercase tracking-wider font-bold">Toplam Duraklatma</span>
-                        <div className="text-base sm:text-xl font-mono font-bold text-custom-text mt-0.5 whitespace-nowrap">
-                            {totalPauseHours > 0 ? `${totalPauseHours}sa ` : ''}{remainingPauseMins}dk
-                        </div>
-                    </div>
-                </div>
-
-                {/* Content Area */}
-                <div className="flex-1 overflow-y-auto p-3 md:p-4 custom-scrollbar">
-                    {activeTab === 'list' ? (
-                        aggregatedSessions.length === 0 ? (
-                            <div className="text-center py-12 text-custom-title/40">
-                                <Clock size={48} className="mx-auto mb-4 opacity-20" />
-                                <p>Henüz kayıtlı bir çalışma oturumu bulunmuyor.</p>
+        <>
+            <Dialog open={true} onOpenChange={(open) => {
+                if (!open && !selectedGroup && !showFullHistory && !confirmDelete) {
+                    onClose();
+                }
+            }}>
+                <DialogContent className="max-w-5xl max-h-[85vh] h-[85vh] flex flex-col p-0 gap-0 bg-background border-border shadow-2xl overflow-hidden focus-visible:outline-none">
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full w-full">
+                        {/* Header */}
+                        <div className="p-6 border-b border-border flex justify-between items-start bg-card/50">
+                            <div className="flex items-center gap-4">
+                                <div className="bg-primary/10 p-3 rounded-xl border border-primary/10">
+                                    <BookOpen className="text-primary" size={24} />
+                                </div>
+                                <div>
+                                    <DialogHeader>
+                                        <DialogTitle className="text-xl font-bold text-foreground">
+                                            Çalışma Raporu
+                                        </DialogTitle>
+                                        <DialogDescription className="sr-only">
+                                            Detaylı çalışma raporu ve istatistikler.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <TabsList className="mt-2 bg-muted/50">
+                                        <TabsTrigger value="list" className="gap-2">
+                                            <List size={14} /> Oturumlar
+                                        </TabsTrigger>
+                                        <TabsTrigger value="graph" className="gap-2">
+                                            <BarChart2 size={14} /> Çalışma Grafiği
+                                        </TabsTrigger>
+                                    </TabsList>
+                                </div>
                             </div>
-                        ) : (
-                            <div className="space-y-3">
-                                {aggregatedSessions.map((group) => (
-                                    <div
-                                        key={group.key}
-                                        className="relative flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:px-6 sm:py-5 bg-custom-header/40 rounded-2xl border border-custom-category/20 hover:border-custom-accent/40 hover:bg-custom-header/60 transition-all duration-300 group gap-3 sm:gap-0 cursor-pointer shadow-sm"
-                                        onClick={() => setSelectedGroup(group)}
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <div className="p-3.5 rounded-full bg-custom-accent/10 text-custom-accent">
-                                                <BookOpen size={18} />
+                            <DialogClose asChild>
+                                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted text-muted-foreground hover:text-white">
+                                    <X size={24} />
+                                </Button>
+                            </DialogClose>
+                        </div>
+
+                        {/* Stats */}
+                        <div className="px-4 py-6 md:px-6 grid grid-cols-3 gap-3 border-b border-border bg-muted/20">
+                            <Card className="bg-card border-border/50 shadow-none">
+                                <CardContent className="p-3">
+                                    <span className="text-[10px] text-zinc-300 uppercase tracking-wider font-semibold">Toplam Çalışma</span>
+                                    <div className="text-base sm:text-lg font-mono font-bold text-zinc-200 mt-0.5">
+                                        {totalHours}sa {remainingMins}dk
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            <Card className="bg-card border-border/50 shadow-none">
+                                <CardContent className="p-3">
+                                    <span className="text-[10px] text-zinc-300 uppercase tracking-wider font-semibold">Toplam Mola</span>
+                                    <div className="text-base sm:text-lg font-mono font-bold text-zinc-200 mt-0.5">
+                                        {totalBreakHours}sa {remainingBreakMins}dk
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            <Card className="bg-card border-border/50 shadow-none">
+                                <CardContent className="p-3">
+                                    <span className="text-[10px] text-zinc-300 uppercase tracking-wider font-semibold">Toplam Duraklatma</span>
+                                    <div className="text-base sm:text-lg font-mono font-bold text-zinc-200 mt-0.5 whitespace-nowrap">
+                                        {totalPauseHours > 0 ? `${totalPauseHours}sa ` : ''}{remainingPauseMins}dk
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                        {/* Content Area */}
+                        <div className="flex-1 overflow-hidden relative">
+                            <ScrollArea className="h-full w-full">
+                                <div className="p-4 md:p-6 w-full">
+                                    <TabsContent value="list" className="mt-0 focus-visible:ring-0">
+                                        {aggregatedSessions.length === 0 ? (
+                                            <div className="text-center py-12 text-muted-foreground/40">
+                                                <Clock size={48} className="mx-auto mb-4 opacity-20" />
+                                                <p>Henüz kayıtlı bir çalışma oturumu bulunmuyor.</p>
                                             </div>
-                                            <div>
-                                                <h4 className="font-bold text-custom-text text-base w-full sm:max-w-[350px] truncate leading-tight">
-                                                    {getCourseName(group.courseId)}
-                                                </h4>
-                                                <div className="flex items-center gap-2.5 text-xs text-custom-title/60 font-medium mt-1">
-                                                    <Calendar size={12} />
-                                                    {new Date(group.date).toLocaleDateString('tr-TR')}
-                                                    {getCourseCategory(group.courseId) && (
-                                                        <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded border-[0.5px] bg-white/5 border-white/10 text-custom-title/50 ml-1 whitespace-nowrap">
-                                                            {getCourseCategory(group.courseId)}
-                                                        </span>
-                                                    )}
-                                                </div>
+                                        ) : (
+                                            <div className="space-y-3">
+                                                {aggregatedSessions.map((group) => (
+                                                    <Card
+                                                        key={group.key}
+                                                        className="relative cursor-pointer hover:bg-muted/50 transition-colors border-border/40 shadow-sm group bg-card/30"
+                                                        onClick={() => setSelectedGroup(group)}
+                                                    >
+                                                        <CardContent className="p-4 sm:px-6 sm:py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
+                                                            <div className="flex items-center gap-4">
+                                                                <div className="p-3.5 rounded-full bg-primary/10 text-primary">
+                                                                    <BookOpen size={18} />
+                                                                </div>
+                                                                <div>
+                                                                    <h4 className="font-bold text-foreground text-base w-full sm:max-w-[350px] truncate leading-tight">
+                                                                        {getCourseName(group.courseId)}
+                                                                    </h4>
+                                                                    <div className="flex items-center gap-2.5 text-xs text-zinc-300 font-medium mt-1">
+                                                                        <Calendar size={12} />
+                                                                        {new Date(group.date).toLocaleDateString('tr-TR')}
+                                                                        {getCourseCategory(group.courseId) && (
+                                                                            <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded border-[0.5px] bg-white/5 border-white/10 text-zinc-300 ml-1 whitespace-nowrap">
+                                                                                {getCourseCategory(group.courseId)}
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 mt-2 sm:mt-0">
+                                                                <div className="text-right">
+                                                                    <span className="font-mono font-bold text-zinc-200 text-lg">{Math.round(group.totalDuration / 60)}</span>
+                                                                    <span className="text-xs text-zinc-300 ml-1 uppercase font-bold">dk</span>
+                                                                </div>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setConfirmDelete({ sessionIds: group.sessionIds });
+                                                                    }}
+                                                                    className="h-8 w-8 text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10"
+                                                                    title="Kaydı Sil"
+                                                                >
+                                                                    <Trash2 size={16} />
+                                                                </Button>
+                                                            </div>
+                                                        </CardContent>
+                                                    </Card>
+                                                ))}
                                             </div>
-                                        </div>
-                                        <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 mt-2 sm:mt-0">
-                                            <div className="text-right">
-                                                <span className="font-mono font-bold text-custom-text text-lg">{Math.round(group.totalDuration / 60)}</span>
-                                                <span className="text-xs text-custom-title/40 ml-1 uppercase font-bold">dk</span>
-                                            </div>
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setConfirmDelete({ sessionIds: group.sessionIds });
-                                                }}
-                                                className="p-1.5 text-custom-title/20 hover:text-custom-error hover:bg-custom-error/10 rounded-lg transition-colors cursor-pointer"
-                                                title="Kaydı Sil"
+                                        )}
+                                    </TabsContent>
+
+                                    <TabsContent value="graph" className="mt-0 focus-visible:ring-0">
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+                                            {/* Duration Chart */}
+                                            <Card
+                                                className="cursor-pointer hover:bg-muted/30 transition-all group border-border/40"
+                                                onClick={() => setShowFullHistory('duration')}
                                             >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )
-                    ) : (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-                            {/* Duration Chart */}
-                            <div
-                                className="bg-custom-header/20 p-4 sm:p-5 rounded-2xl border border-custom-category/10 cursor-pointer hover:bg-custom-header/40 transition-all group"
-                                onClick={() => setShowFullHistory('duration')}
-                            >
-                                <div className="mb-4 flex justify-between items-start">
-                                    <div>
-                                        <h3 className="text-base font-bold text-custom-text group-hover:text-custom-accent transition-colors">Çalışma Süresi</h3>
-                                        <p className="text-[11px] text-custom-title/40">Son 1 haftayı gösterir</p>
-                                    </div>
-                                    <div className="px-1.5 py-0.5 bg-custom-accent/10 border border-custom-accent/20 rounded text-[9px] text-custom-accent font-bold uppercase tracking-tight">Tümü</div>
-                                </div>
-                                {chartData.length > 0 ? (
-                                    <div className="w-full h-[260px]">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff08" vertical={false} />
-                                                <XAxis dataKey="displayDate" stroke="#ffffff30" fontSize={10} tickLine={false} axisLine={false} tickMargin={10} />
-                                                <YAxis stroke="#ffffff30" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}s`} />
-                                                <Tooltip content={<CustomTooltip />} />
-                                                <Line type="monotone" dataKey="hours" stroke="#8b5cf6" strokeWidth={3} dot={{ fill: '#8b5cf6', r: 4 }} activeDot={{ r: 6 }} />
-                                            </LineChart>
-                                        </ResponsiveContainer>
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-col items-center justify-center h-[260px] text-custom-title/30">
-                                        <BarChart2 size={32} className="mb-2 opacity-20" />
-                                        <p className="text-xs">Veri yok</p>
-                                    </div>
-                                )}
-                            </div>
+                                                <CardContent className="p-5">
+                                                    <div className="mb-4 flex justify-between items-start">
+                                                        <div>
+                                                            <h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors">Çalışma Süresi</h3>
+                                                            <p className="text-[11px] text-zinc-300 font-medium">Son 1 haftayı gösterir</p>
+                                                        </div>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="h-auto px-1.5 py-0.5 bg-primary/10 border border-primary/20 rounded text-[9px] text-primary font-bold uppercase tracking-tight hover:bg-primary/20"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setShowFullHistory('duration');
+                                                            }}
+                                                        >
+                                                            Tümü
+                                                        </Button>
+                                                    </div>
+                                                    {chartData.length > 0 ? (
+                                                        <div className="w-full h-[260px]">
+                                                            <ResponsiveContainer width="100%" height="100%">
+                                                                <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                                                                    <XAxis dataKey="displayDate" stroke="#d4d4d8" fontSize={10} tickLine={false} axisLine={false} tickMargin={10} />
+                                                                    <YAxis stroke="#d4d4d8" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}s`} />
+                                                                    <Tooltip content={<CustomTooltip />} />
+                                                                    <Line type="monotone" dataKey="hours" stroke="#8b5cf6" strokeWidth={3} dot={{ fill: '#8b5cf6', r: 4 }} activeDot={{ r: 6 }} />
+                                                                </LineChart>
+                                                            </ResponsiveContainer>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex flex-col items-center justify-center h-[260px] text-muted-foreground/30">
+                                                            <BarChart2 size={32} className="mb-2 opacity-20" />
+                                                            <p className="text-xs">Veri yok</p>
+                                                        </div>
+                                                    )}
+                                                </CardContent>
+                                            </Card>
 
-                            {/* Video Count Chart */}
-                            <div
-                                className="bg-custom-header/20 p-4 sm:p-5 rounded-2xl border border-custom-category/10 cursor-pointer hover:bg-custom-header/40 transition-all group"
-                                onClick={() => setShowFullHistory('videos')}
-                            >
-                                <div className="mb-4 flex justify-between items-start">
-                                    <div>
-                                        <h3 className="text-base font-bold text-custom-text group-hover:text-orange-400 transition-colors">İzlenen Video</h3>
-                                        <p className="text-[11px] text-custom-title/40">Son 1 haftayı gösterir</p>
-                                    </div>
-                                    <div className="px-1.5 py-0.5 bg-orange-400/10 border border-orange-400/20 rounded text-[9px] text-orange-400 font-bold uppercase tracking-tight">Tümü</div>
+                                            {/* Video Count Chart */}
+                                            <Card
+                                                className="cursor-pointer hover:bg-muted/30 transition-all group border-border/40"
+                                                onClick={() => setShowFullHistory('videos')}
+                                            >
+                                                <CardContent className="p-5">
+                                                    <div className="mb-4 flex justify-between items-start">
+                                                        <div>
+                                                            <h3 className="text-base font-bold text-foreground group-hover:text-orange-400 transition-colors">İzlenen Video</h3>
+                                                            <p className="text-[11px] text-zinc-300 font-medium">Son 1 haftayı gösterir</p>
+                                                        </div>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="h-auto px-1.5 py-0.5 bg-orange-400/10 border border-orange-400/20 rounded text-[9px] text-orange-400 font-bold uppercase tracking-tight hover:bg-orange-400/20"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setShowFullHistory('videos');
+                                                            }}
+                                                        >
+                                                            Tümü
+                                                        </Button>
+                                                    </div>
+                                                    {videoChartData.length > 0 ? (
+                                                        <div className="w-full h-[260px]">
+                                                            <ResponsiveContainer width="100%" height="100%">
+                                                                <LineChart data={videoChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                                                                    <XAxis dataKey="displayDate" stroke="#d4d4d8" fontSize={10} tickLine={false} axisLine={false} tickMargin={10} />
+                                                                    <YAxis stroke="#d4d4d8" fontSize={10} tickLine={false} axisLine={false} allowDecimals={false} />
+                                                                    <Tooltip content={<CustomTooltip />} />
+                                                                    <Line type="monotone" dataKey="count" name="Video" stroke="#ea580c" strokeWidth={3} dot={{ fill: '#ea580c', r: 4 }} activeDot={{ r: 6 }} />
+                                                                </LineChart>
+                                                            </ResponsiveContainer>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex flex-col items-center justify-center h-[260px] text-muted-foreground/30">
+                                                            <MonitorPlay size={32} className="mb-2 opacity-20" />
+                                                            <p className="text-xs">Veri yok</p>
+                                                        </div>
+                                                    )}
+                                                </CardContent>
+                                            </Card>
+                                        </div>
+                                    </TabsContent>
                                 </div>
-                                {videoChartData.length > 0 ? (
-                                    <div className="w-full h-[260px]">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <LineChart data={videoChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff08" vertical={false} />
-                                                <XAxis dataKey="displayDate" stroke="#ffffff30" fontSize={10} tickLine={false} axisLine={false} tickMargin={10} />
-                                                <YAxis stroke="#ffffff30" fontSize={10} tickLine={false} axisLine={false} allowDecimals={false} />
-                                                <Tooltip content={<CustomTooltip />} />
-                                                <Line type="monotone" dataKey="count" name="Video" stroke="#ea580c" strokeWidth={3} dot={{ fill: '#ea580c', r: 4 }} activeDot={{ r: 6 }} />
-                                            </LineChart>
-                                        </ResponsiveContainer>
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-col items-center justify-center h-[260px] text-custom-title/30">
-                                        <MonitorPlay size={32} className="mb-2 opacity-20" />
-                                        <p className="text-xs">Veri yok</p>
-                                    </div>
-                                )}
-                            </div>
+                            </ScrollArea>
                         </div>
-                    )}
-                </div>
-            </Motion.div>
+                    </Tabs>
+                </DialogContent>
+            </Dialog>
 
             {/* Sub-Modal for Detailed Chart */}
             <AnimatePresence>
@@ -481,115 +511,105 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                         breakSessions={breakSessions}
                         onClose={() => setSelectedGroup(null)}
                         onDelete={onDelete}
+                        onUpdate={onUpdate}
                     />
                 )}
             </AnimatePresence>
 
             {/* Full History Graph Modal */}
-            <AnimatePresence>
-                {showFullHistory && (
-                    <div
-                        className="fixed inset-0 z-[60] flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-in fade-in zoom-in duration-200"
-                        onClick={() => setShowFullHistory(null)}
-                    >
-                        <Motion.div
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-custom-bg border border-custom-category rounded-2xl shadow-2xl w-full max-w-5xl aspect-[16/10] sm:aspect-auto sm:h-[75vh] overflow-hidden flex flex-col cursor-default"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <div className="p-6 border-b border-custom-category bg-custom-header flex justify-between items-center">
-                                <div>
-                                    <h3 className="text-lg font-bold text-custom-text">
-                                        {showFullHistory === 'duration' ? 'Çalışma Süresi' : 'İzlenen Video'}
-                                    </h3>
-                                    <p className="text-[11px] text-custom-title/40">
-                                        {showFullHistory === 'duration' ? 'Günlük saat bazlı performans' : 'Günlük tamamlanan video sayıları'}
-                                    </p>
-                                </div>
-                                <button onClick={() => setShowFullHistory(null)} className="p-2 hover:bg-custom-bg rounded-xl text-custom-title/40 hover:text-custom-text transition-colors">
-                                    <X size={20} />
-                                </button>
-                            </div>
-
-                            <div className="flex-1 p-4 sm:p-6">
-                                <div className="w-full h-full min-h-[300px]">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <LineChart data={fullChartData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff08" vertical={false} />
-                                            <XAxis
-                                                dataKey="displayDate"
-                                                stroke="#ffffff30"
-                                                fontSize={11}
-                                                tickLine={false}
-                                                axisLine={false}
-                                                tickMargin={15}
-                                                interval={fullChartData.length > 20 ? 'preserveStartEnd' : 0}
-                                            />
-                                            <YAxis
-                                                stroke="#ffffff30"
-                                                fontSize={11}
-                                                tickLine={false}
-                                                axisLine={false}
-                                                tickFormatter={(v) => showFullHistory === 'duration' ? `${v}s` : v}
-                                                allowDecimals={showFullHistory === 'duration'}
-                                            />
-                                            <Tooltip content={<CustomTooltip />} />
-                                            <Line
-                                                type="monotone"
-                                                dataKey={showFullHistory === 'duration' ? 'hours' : 'count'}
-                                                name={showFullHistory === 'duration' ? 'Süre' : 'Video'}
-                                                stroke={showFullHistory === 'duration' ? '#a78bfa' : '#fb923c'}
-                                                strokeWidth={4}
-                                                dot={fullChartData.length < 50 ? { fill: showFullHistory === 'duration' ? '#a78bfa' : '#fb923c', r: 4 } : false}
-                                                activeDot={{ r: 8, strokeWidth: 0 }}
-                                            />
-                                        </LineChart>
-                                    </ResponsiveContainer>
-                                </div>
-                            </div>
-
-                            <div className="p-4 border-t border-custom-category bg-custom-header/50 flex justify-center gap-12">
-                                <div className="text-center">
-                                    <p className="text-[10px] text-custom-title/40 uppercase font-bold tracking-widest mb-1 font-sans">Toplam Gün</p>
-                                    <p className="text-xl font-mono font-bold text-custom-text">{fullChartData.length}</p>
-                                </div>
-                                <div className="text-center">
-                                    <p className="text-[10px] text-custom-title/40 uppercase font-bold tracking-widest mb-1 font-sans">
-                                        {showFullHistory === 'duration' ? 'Toplam Süre' : 'Toplam Video'}
-                                    </p>
-                                    <p className="text-xl font-mono font-bold text-custom-accent">
-                                        {showFullHistory === 'duration'
-                                            ? (() => {
-                                                const totalHours = fullChartData.reduce((acc, curr) => acc + curr.hours, 0);
-                                                const h = Math.floor(totalHours);
-                                                const m = Math.round((totalHours - h) * 60);
-                                                return h > 0 ? `${h}sa ${m}dk` : `${m}dk`;
-                                            })()
-                                            : `${fullChartData.reduce((acc, curr) => acc + curr.count, 0)} video`}
-                                    </p>
-                                </div>
-                                <div className="text-center">
-                                    <p className="text-[10px] text-custom-title/40 uppercase font-bold tracking-widest mb-1 font-sans">
-                                        {showFullHistory === 'duration' ? 'En Fazla Çalışma' : 'En Fazla Video'}
-                                    </p>
-                                    <p className="text-xl font-mono font-bold text-custom-text">
-                                        {showFullHistory === 'duration'
-                                            ? (() => {
-                                                const peak = Math.max(...fullChartData.map(d => d.hours), 0);
-                                                const h = Math.floor(peak);
-                                                const m = Math.round((peak - h) * 60);
-                                                return h > 0 ? `${h}sa ${m}dk` : `${m}dk`;
-                                            })()
-                                            : `${Math.max(...fullChartData.map(d => d.count), 0)} video`}
-                                    </p>
-                                </div>
-                            </div>
-                        </Motion.div>
+            <Dialog open={!!showFullHistory} onOpenChange={(open) => !open && setShowFullHistory(null)}>
+                <DialogContent className="max-w-5xl max-h-[85vh] h-[85vh] p-0 overflow-hidden flex flex-col bg-background border-border shadow-2xl">
+                    <div className="p-6 border-b border-border bg-card/50 flex justify-between items-center">
+                        <div>
+                            <DialogTitle className="text-lg font-bold text-foreground">
+                                {showFullHistory === 'duration' ? 'Çalışma Süresi' : 'İzlenen Video'}
+                            </DialogTitle>
+                            <DialogDescription className="text-[11px] text-muted-foreground">
+                                {showFullHistory === 'duration' ? 'Günlük saat bazlı performans' : 'Günlük tamamlanan video sayıları'}
+                            </DialogDescription>
+                        </div>
+                        <DialogClose asChild>
+                            <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted text-muted-foreground hover:text-white">
+                                <X size={20} />
+                            </Button>
+                        </DialogClose>
                     </div>
-                )}
-            </AnimatePresence>
+
+                    <div className="flex-1 p-4 sm:p-6 overflow-hidden">
+                        <div className="w-full h-full min-h-[300px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={fullChartData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                                    <XAxis
+                                        dataKey="displayDate"
+                                        stroke="#d4d4d8"
+                                        fontSize={11}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        tickMargin={15}
+                                        interval={fullChartData.length > 20 ? 'preserveStartEnd' : 0}
+                                    />
+                                    <YAxis
+                                        stroke="#d4d4d8"
+                                        fontSize={11}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        tickFormatter={(v) => showFullHistory === 'duration' ? `${v}s` : v}
+                                        allowDecimals={showFullHistory === 'duration'}
+                                    />
+                                    <Tooltip content={<CustomTooltip />} />
+                                    <Line
+                                        type="monotone"
+                                        dataKey={showFullHistory === 'duration' ? 'hours' : 'count'}
+                                        name={showFullHistory === 'duration' ? 'Süre' : 'Video'}
+                                        stroke={showFullHistory === 'duration' ? '#a78bfa' : '#fb923c'}
+                                        strokeWidth={4}
+                                        dot={fullChartData.length < 50 ? { fill: showFullHistory === 'duration' ? '#a78bfa' : '#fb923c', r: 4 } : false}
+                                        activeDot={{ r: 8, strokeWidth: 0 }}
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+
+                    <div className="p-4 border-t border-border bg-card/30 flex justify-center gap-12">
+                        <div className="text-center">
+                            <p className="text-[10px] text-zinc-300 uppercase font-bold tracking-widest mb-1">Toplam Gün</p>
+                            <p className="text-xl font-mono font-bold text-foreground">{fullChartData.length}</p>
+                        </div>
+                        <div className="text-center">
+                            <p className="text-[10px] text-zinc-300 uppercase font-bold tracking-widest mb-1">
+                                {showFullHistory === 'duration' ? 'Toplam Süre' : 'Toplam Video'}
+                            </p>
+                            <p className="text-xl font-mono font-bold text-primary">
+                                {showFullHistory === 'duration'
+                                    ? (() => {
+                                        const totalHours = fullChartData.reduce((acc, curr) => acc + curr.hours, 0);
+                                        const h = Math.floor(totalHours);
+                                        const m = Math.round((totalHours - h) * 60);
+                                        return h > 0 ? `${h}sa ${m}dk` : `${m}dk`;
+                                    })()
+                                    : `${fullChartData.reduce((acc, curr) => acc + curr.count, 0)} video`}
+                            </p>
+                        </div>
+                        <div className="text-center">
+                            <p className="text-[10px] text-zinc-300 uppercase font-bold tracking-widest mb-1">
+                                {showFullHistory === 'duration' ? 'En Fazla Çalışma' : 'En Fazla Video'}
+                            </p>
+                            <p className="text-xl font-mono font-bold text-foreground">
+                                {showFullHistory === 'duration'
+                                    ? (() => {
+                                        const peak = Math.max(...fullChartData.map(d => d.hours), 0);
+                                        const h = Math.floor(peak);
+                                        const m = Math.round((peak - h) * 60);
+                                        return h > 0 ? `${h}sa ${m}dk` : `${m}dk`;
+                                    })()
+                                    : `${Math.max(...fullChartData.map(d => d.count), 0)} video`}
+                            </p>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
 
             <ConfirmModal
                 isOpen={!!confirmDelete}
@@ -605,12 +625,19 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                 }}
                 onCancel={() => setConfirmDelete(null)}
             />
-        </div>
+        </>
     );
 }
 
-function SessionChartModal({ group, courseName, workSessions, breakSessions, onClose, onDelete }) {
+function SessionChartModal({ group, courseName, workSessions, breakSessions, onClose, onDelete, onUpdate }) {
     const [confirmDelete, setConfirmDelete] = useState(null); // { sessionId } or null
+    const [selectedItem, setSelectedItem] = useState(null); // Timeline item
+    const [editingSession, setEditingSession] = useState(null); // { sessionId, type, startTime, endTime, originalSession }
+
+    // ... helper functions ... (Assuming they are not changed, but I have to include them if I replace the whole block or just the return)
+    // Actually, I can just replace the return statement if I target it correctly.
+    // The previous view showed helper functions. I will stick to replacing the return statement which starts at line 814.
+
     const isSameDay = (d1, d2) => {
         const date1 = new Date(d1);
         const date2 = new Date(d2);
@@ -619,7 +646,48 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
             date1.getDate() === date2.getDate();
     };
 
-    const { timelineItems, startHour, endHour, isToday, dayStats } = useMemo(() => {
+    const formatTimeForInput = (date) => {
+        if (!date) return "";
+        return date.getHours().toString().padStart(2, '0') + ":" + date.getMinutes().toString().padStart(2, '0');
+    };
+
+    const handleSaveEdit = (newStartTimeStr, newEndTimeStr) => {
+        if (!editingSession) return;
+
+        const date = new Date(group.date);
+        const [sH, sM] = newStartTimeStr.split(':').map(Number);
+        const [eH, eM] = newEndTimeStr.split(':').map(Number);
+
+        const newStart = new Date(date);
+        newStart.setHours(sH, sM, 0, 0);
+
+        const newEnd = new Date(date);
+        newEnd.setHours(eH, eM, 0, 0);
+
+        if (newEnd <= newStart) {
+            alert("Bitiş saati başlangıç saatinden büyük olmalıdır.");
+            return;
+        }
+
+        const { originalSession, type, pauseIndex } = editingSession;
+        let updatedSession = { ...originalSession };
+
+        if (type === 'work' || type === 'break') {
+            updatedSession.timestamp = newStart.getTime();
+            const totalPauseMs = (updatedSession.pauses || []).reduce((acc, p) => acc + (p.end - p.start), 0);
+            updatedSession.duration = Math.max(0, (newEnd.getTime() - newStart.getTime() - totalPauseMs) / 1000);
+        } else if (type === 'pause-interval' && pauseIndex !== undefined) {
+            const newPauses = [...(updatedSession.pauses || [])];
+            newPauses[pauseIndex] = { start: newStart.getTime(), end: newEnd.getTime() };
+            updatedSession.pauses = newPauses;
+        }
+
+        onUpdate(originalSession.timestamp, updatedSession);
+        setEditingSession(null);
+        setSelectedItem(null);
+    };
+
+    const { timelineItems, startHour, endHour, dayStats } = useMemo(() => {
         const targetDate = new Date(group.date);
         const dayWork = workSessions.filter(s => isSameDay(s.timestamp, targetDate) && s.courseId === group.courseId);
         const dayBreaks = breakSessions.filter(s => isSameDay(s.timestamp, targetDate));
@@ -635,7 +703,7 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
             let segmentIndex = 1;
             const hasPauses = pauses.length > 0;
 
-            pauses.forEach(p => {
+            pauses.forEach((p, pIdx) => {
                 // Add work period before the pause
                 if (p.start > currentStart) {
                     finalItems.push({
@@ -644,6 +712,7 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                         type: 'work',
                         duration: (p.start - currentStart) / 1000,
                         sessionId: s.timestamp,
+                        originalSession: s,
                         segmentLabel: hasPauses ? (segmentIndex === 1 ? 'Başlangıç' : 'Devam') : null
                     });
                     segmentIndex++;
@@ -653,7 +722,10 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                     start: new Date(p.start),
                     end: new Date(p.end),
                     type: 'pause-interval',
-                    duration: (p.end - p.start) / 1000
+                    duration: (p.end - p.start) / 1000,
+                    sessionId: s.timestamp,
+                    pauseIndex: pIdx,
+                    originalSession: s
                 });
                 currentStart = p.end;
             });
@@ -666,6 +738,7 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                     type: 'work',
                     duration: (sessionEndMs - currentStart) / 1000,
                     sessionId: s.timestamp,
+                    originalSession: s,
                     segmentLabel: hasPauses ? (segmentIndex === 1 ? 'Başlangıç' : 'Devam') : null
                 });
             }
@@ -674,7 +747,7 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
         dayBreaks.forEach(s => {
             const start = new Date(s.timestamp);
             const end = new Date(s.timestamp + (s.duration * 1000));
-            finalItems.push({ start, end, type: 'break', duration: s.duration, sessionId: s.timestamp });
+            finalItems.push({ start, end, type: 'break', duration: s.duration, sessionId: s.timestamp, originalSession: s });
         });
 
         finalItems.sort((a, b) => a.start - b.start);
@@ -685,9 +758,9 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
             const currentItem = finalItems[i];
             const nextItem = finalItems[i + 1];
 
-            // Eğer iki öğe arasında boşluk varsa (1 saniyeden fazla)
+            // Eğer iki öğe arasında boşluk varsa (en az 1 dakika)
             const gapMs = nextItem.start.getTime() - currentItem.end.getTime();
-            if (gapMs > 1000) {
+            if (gapMs >= 60000) {
                 gapItems.push({
                     start: new Date(currentItem.end),
                     end: new Date(nextItem.start),
@@ -747,46 +820,42 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
         };
     }, [group, workSessions, breakSessions]);
 
-
-
     return (
-        <div
-            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-[2px] p-4 animate-in fade-in duration-200"
-            onClick={(e) => {
-                e.stopPropagation();
+        <Dialog open={true} onOpenChange={(open) => {
+            if (!open && !confirmDelete && !editingSession) {
                 onClose();
-            }}
-        >
-            <Motion.div
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-custom-header border border-custom-category rounded-xl shadow-2xl w-full max-w-5xl overflow-hidden flex flex-col max-h-[90vh] cursor-default"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div className="p-3 border-b border-custom-category bg-custom-bg/90 flex justify-between items-center shrink-0 relative z-20 backdrop-blur-md">
+            }
+        }}>
+            <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden flex flex-col bg-background border-border p-0 gap-0 shadow-2xl">
+                <div className="p-3 border-b border-border bg-card/90 flex justify-between items-start shrink-0 relative z-20 backdrop-blur-md">
                     <div>
-                        <h3 className="font-bold text-custom-text text-lg">Günlük Zaman Çizelgesi</h3>
-                        <p className="text-xs text-custom-title/50 font-medium">{new Date(group.date).toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                        <DialogTitle className="font-bold text-foreground text-lg">Günlük Zaman Çizelgesi</DialogTitle>
+                        <DialogDescription className="sr-only">
+                            Seçilen gün için detaylı çalışma çizelgesi ve aktiviteler.
+                        </DialogDescription>
+                        <h3 className="sr-only">Günlük Zaman Çizelgesi</h3>
+                        <p className="text-xs text-muted-foreground/50 font-medium">{new Date(group.date).toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
                     </div>
-                    <button onClick={onClose} className="p-1.5 hover:bg-custom-bg rounded-lg text-custom-title/40 hover:text-custom-text transition-colors">
-                        <X size={16} />
-                    </button>
+                    <DialogClose asChild>
+                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted text-muted-foreground hover:text-white">
+                            <X size={24} />
+                        </Button>
+                    </DialogClose>
                 </div>
 
                 {/* Günlük Özet */}
-                <div className="px-6 py-3 bg-custom-bg/50 border-b border-custom-category/10 flex items-center justify-start gap-8 shrink-0 relative z-20">
+                <div className="px-6 py-3 bg-background/50 border-b border-white/5 flex items-center justify-start gap-8 shrink-0 relative z-20">
                     <div className="flex flex-col">
-                        <span className="text-[9px] text-custom-title/40 uppercase font-bold tracking-wider">Toplam Çalışma</span>
-                        <span className="text-sm font-mono font-bold text-custom-text">{dayStats.work} dk</span>
+                        <span className="text-[9px] text-zinc-500 uppercase font-semibold tracking-wider">Toplam Çalışma</span>
+                        <span className="text-sm font-mono font-bold text-zinc-300">{dayStats.work} dk</span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[9px] text-custom-title/40 uppercase font-bold tracking-wider">Toplam Mola</span>
-                        <span className="text-sm font-mono font-bold text-custom-text">{dayStats.break} dk</span>
+                        <span className="text-[9px] text-zinc-500 uppercase font-semibold tracking-wider">Toplam Mola</span>
+                        <span className="text-sm font-mono font-bold text-zinc-300">{dayStats.break} dk</span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[9px] text-custom-title/40 uppercase font-bold tracking-wider">Duraklatma</span>
-                        <span className="text-sm font-mono font-bold text-custom-accent">{dayStats.pause} dk</span>
+                        <span className="text-[9px] text-zinc-500 uppercase font-semibold tracking-wider">Duraklatma</span>
+                        <span className="text-sm font-mono font-bold text-primary">{dayStats.pause} dk</span>
                     </div>
                 </div>
 
@@ -805,7 +874,7 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                             className={`absolute top-0 bottom-0 border-l ${minute === 30 ? 'border-white/5' : 'border-white/10'} flex flex-col justify-end pb-0`}
                                             style={{ left: `${leftPercent}%` }}
                                         >
-                                            <span className="absolute top-4 -translate-x-1/2 text-[10px] text-custom-title/30 font-mono font-bold whitespace-nowrap">
+                                            <span className="absolute top-4 -translate-x-1/2 text-[10px] text-zinc-700 font-mono font-bold whitespace-nowrap">
                                                 {hour.toString().padStart(2, '0')}:{minute.toString().padStart(2, '0')}
                                             </span>
                                         </div>
@@ -842,25 +911,23 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                         shadowClass = 'shadow-none';
                                         label = 'Mola';
                                     } else if (isPause) {
-                                        bgClass = 'bg-custom-title/10';
-                                        borderClass = 'border-custom-title/20';
+                                        bgClass = 'bg-muted/50';
+                                        borderClass = 'border-muted-foreground/30';
                                         label = 'Duraklatma';
                                     }
 
                                     return (
                                         <div
                                             key={index}
-                                            className={`absolute h-12 rounded-lg border-2 ${bgClass} ${borderClass} shadow-lg ${shadowClass} transition-[transform,z-index] duration-150 hover:scale-[1.02] hover:z-30 cursor-pointer group/block flex items-center justify-center will-change-transform`}
+                                            className={`absolute h-12 rounded-lg border-2 ${bgClass} ${borderClass} shadow-lg ${shadowClass} transition-all duration-75 hover:scale-[1.01] hover:z-30 cursor-pointer group/block flex items-center justify-center will-change-transform ${selectedItem === index ? 'z-50 border-white/50 ring-2 ring-white/10' : ''}`}
                                             style={{
                                                 left: `${startPercent}%`,
                                                 width: `calc(${Math.max(durationPercent, 0.5)}% - 2px)`,
                                                 top: '84px'
                                             }}
-                                            onClick={async (e) => {
-                                                if (isWork || isBreak) {
-                                                    e.stopPropagation();
-                                                    setConfirmDelete({ sessionId: item.sessionId });
-                                                }
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setSelectedItem(selectedItem === index ? null : index);
                                             }}
                                         >
                                             {durationPercent > 3 && (
@@ -871,20 +938,53 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                                 </div>
                                             )}
 
-                                            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-custom-header border border-custom-category text-xs p-3 rounded-lg shadow-xl whitespace-nowrap z-50 opacity-0 group-hover/block:opacity-100 transition-opacity duration-75 pointer-events-none min-w-[140px] will-change-opacity">
-                                                <div className="font-bold mb-1 text-center text-custom-text border-b border-white/10 pb-2">
-                                                    {item.start.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })} - {item.end.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                                            <div
+                                                className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-card border border-secondary text-xs p-3 rounded-xl shadow-2xl whitespace-nowrap z-50 transition-all duration-100 min-w-[180px] ${selectedItem === index ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1 pointer-events-none'
+                                                    }`}
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                <div className="font-bold mb-2 text-center text-foreground border-b border-white/10 pb-2 flex items-center justify-between gap-4">
+                                                    <span>
+                                                        {item.start.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })} - {item.end.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                                                    </span>
+                                                    <div className="flex items-center gap-1.5">
+                                                        {item.originalSession && (
+                                                            <button
+                                                                onClick={() => setEditingSession({
+                                                                    sessionId: item.sessionId,
+                                                                    type: item.type,
+                                                                    startTime: formatTimeForInput(item.start),
+                                                                    endTime: formatTimeForInput(item.end),
+                                                                    originalSession: item.originalSession,
+                                                                    pauseIndex: item.pauseIndex
+                                                                })}
+                                                                className="p-1.5 hover:bg-primary/20 rounded-md text-primary transition-colors"
+                                                                title="Düzenle"
+                                                            >
+                                                                <Edit2 size={14} />
+                                                            </button>
+                                                        )}
+                                                        {item.sessionId && (
+                                                            <button
+                                                                onClick={() => setConfirmDelete({ sessionId: item.sessionId })}
+                                                                className="p-1.5 hover:bg-destructive/20 rounded-md text-destructive transition-colors"
+                                                                title="Sil"
+                                                            >
+                                                                <Trash2 size={14} />
+                                                            </button>
+                                                        )}
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center justify-center gap-2 mt-2">
-                                                    <div className={`w-2 h-2 rounded-full ${isWork ? 'bg-indigo-400' : (isBreak ? 'bg-emerald-400' : 'bg-custom-title/20')}`}></div>
-                                                    <span className={`${isWork ? 'text-indigo-400' : (isBreak ? 'text-emerald-400' : 'text-custom-title')} font-bold`}>
+                                                <div className="flex items-center justify-center gap-2 mt-1">
+                                                    <div className={`w-2 h-2 rounded-full ${isWork ? 'bg-indigo-400' : (isBreak ? 'bg-emerald-400' : 'bg-muted-foreground/30')}`}></div>
+                                                    <span className={`${isWork ? 'text-indigo-400' : (isBreak ? 'text-emerald-400' : 'text-muted-foreground')} font-bold`}>
                                                         {label}
                                                     </span>
                                                 </div>
-                                                <div className="text-center text-custom-title/60 mt-1">
+                                                <div className="text-center text-muted-foreground mt-1 font-medium">
                                                     {Math.round(item.duration / 60)} dakika
                                                 </div>
-                                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-custom-header"></div>
+                                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-card"></div>
                                             </div>
                                         </div>
                                     );
@@ -894,7 +994,7 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                     </div>
                 </div>
 
-                <div className="p-4 border-t border-custom-category bg-custom-bg/60 flex justify-center flex-wrap gap-x-8 gap-y-3 text-[11px] font-bold text-custom-text shrink-0 backdrop-blur-sm">
+                <div className="p-4 border-t border-secondary bg-background/60 flex justify-center flex-wrap gap-x-8 gap-y-3 text-[11px] font-bold text-foreground shrink-0 backdrop-blur-sm">
                     <div className="flex items-center gap-2.5">
                         <div className="w-5 h-5 rounded-md bg-indigo-500/40 border border-indigo-500/50 shadow-[0_0_10px_rgba(99,102,241,0.2)]"></div>
                         <span className="opacity-80">Çalışma Oturumu</span>
@@ -904,11 +1004,11 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                         <span className="opacity-80">Mola</span>
                     </div>
                     <div className="flex items-center gap-2.5">
-                        <div className="w-5 h-5 rounded-md bg-custom-title/20 border border-custom-title/30 shadow-sm"></div>
+                        <div className="w-5 h-5 rounded-md bg-muted/50 border border-muted-foreground/30 shadow-sm"></div>
                         <span className="opacity-80">Duraklatma</span>
                     </div>
                 </div>
-            </Motion.div >
+            </DialogContent>
 
             <ConfirmModal
                 isOpen={!!confirmDelete}
@@ -922,9 +1022,61 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                         onClose();
                     }
                     setConfirmDelete(null);
+                    setSelectedItem(null);
                 }}
                 onCancel={() => setConfirmDelete(null)}
             />
-        </div >
+
+            {/* Edit Modal */}
+            <Dialog open={!!editingSession} onOpenChange={(open) => !open && setEditingSession(null)}>
+                <DialogContent className="max-w-sm p-6 bg-card border-secondary shadow-2xl">
+                    <DialogHeader>
+                        <DialogTitle className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                            <Edit2 size={20} className="text-primary" />
+                            Süreyi Düzenle
+                        </DialogTitle>
+                        <DialogDescription className="sr-only">
+                            Çalışma veya mola süresini düzenleyin.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Başlangıç Saati</label>
+                            <input
+                                type="time"
+                                value={editingSession?.startTime || ""}
+                                onChange={(e) => setEditingSession({ ...editingSession, startTime: e.target.value })}
+                                className="w-full bg-background border border-secondary rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all font-mono"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Bitiş Saati</label>
+                            <input
+                                type="time"
+                                value={editingSession?.endTime || ""}
+                                onChange={(e) => setEditingSession({ ...editingSession, endTime: e.target.value })}
+                                className="w-full bg-background border border-secondary rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all font-mono"
+                            />
+                        </div>
+                        <div className="flex gap-3 pt-2">
+                            <Button
+                                variant="outline"
+                                onClick={() => setEditingSession(null)}
+                                className="flex-1 px-4 py-2.5 rounded-xl border-secondary text-muted-foreground font-bold hover:bg-background transition-colors"
+                            >
+                                İptal
+                            </Button>
+                            <Button
+                                onClick={() => handleSaveEdit(editingSession.startTime, editingSession.endTime)}
+                                className="flex-1 px-4 py-2.5 rounded-xl bg-primary text-white font-bold hover:bg-primary/80 transition-colors flex items-center justify-center gap-2"
+                            >
+                                <Save size={18} />
+                                Kaydet
+                            </Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        </Dialog >
     );
 }

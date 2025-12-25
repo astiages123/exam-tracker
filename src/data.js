@@ -1,6 +1,6 @@
 export const courseData = [
     {
-        category: "1. İKTİSAT (Toplam: 144 Saat)",
+        category: "1. EKONOMİ (Toplam: 144 Saat)",
         courses: [
             {
                 id: "ekonomi_1",
@@ -1134,7 +1134,7 @@ export const courseData = [
 ];
 
 export const RANKS = [
-    { title: "Stajyer", min: 0, color: "text-gray-400", icon: "User" },
+    { title: "Stajyer", min: 0, color: "text-zinc-300", icon: "User" },
     { title: "Gişe Asistanı", min: 10, color: "text-emerald-400", icon: "CreditCard" },
     { title: "Müfettiş Yardımcısı", min: 25, color: "text-blue-400", icon: "Search" },
     { title: "Kıdemli Müfettiş Yardımcısı", min: 50, color: "text-violet-400", icon: "Shield" },

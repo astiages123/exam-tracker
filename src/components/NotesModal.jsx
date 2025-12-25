@@ -1,21 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink, FileQuestion, Loader2, HelpCircle } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import QuizModal from './QuizModal';
 
 export default function NotesModal({ courseName, notePath, onClose, courseId }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [showQuiz, setShowQuiz] = useState(false);
-
-    // Close on Escape key
-    useEffect(() => {
-        const handleEsc = (e) => {
-            if (e.key === 'Escape') onClose();
-        };
-        window.addEventListener('keydown', handleEsc);
-        return () => window.removeEventListener('keydown', handleEsc);
-    }, [onClose]);
 
     // Check if the note exists and is not the SPA fallback
     useEffect(() => {
@@ -50,83 +42,77 @@ export default function NotesModal({ courseName, notePath, onClose, courseId }) 
     }, [notePath]);
 
     return (
-        <AnimatePresence>
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-                {/* Backdrop */}
-                <Motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onClick={onClose}
-                    className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-                />
-
-                {/* Modal Container */}
-                <Motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    className="relative w-full max-w-7xl h-[85vh] bg-custom-bg rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-custom-category/20"
-                >
-                    {/* Header */}
-                    <div className="flex items-center justify-between px-6 py-4 border-b border-custom-category/20 bg-custom-header">
-                        <h2 className="text-xl font-bold text-custom-title truncate pr-4">
-                            {courseName} - Ders Notları
-                        </h2>
+        <>
+            <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+                <DialogContent className="max-w-7xl h-[85vh] flex flex-col p-0 gap-0 border-border bg-card overflow-hidden">
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-card/50">
+                        <DialogHeader>
+                            <DialogTitle className="text-xl font-bold text-foreground truncate max-w-[500px]">
+                                {courseName} - Ders Notları
+                            </DialogTitle>
+                            <DialogDescription className="sr-only">
+                                Ders notlarını görüntüleyin ve çalışma materyallerinize erişin.
+                            </DialogDescription>
+                        </DialogHeader>
                         <div className="flex items-center gap-2">
-                            <button
+                            <Button
+                                variant="ghost"
+                                size="default"
                                 onClick={() => setShowQuiz(true)}
-                                className="p-2 text-custom-title/70 hover:text-purple-400 hover:bg-purple-400/10 rounded-lg transition-colors flex items-center gap-2"
-                                title="Soru Çöz"
+                                className="text-muted-foreground font-bold hover:text-purple-400 hover:bg-purple-400/10 gap-2 h-11 px-4"
                             >
-                                <HelpCircle size={20} />
-                                <span className="text-sm font-semibold hidden sm:inline">Soru Çöz</span>
-                            </button>
-                            <div className="w-px h-6 bg-custom-category/30 mx-1" />
-                            <a
-                                href={notePath}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="p-2 text-custom-title/70 hover:text-custom-accent hover:bg-custom-accent/10 rounded-lg transition-colors"
-                                title="Yeni sekmede aç"
+                                <HelpCircle size={24} />
+                                <span className="hidden sm:inline">Soru Çöz</span>
+                            </Button>
+                            <div className="w-px h-6 bg-border mx-1" />
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                asChild
+                                className="text-muted-foreground hover:text-primary hover:bg-primary/10 h-11 w-11"
                             >
-                                <ExternalLink size={20} />
-                            </a>
-                            <button
-                                onClick={onClose}
-                                className="p-2 text-custom-title/70 hover:text-custom-error hover:bg-custom-error/10 rounded-lg transition-colors"
-                                title="Kapat"
-                            >
-                                <X size={20} />
-                            </button>
+                                <a
+                                    href={notePath}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    title="Yeni sekmede aç"
+                                >
+                                    <ExternalLink size={24} />
+                                </a>
+                            </Button>
+                            <div className="w-px h-6 bg-border mx-1" />
+                            <DialogClose asChild>
+                                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted text-muted-foreground hover:text-white">
+                                    <X size={24} />
+                                </Button>
+                            </DialogClose>
                         </div>
                     </div>
 
-                    {/* Content */}
-                    <div className="flex-1 bg-custom-bg/50 relative flex items-center justify-center">
+                    <div className="flex-1 bg-muted/20 relative flex items-center justify-center overflow-hidden">
                         {loading ? (
-                            <div className="flex flex-col items-center gap-4 text-custom-accent">
+                            <div className="flex flex-col items-center gap-4 text-primary">
                                 <Loader2 className="animate-spin" size={48} />
-                                <p className="text-lg font-medium text-custom-title">Notlar yükleniyor...</p>
+                                <p className="text-lg font-medium text-foreground">Notlar yükleniyor...</p>
                             </div>
                         ) : error ? (
                             <div className="flex flex-col items-center gap-6 text-center px-6">
-                                <div className="w-20 h-20 bg-custom-error/10 text-custom-error rounded-full flex items-center justify-center shadow-inner">
+                                <div className="w-20 h-20 bg-destructive/10 text-destructive rounded-full flex items-center justify-center shadow-inner">
                                     <FileQuestion size={40} />
                                 </div>
                                 <div className="space-y-2">
-                                    <h3 className="text-2xl font-bold text-custom-title">Not Henüz Eklenmedi</h3>
-                                    <p className="text-custom-title/60 max-w-md">
+                                    <h3 className="text-2xl font-bold text-foreground">Not Henüz Eklenmedi</h3>
+                                    <p className="text-muted-foreground max-w-md">
                                         Bu ders için hazırlanan notlar henüz sisteme yüklenmemiş veya güncelleniyor olabilir.
                                         Lütfen daha sonra tekrar kontrol edin.
                                     </p>
                                 </div>
-                                <button
+                                <Button
                                     onClick={onClose}
-                                    className="px-8 py-3 bg-custom-category text-white font-semibold rounded-xl hover:bg-custom-category/80 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-black/20"
+                                    className="px-8"
                                 >
                                     Geri Dön
-                                </button>
+                                </Button>
                             </div>
                         ) : (
                             <iframe
@@ -137,17 +123,16 @@ export default function NotesModal({ courseName, notePath, onClose, courseId }) 
                             />
                         )}
                     </div>
-                </Motion.div>
+                </DialogContent>
+            </Dialog>
 
-                {/* Quiz Modal Integration */}
-                <QuizModal
-                    isOpen={showQuiz}
-                    onClose={() => setShowQuiz(false)}
-                    courseId={courseId}
-                    courseName={courseName}
-                    notePath={notePath}
-                />
-            </div>
-        </AnimatePresence>
+            <QuizModal
+                isOpen={showQuiz}
+                onClose={() => setShowQuiz(false)}
+                courseId={courseId}
+                courseName={courseName}
+                notePath={notePath}
+            />
+        </>
     );
 }

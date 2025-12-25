@@ -1,36 +1,40 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, Suspense, lazy } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Goal, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay, BadgeCheck, FileText, HelpCircle, User, CreditCard, Search, Shield, Award, Crown, Star } from 'lucide-react';
-import ScheduleModal from './components/ScheduleModal';
-
-
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-// --- Utility ---
-function cn(...inputs) {
-  return twMerge(clsx(inputs));
-}
-
-
+import { ChevronDown, Goal, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay, BadgeCheck, FileText, HelpCircle, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { CATEGORY_STYLES, CATEGORY_ICONS, RANK_ICONS } from '@/constants/styles';
 
 // --- Data ---
 import { courseData, RANKS } from './data';
 import { useAuth } from './context/AuthContext';
-import { useNotification } from './context/NotificationContext'; // [NEW] Import notification hook
+import { useNotification } from './context/NotificationContext';
 import { supabase } from './lib/supabaseClient';
 import Login from './components/Login';
-import PomodoroTimer from './components/PomodoroTimer';
-import ReportModal from './components/ReportModal';
-import RankModal from './components/RankModal';
-import NotesModal from './components/NotesModal';
 import StreakDisplay from './components/StreakDisplay';
 import { calculateStreak } from './utils/streakUtils';
-import CelebrationOverlay from './components/CelebrationOverlay';
-import QuizModal from './components/QuizModal';
 
+// --- Lazy-loaded Components (Code-splitting) ---
+const ScheduleModal = lazy(() => import('./components/ScheduleModal'));
+const PomodoroTimer = lazy(() => import('./components/PomodoroTimer'));
+const ReportModal = lazy(() => import('./components/ReportModal'));
+const RankModal = lazy(() => import('./components/RankModal'));
+const NotesModal = lazy(() => import('./components/NotesModal'));
+const CelebrationOverlay = lazy(() => import('./components/CelebrationOverlay'));
+const QuizModal = lazy(() => import('./components/QuizModal'));
 
-// --- Components ---
+// --- UI Components ---
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+
+// --- Loading Fallback ---
+const ModalLoader = () => (
+  <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="flex flex-col items-center gap-3 text-muted-foreground">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <span className="text-sm font-medium">Yükleniyor...</span>
+    </div>
+  </div>
+);
 
 const ProgressBar = ({ progress, nextLevelMin, currentLevelMin }) => {
   const range = nextLevelMin - currentLevelMin;
@@ -38,9 +42,9 @@ const ProgressBar = ({ progress, nextLevelMin, currentLevelMin }) => {
   const percentage = Math.min(100, Math.max(0, (currentVal / (range || 1)) * 100));
 
   return (
-    <div className="w-full bg-custom-header rounded-full h-3 mt-4 overflow-hidden">
+    <div className="w-full bg-card rounded-full h-3 mt-4 overflow-hidden">
       <Motion.div
-        className="h-full bg-custom-accent rounded-full relative"
+        className="h-full bg-primary rounded-full relative"
         initial={{ width: 0 }}
         animate={{ width: `${percentage}% ` }}
         transition={{ duration: 0.5 }}
@@ -54,9 +58,9 @@ const ProgressBar = ({ progress, nextLevelMin, currentLevelMin }) => {
 
 const CategoryProgressBar = ({ percentage, colorClass }) => {
   return (
-    <div className="w-full bg-custom-category/50 rounded-full h-1.5 mt-2 overflow-hidden">
+    <div className="w-full bg-secondary/50 rounded-full h-1.5 mt-2 overflow-hidden">
       <Motion.div
-        className={cn("h-full", colorClass || "bg-custom-accent")}
+        className={cn("h-full", colorClass || "bg-primary")}
         initial={{ width: 0 }}
         animate={{ width: `${percentage}% ` }}
         transition={{ duration: 0.5 }}
@@ -71,24 +75,6 @@ const formatHours = (decimalHours) => {
   const hours = Math.floor(decimalHours);
   const minutes = Math.round((decimalHours - hours) * 60);
   return `${hours}sa ${minutes} dk`;
-};
-
-const CATEGORY_STYLES = {
-  'EKONOMİ': { bg: 'bg-sky-500/10 hover:bg-sky-500/20', border: 'border-sky-500/20', accent: 'text-sky-300', iconBg: 'bg-sky-500/20', barColor: 'bg-sky-300' },
-  'HUKUK': { bg: 'bg-rose-500/10 hover:bg-rose-500/20', border: 'border-rose-500/20', accent: 'text-rose-300', iconBg: 'bg-rose-500/20', barColor: 'bg-rose-300' },
-  'MUHASEBE - İŞLETME - MALİYE': { bg: 'bg-emerald-500/10 hover:bg-emerald-500/20', border: 'border-emerald-500/20', accent: 'text-emerald-300', iconBg: 'bg-emerald-500/20', barColor: 'bg-emerald-300' },
-  'MATEMATİK - BANKA': { bg: 'bg-violet-500/10 hover:bg-violet-500/20', border: 'border-violet-500/20', accent: 'text-violet-300', iconBg: 'bg-violet-500/20', barColor: 'bg-violet-300' },
-  'DEFAULT': { bg: 'bg-custom-header', border: 'border-custom-category/30', accent: 'text-custom-accent', iconBg: 'bg-custom-accent/10', barColor: 'bg-custom-accent' }
-};
-
-const RANK_ICONS = {
-  User,
-  CreditCard,
-  Search,
-  Shield,
-  Award,
-  Crown,
-  Star
 };
 
 export default function App() {
@@ -298,8 +284,7 @@ export default function App() {
     // if (type !== 'work') return;
 
     const newSession = {
-
-      timestamp: startTime || Date.now(), // [MODIFIED] Use passed start time if available
+      timestamp: startTime || new Date().setSeconds(0, 0), // [MODIFIED] Use passed start time if available
       duration,
       type,
       courseId: overrideCourseId || lastActiveCourseId,
@@ -313,6 +298,10 @@ export default function App() {
       ...prev,
       [todayStr]: (prev[todayStr] || 0) + 1
     }));
+  };
+
+  const handleUpdateSession = (oldTimestamp, updatedSession) => {
+    setSessions(prev => prev.map(s => s.timestamp === oldTimestamp ? updatedSession : s));
   };
 
   const handleDeleteSessions = (sessionIdsToDelete) => {
@@ -570,13 +559,15 @@ export default function App() {
   const activeCourse = lastActiveCourseId ? flatCourses.find(c => c.id === lastActiveCourseId) : null;
 
   return (
-    <div className="min-h-screen bg-custom-bg text-custom-text font-sans selection:bg-custom-accent/30">
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
       <AnimatePresence>
         {celebratingCourse && (
-          <CelebrationOverlay
-            courseName={celebratingCourse}
-            onComplete={() => setCelebratingCourse(null)}
-          />
+          <Suspense fallback={null}>
+            <CelebrationOverlay
+              courseName={celebratingCourse}
+              onComplete={() => setCelebratingCourse(null)}
+            />
+          </Suspense>
         )}
       </AnimatePresence>
 
@@ -586,69 +577,82 @@ export default function App() {
 
 
       {showTimer && (
-        <PomodoroTimer
-          initialCourse={activeCourse}
-          courses={flatCourses}
-          sessionsCount={sessions.filter(s => s.type === 'work' && getLocalYMD(new Date(s.timestamp)) === getLocalYMD(new Date())).length}
-          // [NEW] Calculate total break duration for today in minutes
-          totalBreakDuration={Math.round(sessions
-            .filter(s => s.type === 'break' && getLocalYMD(new Date(s.timestamp)) === getLocalYMD(new Date()))
-            .reduce((acc, s) => acc + (s.duration || 0), 0) / 60)}
-          onSessionComplete={handleSessionComplete}
-          onClose={() => setShowTimer(false)}
-        />
+        <Suspense fallback={<ModalLoader />}>
+          <PomodoroTimer
+            initialCourse={activeCourse}
+            courses={flatCourses}
+            sessionsCount={sessions.filter(s => s.type === 'work' && getLocalYMD(new Date(s.timestamp)) === getLocalYMD(new Date())).length}
+            // [NEW] Calculate total break duration for today in minutes
+            totalBreakDuration={Math.round(sessions
+              .filter(s => s.type === 'break' && getLocalYMD(new Date(s.timestamp)) === getLocalYMD(new Date()))
+              .reduce((acc, s) => acc + (s.duration || 0), 0) / 60)}
+            onSessionComplete={handleSessionComplete}
+            onClose={() => setShowTimer(false)}
+          />
+        </Suspense>
       )}
 
       {showReport && (
-        <ReportModal
-          sessions={sessions}
-          courses={flatCourses}
-          onClose={() => setShowReport(false)}
-          onDelete={handleDeleteSessions}
-          videoHistory={videoHistory} // [NEW] Pass history
-          progressData={progressData} // [NEW] Pass progress data for filtering
-        />
+        <Suspense fallback={<ModalLoader />}>
+          <ReportModal
+            sessions={sessions}
+            courses={flatCourses}
+            onClose={() => setShowReport(false)}
+            onDelete={handleDeleteSessions}
+            onUpdate={handleUpdateSession}
+            videoHistory={videoHistory}
+            progressData={progressData}
+          />
+        </Suspense>
       )}
 
       {showSchedule && (
-        <ScheduleModal
-          onClose={() => setShowSchedule(false)}
-          schedule={schedule}
-          setSchedule={setSchedule}
-        />
+        <Suspense fallback={<ModalLoader />}>
+          <ScheduleModal
+            onClose={() => setShowSchedule(false)}
+            schedule={schedule}
+            setSchedule={setSchedule}
+          />
+        </Suspense>
       )}
 
       {showRankModal && (
-        <RankModal
-          currentRank={rankInfo}
-          totalHours={totalHours}
-          completedHours={completedHours}
-          sessions={sessions}
-          onClose={() => setShowRankModal(false)}
-        />
+        <Suspense fallback={<ModalLoader />}>
+          <RankModal
+            currentRank={rankInfo}
+            totalHours={totalHours}
+            completedHours={completedHours}
+            sessions={sessions}
+            onClose={() => setShowRankModal(false)}
+          />
+        </Suspense>
       )}
 
       {activeNoteCourse && (
-        <NotesModal
-          courseName={activeNoteCourse.name}
-          courseId={activeNoteCourse.id}
-          notePath={activeNoteCourse.path}
-          onClose={() => setActiveNoteCourse(null)}
-        />
+        <Suspense fallback={<ModalLoader />}>
+          <NotesModal
+            courseName={activeNoteCourse.name}
+            courseId={activeNoteCourse.id}
+            notePath={activeNoteCourse.path}
+            onClose={() => setActiveNoteCourse(null)}
+          />
+        </Suspense>
       )}
 
       {activeQuizCourse && (
-        <QuizModal
-          isOpen={!!activeQuizCourse}
-          onClose={() => setActiveQuizCourse(null)}
-          courseId={activeQuizCourse.id}
-          courseName={activeQuizCourse.name}
-          notePath={activeQuizCourse.path}
-        />
+        <Suspense fallback={<ModalLoader />}>
+          <QuizModal
+            isOpen={!!activeQuizCourse}
+            onClose={() => setActiveQuizCourse(null)}
+            courseId={activeQuizCourse.id}
+            courseName={activeQuizCourse.name}
+            notePath={activeQuizCourse.path}
+          />
+        </Suspense>
       )}
 
       {/* Top Header Dashboard */}
-      <header className="sticky top-0 z-40 bg-custom-bg/95 backdrop-blur-xl border-b border-custom-category shadow-lg shadow-custom-accent/5">
+      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-xl border-b border-secondary shadow-lg shadow-primary/5">
         <div className="max-w-6xl mx-auto px-4 py-4">
 
           {/* --- MOBILE LAYOUT --- */}
@@ -660,13 +664,13 @@ export default function App() {
                 className="flex items-center gap-3 cursor-pointer group"
                 onClick={() => setShowRankModal(true)}
               >
-                <div className="bg-custom-header p-2 rounded-xl border border-custom-category/50 relative group-hover:border-custom-accent/30 transition-colors shadow-sm">
+                <div className="bg-card p-2 rounded-xl border border-secondary/50 relative group-hover:border-primary/30 transition-colors shadow-sm">
                   {(() => {
                     const Icon = RANK_ICONS[rankInfo.icon] || Goal;
-                    return <Icon size={20} className="text-custom-accent" />;
+                    return <Icon size={20} className="text-primary" />;
                   })()}
                 </div>
-                <h1 className={cn("text-xl font-bold tracking-tight text-custom-text leading-tight", rankInfo.color)}>
+                <h1 className={cn("text-xl font-bold tracking-tight text-foreground leading-tight", rankInfo.color)}>
                   {rankInfo.title}
                 </h1>
               </div>
@@ -677,42 +681,50 @@ export default function App() {
             {/* Row 2: Daily Focus (Left) + Actions (Right) */}
             <div className="flex items-center justify-between gap-2">
 
-              <div className="inline-flex items-center gap-2 bg-custom-accent/5 px-3 py-2 rounded-lg border border-custom-accent/10 w-fit shrink-0">
-                <Calendar size={14} className="text-custom-accent" />
-                <span className="text-[10px] font-bold text-custom-accent uppercase tracking-wide truncate max-w-[100px]">
+              <div className="inline-flex items-center gap-2 bg-primary/5 px-3 py-2 rounded-lg border border-primary/10 w-fit shrink-0">
+                <Calendar size={14} className="text-primary" />
+                <span className="text-[10px] font-bold text-primary uppercase tracking-wide truncate max-w-[100px]">
                   {dailyFocus}
                 </span>
               </div>
 
               <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth">
-                <button
+                <Button
+                  variant="outline"
+                  size="icon"
                   onClick={() => setShowTimer(true)}
-                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30 cursor-pointer hover:bg-custom-accent/5 transition-all active:scale-95"
+                  className="bg-card text-muted-foreground hover:text-primary border-border/30 hover:bg-primary/10 transition-all active:scale-95"
                   title="Sayaç"
                 >
                   <Timer size={18} />
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
                   onClick={() => setShowReport(true)}
-                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30 cursor-pointer hover:bg-custom-accent/5 transition-all active:scale-95"
+                  className="bg-card text-muted-foreground hover:text-primary border-border/30 hover:bg-primary/10 transition-all active:scale-95"
                   title="Rapor"
                 >
                   <BarChart2 size={18} />
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
                   onClick={() => setShowSchedule(true)}
-                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-accent border border-custom-category/30 cursor-pointer hover:bg-custom-accent/5 transition-all active:scale-95"
+                  className="bg-card text-muted-foreground hover:text-primary border-border/30 hover:bg-primary/10 transition-all active:scale-95"
                   title="Program"
                 >
                   <Calendar size={18} />
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
                   onClick={logout}
-                  className="p-2 bg-custom-header rounded-lg text-custom-title/70 hover:text-custom-error border border-custom-category/30 cursor-pointer hover:bg-red-500/10 transition-all active:scale-95"
+                  className="bg-card text-muted-foreground hover:text-destructive border-border/30 hover:bg-red-500/10 transition-all active:scale-95"
                   title="Çıkış"
                 >
                   <LogOut size={18} />
-                </button>
+                </Button>
               </div>
 
             </div>
@@ -726,24 +738,24 @@ export default function App() {
                 className="relative cursor-pointer hover:scale-105 transition-transform group"
                 onClick={() => setShowRankModal(true)}
               >
-                <div className="bg-custom-header p-3 rounded-xl border border-custom-category/50 relative group-hover:border-custom-accent/30 box-border transition-colors">
+                <div className="bg-card p-3 rounded-xl border border-secondary/50 relative group-hover:border-primary/30 box-border transition-colors">
                   {(() => {
                     const Icon = RANK_ICONS[rankInfo.icon] || Goal;
-                    return <Icon size={28} className="text-custom-accent group-hover:drop-shadow-lg" />;
+                    return <Icon size={28} className="text-primary group-hover:drop-shadow-lg" />;
                   })()}
                 </div>
               </div>
               <div className="flex flex-col gap-2">
                 <h1
-                  className={cn("text-3xl font-bold tracking-tight text-custom-text leading-tight cursor-pointer hover:opacity-80 transition-opacity", rankInfo.color)}
+                  className={cn("text-3xl font-bold tracking-tight text-foreground leading-tight cursor-pointer hover:opacity-80 transition-opacity", rankInfo.color)}
                   onClick={() => setShowRankModal(true)}
                 >
                   {rankInfo.title}
                 </h1>
                 <div className="flex items-center gap-2">
-                  <div className="inline-flex items-center gap-2 bg-custom-accent/5 px-3 py-1.5 rounded-lg border border-custom-accent/10 w-fit hover:bg-custom-accent/10 transition-colors">
-                    <Calendar size={14} className="text-custom-accent" />
-                    <span className="text-xs font-bold text-custom-accent uppercase tracking-wide">
+                  <div className="inline-flex items-center gap-2 bg-primary/5 px-3 py-1.5 rounded-lg border border-primary/10 w-fit hover:bg-primary/10 transition-colors">
+                    <Calendar size={14} className="text-primary" />
+                    <span className="text-xs font-bold text-primary uppercase tracking-wide">
                       Bugün: {dailyFocus}
                     </span>
                   </div>
@@ -753,34 +765,42 @@ export default function App() {
             </div>
 
             <div className="flex gap-3">
-              <button
+              <Button
+                variant="outline"
+                size="icon"
                 onClick={() => setShowTimer(!showTimer)}
-                className="p-3 bg-custom-header rounded-xl text-custom-title/70 hover:text-custom-accent hover:bg-custom-header/80 transition-all hover:scale-105 shadow-lg shadow-black/10 border border-custom-category/30 cursor-pointer"
+                className="h-[46px] w-[46px] bg-card text-muted-foreground hover:text-primary hover:bg-card/80 transition-all hover:scale-105 shadow-lg border-border/30 [&_svg]:size-5"
                 title="Pomodoro Sayacı"
               >
                 <Timer size={20} />
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
                 onClick={() => setShowReport(true)}
-                className="p-3 bg-custom-header rounded-xl text-custom-title/70 hover:text-custom-accent hover:bg-custom-header/80 transition-all hover:scale-105 shadow-lg shadow-black/10 border border-custom-category/30 cursor-pointer"
+                className="h-[46px] w-[46px] bg-card text-muted-foreground hover:text-primary hover:bg-card/80 transition-all hover:scale-105 shadow-lg border-border/30 [&_svg]:size-5"
                 title="Raporları Görüntüle"
               >
                 <BarChart2 size={20} />
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
                 onClick={() => setShowSchedule(true)}
-                className="p-3 bg-custom-header rounded-xl text-custom-title/70 hover:text-custom-accent hover:bg-custom-header/80 transition-all hover:scale-105 shadow-lg shadow-black/10 border border-custom-category/30 cursor-pointer"
+                className="h-[46px] w-[46px] bg-card text-muted-foreground hover:text-primary hover:bg-card/80 transition-all hover:scale-105 shadow-lg border-border/30 [&_svg]:size-5"
                 title="Çalışma Programı"
               >
                 <Calendar size={20} />
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
                 onClick={logout}
-                className="p-3 bg-custom-header rounded-xl text-custom-title/70 hover:text-custom-error hover:bg-custom-header/80 transition-all hover:scale-105 shadow-lg shadow-black/10 border border-custom-category/30 cursor-pointer"
+                className="h-[46px] w-[46px] bg-card text-muted-foreground hover:text-destructive hover:bg-card/80 transition-all hover:scale-105 shadow-lg border-border/30 [&_svg]:size-5"
                 title="Çıkış Yap"
               >
                 <LogOut size={20} />
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -790,42 +810,48 @@ export default function App() {
       {/* Main Content Grid */}
       <main className="max-w-6xl mx-auto p-4 md:p-8">
         {/* Progress Stats (Relocated) */}
-        <div className="max-w-2xl mx-auto mb-10 bg-custom-header/50 p-6 rounded-2xl border border-custom-category/30 shadow-lg shadow-black/5">
-          <div className="flex justify-between items-end mb-2">
-            <div className="flex flex-col">
-              <span className="text-xs font-bold text-custom-title/50 uppercase tracking-wider mb-1">Mevcut Hedef</span>
-              <span className="text-lg font-bold text-custom-accent flex items-center gap-2">
-                {(() => {
-                  const Icon = RANK_ICONS[nextRank.icon] || Goal;
-                  return <Icon size={18} />;
-                })()}
-                {nextRank.title}
+        <Card className="max-w-2xl mx-auto mb-10 bg-card/50 border-border/30 shadow-lg">
+          <CardContent className="p-6">
+            <div className="flex justify-between items-end mb-2">
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Mevcut Hedef</span>
+                <span className="text-lg font-bold text-primary flex items-center gap-2">
+                  {(() => {
+                    const Icon = RANK_ICONS[nextRank.icon] || Goal;
+                    return <Icon size={18} />;
+                  })()}
+                  {nextRank.title}
+                </span>
+              </div>
+              <span className="text-3xl font-mono font-bold text-foreground tracking-tighter"><span className="mr-1">%</span>{totalPercentage.toFixed(1)}</span>
+            </div>
+            <ProgressBar
+              progress={totalPercentage}
+              currentLevelMin={rankInfo.min}
+              nextLevelMin={nextRank.min}
+            />
+            <div className="flex justify-end mt-2">
+              <span className="text-xs font-bold text-primary/80 tracking-tight">
+                % {nextRank.min} için devam et
               </span>
             </div>
-            <span className="text-3xl font-mono font-bold text-custom-text tracking-tighter"><span className="mr-1">%</span>{totalPercentage.toFixed(1)}</span>
-          </div>
-          <ProgressBar
-            progress={totalPercentage}
-            currentLevelMin={rankInfo.min}
-            nextLevelMin={nextRank.min}
-          />
-          <div className="flex justify-end mt-2">
-            <span className="text-xs font-bold text-custom-accent/80 tracking-tight">
-              % {nextRank.min} için devam et
-            </span>
-          </div>
 
-          <div className="flex items-center justify-between gap-3 mt-2 text-xs font-medium text-custom-title/60 border-t border-custom-category/20 pt-4">
-            <span className="flex items-center gap-1.5 whitespace-nowrap">
-              <Youtube size={14} className="text-red-500/70 shrink-0" />
-              {completedCount} / {totalVideos} Video
-            </span>
-            <span className="flex items-center gap-1.5 whitespace-nowrap">
-              <Timer size={14} className="text-custom-accent/70 shrink-0" />
-              {formatHours(completedHours)} / {formatHours(totalHours)}
-            </span>
-          </div>
-        </div>
+            <div className="flex items-center justify-between gap-3 mt-2 text-[11px] font-medium border-t border-white/5 pt-4">
+              <span className="flex items-center gap-1.5 whitespace-nowrap text-zinc-400">
+                <Youtube size={14} className="shrink-0 text-red-500" />
+                <span className="text-zinc-200">{completedCount}</span>
+                <span className="mx-0.5 text-zinc-400">/</span>
+                <span className="text-zinc-400">{totalVideos} Video</span>
+              </span>
+              <span className="flex items-center gap-1.5 whitespace-nowrap text-zinc-400">
+                <Timer size={14} className="shrink-0 text-emerald-500" />
+                <span className="text-zinc-200">{formatHours(completedHours)}</span>
+                <span className="mx-0.5 text-zinc-400">/</span>
+                <span className="text-zinc-400">{formatHours(totalHours)}</span>
+              </span>
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-20 items-start">
           {courseData.map((category, catIdx) => {
@@ -848,9 +874,10 @@ export default function App() {
 
             const categoryNameRaw = category.category.split('(')[0].replace(/^\d+\.\s*/, '').trim();
             const styles = CATEGORY_STYLES[categoryNameRaw] || CATEGORY_STYLES['DEFAULT'];
+            const IconComponent = CATEGORY_ICONS[categoryNameRaw] || CATEGORY_ICONS['DEFAULT'];
 
             return (
-              <div key={catIdx} className={cn("rounded-2xl border overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-black/20 group", styles.bg, styles.border)}>
+              <Card key={catIdx} className={cn("overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-black/20 group", styles.bg, styles.border)}>
                 {/* Category Header */}
                 <button
                   onClick={() => toggleCategory(catIdx)}
@@ -859,7 +886,7 @@ export default function App() {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-4">
                       <div className={cn("p-3 rounded-xl transition-transform duration-300 group-hover:scale-105", styles.iconBg)}>
-                        <BookOpen size={24} className={styles.accent} />
+                        <IconComponent size={24} className={styles.accent} />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
@@ -869,23 +896,23 @@ export default function App() {
                           {categoryPercent === 100 && <BadgeCheck size={18} className="text-amber-400 animate-bounce" />}
                         </div>
                         <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-2">
-                          <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold text-custom-title/80 bg-black/5 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg border border-black/5 whitespace-nowrap">
+                          <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold bg-black/10 px-2 py-1 rounded-lg whitespace-nowrap text-zinc-500">
                             <Timer size={14} className={styles.accent} />
-                            <span>{formatHours(categoryCompletedHours)}</span>
-                            <span className="text-custom-title/30 mx-0.5">/</span>
-                            <span className="opacity-60">{formatHours(categoryTotalHours)}</span>
+                            <span className="text-zinc-400">{formatHours(categoryCompletedHours)}</span>
+                            <span className="mx-0.5 text-zinc-500">/</span>
+                            <span className="text-zinc-500">{formatHours(categoryTotalHours)}</span>
                           </div>
-                          <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold text-custom-title/80 bg-black/5 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg border border-black/5 whitespace-nowrap">
+                          <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold bg-black/10 px-2 py-1 rounded-lg whitespace-nowrap text-zinc-500">
                             <MonitorPlay size={14} className={styles.accent} />
-                            <span>{categoryCompletedVideos}</span>
-                            <span className="text-custom-title/30 mx-0.5">/</span>
-                            <span className="opacity-60">{categoryTotalVideos} Video</span>
+                            <span className="text-zinc-400">{categoryCompletedVideos}</span>
+                            <span className="mx-0.5 text-zinc-500">/</span>
+                            <span className="text-zinc-500">{categoryTotalVideos} Video</span>
                           </div>
                         </div>
                       </div>
                     </div>
                     <div className={cn("bg-black/20 p-2 rounded-full transition-transform duration-300", expandedCategories.has(catIdx) ? "rotate-180" : "")}>
-                      <ChevronDown size={20} className="text-custom-title/50" />
+                      <ChevronDown size={20} className="text-muted-foreground/50" />
                     </div>
                   </div>
 
@@ -938,21 +965,21 @@ export default function App() {
                               )}
                             >
                               <div
-                                className="p-3 cursor-pointer hover:bg-white/5 transition-colors relative"
+                                className="p-4 cursor-pointer hover:bg-white/5 transition-colors relative"
                                 onClick={() => toggleCourse(course.id)}
                               >
                                 <div className="flex gap-3">
                                   {/* Icon - Fixed Width */}
                                   <div className={cn("p-2 rounded-lg shrink-0 h-fit", styles.iconBg)}>
-                                    <BookOpen className={styles.accent} size={20} />
+                                    <IconComponent className={styles.accent} size={20} />
                                   </div>
 
                                   {/* Main Content Column */}
                                   <div className="flex-1 min-w-0">
                                     {/* Header: Title + Mobile Right Elements */}
-                                    <div className="flex items-center justify-between gap-2">
+                                    <div className="flex items-center justify-between gap-3">
                                       <div className="flex items-center gap-2 min-w-0">
-                                        <h3 className={cn("font-bold text-sm truncate", isCourseCompleted ? "text-amber-200" : "text-custom-title/80")}>
+                                        <h3 className={cn("font-bold text-sm truncate", isCourseCompleted ? "text-amber-200" : "text-zinc-300")}>
                                           {course.name}
                                         </h3>
                                         {isCourseCompleted && (
@@ -968,29 +995,27 @@ export default function App() {
                                           </span>
                                         </div>
                                         <ChevronDown
-                                          className={`text - custom - title / 50 transition - transform duration - 300 ${expandedCourses.has(course.id) ? 'rotate-180' : ''} `}
+                                          className={`text-muted-foreground/50 transition-transform duration-300 ${expandedCourses.has(course.id) ? 'rotate-180' : ''} `}
                                           size={18}
                                         />
                                       </div>
                                     </div>
 
                                     {/* Stats Row */}
-                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-1.5">
-                                      <div className="flex flex-wrap items-center gap-1.5">
-                                        <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-custom-title/70 bg-black/5 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md whitespace-nowrap">
-                                          <Timer size={12} className="text-custom-title/50" />
-                                          <span>{formatHours(courseCompletedHours)}</span>
-                                          <span className="text-custom-title/30">/</span>
-                                          <span className="opacity-70">{formatHours(course.totalHours)}</span>
-                                        </div>
-                                        <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-custom-title/70 bg-black/5 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md whitespace-nowrap">
-                                          <MonitorPlay size={12} className="text-custom-title/50" />
-                                          <span className={courseProgress.completed === courseProgress.total ? "text-custom-success" : ""}>
-                                            {courseProgress.completed}
-                                          </span>
-                                          <span className="text-custom-title/30">/</span>
-                                          <span className="opacity-70">{courseProgress.total} Video</span>
-                                        </div>
+                                    <div className="flex flex-wrap items-center gap-2 my-1.5">
+                                      <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-semibold bg-black/10 px-1.5 py-1 rounded-md whitespace-nowrap text-zinc-500">
+                                        <Timer size={12} className="text-zinc-400" />
+                                        <span className="text-zinc-400">{formatHours(courseCompletedHours)}</span>
+                                        <span className="mx-0.5 text-zinc-500">/</span>
+                                        <span className="text-zinc-500">{formatHours(course.totalHours)}</span>
+                                      </div>
+                                      <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-semibold bg-black/10 px-1.5 py-1 rounded-md whitespace-nowrap text-zinc-500">
+                                        <MonitorPlay size={12} className="text-zinc-400" />
+                                        <span className={cn("text-zinc-400", courseProgress.completed === courseProgress.total ? "text-emerald-400" : "")}>
+                                          {courseProgress.completed}
+                                        </span>
+                                        <span className="mx-0.5 text-zinc-500">/</span>
+                                        <span className="text-zinc-500">{courseProgress.total} Video</span>
                                       </div>
                                     </div>
 
@@ -1091,7 +1116,7 @@ export default function App() {
                                     </div>
 
                                     <ChevronDown
-                                      className={`text - custom - title / 50 transition - transform duration - 300 ${expandedCourses.has(course.id) ? 'rotate-180' : ''} `}
+                                      className={`text-muted-foreground/50 transition-transform duration-300 ${expandedCourses.has(course.id) ? 'rotate-180' : ''} `}
                                       size={18}
                                     />
                                   </div>
@@ -1130,7 +1155,7 @@ export default function App() {
                                                 "group relative p-3 rounded-lg border border-dashed transition-all duration-300 flex items-center justify-between cursor-pointer",
                                                 isCompleted
                                                   ? `${styles.iconBg} ${styles.border.replace('border-', 'border-solid border-')} shadow - sm`
-                                                  : 'bg-custom-bg/50 border-custom-category/40 hover:border-custom-accent/50 hover:bg-custom-header hover:shadow-md hover:-translate-y-0.5'
+                                                  : 'bg-background/50 border-input hover:border-accent hover:bg-card hover:shadow-md hover:-translate-y-0.5'
                                               )}
                                             >
                                               <div className="flex items-center gap-3 overflow-hidden">
@@ -1138,14 +1163,14 @@ export default function App() {
                                                   "w-6 h-6 rounded-full flex items-center justify-center border transition-all duration-300 shrink-0",
                                                   isCompleted
                                                     ? (isGap ? 'bg-amber-500/20 border-amber-500' : `${styles.accent.replace('text-', 'bg-')} ${styles.accent.replace('text-', 'border-')} `)
-                                                    : 'border-custom-category/50 group-hover:border-custom-accent'
+                                                    : 'border-muted-foreground/50 group-hover:border-accent'
                                                 )}>
                                                   {isCompleted && <Check size={14} className={isGap ? 'text-amber-500' : 'text-white'} strokeWidth={3} />}
                                                 </div>
-                                                <span className={cn("font-mono text-xs font-bold tracking-tight shrink-0", isCompleted ? styles.accent : 'text-custom-title/70')}>
+                                                <span className={cn("font-mono text-xs font-bold tracking-tight shrink-0", isCompleted ? styles.accent : 'text-muted-foreground')}>
                                                   #{video.id}
                                                 </span>
-                                                <span className={cn("text-sm font-medium truncate", isCompleted ? 'text-custom-text/90' : 'text-custom-title/80 group-hover:text-custom-text')}>
+                                                <span className={cn("text-sm font-medium truncate", isCompleted ? 'text-foreground/90' : 'text-foreground/75 group-hover:text-foreground')}>
                                                   {video.title}
                                                 </span>
                                               </div>
@@ -1168,7 +1193,7 @@ export default function App() {
                     </Motion.div>
                   )}
                 </AnimatePresence>
-              </div>
+              </Card>
             );
           })}
         </div >
