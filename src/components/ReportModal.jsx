@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { X, Clock, Calendar, BookOpen, Trash2, BarChart2, List, MonitorPlay, Pause, Edit2, Save } from 'lucide-react';
+import { X, Clock, Calendar, BookOpen, Trash2, BarChart2, List, MonitorPlay, Pause, Edit2, Save, ChartArea, ChartNoAxesCombined } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { courseData } from '../data';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
@@ -284,7 +284,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                         <div className="p-6 border-b border-border flex justify-between items-start bg-card/50">
                             <div className="flex items-center gap-4">
                                 <div className="bg-primary/10 p-3 rounded-xl border border-primary/10">
-                                    <BookOpen className="text-primary" size={24} />
+                                    <ChartNoAxesCombined className="text-primary" size={24} />
                                 </div>
                                 <div>
                                     <DialogHeader>
@@ -828,13 +828,18 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
         }}>
             <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden flex flex-col bg-background border-border p-0 gap-0 shadow-2xl">
                 <div className="p-3 border-b border-border bg-card/90 flex justify-between items-start shrink-0 relative z-20 backdrop-blur-md">
-                    <div>
-                        <DialogTitle className="font-bold text-foreground text-lg">Günlük Zaman Çizelgesi</DialogTitle>
-                        <DialogDescription className="sr-only">
-                            Seçilen gün için detaylı çalışma çizelgesi ve aktiviteler.
-                        </DialogDescription>
-                        <h3 className="sr-only">Günlük Zaman Çizelgesi</h3>
-                        <p className="text-xs text-muted-foreground/50 font-medium">{new Date(group.date).toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    <div className="flex items-center gap-4">
+                        <div className="bg-primary/10 p-3 rounded-xl border border-primary/10">
+                            <ChartArea className="text-primary" size={24} />
+                        </div>
+                        <div>
+                            <DialogTitle className="font-bold text-foreground text-lg">Günlük Zaman Çizelgesi</DialogTitle>
+                            <DialogDescription className="sr-only">
+                                Seçilen gün için detaylı çalışma çizelgesi ve aktiviteler.
+                            </DialogDescription>
+                            <h3 className="sr-only">Günlük Zaman Çizelgesi</h3>
+                            <p className="text-sm text-zinc-400 font-medium">{new Date(group.date).toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                        </div>
                     </div>
                     <DialogClose asChild>
                         <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted text-muted-foreground hover:text-white">
@@ -846,15 +851,15 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                 {/* Günlük Özet */}
                 <div className="px-6 py-3 bg-background/50 border-b border-white/5 flex items-center justify-start gap-8 shrink-0 relative z-20">
                     <div className="flex flex-col">
-                        <span className="text-[9px] text-zinc-500 uppercase font-semibold tracking-wider">Toplam Çalışma</span>
+                        <span className="text-[9px] text-zinc-400 uppercase font-semibold tracking-wider">Toplam Çalışma</span>
                         <span className="text-sm font-mono font-bold text-zinc-300">{dayStats.work} dk</span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[9px] text-zinc-500 uppercase font-semibold tracking-wider">Toplam Mola</span>
+                        <span className="text-[9px] text-zinc-400 uppercase font-semibold tracking-wider">Toplam Mola</span>
                         <span className="text-sm font-mono font-bold text-zinc-300">{dayStats.break} dk</span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[9px] text-zinc-500 uppercase font-semibold tracking-wider">Duraklatma</span>
+                        <span className="text-[9px] text-zinc-400 uppercase font-semibold tracking-wider">Duraklatma</span>
                         <span className="text-sm font-mono font-bold text-primary">{dayStats.pause} dk</span>
                     </div>
                 </div>
@@ -874,7 +879,7 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                             className={`absolute top-0 bottom-0 border-l ${minute === 30 ? 'border-white/5' : 'border-white/10'} flex flex-col justify-end pb-0`}
                                             style={{ left: `${leftPercent}%` }}
                                         >
-                                            <span className="absolute top-4 -translate-x-1/2 text-[10px] text-zinc-700 font-mono font-bold whitespace-nowrap">
+                                            <span className="absolute top-4 -translate-x-1/2 text-[10px] text-zinc-400 font-mono font-bold whitespace-nowrap">
                                                 {hour.toString().padStart(2, '0')}:{minute.toString().padStart(2, '0')}
                                             </span>
                                         </div>

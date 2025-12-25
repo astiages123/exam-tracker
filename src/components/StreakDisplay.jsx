@@ -12,10 +12,10 @@ const StreakDisplay = ({ streak }) => {
             >
                 <Flame
                     size={18}
-                    className={`${streak > 0 ? "text-orange-400 fill-orange-400 drop-shadow-[0_0_8px_rgba(251,146,60,0.4)]" : "text-gray-400"} transition-colors duration-500`}
+                    className={`${streak > 0 ? "text-orange-400 fill-orange-400 drop-shadow-[0_0_8px_rgba(251,146,60,0.4)]" : "text-muted-foreground"} transition-colors duration-500`}
                 />
             </div>
-            <span className={`text-sm font-bold ${streak > 0 ? "text-orange-500" : "text-gray-500"}`}>
+            <span className={`text-sm font-bold ${streak > 0 ? "text-orange-500" : "text-muted-foreground"}`}>
                 {streak} Gün
             </span>
         </div>

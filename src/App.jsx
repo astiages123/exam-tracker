@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, Suspense, lazy } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Goal, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay, BadgeCheck, FileText, HelpCircle, Loader2 } from 'lucide-react';
+import { ChevronDown, Goal, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay, BadgeCheck, FileText, HelpCircle, Loader2, ChartLine, CalendarDays } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CATEGORY_STYLES, CATEGORY_ICONS, RANK_ICONS } from '@/constants/styles';
 
@@ -705,7 +705,7 @@ export default function App() {
                   className="bg-card text-muted-foreground hover:text-primary border-border/30 hover:bg-primary/10 transition-all active:scale-95"
                   title="Rapor"
                 >
-                  <BarChart2 size={18} />
+                  <ChartLine size={18} />
                 </Button>
                 <Button
                   variant="outline"
@@ -714,7 +714,7 @@ export default function App() {
                   className="bg-card text-muted-foreground hover:text-primary border-border/30 hover:bg-primary/10 transition-all active:scale-95"
                   title="Program"
                 >
-                  <Calendar size={18} />
+                  <CalendarDays size={18} />
                 </Button>
                 <Button
                   variant="outline"
@@ -781,7 +781,7 @@ export default function App() {
                 className="h-[46px] w-[46px] bg-card text-muted-foreground hover:text-primary hover:bg-card/80 transition-all hover:scale-105 shadow-lg border-border/30 [&_svg]:size-5"
                 title="Raporları Görüntüle"
               >
-                <BarChart2 size={20} />
+                <ChartLine size={20} />
               </Button>
               <Button
                 variant="outline"
@@ -790,7 +790,7 @@ export default function App() {
                 className="h-[46px] w-[46px] bg-card text-muted-foreground hover:text-primary hover:bg-card/80 transition-all hover:scale-105 shadow-lg border-border/30 [&_svg]:size-5"
                 title="Çalışma Programı"
               >
-                <Calendar size={20} />
+                <CalendarDays size={20} />
               </Button>
               <Button
                 variant="outline"
@@ -896,17 +896,17 @@ export default function App() {
                           {categoryPercent === 100 && <BadgeCheck size={18} className="text-amber-400 animate-bounce" />}
                         </div>
                         <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-2">
-                          <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold bg-black/10 px-2 py-1 rounded-lg whitespace-nowrap text-zinc-500">
+                          <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold bg-black/10 px-2 py-1 rounded-lg whitespace-nowrap text-zinc-400">
                             <Timer size={14} className={styles.accent} />
                             <span className="text-zinc-400">{formatHours(categoryCompletedHours)}</span>
-                            <span className="mx-0.5 text-zinc-500">/</span>
-                            <span className="text-zinc-500">{formatHours(categoryTotalHours)}</span>
+                            <span className="mx-0.5 text-zinc-400">/</span>
+                            <span className="text-zinc-400">{formatHours(categoryTotalHours)}</span>
                           </div>
-                          <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold bg-black/10 px-2 py-1 rounded-lg whitespace-nowrap text-zinc-500">
+                          <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold bg-black/10 px-2 py-1 rounded-lg whitespace-nowrap text-zinc-400">
                             <MonitorPlay size={14} className={styles.accent} />
                             <span className="text-zinc-400">{categoryCompletedVideos}</span>
-                            <span className="mx-0.5 text-zinc-500">/</span>
-                            <span className="text-zinc-500">{categoryTotalVideos} Video</span>
+                            <span className="mx-0.5 text-zinc-400">/</span>
+                            <span className="text-zinc-400">{categoryTotalVideos} Video</span>
                           </div>
                         </div>
                       </div>
@@ -1003,19 +1003,19 @@ export default function App() {
 
                                     {/* Stats Row */}
                                     <div className="flex flex-wrap items-center gap-2 my-1.5">
-                                      <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-semibold bg-black/10 px-1.5 py-1 rounded-md whitespace-nowrap text-zinc-500">
+                                      <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-semibold bg-black/10 px-1.5 py-1 rounded-md whitespace-nowrap text-zinc-400">
                                         <Timer size={12} className="text-zinc-400" />
                                         <span className="text-zinc-400">{formatHours(courseCompletedHours)}</span>
-                                        <span className="mx-0.5 text-zinc-500">/</span>
-                                        <span className="text-zinc-500">{formatHours(course.totalHours)}</span>
+                                        <span className="mx-0.5 text-zinc-400">/</span>
+                                        <span className="text-zinc-400">{formatHours(course.totalHours)}</span>
                                       </div>
-                                      <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-semibold bg-black/10 px-1.5 py-1 rounded-md whitespace-nowrap text-zinc-500">
+                                      <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-semibold bg-black/10 px-1.5 py-1 rounded-md whitespace-nowrap text-zinc-400">
                                         <MonitorPlay size={12} className="text-zinc-400" />
                                         <span className={cn("text-zinc-400", courseProgress.completed === courseProgress.total ? "text-emerald-400" : "")}>
                                           {courseProgress.completed}
                                         </span>
-                                        <span className="mx-0.5 text-zinc-500">/</span>
-                                        <span className="text-zinc-500">{courseProgress.total} Video</span>
+                                        <span className="mx-0.5 text-zinc-400">/</span>
+                                        <span className="text-zinc-400">{courseProgress.total} Video</span>
                                       </div>
                                     </div>
 

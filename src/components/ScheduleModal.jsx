@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Calendar, Plus, Save, Edit2, Clock, X, Trash2 } from 'lucide-react';
+import { Calendar, Plus, Save, Edit2, Clock, X, Trash2, CalendarDays } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DAYS, SUBJECT_STYLES, SUBJECT_OPTIONS } from '@/constants/styles';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
@@ -88,7 +88,7 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
                 <div className="p-6 border-b border-border bg-card/50 flex justify-between items-start">
                     <div className="flex items-center gap-4">
                         <div className="bg-primary/10 p-3 rounded-xl border border-primary/10">
-                            <Calendar className="text-primary" size={24} />
+                            <CalendarDays className="text-primary" size={24} />
                         </div>
                         <div>
                             <DialogHeader>
@@ -132,7 +132,7 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
                                     {/* Items List */}
                                     <div className="p-2 flex-1 space-y-2 min-h-[120px]">
                                         {dayItems.length === 0 && !isEditing ? (
-                                            <div className="h-full flex items-center justify-center text-gray-400 font-bold text-xs italic">
+                                            <div className="h-full flex items-center justify-center text-muted-foreground font-bold text-xs italic">
                                                 Boş Gün
                                             </div>
                                         ) : (
