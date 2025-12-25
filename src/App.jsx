@@ -393,6 +393,13 @@ export default function App() {
   const updateProgress = (courseId, newCompletedIds) => {
     setLastActiveCourseId(courseId);
 
+    // [FIX] Explicitly mark today as active in activityLog when any progress is made
+    const todayStr = getLocalYMD(new Date());
+    setActivityLog(prev => {
+      if (prev[todayStr]) return prev; // Already marked active today
+      return { ...prev, [todayStr]: 1 };
+    });
+
     // --- History Logic ---
     setProgressData(prev => {
       const oldCompletedIds = prev[courseId] || [];
