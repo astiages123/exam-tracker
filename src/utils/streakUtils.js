@@ -13,12 +13,14 @@ const ANCHOR_DATE = new Date('2025-12-08T00:00:00');
 
 /**
  * Returns the date string in YYYY-MM-DD format for a given date object
- * using local time to avoid timezone issues.
+ * using local system time components to be 100% consistent with App.jsx.
  */
 const getLocalYMD = (date) => {
     const d = new Date(date);
-    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-    return d.toISOString().split('T')[0];
+    const year = d.getFullYear();
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const day = d.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
 };
 
 /**
@@ -26,8 +28,10 @@ const getLocalYMD = (date) => {
  * @param {string} dateStr - YYYY-MM-DD
  */
 const isWeekend = (dateStr) => {
-    const d = new Date(dateStr);
-    const day = d.getDay(); // 0 is Sunday, 6 is Saturday
+    // Standard format YYYY-MM-DD can be parsed safely by new Date(year, month-1, day)
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const dateObj = new Date(y, m - 1, d);
+    const day = dateObj.getDay(); // 0 is Sunday, 6 is Saturday
     return day === 0 || day === 6;
 };
 
