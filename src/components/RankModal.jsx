@@ -42,7 +42,7 @@ const RankModal = ({ currentRank, onClose, totalHours = 0, completedHours = 0, s
     return (
         <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className="max-w-2xl h-[85vh] overflow-hidden flex flex-col p-0 gap-0 border-border bg-card">
-                <div className="p-6 border-b border-border flex items-start justify-between bg-card/50">
+                <div className="p-4 sm:p-6 border-b border-border flex items-center justify-between bg-card/50">
                     <div className="flex items-center gap-4">
                         <div className="bg-primary/10 p-3 rounded-xl border border-primary/10">
                             <Goal size={32} className="text-primary" />

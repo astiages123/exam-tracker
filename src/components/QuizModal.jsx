@@ -292,10 +292,10 @@ export default function QuizModal({ isOpen, onClose, courseId, courseName, noteP
     };
 
     return (
-        <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-[92vh] flex flex-col p-0 gap-0 border-border bg-card overflow-hidden rounded-none sm:rounded-lg focus-visible:outline-none">
                 <div className="flex flex-col border-b border-border bg-card/50">
-                    <div className="flex items-start justify-between p-6 pb-2">
+                    <div className="flex items-center justify-between p-4 sm:p-6 pb-2">
                         <div>
                             <DialogHeader>
                                 <DialogTitle className="text-xl font-bold flex items-center gap-2">

@@ -126,13 +126,15 @@ export default function NotesModal({ courseName, notePath, onClose, courseId }) 
                 </DialogContent>
             </Dialog>
 
-            <QuizModal
-                isOpen={showQuiz}
-                onClose={() => setShowQuiz(false)}
-                courseId={courseId}
-                courseName={courseName}
-                notePath={notePath}
-            />
+            {showQuiz && (
+                <QuizModal
+                    isOpen={showQuiz}
+                    onClose={() => setShowQuiz(false)}
+                    courseId={courseId}
+                    courseName={courseName}
+                    notePath={notePath}
+                />
+            )}
         </>
     );
 }

@@ -84,8 +84,8 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
 
     return (
         <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="max-w-5xl max-h-[90vh] flex flex-col p-0 gap-0 bg-card border-border overflow-hidden">
-                <div className="p-6 border-b border-border bg-card/50 flex justify-between items-start">
+            <DialogContent className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-auto sm:max-h-[90vh] flex flex-col p-0 gap-0 bg-card border-border overflow-hidden rounded-none sm:rounded-lg">
+                <div className="p-4 sm:p-6 border-b border-border bg-card/50 flex justify-between items-center">
                     <div className="flex items-center gap-4">
                         <div className="bg-primary/10 p-3 rounded-xl border border-primary/10">
                             <CalendarDays className="text-primary" size={24} />

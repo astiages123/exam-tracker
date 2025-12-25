@@ -299,7 +299,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                 <DialogContent className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-[85vh] flex flex-col p-0 gap-0 bg-background border-border shadow-2xl overflow-hidden focus-visible:outline-none rounded-none sm:rounded-lg">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full w-full">
                         {/* Header */}
-                        <div className="p-6 border-b border-border flex justify-between items-start bg-card/50">
+                        <div className="p-4 sm:p-6 border-b border-border flex justify-between items-center bg-card/50">
                             <div className="flex items-center gap-4">
                                 <div className="bg-primary/10 p-3 rounded-xl border border-primary/10">
                                     <ChartNoAxesCombined className="text-primary" size={24} />
@@ -315,10 +315,10 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                     </DialogHeader>
                                     <TabsList className="mt-2 bg-muted/50 w-full sm:w-auto grid grid-cols-2 sm:flex">
                                         <TabsTrigger value="list" className="gap-2">
-                                            <List size={14} /> <span className="hidden xs:inline">Oturumlar</span>
+                                            <List size={14} /> <span>Oturumlar</span>
                                         </TabsTrigger>
                                         <TabsTrigger value="graph" className="gap-2">
-                                            <BarChart2 size={14} /> <span className="hidden xs:inline">Çalışma Grafiği</span>
+                                            <BarChart2 size={14} /> <span>Çalışma Grafiği</span>
                                         </TabsTrigger>
                                     </TabsList>
                                 </div>
@@ -546,11 +546,14 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                 {showFullHistory === 'duration' ? 'Günlük saat bazlı performans' : 'Günlük tamamlanan video sayıları'}
                             </DialogDescription>
                         </div>
-                        <DialogClose asChild>
-                            <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted text-muted-foreground hover:text-white">
-                                <X size={20} />
-                            </Button>
-                        </DialogClose>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setShowFullHistory(null)}
+                            className="h-10 w-10 rounded-full hover:bg-muted text-muted-foreground hover:text-white"
+                        >
+                            <X size={20} />
+                        </Button>
                     </div>
 
                     <div className="flex-1 p-4 sm:p-6 overflow-hidden">
@@ -561,11 +564,11 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                     <XAxis
                                         dataKey="displayDate"
                                         stroke="#d4d4d8"
-                                        fontSize={11}
+                                        fontSize={10}
                                         tickLine={false}
                                         axisLine={false}
-                                        tickMargin={15}
-                                        interval={fullChartData.length > 20 ? 'preserveStartEnd' : 0}
+                                        tickMargin={10}
+                                        minTickGap={20}
                                     />
                                     <YAxis
                                         stroke="#d4d4d8"
@@ -845,7 +848,7 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
             }
         }}>
             <DialogContent className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:max-h-[90vh] overflow-hidden flex flex-col bg-background border-border p-0 gap-0 shadow-2xl rounded-none sm:rounded-lg">
-                <div className="p-3 border-b border-border bg-card/90 flex justify-between items-start shrink-0 relative z-20 backdrop-blur-md">
+                <div className="p-3 border-b border-border bg-card/90 flex justify-between items-center shrink-0 relative z-20 backdrop-blur-md">
                     <div className="flex items-center gap-4">
                         <div className="bg-primary/10 p-3 rounded-xl border border-primary/10">
                             <ChartArea className="text-primary" size={24} />
