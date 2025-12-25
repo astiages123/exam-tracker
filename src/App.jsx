@@ -630,7 +630,7 @@ export default function App() {
                 </span>
               </div>
 
-              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth">
+              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth py-1">
                 <Button
                   variant="outline"
                   size="icon"
@@ -750,7 +750,7 @@ export default function App() {
       </header >
 
       {/* Main Content Grid */}
-      <main className="max-w-6xl mx-auto p-4 md:p-8">
+      <main className="max-w-6xl mx-auto p-4 sm:p-6 md:p-8">
         {/* Progress Stats (Relocated) */}
         <Card className="max-w-2xl mx-auto mb-10 bg-card/50 border-border/30 shadow-lg">
           <CardContent className="p-6">

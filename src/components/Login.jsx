@@ -28,7 +28,7 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <div className="min-h-[100dvh] flex items-center justify-center bg-background p-4">
             <div className="bg-card w-full max-w-md p-8 rounded-2xl shadow-xl shadow-primary/5 border border-secondary/30">
                 <div className="text-center mb-8">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">

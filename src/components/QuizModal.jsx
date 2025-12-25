@@ -292,8 +292,8 @@ export default function QuizModal({ isOpen, onClose, courseId, courseName, noteP
     };
 
     return (
-        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="max-w-5xl h-[92vh] flex flex-col p-0 gap-0 border-border bg-card overflow-hidden">
+        <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+            <DialogContent className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-[92vh] flex flex-col p-0 gap-0 border-border bg-card overflow-hidden rounded-none sm:rounded-lg focus-visible:outline-none">
                 <div className="flex flex-col border-b border-border bg-card/50">
                     <div className="flex items-start justify-between p-6 pb-2">
                         <div>
@@ -406,11 +406,11 @@ export default function QuizModal({ isOpen, onClose, courseId, courseName, noteP
                                             </h3>
                                             <p className="text-gray-200 font-bold">Test tamamlandı.</p>
                                         </div>
-                                        <div className="flex gap-4 w-full justify-center">
-                                            <Button variant="secondary" onClick={onClose}>
+                                        <div className="flex flex-col sm:flex-row gap-4 w-full justify-center px-4">
+                                            <Button variant="secondary" onClick={onClose} className="w-full sm:w-auto">
                                                 Kapat
                                             </Button>
-                                            <Button onClick={handleRetry} className="gap-2">
+                                            <Button onClick={handleRetry} className="gap-2 w-full sm:w-auto">
                                                 <RefreshCw size={18} />
                                                 Yeni Test
                                             </Button>

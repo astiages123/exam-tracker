@@ -62,6 +62,14 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
     const [showFullHistory, setShowFullHistory] = useState(null); // 'duration', 'videos' or null
     const [activeTab, setActiveTab] = useState('list'); // 'list' or 'graph'
     const [confirmDelete, setConfirmDelete] = useState(null); // { sessionIds: [] } or null
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 640);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
@@ -200,7 +208,8 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
         });
 
         let result = [];
-        for (let i = 6; i >= 0; i--) {
+        const loopDays = isMobile ? 3 : 6;
+        for (let i = loopDays; i >= 0; i--) {
             const d = new Date();
             d.setDate(d.getDate() - i);
             const dateKey = d.toLocaleDateString("en-CA");
@@ -232,7 +241,8 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
         });
 
         let result = [];
-        for (let i = 6; i >= 0; i--) {
+        const loopDays = isMobile ? 3 : 6;
+        for (let i = loopDays; i >= 0; i--) {
             const d = new Date();
             d.setDate(d.getDate() - i);
             const dateKey = d.toLocaleDateString("en-CA");
@@ -286,7 +296,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                     onClose();
                 }
             }}>
-                <DialogContent className="max-w-5xl max-h-[85vh] h-[85vh] flex flex-col p-0 gap-0 bg-background border-border shadow-2xl overflow-hidden focus-visible:outline-none">
+                <DialogContent className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-[85vh] flex flex-col p-0 gap-0 bg-background border-border shadow-2xl overflow-hidden focus-visible:outline-none rounded-none sm:rounded-lg">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full w-full">
                         {/* Header */}
                         <div className="p-6 border-b border-border flex justify-between items-start bg-card/50">
@@ -303,27 +313,27 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                             Detaylı çalışma raporu ve istatistikler.
                                         </DialogDescription>
                                     </DialogHeader>
-                                    <TabsList className="mt-2 bg-muted/50">
+                                    <TabsList className="mt-2 bg-muted/50 w-full sm:w-auto grid grid-cols-2 sm:flex">
                                         <TabsTrigger value="list" className="gap-2">
-                                            <List size={14} /> Oturumlar
+                                            <List size={14} /> <span className="hidden xs:inline">Oturumlar</span>
                                         </TabsTrigger>
                                         <TabsTrigger value="graph" className="gap-2">
-                                            <BarChart2 size={14} /> Çalışma Grafiği
+                                            <BarChart2 size={14} /> <span className="hidden xs:inline">Çalışma Grafiği</span>
                                         </TabsTrigger>
                                     </TabsList>
                                 </div>
                             </div>
                             <DialogClose asChild>
-                                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted text-muted-foreground hover:text-white">
+                                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted text-muted-foreground hover:text-white shrink-0">
                                     <X size={24} />
                                 </Button>
                             </DialogClose>
                         </div>
 
                         {/* Stats */}
-                        <div className="px-4 py-6 md:px-6 grid grid-cols-3 gap-3 border-b border-border bg-muted/20">
+                        <div className="px-4 py-6 md:px-6 grid grid-cols-1 sm:grid-cols-3 gap-3 border-b border-border bg-muted/20">
                             <Card className="bg-card border-border/50 shadow-none">
-                                <CardContent className="p-3">
+                                <CardContent className="p-3 flex flex-row sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
                                     <span className="text-[10px] text-zinc-300 uppercase tracking-wider font-semibold">Toplam Çalışma</span>
                                     <div className="text-base sm:text-lg font-mono font-bold text-zinc-200 mt-0.5">
                                         {totalHours}sa {remainingMins}dk
@@ -331,7 +341,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                 </CardContent>
                             </Card>
                             <Card className="bg-card border-border/50 shadow-none">
-                                <CardContent className="p-3">
+                                <CardContent className="p-3 flex flex-row sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
                                     <span className="text-[10px] text-zinc-300 uppercase tracking-wider font-semibold">Toplam Mola</span>
                                     <div className="text-base sm:text-lg font-mono font-bold text-zinc-200 mt-0.5">
                                         {totalBreakHours}sa {remainingBreakMins}dk
@@ -339,7 +349,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                 </CardContent>
                             </Card>
                             <Card className="bg-card border-border/50 shadow-none">
-                                <CardContent className="p-3">
+                                <CardContent className="p-3 flex flex-row sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
                                     <span className="text-[10px] text-zinc-300 uppercase tracking-wider font-semibold">Toplam Duraklatma</span>
                                     <div className="text-base sm:text-lg font-mono font-bold text-zinc-200 mt-0.5 whitespace-nowrap">
                                         {totalPauseHours > 0 ? `${totalPauseHours}sa ` : ''}{remainingPauseMins}dk
@@ -386,7 +396,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 mt-2 sm:mt-0">
+                                                            <div className="flex items-center justify-end w-full sm:w-auto gap-3 mt-2 sm:mt-0">
                                                                 <div className="text-right">
                                                                     <span className="font-mono font-bold text-zinc-200 text-lg">{Math.round(group.totalDuration / 60)}</span>
                                                                     <span className="text-xs text-zinc-300 ml-1 uppercase font-bold">dk</span>
@@ -398,7 +408,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                                                         e.stopPropagation();
                                                                         setConfirmDelete({ sessionIds: group.sessionIds });
                                                                     }}
-                                                                    className="h-8 w-8 text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10"
+                                                                    className="h-8 w-8 text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 shrink-0"
                                                                     title="Kaydı Sil"
                                                                 >
                                                                     <Trash2 size={16} />
@@ -437,7 +447,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                                         </Button>
                                                     </div>
                                                     {chartData.length > 0 ? (
-                                                        <div className="w-full h-[260px]">
+                                                        <div className="w-full h-[200px] sm:h-[260px]">
                                                             <ResponsiveContainer width="100%" height="100%">
                                                                 <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                                                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
@@ -481,7 +491,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                                         </Button>
                                                     </div>
                                                     {videoChartData.length > 0 ? (
-                                                        <div className="w-full h-[260px]">
+                                                        <div className="w-full h-[200px] sm:h-[260px]">
                                                             <ResponsiveContainer width="100%" height="100%">
                                                                 <LineChart data={videoChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                                                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
@@ -526,7 +536,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
 
             {/* Full History Graph Modal */}
             <Dialog open={!!showFullHistory} onOpenChange={(open) => !open && setShowFullHistory(null)}>
-                <DialogContent className="max-w-5xl max-h-[85vh] h-[85vh] p-0 overflow-hidden flex flex-col bg-background border-border shadow-2xl">
+                <DialogContent className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-[85vh] p-0 overflow-hidden flex flex-col bg-background border-border shadow-2xl rounded-none sm:rounded-lg">
                     <div className="p-6 border-b border-border bg-card/50 flex justify-between items-center">
                         <div>
                             <DialogTitle className="text-lg font-bold text-foreground">
@@ -834,7 +844,7 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                 onClose();
             }
         }}>
-            <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden flex flex-col bg-background border-border p-0 gap-0 shadow-2xl">
+            <DialogContent className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:max-h-[90vh] overflow-hidden flex flex-col bg-background border-border p-0 gap-0 shadow-2xl rounded-none sm:rounded-lg">
                 <div className="p-3 border-b border-border bg-card/90 flex justify-between items-start shrink-0 relative z-20 backdrop-blur-md">
                     <div className="flex items-center gap-4">
                         <div className="bg-primary/10 p-3 rounded-xl border border-primary/10">
