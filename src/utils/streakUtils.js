@@ -37,47 +37,56 @@ const isWeekend = (dateStr) => {
 
 /**
  * Calculates the current streak based on an activity log.
- * @param {Object} activityLog - JSON object where keys are YYYY-MM-DD and values are boolean true.
+ * @param {Object} activityLog - JSON object where keys are YYYY-MM-DD and values are activity counts or boolean.
  * @param {Date} [referenceDate] - The date to calculate streak relative to (default: today).
  */
 export const calculateStreak = (activityLog, referenceDate = new Date()) => {
-    if (!activityLog || Object.keys(activityLog).length === 0) return 0;
+    if (!activityLog) return 0;
 
-    // Use a pointer starting from "yesterday" relative to referenceDate
-    // But first, check if "today" has activity. If so, streak includes today.
+    // 1. Normalize keys to ensure NO spaces and NO malformed dates
+    const cleanLog = {};
+    Object.keys(activityLog).forEach(key => {
+        const cleanKey = key.trim().replace(/\s+/g, '');
+        if (cleanKey) cleanLog[cleanKey] = activityLog[key];
+    });
+
+    if (Object.keys(cleanLog).length === 0) return 0;
+
+    const ANCHOR_STR = '2025-12-08';
     let currentStreak = 0;
 
-    const todayStr = getLocalYMD(referenceDate);
+    // Start checking from Today
+    let checkDate = new Date(referenceDate);
+    const todayStr = getLocalYMD(checkDate);
 
-    // Check if we have activity today
-    if (activityLog[todayStr]) {
+    // Check if today is active
+    if (cleanLog[todayStr]) {
         currentStreak++;
     }
 
-    // Now loop backwards from yesterday
-    let checkDate = new Date(referenceDate);
+    // Move to Yesterday and start the loop
     checkDate.setDate(checkDate.getDate() - 1);
 
     while (true) {
-        // Stop if we go before Anchor Date
-        if (checkDate < ANCHOR_DATE) break;
-
         const dateStr = getLocalYMD(checkDate);
-        const hasActivity = !!activityLog[dateStr];
+
+        // Stop if we go before Anchor Date (String comparison is safer)
+        if (dateStr < ANCHOR_STR) break;
+
+        const hasActivity = !!cleanLog[dateStr];
         const isWeekendDay = isWeekend(dateStr);
 
         if (hasActivity) {
             currentStreak++;
-        } else if (!hasActivity && isWeekendDay) {
-            // It's a weekend and no activity -> Rest day.
-            // Streak doesn't break, but doesn't increment.
-            // Just continue to previous day.
+        } else if (isWeekendDay) {
+            // Weekend rest day: Don't break streak, don't increment.
+            // Just move to the previous day.
         } else {
-            // No activity on a weekday -> Streak broken.
+            // Missing activity on a weekday: Streak broken.
             break;
         }
 
-        // Move to previous day
+        // Move to the previous day
         checkDate.setDate(checkDate.getDate() - 1);
     }
 
