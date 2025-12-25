@@ -564,6 +564,7 @@ export default function App() {
             totalHours={totalHours}
             completedHours={completedHours}
             sessions={sessions}
+            videoHistory={videoHistory}
             onClose={() => setShowRankModal(false)}
           />
         </Suspense>

@@ -7,23 +7,30 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogDe
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 
-const RankModal = ({ currentRank, onClose, totalHours = 0, completedHours = 0, sessions = [] }) => {
+const RankModal = ({ currentRank, onClose, totalHours = 0, completedHours = 0, sessions = [], videoHistory = [] }) => {
     const currentRankIndex = RANKS.findIndex(r => r.title === currentRank.title);
 
-    // Calculate daily average study hours
+    // Calculate daily average study hours based on video duration
     const stats = React.useMemo(() => {
-        const workSessions = sessions.filter(s => s.type === 'work' && s.duration);
-        if (workSessions.length === 0) return { avg: 0, uniqueDays: 0 };
+        const daySet = new Set();
 
-        const totalWorkMins = workSessions.reduce((acc, s) => acc + (s.duration / 60), 0);
-        const daySet = new Set(workSessions.map(s => new Date(s.timestamp).toLocaleDateString()));
+        // Count days where work sessions occurred
+        sessions.filter(s => s.type === 'work').forEach(s => {
+            daySet.add(new Date(s.timestamp).toLocaleDateString());
+        });
+
+        // Count days where videos were completed
+        videoHistory.forEach(h => {
+            daySet.add(new Date(h.timestamp).toLocaleDateString());
+        });
+
         const uniqueDays = daySet.size;
 
         return {
-            avg: totalWorkMins / (uniqueDays || 1) / 60, // in hours
+            avg: uniqueDays > 0 ? (completedHours / uniqueDays) : 0, // in hours
             uniqueDays
         };
-    }, [sessions]);
+    }, [sessions, videoHistory, completedHours]);
 
     const formatAvg = (h) => {
         const hrs = Math.floor(h);

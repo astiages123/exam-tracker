@@ -29,16 +29,21 @@ const CustomTooltip = ({ active, payload }) => {
             valueText = `${payload[0].value} video`;
         }
 
+        // Get the relevant course list based on the active metric
+        const displayCourses = isDuration ? data.workCourses : data.videoCourses;
+
         return (
             <div className="bg-card border border-secondary p-3 rounded-lg shadow-xl min-w-[150px]">
                 <p className="text-muted-foreground text-xs mb-1 font-medium border-b border-white/5 pb-1">{data.fullDate}</p>
                 <p className="text-primary font-bold text-sm mt-1">
                     {valueText}
                 </p>
-                {data.courses && data.courses.length > 0 && (
+                {displayCourses && displayCourses.length > 0 && (
                     <div className="mt-2 space-y-1">
-                        <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Çalışılan Dersler:</p>
-                        {data.courses.map((course, idx) => (
+                        <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                            {isDuration ? 'Çalışılan Dersler:' : 'İzlenen Dersler:'}
+                        </p>
+                        {displayCourses.map((course, idx) => (
                             <div key={idx} className="text-xs text-foreground flex items-center gap-1.5 font-medium">
                                 <div className="w-1.5 h-1.5 rounded-full bg-primary/40" />
                                 {course}
@@ -207,7 +212,8 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                 hours: parseFloat((dayInfo.seconds / 3600).toFixed(1)),
                 fullDate: d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }),
                 displayDate: d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }),
-                courses: courseNames
+                workCourses: courseNames,
+                videoCourses: []
             });
         }
         return filterWeekends(result);
@@ -238,7 +244,8 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                 count: dayInfo.count,
                 fullDate: d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }),
                 displayDate: d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }),
-                courses: courseNames
+                workCourses: [],
+                videoCourses: courseNames
             });
         }
         return filterWeekends(result);
@@ -249,16 +256,16 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
         workSessions.forEach(s => {
             if (!s.timestamp) return;
             const dateStr = new Date(s.timestamp).toLocaleDateString("en-CA");
-            if (!dates[dateStr]) dates[dateStr] = { hours: 0, count: 0, date: dateStr, courseIds: new Set() };
+            if (!dates[dateStr]) dates[dateStr] = { hours: 0, count: 0, date: dateStr, workCourseIds: new Set(), videoCourseIds: new Set() };
             dates[dateStr].hours += (s.duration || 0) / 3600;
-            if (s.courseId) dates[dateStr].courseIds.add(s.courseId);
+            if (s.courseId) dates[dateStr].workCourseIds.add(s.courseId);
         });
         filteredVideoHistory.forEach(h => {
             if (!h.timestamp) return;
             const dateStr = new Date(h.timestamp).toLocaleDateString("en-CA");
-            if (!dates[dateStr]) dates[dateStr] = { hours: 0, count: 0, date: dateStr, courseIds: new Set() };
+            if (!dates[dateStr]) dates[dateStr] = { hours: 0, count: 0, date: dateStr, workCourseIds: new Set(), videoCourseIds: new Set() };
             dates[dateStr].count += 1;
-            if (h.courseId) dates[dateStr].courseIds.add(h.courseId);
+            if (h.courseId) dates[dateStr].videoCourseIds.add(h.courseId);
         });
         return Object.values(dates)
             .sort((a, b) => a.date.localeCompare(b.date))
@@ -267,7 +274,8 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                 hours: parseFloat(item.hours.toFixed(1)),
                 displayDate: new Date(item.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }),
                 fullDate: new Date(item.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }),
-                courses: Array.from(item.courseIds).map(id => getCourseName(id))
+                workCourses: Array.from(item.workCourseIds).map(id => getCourseName(id)),
+                videoCourses: Array.from(item.videoCourseIds).map(id => getCourseName(id))
             }));
     }, [workSessions, filteredVideoHistory, getCourseName]);
 
