@@ -155,7 +155,7 @@ export default function App() {
     setProgressData({});
     setSessions([]);
     setSchedule({});
-    setActivityLog({});
+    setVideoHistory([]); // Reset history too since activityLog is derived from it
 
     async function loadData() {
       if (user) {
@@ -289,8 +289,6 @@ export default function App() {
       courseId: overrideCourseId || lastActiveCourseId,
       pauses: pauses || [] // [NEW] Store pauses
     };
-    setSessions(prev => [...prev, newSession]);
-
     setSessions(prev => [...prev, newSession]);
 
     // Derived hook handles activity log update automatically
