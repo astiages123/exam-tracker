@@ -5,6 +5,7 @@ import { Play, Pause, X, ChevronDown, Check, CircleCheckBig, Coffee } from 'luci
 import { motion, AnimatePresence } from 'framer-motion';
 import { playNotificationSound, initAudio } from '../utils/sound';
 import { requestNotificationPermission, sendNotification } from '../utils/notification';
+import { useNotification } from '../context/NotificationContext'; // [NEW]
 
 const WORK_DURATION = 50 * 60;
 const BREAK_DURATION = 10 * 60;
@@ -32,6 +33,8 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         const saved = localStorage.getItem(STORAGE_KEYS.COURSE_ID);
         return (saved && saved !== 'null') ? saved : (initialCourse ? initialCourse.id : '');
     });
+
+    const { showConfirm } = useNotification(); // [NEW]
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -320,7 +323,14 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         setView('selection');
     };
 
-    const handleCancel = () => {
+    const handleCancel = async () => {
+        // [NEW] Confirmation for cancelling active session
+        const confirmed = await showConfirm(
+            "Çalışmayı İptal Et",
+            "Bu oturumu iptal etmek istediğine emin misin? Süre kaydedilmeyecek."
+        );
+        if (!confirmed) return;
+
         setIsActive(false);
         clearInterval(timerRef.current);
         clearSessionData();
@@ -385,7 +395,15 @@ export default function PomodoroTimer({ initialCourse, courses, sessionsCount, o
         setIsActive(true); // Automatically start break
     };
 
-    const handleFinishSession = () => {
+
+    const handleFinishSession = async () => {
+        // [NEW] Confirmation for finishing session
+        const confirmed = await showConfirm(
+            "Oturumu Bitir",
+            "Mevcut oturumu bitirip sonuçları kaydetmek istiyor musun?"
+        );
+        if (!confirmed) return;
+
         setIsActive(false);
         clearInterval(timerRef.current);
         playNotificationSound();

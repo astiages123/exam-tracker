@@ -12,6 +12,7 @@ import { supabase } from './lib/supabaseClient';
 import Login from './components/Login';
 import StreakDisplay from './components/StreakDisplay';
 import { calculateStreak } from './utils/streakUtils';
+import { useActivityTracking } from './hooks/useActivityTracking';
 
 // --- Lazy-loaded Components (Code-splitting) ---
 const ScheduleModal = lazy(() => import('./components/ScheduleModal'));
@@ -85,8 +86,10 @@ export default function App() {
   const [progressData, setProgressData] = useState({});
   const [sessions, setSessions] = useState([]); // [{ timestamp, duration, type, courseId }]
   const [schedule, setSchedule] = useState({}); // { "Pazartesi": [{ time: "09:00", subject: "Math" }] }
-  const [activityLog, setActivityLog] = useState({}); // { "YYYY-MM-DD": true }
   const [videoHistory, setVideoHistory] = useState([]); // [NEW] [{ videoId: string, timestamp: string, courseId: string }]
+
+  // [REFACTORED] Activity Log is now derived from sessions and history
+  const activityLog = useActivityTracking(sessions, videoHistory, isDataLoaded);
   const [lastActiveCourseId, setLastActiveCourseId] = useState(null); // Track last interacted course
   const [isDataLoaded, setIsDataLoaded] = useState(false); // [FIX] Prevent autosave race condition
 
@@ -167,14 +170,10 @@ export default function App() {
           setSessions(data.sessions || []);
           setSchedule(data.schedule || {});
 
-          // Normalize activity_log keys (remove spaces from previous bug)
-          const rawLog = data.activity_log || {};
-          const normalizedLog = {};
-          Object.keys(rawLog).forEach(key => {
-            const cleanKey = key.replace(/\s+/g, ''); // "2025 -12 -25 " -> "2025-12-25"
-            normalizedLog[cleanKey] = rawLog[key];
-          });
-          setActivityLog(normalizedLog);
+          setSchedule(data.schedule || {});
+
+          // Activity Log is now derived, no need to load it into state manually
+          // setActivityLog(normalizedLog);
 
           setVideoHistory(data.video_history || []); // [NEW] Set history
         } else if (error && error.code !== 'PGRST116') { // PGRST116 is "no rows returned"
@@ -292,12 +291,10 @@ export default function App() {
     };
     setSessions(prev => [...prev, newSession]);
 
-    // [FIX] Immediately mark today as active
-    const todayStr = getLocalYMD(new Date());
-    setActivityLog(prev => ({
-      ...prev,
-      [todayStr]: (prev[todayStr] || 0) + 1
-    }));
+    setSessions(prev => [...prev, newSession]);
+
+    // Derived hook handles activity log update automatically
+
   };
 
   const handleUpdateSession = (oldTimestamp, updatedSession) => {
@@ -316,77 +313,9 @@ export default function App() {
     return `${year}-${month}-${day}`;
   };
 
-  // --- Activity Tracking Logic (Robust Daily Activity) ---
-  useEffect(() => {
-    if (!isDataLoaded) return;
+  // --- Activity Tracking Logic (Refactored to Hook) ---
+  // The complex useEffect has been replaced by useActivityTracking
 
-    const todayStr = getLocalYMD(new Date());
-
-    setActivityLog(prev => {
-      const nextLog = { ...prev };
-
-      // 1. Session-based Video Progress (Current Session)
-      const countItems = (data) => Object.values(data).reduce((acc, items) => acc + (items?.length || 0), 0);
-      const currentTotal = countItems(progressData);
-      const storageKey = `exam_tracker_baseline_${todayStr}`;
-      let baseline = parseInt(localStorage.getItem(storageKey));
-
-      if (isNaN(baseline)) {
-        baseline = currentTotal;
-        localStorage.setItem(storageKey, baseline.toString());
-      }
-      const netProgress = Math.max(0, currentTotal - baseline);
-
-      // 2. Video History Check (All Day - must be currently in progressData)
-      const hasVideoToday = videoHistory.some(h => {
-        const isToday = getLocalYMD(new Date(h.timestamp)) === todayStr;
-        return isToday && (progressData[h.courseId] || []).includes(h.videoId);
-      });
-
-      // 3. Work Sessions Check (All Day)
-      const hasWorkSessionToday = sessions.some(s =>
-        s.type === 'work' && getLocalYMD(new Date(s.timestamp)) === todayStr
-      );
-
-      // 4. Determine Active State
-      const isCurrentlyActive = netProgress > 0 || hasVideoToday || hasWorkSessionToday;
-
-      if (isCurrentlyActive) {
-        // If we found ANY activity today, ensure today is marked active (Clean key only)
-        const newVal = Math.max(1, netProgress + (hasWorkSessionToday ? 1 : 0));
-        if (nextLog[todayStr] !== newVal) {
-          nextLog[todayStr] = newVal;
-          return nextLog;
-        }
-      } else {
-        // [UNDO LOGIC] If no activity, we must remove ALL possible keys for today 
-        // (including legacy malformed ones with spaces)
-        let changed = false;
-        Object.keys(nextLog).forEach(key => {
-          if (key.replace(/\s+/g, '') === todayStr) {
-            delete nextLog[key];
-            changed = true;
-          }
-        });
-        if (changed) return nextLog;
-      }
-
-      // Backfill past sessions (Safety merge)
-      let hasBackfillChanges = false;
-      sessions.forEach(session => {
-        if (session.type === 'work') {
-          const sessionDate = getLocalYMD(new Date(session.timestamp));
-          if (!nextLog[sessionDate]) {
-            nextLog[sessionDate] = 1;
-            hasBackfillChanges = true;
-          }
-        }
-      });
-
-      return hasBackfillChanges ? nextLog : prev;
-    });
-
-  }, [progressData, isDataLoaded, sessions, videoHistory]); // Added videoHistory dependency
 
   // Refactored Toggle Handler for specific video index with auto-complete previous and auto-uncheck subsequent
   // Logic: Clicking video N ensures 1..N are checked, and N+1..End are unchecked.
@@ -406,7 +335,9 @@ export default function App() {
     const removedIds = oldCompletedIds.filter(id => !newCompletedIds.includes(id));
 
     // --- History Logic ---
-    if (addedIds.length > 0 || removedIds.length > 0) {
+    // Only add new records - we don't remove records when unchecking
+    // This preserves the original completion timestamp when re-completing a video
+    if (addedIds.length > 0) {
       setVideoHistory(prevHistory => {
         let updatedHistory = [...prevHistory];
 
@@ -421,13 +352,6 @@ export default function App() {
             });
           }
         });
-
-        // Remove records for un-checked videos
-        if (removedIds.length > 0) {
-          updatedHistory = updatedHistory.filter(h =>
-            !(h.courseId === courseId && removedIds.includes(h.videoId))
-          );
-        }
 
         return updatedHistory;
       });
@@ -552,7 +476,26 @@ export default function App() {
 
 
 
-  if (loading) return null; // Or a loading spinner
+  if (loading) return <ModalLoader />;
+
+  // [NEW] Supabase Null Check
+  if (!supabase) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground p-4">
+        <div className="bg-destructive/10 p-6 rounded-2xl border border-destructive/20 max-w-md w-full text-center">
+          <h2 className="text-2xl font-bold text-destructive mb-2">Veritabanı Bağlantı Hatası</h2>
+          <p className="text-muted-foreground mb-4">
+            Supabase bağlantısı kurulamadı. Lütfen <code className="bg-black/20 px-1.5 py-0.5 rounded text-sm">.env</code> dosyasındaki API anahtarlarını kontrol edin.
+          </p>
+          <div className="text-xs text-muted-foreground/50 font-mono bg-black/5 p-2 rounded">
+            VITE_SUPABASE_URL<br />
+            VITE_SUPABASE_ANON_KEY
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!user) return <Login />;
 
   const flatCourses = courseData.flatMap(cat => cat.courses);

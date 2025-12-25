@@ -6,7 +6,7 @@
  */
 
 import {
-    TrendingUp,
+    Banknote,
     Scale,
     PieChart,
     Calculator,
@@ -67,7 +67,7 @@ export const CATEGORY_STYLES = {
 // ============================================================================
 
 export const CATEGORY_ICONS = {
-    'EKONOMİ': TrendingUp,
+    'EKONOMİ': Banknote,
     'HUKUK': Scale,
     'MUHASEBE - İŞLETME - MALİYE': PieChart,
     'MATEMATİK - BANKA': Calculator,

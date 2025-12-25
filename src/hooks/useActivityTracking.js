@@ -1,0 +1,43 @@
+import { useState, useEffect, useMemo } from 'react';
+
+/**
+ * Returns the date string in YYYY-MM-DD format for a given date object
+ * Uses local system time logic consistent with the rest of the app.
+ */
+const getLocalYMD = (date) => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
+export const useActivityTracking = (sessions = [], videoHistory = [], isDataLoaded = false) => {
+    const [activityLog, setActivityLog] = useState({});
+
+    useEffect(() => {
+        if (!isDataLoaded) return;
+
+        // Calculate activity log purely from source of truth (sessions & history)
+        // This eliminates the need for volatile localStorage baselines
+        const newActivityLog = {};
+
+        // 1. Map Work Sessions to Dates
+        sessions.forEach(session => {
+            if (session.type === 'work') {
+                const dateStr = getLocalYMD(new Date(session.timestamp));
+                newActivityLog[dateStr] = (newActivityLog[dateStr] || 0) + 1;
+            }
+        });
+
+        // 2. Map Video History to Dates
+        videoHistory.forEach(historyItem => {
+            const dateStr = getLocalYMD(new Date(historyItem.timestamp));
+            newActivityLog[dateStr] = (newActivityLog[dateStr] || 0) + 1;
+        });
+
+        setActivityLog(newActivityLog);
+
+    }, [sessions, videoHistory, isDataLoaded]);
+
+    return activityLog;
+};
