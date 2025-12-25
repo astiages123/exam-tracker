@@ -360,22 +360,26 @@ export default function App() {
       );
 
       // 4. Determine Active State
-      const currentVal = nextLog[todayStr];
       const isCurrentlyActive = netProgress > 0 || hasVideoToday || hasWorkSessionToday;
 
       if (isCurrentlyActive) {
-        // If we found ANY activity today, set to 1 (or more)
+        // If we found ANY activity today, ensure today is marked active (Clean key only)
         const newVal = Math.max(1, netProgress + (hasWorkSessionToday ? 1 : 0));
-        if (currentVal !== newVal) {
+        if (nextLog[todayStr] !== newVal) {
           nextLog[todayStr] = newVal;
           return nextLog;
         }
       } else {
-        // No activity and was previously active today -> Remove it
-        if (currentVal !== undefined) {
-          delete nextLog[todayStr];
-          return nextLog;
-        }
+        // [UNDO LOGIC] If no activity, we must remove ALL possible keys for today 
+        // (including legacy malformed ones with spaces)
+        let changed = false;
+        Object.keys(nextLog).forEach(key => {
+          if (key.replace(/\s+/g, '') === todayStr) {
+            delete nextLog[key];
+            changed = true;
+          }
+        });
+        if (changed) return nextLog;
       }
 
       // Backfill past sessions (Safety merge)
