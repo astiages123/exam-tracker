@@ -327,64 +327,53 @@ export default function App() {
     return `${year}-${month}-${day}`;
   };
 
-  // --- Activity Tracking Logic (Refactored to Sticky Baseline + Session Integration) ---
+  // --- Activity Tracking Logic (Robust Daily Activity) ---
   useEffect(() => {
     if (!isDataLoaded) return;
 
-    // Helper to count total items
-    const countItems = (data) => Object.values(data).reduce((acc, courseItems) => acc + (courseItems?.length || 0), 0);
-    const currentTotal = countItems(progressData);
-
-    // Sticky Baseline Logic
     const todayStr = getLocalYMD(new Date());
-    const storageKey = `exam_tracker_baseline_${todayStr}`;
-
-    let baseline = parseInt(localStorage.getItem(storageKey));
-
-    if (isNaN(baseline)) {
-      // First load of the day: Set baseline to current total
-      baseline = currentTotal;
-      localStorage.setItem(storageKey, baseline.toString());
-    }
-
-    // Calculate net points from videos
-    const netProgress = Math.max(0, currentTotal - baseline);
 
     setActivityLog(prev => {
       const nextLog = { ...prev };
-      const currentVal = nextLog[todayStr];
 
-      // 1. Calculate Session Count for Today
-      const sessionCount = sessions.reduce((acc, session) => {
-        if (session.type === 'work' && getLocalYMD(new Date(session.timestamp)) === todayStr) {
-          return acc + 1;
-        }
-        return acc;
-      }, 0);
+      // 1. Session-based Video Progress (Current Session)
+      const countItems = (data) => Object.values(data).reduce((acc, items) => acc + (items?.length || 0), 0);
+      const currentTotal = countItems(progressData);
+      const storageKey = `exam_tracker_baseline_${todayStr}`;
+      let baseline = parseInt(localStorage.getItem(storageKey));
 
-      // 2. Total Daily Activity
-      const totalDailyActivity = netProgress + sessionCount;
+      if (isNaN(baseline)) {
+        baseline = currentTotal;
+        localStorage.setItem(storageKey, baseline.toString());
+      }
+      const netProgress = Math.max(0, currentTotal - baseline);
 
-      if (totalDailyActivity > 0) {
-        if (currentVal !== totalDailyActivity) {
-          nextLog[todayStr] = totalDailyActivity;
-          return nextLog; // Update
-        }
-      } else {
-        // If 0 activity, remove the day's record
-        if (currentVal !== undefined) {
-          delete nextLog[todayStr];
-          return nextLog; // Remove
+      // 2. Video History Check (All Day)
+      const hasVideoToday = videoHistory.some(h => getLocalYMD(new Date(h.timestamp)) === todayStr);
+
+      // 3. Work Sessions Check (All Day)
+      const hasWorkSessionToday = sessions.some(s =>
+        s.type === 'work' && getLocalYMD(new Date(s.timestamp)) === todayStr
+      );
+
+      // 4. Determine Active State
+      if (netProgress > 0 || hasVideoToday || hasWorkSessionToday) {
+        // If we found ANY activity today, set to 1 (or more)
+        const currentVal = nextLog[todayStr] || 0;
+        const newVal = Math.max(1, netProgress + (hasWorkSessionToday ? 1 : 0));
+
+        if (currentVal !== newVal) {
+          nextLog[todayStr] = newVal;
+          return nextLog;
         }
       }
 
-      // 3. Backfill / Merge from Past Sessions (preserve history)
+      // Backfill past sessions (Safety merge)
       let hasBackfillChanges = false;
       sessions.forEach(session => {
         if (session.type === 'work') {
           const sessionDate = getLocalYMD(new Date(session.timestamp));
-          // Don't overwrite today's logic above, only backfill past
-          if (sessionDate !== todayStr && !nextLog[sessionDate]) {
+          if (!nextLog[sessionDate]) {
             nextLog[sessionDate] = 1;
             hasBackfillChanges = true;
           }
@@ -394,7 +383,7 @@ export default function App() {
       return hasBackfillChanges ? nextLog : prev;
     });
 
-  }, [progressData, isDataLoaded, sessions]); // Added sessions dependency
+  }, [progressData, isDataLoaded, sessions, videoHistory]); // Added videoHistory dependency
 
   // Refactored Toggle Handler for specific video index with auto-complete previous and auto-uncheck subsequent
   // Logic: Clicking video N ensures 1..N are checked, and N+1..End are unchecked.
