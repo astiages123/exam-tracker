@@ -348,8 +348,11 @@ export default function App() {
       }
       const netProgress = Math.max(0, currentTotal - baseline);
 
-      // 2. Video History Check (All Day)
-      const hasVideoToday = videoHistory.some(h => getLocalYMD(new Date(h.timestamp)) === todayStr);
+      // 2. Video History Check (All Day - must be currently in progressData)
+      const hasVideoToday = videoHistory.some(h => {
+        const isToday = getLocalYMD(new Date(h.timestamp)) === todayStr;
+        return isToday && (progressData[h.courseId] || []).includes(h.videoId);
+      });
 
       // 3. Work Sessions Check (All Day)
       const hasWorkSessionToday = sessions.some(s =>
@@ -357,13 +360,20 @@ export default function App() {
       );
 
       // 4. Determine Active State
-      if (netProgress > 0 || hasVideoToday || hasWorkSessionToday) {
-        // If we found ANY activity today, set to 1 (or more)
-        const currentVal = nextLog[todayStr] || 0;
-        const newVal = Math.max(1, netProgress + (hasWorkSessionToday ? 1 : 0));
+      const currentVal = nextLog[todayStr];
+      const isCurrentlyActive = netProgress > 0 || hasVideoToday || hasWorkSessionToday;
 
+      if (isCurrentlyActive) {
+        // If we found ANY activity today, set to 1 (or more)
+        const newVal = Math.max(1, netProgress + (hasWorkSessionToday ? 1 : 0));
         if (currentVal !== newVal) {
           nextLog[todayStr] = newVal;
+          return nextLog;
+        }
+      } else {
+        // No activity and was previously active today -> Remove it
+        if (currentVal !== undefined) {
+          delete nextLog[todayStr];
           return nextLog;
         }
       }
@@ -392,13 +402,6 @@ export default function App() {
   // [MODIFIED] Now also handles videoHistory updates
   const updateProgress = (courseId, newCompletedIds) => {
     setLastActiveCourseId(courseId);
-
-    // [FIX] Explicitly mark today as active in activityLog when any progress is made
-    const todayStr = getLocalYMD(new Date());
-    setActivityLog(prev => {
-      if (prev[todayStr]) return prev; // Already marked active today
-      return { ...prev, [todayStr]: 1 };
-    });
 
     // --- History Logic ---
     setProgressData(prev => {
