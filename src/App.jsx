@@ -433,13 +433,12 @@ export default function App() {
             }
           });
 
-          // [MODIFIED] Do not remove records for un-checked videos to preserve history
-          // Filtering for reports is now handled in ReportModal using progressData
-          /*
+          // Remove records for un-checked videos to keep database clean
           if (removedIds.length > 0) {
-            updatedHistory = updatedHistory.filter(h => h.courseId !== courseId || !removedIds.includes(h.videoId));
+            updatedHistory = updatedHistory.filter(h =>
+              !(h.courseId === courseId && removedIds.includes(h.videoId))
+            );
           }
-          */
 
           return updatedHistory;
         });
