@@ -1,5 +1,5 @@
 import React from 'react';
-import { Goal, Star, X } from 'lucide-react';
+import { Goal, Star } from 'lucide-react';
 import { RANKS } from '../data';
 import { cn } from '@/lib/utils';
 import { RANK_ICONS } from '@/constants/styles';

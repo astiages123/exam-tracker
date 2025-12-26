@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Calendar, Plus, Save, Edit2, Clock, X, Trash2, CalendarDays } from 'lucide-react';
+import { Plus, Save, Edit2, Clock, Trash2, CalendarDays } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DAYS, SUBJECT_STYLES, SUBJECT_OPTIONS } from '@/constants/styles';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";

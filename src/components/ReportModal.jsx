@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { X, Clock, Calendar, BookOpen, Trash2, BarChart2, List, MonitorPlay, Pause, Edit2, Save, ChartArea, ChartNoAxesCombined } from 'lucide-react';
+import { Clock, BookOpen, Trash2, BarChart2, List, MonitorPlay, Edit2, Save, ChartNoAxesCombined, Calendar, ChartArea, Pause } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { courseData } from '../data';
 import { COURSE_ICONS } from '../constants/styles';
@@ -12,9 +12,7 @@ import { Button } from "@/components/ui/button";
 import ConfirmModal from './ui/ConfirmModal';
 import ModalCloseButton from './ui/ModalCloseButton';
 
-const CATEGORY_STYLES = {
-    'DEFAULT': { bg: 'bg-white/5', border: 'border-white/10', text: 'text-muted-foreground' }
-};
+
 
 const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -175,25 +173,10 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
     }, [workSessions]);
 
     const filterWeekends = (data) => {
-        const satIndex = data.findIndex(r => {
-            const d = new Date(r.date);
-            return d.getDay() === 6;
+        return data.filter(item => {
+            const val = item.hours !== undefined ? item.hours : item.count;
+            return (val || 0) > 0;
         });
-        const sunIndex = data.findIndex(r => {
-            const d = new Date(r.date);
-            return d.getDay() === 0;
-        });
-
-        if (satIndex !== -1 && sunIndex !== -1) {
-            const satVal = data[satIndex].hours !== undefined ? data[satIndex].hours : data[satIndex].count;
-            const sunVal = data[sunIndex].hours !== undefined ? data[sunIndex].hours : data[sunIndex].count;
-            if (satVal > 0 && sunVal === 0) {
-                data.splice(sunIndex, 1);
-            } else if (sunVal > 0 && satVal === 0) {
-                data.splice(satIndex, 1);
-            }
-        }
-        return data;
     };
 
     const chartData = useMemo(() => {
@@ -220,7 +203,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
 
             result.push({
                 date: dateKey,
-                hours: parseFloat((dayInfo.seconds / 3600).toFixed(1)),
+                hours: dayInfo.seconds / 3600,
                 fullDate: d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }),
                 displayDate: d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }),
                 workCourses: courseNames,
@@ -283,7 +266,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
             .sort((a, b) => a.date.localeCompare(b.date))
             .map(item => ({
                 ...item,
-                hours: parseFloat(item.hours.toFixed(1)),
+                hours: item.hours,
                 displayDate: new Date(item.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }),
                 fullDate: new Date(item.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }),
                 workCourses: Array.from(item.workCourseIds).map(id => getCourseName(id)),
@@ -403,8 +386,14 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                                             </div>
                                                             <div className="flex items-center justify-end w-full sm:w-auto gap-3 mt-2 sm:mt-0">
                                                                 <div className="text-right">
-                                                                    <span className="font-mono font-bold text-zinc-200 text-lg">{Math.round(group.totalDuration / 60)}</span>
-                                                                    <span className="text-xs text-zinc-300 ml-1 uppercase font-bold">dk</span>
+                                                                    <span className="font-mono font-bold text-zinc-200 text-lg">
+                                                                        {(() => {
+                                                                            const mins = Math.round(group.totalDuration / 60);
+                                                                            const h = Math.floor(mins / 60);
+                                                                            const m = mins % 60;
+                                                                            return h > 0 ? `${h}sa ${m}dk` : `${m}dk`;
+                                                                        })()}
+                                                                    </span>
                                                                 </div>
                                                                 <Button
                                                                     variant="ghost"
@@ -457,7 +446,14 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                                                 <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                                                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                                                                     <XAxis dataKey="displayDate" stroke="#d4d4d8" fontSize={10} tickLine={false} axisLine={false} tickMargin={10} />
-                                                                    <YAxis stroke="#d4d4d8" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}s`} />
+                                                                    <YAxis
+                                                                        stroke="#d4d4d8"
+                                                                        fontSize={10}
+                                                                        tickLine={false}
+                                                                        axisLine={false}
+                                                                        allowDecimals={false}
+                                                                        tickFormatter={(v) => v === 0 ? "0" : `${v} sa`}
+                                                                    />
                                                                     <Tooltip content={<CustomTooltip />} />
                                                                     <Line type="monotone" dataKey="hours" stroke="#8b5cf6" strokeWidth={3} dot={{ fill: '#8b5cf6', r: 4 }} activeDot={{ r: 6 }} />
                                                                 </LineChart>
@@ -501,7 +497,15 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                                                 <LineChart data={videoChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                                                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                                                                     <XAxis dataKey="displayDate" stroke="#d4d4d8" fontSize={10} tickLine={false} axisLine={false} tickMargin={10} />
-                                                                    <YAxis stroke="#d4d4d8" fontSize={10} tickLine={false} axisLine={false} allowDecimals={false} />
+                                                                    <YAxis
+                                                                        stroke="#d4d4d8"
+                                                                        fontSize={10}
+                                                                        tickLine={false}
+                                                                        axisLine={false}
+                                                                        allowDecimals={false}
+                                                                        domain={[0, (max) => Math.max(12, Math.ceil(max / 3) * 3)]}
+                                                                        ticks={[0, 3, 6, 9, 12]}
+                                                                    />
                                                                     <Tooltip content={<CustomTooltip />} />
                                                                     <Line type="monotone" dataKey="count" name="Video" stroke="#ea580c" strokeWidth={3} dot={{ fill: '#ea580c', r: 4 }} activeDot={{ r: 6 }} />
                                                                 </LineChart>
@@ -582,8 +586,13 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                         fontSize={11}
                                         tickLine={false}
                                         axisLine={false}
-                                        tickFormatter={(v) => showFullHistory === 'duration' ? `${v}s` : v}
-                                        allowDecimals={showFullHistory === 'duration'}
+                                        allowDecimals={false}
+                                        tickFormatter={(v) => {
+                                            if (showFullHistory !== 'duration') return v;
+                                            return v === 0 ? "0" : `${v} sa`;
+                                        }}
+                                        ticks={showFullHistory === 'videos' ? [0, 3, 6, 9, 12] : undefined}
+                                        domain={showFullHistory === 'videos' ? [0, (max) => Math.max(12, Math.ceil(max / 3) * 3)] : [0, 'auto']}
                                     />
                                     <Tooltip content={<CustomTooltip />} />
                                     <Line

@@ -155,13 +155,18 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    overscroll-behavior-y: none; /* Prevent pull-to-refresh on body if app-like feel desired */
+    overscroll-behavior-y: none;
+    /* Prevent pull-to-refresh on body if app-like feel desired */
   }
 }
 
 @media screen and (max-width: 768px) {
-  input, select, textarea {
-    font-size: 16px !important; /* Prevent iOS zoom */
+
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+    /* Prevent iOS zoom */
   }
 }
 

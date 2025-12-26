@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X, ExternalLink, FileQuestion, Loader2 } from 'lucide-react';
+import { ExternalLink, FileQuestion, Loader2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogDescription } from "@/components/ui/dialog";
 import ModalCloseButton from "@/components/ui/ModalCloseButton";
 import { Button } from "@/components/ui/button";

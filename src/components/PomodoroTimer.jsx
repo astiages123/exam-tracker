@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, X, ChevronDown, Check, CircleCheckBig, Coffee, Timer, BookOpen } from 'lucide-react';
+import { Play, Pause, ChevronDown, Check, CircleCheckBig, Coffee, Timer, BookOpen } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import ModalCloseButton from "@/components/ui/ModalCloseButton";
 import { COURSE_ICONS } from '../constants/styles';

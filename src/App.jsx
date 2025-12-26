@@ -523,10 +523,6 @@ export default function App() {
             initialCourse={activeCourse}
             courses={flatCourses}
             sessionsCount={sessions.filter(s => s.type === 'work' && getLocalYMD(new Date(s.timestamp)) === getLocalYMD(new Date())).length}
-            // [NEW] Calculate total break duration for today in minutes
-            totalBreakDuration={Math.round(sessions
-              .filter(s => s.type === 'break' && getLocalYMD(new Date(s.timestamp)) === getLocalYMD(new Date()))
-              .reduce((acc, s) => acc + (s.duration || 0), 0) / 60)}
             onSessionComplete={handleSessionComplete}
             onClose={() => setShowTimer(false)}
           />

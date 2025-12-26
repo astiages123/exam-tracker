@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { AnimatePresence, motion } from 'framer-motion';
-import { X, CheckCircle, XCircle, ChevronRight, RefreshCw, AlertCircle, HelpCircle, FileText, TrendingUp } from 'lucide-react';
+import { CheckCircle, XCircle, ChevronRight, RefreshCw, AlertCircle, HelpCircle, FileText, TrendingUp } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { generateQuestions, fetchNoteContent } from '../lib/ai';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
