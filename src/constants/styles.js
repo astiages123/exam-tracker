@@ -17,7 +17,30 @@ import {
     Shield,
     Award,
     Crown,
-    Star
+    Star,
+    TrendingUp,
+    TrendingDown,
+    Coins,
+    Globe,
+    Map,
+    Gavel,
+    FileSignature,
+    ShoppingBag,
+    Landmark,
+    Hammer,
+    ShieldAlert,
+    Briefcase,
+    Users,
+    Megaphone,
+    Wallet,
+    BarChart,
+    Percent,
+    Divide,
+    BarChart3,
+    FileText,
+    Activity,
+    Cpu,
+    Zap
 } from 'lucide-react';
 
 // ============================================================================
@@ -71,6 +94,44 @@ export const CATEGORY_ICONS = {
     'HUKUK': Scale,
     'MUHASEBE - İŞLETME - MALİYE': PieChart,
     'MATEMATİK - BANKA': Calculator,
+    'DEFAULT': BookOpen
+};
+
+// ============================================================================
+// COURSE ICONS - Specific icons for course names
+// ============================================================================
+
+export const COURSE_ICONS = {
+    // Ekonomi
+    'Mikro İktisat': TrendingUp,
+    'Makro İktisat': TrendingDown,
+    'Para, Banka ve Kredi': Coins,
+    'Uluslararası Ticaret': Globe,
+    'Türkiye Ekonomisi': Map,
+
+    // Hukuk
+    'Medeni Hukuk': Gavel,
+    'Borçlar Hukuku': FileSignature,
+    'Ticaret Hukuku': ShoppingBag,
+    'Bankacılık Hukuku': Landmark,
+    'İcra ve İflas': Hammer,
+    'Türk Ceza Kanunu': ShieldAlert,
+    'İş Hukuku': Briefcase,
+
+    // Muhasebe / Maliye / İşletme
+    'Genel Muhasebe': Calculator,
+    'İşletme Yönetimi': Users,
+    'Pazarlama Yönetimi': Megaphone,
+    'Finansal Yönetim': Wallet,
+    'Maliye Teorisi': BarChart,
+    'Banka Muhasebesi': Landmark,
+
+    // Matematik / Banka
+    'Finans Matematiği': Percent,
+    'Matematik & Sayısal Mantık': Divide,
+    'İstatistik': BarChart3,
+
+    // Default
     'DEFAULT': BookOpen
 };
 

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { X, ExternalLink, FileQuestion, Loader2, HelpCircle } from 'lucide-react';
+import { X, ExternalLink, FileQuestion, Loader2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogDescription } from "@/components/ui/dialog";
+import ModalCloseButton from "@/components/ui/ModalCloseButton";
 import { Button } from "@/components/ui/button";
-import QuizModal from './QuizModal';
 
-export default function NotesModal({ courseName, notePath, onClose, courseId }) {
+
+export default function NotesModal({ courseName, notePath, onClose, courseId, icon: Icon }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-    const [showQuiz, setShowQuiz] = useState(false);
+
 
     // Check if the note exists and is not the SPA fallback
     useEffect(() => {
@@ -41,100 +42,96 @@ export default function NotesModal({ courseName, notePath, onClose, courseId }) 
         }
     }, [notePath]);
 
+    // 1. Iframe load handler ekleyin
+    const handleIframeLoad = (e) => {
+        try {
+            const iframeDocument = e.target.contentDocument || e.target.contentWindow.document;
+            // Viewport meta tag kontrolü ve enjeksiyonu
+            if (!iframeDocument.querySelector('meta[name="viewport"]')) {
+                const meta = iframeDocument.createElement('meta');
+                meta.name = 'viewport';
+                meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+                iframeDocument.head.appendChild(meta);
+            }
+            // İsteğe bağlı: Iframe body'sine overflow kontrolü
+            iframeDocument.body.style.overflowX = 'hidden';
+        } catch (error) {
+            console.log("Cross-origin kısıtlaması nedeniyle iframe manipüle edilemedi (Local testte sorun yok).");
+        }
+        setLoading(false);
+    };
+
     return (
-        <>
-            <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-                <DialogContent className="max-w-7xl h-[85vh] flex flex-col p-0 gap-0 border-border bg-card overflow-hidden">
-                    <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-card/50">
-                        <DialogHeader>
-                            <DialogTitle className="text-xl font-bold text-foreground truncate max-w-[500px]">
-                                {courseName} - Ders Notları
-                            </DialogTitle>
-                            <DialogDescription className="sr-only">
-                                Ders notlarını görüntüleyin ve çalışma materyallerinize erişin.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="flex items-center gap-2">
-                            <Button
-                                variant="ghost"
-                                size="default"
-                                onClick={() => setShowQuiz(true)}
-                                className="text-muted-foreground font-bold hover:text-purple-400 hover:bg-purple-400/10 gap-2 h-11 px-4"
-                            >
-                                <HelpCircle size={24} />
-                                <span className="hidden sm:inline">Soru Çöz</span>
-                            </Button>
-                            <div className="w-px h-6 bg-border mx-1" />
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                asChild
-                                className="text-muted-foreground hover:text-primary hover:bg-primary/10 h-11 w-11"
-                            >
-                                <a
-                                    href={notePath}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    title="Yeni sekmede aç"
+        <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+            {/* max-h düzeltildi, padding kaldırıldı */}
+            <DialogContent className="w-full h-[100dvh] sm:h-[85vh] sm:max-w-7xl flex flex-col p-0 gap-0 border-border bg-card overflow-hidden max-w-[100vw]">
+
+                {/* Header: items-start ile üstten hizalama */}
+                <div className="flex flex-row items-center px-3 py-3 sm:px-6 sm:py-4 border-b border-border bg-card/50 shrink-0 gap-2">
+                    <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between w-full">
+                            <DialogHeader className="text-left">
+                                <DialogTitle className="text-base sm:text-xl font-bold text-foreground leading-tight break-words pr-1 flex items-center gap-2">
+                                    {Icon && <Icon size={24} className="text-primary shrink-0" />}
+                                    <span>{courseName}</span>
+                                </DialogTitle>
+                            </DialogHeader>
+
+                            <div className="flex items-center gap-1 shrink-0">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    asChild
+                                    className="h-10 w-10 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors [&_svg]:size-6"
                                 >
-                                    <ExternalLink size={24} />
-                                </a>
-                            </Button>
-                            <div className="w-px h-6 bg-border mx-1" />
-                            <DialogClose asChild>
-                                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted text-muted-foreground hover:text-white">
-                                    <X size={24} />
+                                    <a href={notePath} target="_blank" rel="noopener noreferrer">
+                                        <ExternalLink size={24} />
+                                    </a>
                                 </Button>
-                            </DialogClose>
+                                <DialogClose asChild>
+                                    <ModalCloseButton className="-mr-1" />
+                                </DialogClose>
+                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <div className="flex-1 bg-muted/20 relative flex items-center justify-center overflow-hidden">
-                        {loading ? (
-                            <div className="flex flex-col items-center gap-4 text-primary">
-                                <Loader2 className="animate-spin" size={48} />
-                                <p className="text-lg font-medium text-foreground">Notlar yükleniyor...</p>
+                <div className="flex-1 bg-muted/20 relative flex items-center justify-center overflow-hidden">
+                    {/* ... Loading ve Error state'leri aynı kalabilir ... */}
+                    {!loading && !error && (
+                        <iframe
+                            src={notePath}
+                            className="w-full h-full border-0 bg-white"
+                            title={`${courseName} Notes`}
+                            loading="lazy"
+                            onLoad={handleIframeLoad} // <--- ÖNEMLİ: Load handler eklendi
+                        />
+                    )}
+                    {loading && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-primary bg-background/80 z-10">
+                            <Loader2 className="animate-spin" size={48} />
+                            <p className="text-lg font-medium text-foreground">Notlar yükleniyor...</p>
+                        </div>
+                    )}
+                    {error && (
+                        <div className="flex flex-col items-center gap-6 text-center px-6">
+                            <div className="w-20 h-20 bg-destructive/10 text-destructive rounded-full flex items-center justify-center shadow-inner">
+                                <FileQuestion size={40} />
                             </div>
-                        ) : error ? (
-                            <div className="flex flex-col items-center gap-6 text-center px-6">
-                                <div className="w-20 h-20 bg-destructive/10 text-destructive rounded-full flex items-center justify-center shadow-inner">
-                                    <FileQuestion size={40} />
-                                </div>
-                                <div className="space-y-2">
-                                    <h3 className="text-2xl font-bold text-foreground">Not Henüz Eklenmedi</h3>
-                                    <p className="text-muted-foreground max-w-md">
-                                        Bu ders için hazırlanan notlar henüz sisteme yüklenmemiş veya güncelleniyor olabilir.
-                                        Lütfen daha sonra tekrar kontrol edin.
-                                    </p>
-                                </div>
-                                <Button
-                                    onClick={onClose}
-                                    className="px-8"
-                                >
-                                    Geri Dön
-                                </Button>
+                            <div className="space-y-2">
+                                <h3 className="text-2xl font-bold text-foreground">Not Henüz Eklenmedi</h3>
+                                <p className="text-muted-foreground max-w-md">
+                                    Bu ders için hazırlanan notlar henüz sisteme yüklenmemiş veya güncelleniyor olabilir.
+                                    Lütfen daha sonra tekrar kontrol edin.
+                                </p>
                             </div>
-                        ) : (
-                            <iframe
-                                src={notePath}
-                                className="w-full h-full border-0 bg-white"
-                                title={`${courseName} Notes`}
-                                loading="lazy"
-                            />
-                        )}
-                    </div>
-                </DialogContent>
-            </Dialog>
-
-            {showQuiz && (
-                <QuizModal
-                    isOpen={showQuiz}
-                    onClose={() => setShowQuiz(false)}
-                    courseId={courseId}
-                    courseName={courseName}
-                    notePath={notePath}
-                />
-            )}
-        </>
+                            <Button onClick={onClose} className="px-8">
+                                Geri Dön
+                            </Button>
+                        </div>
+                    )}
+                </div>
+            </DialogContent>
+        </Dialog>
     );
 }

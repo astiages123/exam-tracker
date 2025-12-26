@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { X, Clock, Calendar, BookOpen, Trash2, BarChart2, List, MonitorPlay, Pause, Edit2, Save, ChartArea, ChartNoAxesCombined } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { courseData } from '../data';
+import { COURSE_ICONS } from '../constants/styles';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import ConfirmModal from './ui/ConfirmModal';
+import ModalCloseButton from './ui/ModalCloseButton';
 
 const CATEGORY_STYLES = {
     'DEFAULT': { bg: 'bg-white/5', border: 'border-white/10', text: 'text-muted-foreground' }
@@ -296,15 +298,15 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                     onClose();
                 }
             }}>
-                <DialogContent className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-[85vh] flex flex-col p-0 gap-0 bg-background border-border shadow-2xl overflow-hidden focus-visible:outline-none rounded-none sm:rounded-lg">
+                <DialogContent className="w-full max-w-full sm:max-w-7xl h-[100dvh] sm:h-[90vh] flex flex-col p-0 gap-0 bg-background border-border shadow-2xl overflow-hidden focus-visible:outline-none rounded-none sm:rounded-lg">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full w-full">
                         {/* Header */}
-                        <div className="p-4 sm:p-6 border-b border-border flex justify-between items-center bg-card/50">
+                        <div className="p-6 sm:p-8 border-b border-border flex justify-between items-center bg-card/50">
                             <div className="flex items-center gap-4">
-                                <div className="bg-primary/10 p-3 rounded-xl border border-primary/10">
-                                    <ChartNoAxesCombined className="text-primary" size={24} />
+                                <div className="bg-primary/10 p-3.5 rounded-xl border border-primary/10 mt-1">
+                                    <ChartNoAxesCombined className="text-primary" size={40} />
                                 </div>
-                                <div>
+                                <div className="flex flex-col">
                                     <DialogHeader>
                                         <DialogTitle className="text-xl font-bold text-foreground">
                                             Çalışma Raporu
@@ -324,14 +326,12 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                 </div>
                             </div>
                             <DialogClose asChild>
-                                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted text-muted-foreground hover:text-white shrink-0">
-                                    <X size={24} />
-                                </Button>
+                                <ModalCloseButton className="-mr-2" />
                             </DialogClose>
                         </div>
 
                         {/* Stats */}
-                        <div className="px-4 py-6 md:px-6 grid grid-cols-1 sm:grid-cols-3 gap-3 border-b border-border bg-muted/20">
+                        <div className="px-6 py-8 sm:px-8 grid grid-cols-1 sm:grid-cols-3 gap-6 border-b border-border bg-muted/20">
                             <Card className="bg-card border-border/50 shadow-none">
                                 <CardContent className="p-3 flex flex-row sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
                                     <span className="text-[10px] text-zinc-300 uppercase tracking-wider font-semibold">Toplam Çalışma</span>
@@ -361,7 +361,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                         {/* Content Area */}
                         <div className="flex-1 overflow-hidden relative">
                             <ScrollArea className="h-full w-full">
-                                <div className="p-4 md:p-6 w-full">
+                                <div className="p-6 sm:p-8 w-full">
                                     <TabsContent value="list" className="mt-0 focus-visible:ring-0">
                                         {aggregatedSessions.length === 0 ? (
                                             <div className="text-center py-12 text-muted-foreground/40">
@@ -379,7 +379,12 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                                         <CardContent className="p-4 sm:px-6 sm:py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
                                                             <div className="flex items-center gap-4">
                                                                 <div className="p-3.5 rounded-full bg-primary/10 text-primary">
-                                                                    <BookOpen size={18} />
+                                                                    {(() => {
+                                                                        const courseName = getCourseName(group.courseId);
+                                                                        const matchingKey = Object.keys(COURSE_ICONS).find(key => courseName.startsWith(key));
+                                                                        const CourseIcon = matchingKey ? COURSE_ICONS[matchingKey] : BookOpen;
+                                                                        return <CourseIcon size={32} />;
+                                                                    })()}
                                                                 </div>
                                                                 <div>
                                                                     <h4 className="font-bold text-foreground text-base w-full sm:max-w-[350px] truncate leading-tight">
@@ -422,7 +427,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                     </TabsContent>
 
                                     <TabsContent value="graph" className="mt-0 focus-visible:ring-0">
-                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
                                             {/* Duration Chart */}
                                             <Card
                                                 className="cursor-pointer hover:bg-muted/30 transition-all group border-border/40"
@@ -435,9 +440,9 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                                             <p className="text-[11px] text-zinc-300 font-medium">Son 1 haftayı gösterir</p>
                                                         </div>
                                                         <Button
-                                                            variant="ghost"
+                                                            variant="outline"
                                                             size="sm"
-                                                            className="h-auto px-1.5 py-0.5 bg-primary/10 border border-primary/20 rounded text-[9px] text-primary font-bold uppercase tracking-tight hover:bg-primary/20"
+                                                            className="h-auto px-1.5 py-0.5 bg-primary/10 border border-primary/20 rounded text-[9px] text-primary font-bold uppercase tracking-tight hover:bg-primary/25 hover:text-primary shadow-none"
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
                                                                 setShowFullHistory('duration');
@@ -479,9 +484,9 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                                             <p className="text-[11px] text-zinc-300 font-medium">Son 1 haftayı gösterir</p>
                                                         </div>
                                                         <Button
-                                                            variant="ghost"
+                                                            variant="outline"
                                                             size="sm"
-                                                            className="h-auto px-1.5 py-0.5 bg-orange-400/10 border border-orange-400/20 rounded text-[9px] text-orange-400 font-bold uppercase tracking-tight hover:bg-orange-400/20"
+                                                            className="h-auto px-1.5 py-0.5 bg-orange-400/10 border border-orange-400/20 rounded text-[9px] text-orange-400 font-bold uppercase tracking-tight hover:bg-orange-400/25 hover:text-orange-400 shadow-none"
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
                                                                 setShowFullHistory('videos');
@@ -536,24 +541,26 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
 
             {/* Full History Graph Modal */}
             <Dialog open={!!showFullHistory} onOpenChange={(open) => !open && setShowFullHistory(null)}>
-                <DialogContent className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-[85vh] p-0 overflow-hidden flex flex-col bg-background border-border shadow-2xl rounded-none sm:rounded-lg">
-                    <div className="p-6 border-b border-border bg-card/50 flex justify-between items-center">
-                        <div>
-                            <DialogTitle className="text-lg font-bold text-foreground">
-                                {showFullHistory === 'duration' ? 'Çalışma Süresi' : 'İzlenen Video'}
-                            </DialogTitle>
-                            <DialogDescription className="text-[11px] text-muted-foreground">
-                                {showFullHistory === 'duration' ? 'Günlük saat bazlı performans' : 'Günlük tamamlanan video sayıları'}
-                            </DialogDescription>
+                <DialogContent className="w-full max-w-full sm:max-w-7xl h-[100dvh] sm:h-[85vh] p-0 overflow-hidden flex flex-col bg-background border-border shadow-2xl rounded-none sm:rounded-lg">
+                    <div className="p-6 sm:p-8 border-b border-border bg-card/50 flex justify-between items-center">
+                        <div className="flex items-center gap-4">
+                            <div className="bg-primary/10 p-3.5 rounded-xl border border-primary/10 mt-1">
+                                {showFullHistory === 'duration' ? (
+                                    <BarChart2 className="text-primary" size={32} />
+                                ) : (
+                                    <MonitorPlay className="text-orange-400" size={32} />
+                                )}
+                            </div>
+                            <div>
+                                <DialogTitle className="text-xl font-bold text-foreground">
+                                    {showFullHistory === 'duration' ? 'Çalışma Süresi' : 'İzlenen Video'}
+                                </DialogTitle>
+                                <DialogDescription className="text-sm text-muted-foreground mt-0.5">
+                                    {showFullHistory === 'duration' ? 'Günlük saat bazlı performans' : 'Günlük tamamlanan video sayıları'}
+                                </DialogDescription>
+                            </div>
                         </div>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setShowFullHistory(null)}
-                            className="h-10 w-10 rounded-full hover:bg-muted text-muted-foreground hover:text-white"
-                        >
-                            <X size={20} />
-                        </Button>
+                        <ModalCloseButton onClick={() => setShowFullHistory(null)} className="-mr-2" />
                     </div>
 
                     <div className="flex-1 p-4 sm:p-6 overflow-hidden">
@@ -847,11 +854,11 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                 onClose();
             }
         }}>
-            <DialogContent className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:max-h-[90vh] overflow-hidden flex flex-col bg-background border-border p-0 gap-0 shadow-2xl rounded-none sm:rounded-lg">
-                <div className="p-3 border-b border-border bg-card/90 flex justify-between items-center shrink-0 relative z-20 backdrop-blur-md">
+            <DialogContent className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-fit sm:max-h-[85vh] overflow-hidden flex flex-col bg-background border-border p-0 gap-0 shadow-2xl rounded-none sm:rounded-lg">
+                <div className="p-6 border-b border-border bg-card/90 flex justify-between items-center shrink-0 relative z-20 backdrop-blur-md">
                     <div className="flex items-center gap-4">
-                        <div className="bg-primary/10 p-3 rounded-xl border border-primary/10">
-                            <ChartArea className="text-primary" size={24} />
+                        <div className="bg-primary/10 p-3.5 rounded-xl border border-primary/10 mt-1 flex-shrink-0">
+                            <ChartArea className="text-primary" size={32} />
                         </div>
                         <div>
                             <DialogTitle className="font-bold text-foreground text-lg">Günlük Zaman Çizelgesi</DialogTitle>
@@ -863,14 +870,12 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                         </div>
                     </div>
                     <DialogClose asChild>
-                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted text-muted-foreground hover:text-white">
-                            <X size={24} />
-                        </Button>
+                        <ModalCloseButton className="-mr-2" />
                     </DialogClose>
                 </div>
 
                 {/* Günlük Özet */}
-                <div className="px-6 py-3 bg-background/50 border-b border-white/5 flex items-center justify-start gap-8 shrink-0 relative z-20">
+                <div className="px-8 py-5 bg-background/50 border-b border-white/5 flex items-center justify-start gap-8 shrink-0 relative z-20">
                     <div className="flex flex-col">
                         <span className="text-[9px] text-zinc-400 uppercase font-semibold tracking-wider">Toplam Çalışma</span>
                         <span className="text-sm font-mono font-bold text-zinc-300">{dayStats.work} dk</span>
@@ -886,7 +891,7 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                 </div>
 
                 <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar relative z-10">
-                    <div className="p-4 overflow-x-auto overflow-y-visible custom-scrollbar relative">
+                    <div className="p-8 overflow-x-auto overflow-y-visible custom-scrollbar relative">
                         <div className="relative min-w-[700px] h-60 pt-24">
                             <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
                                 {Array.from({ length: (endHour - startHour) * 2 + 1 }).map((_, i) => {
@@ -958,7 +963,11 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                         >
                                             {durationPercent > 3 && (
                                                 <div className="text-white/90">
-                                                    {isWork && <BookOpen size={14} />}
+                                                    {isWork && (() => {
+                                                        const matchingKey = Object.keys(COURSE_ICONS).find(key => courseName.startsWith(key));
+                                                        const CourseIcon = matchingKey ? COURSE_ICONS[matchingKey] : BookOpen;
+                                                        return <CourseIcon size={14} />;
+                                                    })()}
                                                     {isBreak && <Clock size={14} />}
                                                     {isPause && <Pause size={14} />}
                                                 </div>
@@ -1020,7 +1029,7 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                     </div>
                 </div>
 
-                <div className="p-4 border-t border-secondary bg-background/60 flex justify-center flex-wrap gap-x-8 gap-y-3 text-[11px] font-bold text-foreground shrink-0 backdrop-blur-sm">
+                <div className="p-6 border-t border-secondary bg-background/60 flex justify-center flex-wrap gap-x-8 gap-y-3 text-[11px] font-bold text-foreground shrink-0 backdrop-blur-sm">
                     <div className="flex items-center gap-2.5">
                         <div className="w-5 h-5 rounded-md bg-indigo-500/40 border border-indigo-500/50 shadow-[0_0_10px_rgba(99,102,241,0.2)]"></div>
                         <span className="opacity-80">Çalışma Oturumu</span>

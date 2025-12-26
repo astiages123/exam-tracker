@@ -3,6 +3,7 @@ import { Calendar, Plus, Save, Edit2, Clock, X, Trash2, CalendarDays } from 'luc
 import { cn } from '@/lib/utils';
 import { DAYS, SUBJECT_STYLES, SUBJECT_OPTIONS } from '@/constants/styles';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import ModalCloseButton from "@/components/ui/ModalCloseButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 // Using native select for simplicity in dynamic lists to avoid perf issues or complex state management for now, or just standard select.
@@ -87,25 +88,22 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
             <DialogContent className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-auto sm:max-h-[90vh] flex flex-col p-0 gap-0 bg-card border-border overflow-hidden rounded-none sm:rounded-lg">
                 <div className="p-4 sm:p-6 border-b border-border bg-card/50 flex justify-between items-center">
                     <div className="flex items-center gap-4">
-                        <div className="bg-primary/10 p-3 rounded-xl border border-primary/10">
-                            <CalendarDays className="text-primary" size={24} />
+                        <div className="bg-primary/10 p-3.5 rounded-xl border border-primary/10 mt-1">
+                            <CalendarDays className="text-primary" size={32} />
                         </div>
                         <div>
                             <DialogHeader>
-                                <DialogTitle className="text-xl font-bold text-foreground tracking-tight">
+                                <DialogTitle className="text-xl font-bold text-foreground">
                                     {isEditing ? "Programı Düzenle" : "Haftalık Çalışma Programı"}
                                 </DialogTitle>
-                                <DialogDescription className="sr-only">Haftalık çalışma programı</DialogDescription>
                             </DialogHeader>
-                            <p className="text-sm text-muted-foreground mt-1">
+                            <p className="text-sm text-muted-foreground mt-0.5">
                                 {isEditing ? "Değişiklikleri kaydetmeyi unutmayın" : "Ders programınızın genel bakışı"}
                             </p>
                         </div>
                     </div>
                     <DialogClose asChild>
-                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted text-muted-foreground hover:text-white">
-                            <X size={24} />
-                        </Button>
+                        <ModalCloseButton className="-mr-2" />
                     </DialogClose>
                 </div>
 

@@ -5,6 +5,7 @@ import { X, CheckCircle, XCircle, ChevronRight, RefreshCw, AlertCircle, HelpCirc
 import { supabase } from '../lib/supabaseClient';
 import { generateQuestions, fetchNoteContent } from '../lib/ai';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import ModalCloseButton from "@/components/ui/ModalCloseButton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -296,30 +297,32 @@ export default function QuizModal({ isOpen, onClose, courseId, courseName, noteP
             <DialogContent className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-[92vh] flex flex-col p-0 gap-0 border-border bg-card overflow-hidden rounded-none sm:rounded-lg focus-visible:outline-none">
                 <div className="flex flex-col border-b border-border bg-card/50">
                     <div className="flex items-center justify-between p-4 sm:p-6 pb-2">
-                        <div>
-                            <DialogHeader>
-                                <DialogTitle className="text-xl font-bold flex items-center gap-2">
-                                    <HelpCircle className="w-6 h-6 text-primary" />
-                                    Soru Bankası
-                                </DialogTitle>
-                                <DialogDescription className="sr-only">
-                                    Ders notlarınıza dayalı yapay zeka tarafından üretilen soruları çözün ve kendinizi test edin.
-                                </DialogDescription>
-                            </DialogHeader>
-                            <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
-                                {courseName}
-                                {isAutoGenerating && (
-                                    <span className="flex items-center gap-1 text-xs text-primary animate-pulse">
-                                        <div className="w-2 h-2 bg-primary rounded-full" />
-                                        Yeni sorular hazırlanıyor...
-                                    </span>
-                                )}
-                            </p>
+                        <div className="flex items-center gap-4">
+                            <div className="bg-primary/10 p-3 rounded-xl border border-primary/10 mt-1">
+                                <HelpCircle className="text-primary" size={32} />
+                            </div>
+                            <div className="flex flex-col">
+                                <DialogHeader>
+                                    <DialogTitle className="text-xl font-bold text-foreground">
+                                        Soru Bankası
+                                    </DialogTitle>
+                                    <DialogDescription className="sr-only">
+                                        Soru bankası ve başarı analizi.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <p className="text-sm text-muted-foreground flex items-center gap-2 mt-0.5">
+                                    {courseName}
+                                    {isAutoGenerating && (
+                                        <span className="flex items-center gap-1 text-xs text-primary animate-pulse">
+                                            <div className="w-2 h-2 bg-primary rounded-full" />
+                                            Yeni sorular hazırlanıyor...
+                                        </span>
+                                    )}
+                                </p>
+                            </div>
                         </div>
                         <DialogClose asChild>
-                            <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted text-muted-foreground hover:text-white">
-                                <X size={24} />
-                            </Button>
+                            <ModalCloseButton className="-mr-2" />
                         </DialogClose>
                     </div>
 

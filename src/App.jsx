@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, Suspense, lazy } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Goal, BookOpen, Youtube, LogOut, Timer, BarChart2, Calendar, Check, MonitorPlay, BadgeCheck, FileText, HelpCircle, Loader2, ChartLine, CalendarDays } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { CATEGORY_STYLES, CATEGORY_ICONS, RANK_ICONS } from '@/constants/styles';
+import { CATEGORY_STYLES, CATEGORY_ICONS, RANK_ICONS, COURSE_ICONS } from '@/constants/styles';
 
 // --- Data ---
 import { courseData, RANKS } from './data';
@@ -576,6 +576,7 @@ export default function App() {
             courseName={activeNoteCourse.name}
             courseId={activeNoteCourse.id}
             notePath={activeNoteCourse.path}
+            icon={activeNoteCourse.icon}
             onClose={() => setActiveNoteCourse(null)}
           />
         </Suspense>
@@ -913,7 +914,12 @@ export default function App() {
                                 <div className="flex gap-3">
                                   {/* Icon - Fixed Width */}
                                   <div className={cn("p-2 rounded-lg shrink-0 h-fit", styles.iconBg)}>
-                                    <IconComponent className={styles.accent} size={20} />
+                                    {(() => {
+                                      // Find matching icon by checking if course name starts with any key in COURSE_ICONS
+                                      const matchingKey = Object.keys(COURSE_ICONS).find(key => course.name.startsWith(key));
+                                      const CourseIcon = matchingKey ? COURSE_ICONS[matchingKey] : IconComponent;
+                                      return <CourseIcon className={styles.accent} size={20} />;
+                                    })()}
                                   </div>
 
                                   {/* Main Content Column */}
@@ -979,7 +985,9 @@ export default function App() {
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           if (course.notePath) {
-                                            setActiveNoteCourse({ name: course.name, path: course.notePath, id: course.id });
+                                            const matchingKey = Object.keys(COURSE_ICONS).find(key => course.name.startsWith(key));
+                                            const CourseIcon = matchingKey ? COURSE_ICONS[matchingKey] : IconComponent;
+                                            setActiveNoteCourse({ name: course.name, path: course.notePath, id: course.id, icon: CourseIcon });
                                           } else {
                                             showToast("Henüz not bulunamadı", 'error');
                                           }
@@ -1025,7 +1033,9 @@ export default function App() {
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         if (course.notePath) {
-                                          setActiveNoteCourse({ name: course.name, path: course.notePath, id: course.id });
+                                          const matchingKey = Object.keys(COURSE_ICONS).find(key => course.name.startsWith(key));
+                                          const CourseIcon = matchingKey ? COURSE_ICONS[matchingKey] : IconComponent;
+                                          setActiveNoteCourse({ name: course.name, path: course.notePath, id: course.id, icon: CourseIcon });
                                         } else {
                                           showToast("Henüz not bulunamadı", 'error');
                                         }

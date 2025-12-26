@@ -16,6 +16,8 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 body {
@@ -24,24 +26,9 @@ body {
     color: var(--text-color);
     background-color: var(--bg-color);
     display: flex;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--bg-color);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--secondary-color);
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 /* Sidebar Styling */
@@ -114,6 +101,7 @@ body {
     flex: 1;
     padding: 4rem 5rem;
     max-width: 1000px;
+    width: 100%;
 }
 
 h1 {
@@ -122,6 +110,7 @@ h1 {
     margin-bottom: 2.5rem;
     color: #ffffff;
     letter-spacing: -0.02em;
+    line-height: 1.2;
 }
 
 h2 {
@@ -189,7 +178,9 @@ p {
     border-radius: 12px;
     margin: 1.5rem 0;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     border: 1px solid var(--border-color);
+    max-width: 100%;
 }
 
 .math.display {
@@ -226,5 +217,62 @@ strong {
     .content {
         margin-left: 0;
         padding: 2rem;
+    }
+}
+
+@media (max-width: 640px) {
+
+    html,
+    body {
+        overflow-x: hidden;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    body {
+        display: block !important;
+    }
+
+    .content {
+        padding: 1rem 0.5rem !important;
+        margin-left: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .note-card {
+        padding: 1rem 0.75rem !important;
+        margin: 1rem 0 !important;
+        width: 100% !important;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+        margin: 2rem 0 1rem;
+    }
+
+    h3 {
+        font-size: 1.2rem;
+        margin: 1.5rem 0 1rem;
+    }
+
+    img,
+    table,
+    canvas,
+    svg {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    .math-block {
+        padding: 1rem;
+        margin: 1rem 0;
     }
 }
