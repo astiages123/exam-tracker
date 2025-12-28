@@ -5,7 +5,7 @@ import ModalCloseButton from "@/components/ui/ModalCloseButton";
 import { Button } from "@/components/ui/button";
 
 
-export default function NotesModal({ courseName, notePath, onClose, courseId, icon: Icon }) {
+export default function NotesModal({ courseName, notePath, onClose, icon: Icon }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 
@@ -26,8 +26,8 @@ export default function NotesModal({ courseName, notePath, onClose, courseId, ic
                 } else {
                     setError(false);
                 }
-            } catch (err) {
-                console.error('Note check failed:', err);
+            } catch {
+                console.error('Note check failed');
                 setError(true);
             } finally {
                 setLoading(false);
@@ -55,8 +55,8 @@ export default function NotesModal({ courseName, notePath, onClose, courseId, ic
             }
             // İsteğe bağlı: Iframe body'sine overflow kontrolü
             iframeDocument.body.style.overflowX = 'hidden';
-        } catch (error) {
-            console.log("Cross-origin kısıtlaması nedeniyle iframe manipüle edilemedi (Local testte sorun yok).");
+        } catch {
+            // Cross-origin restriction - normal in production
         }
         setLoading(false);
     };

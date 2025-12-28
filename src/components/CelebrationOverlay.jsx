@@ -1,6 +1,7 @@
 import React from 'react';
 import { PartyPopper, CheckCircle2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { Button } from './ui/button';
 
 const CelebrationOverlay = ({ courseName, onComplete }) => {
     React.useEffect(() => {
@@ -98,12 +99,13 @@ const CelebrationOverlay = ({ courseName, onComplete }) => {
                         Konu Tamamlandı
                     </div>
 
-                    <button
+                    <Button
                         onClick={onComplete}
-                        className="mt-8 w-full bg-primary text-primary-foreground font-bold py-3 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all hover:scale-105 active:scale-95"
+                        className="mt-8 w-full py-3 rounded-xl shadow-lg shadow-primary/20 font-bold"
+                        size="lg"
                     >
                         Devam Et
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

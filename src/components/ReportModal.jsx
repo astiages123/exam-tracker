@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import ConfirmModal from './ui/ConfirmModal';
 import ModalCloseButton from './ui/ModalCloseButton';
 
@@ -211,7 +212,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
             });
         }
         return filterWeekends(result);
-    }, [workSessions, getCourseName]);
+    }, [workSessions, getCourseName, isMobile]);
 
     const videoChartData = useMemo(() => {
         const dailyCounts = {};
@@ -244,7 +245,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
             });
         }
         return filterWeekends(result);
-    }, [filteredVideoHistory, getCourseName]);
+    }, [filteredVideoHistory, getCourseName, isMobile]);
 
     const fullChartData = useMemo(() => {
         const dates = {};
@@ -993,7 +994,9 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                                     </span>
                                                     <div className="flex items-center gap-1.5">
                                                         {item.originalSession && (
-                                                            <button
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
                                                                 onClick={() => setEditingSession({
                                                                     sessionId: item.sessionId,
                                                                     type: item.type,
@@ -1002,20 +1005,22 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                                                     originalSession: item.originalSession,
                                                                     pauseIndex: item.pauseIndex
                                                                 })}
-                                                                className="p-1.5 hover:bg-primary/20 rounded-md text-primary transition-colors"
+                                                                className="h-7 w-7 text-primary hover:bg-primary/20"
                                                                 title="Düzenle"
                                                             >
                                                                 <Edit2 size={14} />
-                                                            </button>
+                                                            </Button>
                                                         )}
                                                         {item.sessionId && (
-                                                            <button
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
                                                                 onClick={() => setConfirmDelete({ sessionId: item.sessionId })}
-                                                                className="p-1.5 hover:bg-destructive/20 rounded-md text-destructive transition-colors"
+                                                                className="h-7 w-7 text-destructive hover:bg-destructive/20"
                                                                 title="Sil"
                                                             >
                                                                 <Trash2 size={14} />
-                                                            </button>
+                                                            </Button>
                                                         )}
                                                     </div>
                                                 </div>
@@ -1086,20 +1091,20 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                     <div className="space-y-4">
                         <div>
                             <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Başlangıç Saati</label>
-                            <input
+                            <Input
                                 type="time"
                                 value={editingSession?.startTime || ""}
                                 onChange={(e) => setEditingSession({ ...editingSession, startTime: e.target.value })}
-                                className="w-full bg-background border border-secondary rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all font-mono"
+                                className="font-mono rounded-xl"
                             />
                         </div>
                         <div>
                             <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Bitiş Saati</label>
-                            <input
+                            <Input
                                 type="time"
                                 value={editingSession?.endTime || ""}
                                 onChange={(e) => setEditingSession({ ...editingSession, endTime: e.target.value })}
-                                className="w-full bg-background border border-secondary rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all font-mono"
+                                className="font-mono rounded-xl"
                             />
                         </div>
                         <div className="flex gap-3 pt-2">

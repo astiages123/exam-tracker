@@ -1,0 +1,1603 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>
+        Matematik &amp; Sayısal Mantık
+    </title>
+    <link href="not_stilleri.css" rel="stylesheet" />
+    <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript">
+    </script>
+    <script defer="" src="notes.js">
+    </script>
+</head>
+
+<body>
+    <nav class="sidebar">
+        <h3>
+            İçindekiler
+        </h3>
+        <ul class="toc-list">
+            <li>
+                <a href="#matematik-sayısal-mantık">
+                    1. Matematik &amp; Sayısal Mantık
+                </a>
+                <ul class="toc-sublist">
+                    <li>
+                        <a href="#grafik-problemleri">
+                            1.1. Grafik Problemleri
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <main class="content">
+        <h1 id="matematik-sayısal-mantık">
+            1.
+            Matematik &amp; Sayısal Mantık
+        </h1>
+        <h2 id="grafik-problemleri">
+            1.1.
+            Grafik Problemleri
+        </h2>
+        <ol type="1">
+            <li>
+                <p>
+                    <strong>
+                        Çizgi Grafiği
+                    </strong>
+                </p>
+                <ol type="a">
+                    <li>
+                        <p>
+                            Verilerin koordinat sistemi üzerinde noktalarla belirlenip çizgilerle birleştirilmesiyle
+                            oluşur. Genellikle zamana bağlı değişimleri göstermek için kullanılır.
+                        </p>
+                    </li>
+                </ol>
+            </li>
+            <li>
+                <p>
+                    <strong>
+                        Sütun Grafiği
+                    </strong>
+                </p>
+                <ol type="a">
+                    <li>
+                        <p>
+                            Genellikle miktar veya sayısal verilerin sütunlarla gösterildiği, karşılaştırma yapmaya
+                            yarayan grafik türüdür.
+                        </p>
+                    </li>
+                </ol>
+            </li>
+            <li>
+                <p>
+                    <strong>
+                        Daire Grafiği (En Önemli Kısım):
+                    </strong>
+                </p>
+                <ol type="a">
+                    <li>
+                        <p>
+                            Temel mantık, dairenin tamamının 360° olması ve dilimlerin büyüklüğünün merkez açıyla doğru
+                            orantılı olmasıdır.
+                        </p>
+                    </li>
+                </ol>
+            </li>
+            <li>
+                <p>
+                    <strong>
+                        Doğrusal Grafik:
+                    </strong>
+                </p>
+                <ol type="a">
+                    <li>
+                        <p>
+                            Bir değişkenin diğerine bağlı olarak sabit bir hızla değiştiği grafiklerdir.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Bu grafiklerde
+                            <span class="math inline">
+                                \(y\ = \ mx\ + \ n\)
+                            </span>
+                            şeklinde denklem kurarak her türlü veriye ulaşmak mümkündür.
+                        </p>
+                    </li>
+                </ol>
+            </li>
+        </ol>
+        <blockquote>
+            <p>
+                <img alt="metin, çizgi, öykü gelişim çizgisi; kumpas; grafiğini çıkarma, diyagram içeren bir resim Yapay zeka tarafından oluşturulmuş içerik yanlış olabilir."
+                    src="/notlar/media/image1.png" style="width:4.72441in;height:3.54331in" />
+            </p>
+        </blockquote>
+        <ol type="i">
+            <li>
+                <p>
+                    <strong>
+                        1. Adım
+                    </strong>
+                    : Değişim Oranını (Eğim -
+                    <span class="math inline">
+                        \(m\)
+                    </span>
+                    ) Bulmak
+                </p>
+            </li>
+        </ol>
+        <blockquote>
+            <p>
+                Eğim, dikeydeki değişimin yataydaki değişime oranıdır. Basitçe, "
+                <span class="math inline">
+                    \(x\)
+                </span>
+                her 1 birim arttığında
+                <span class="math inline">
+                    \(y\ \)
+                </span>
+                ne kadar değişiyor?" sorusunun cevabıdır.
+            </p>
+        </blockquote>
+        <ol type="1">
+            <li>
+                <p>
+                    <strong>
+                        Dikey Değişim (
+                    </strong>
+                    <span class="math inline">
+                        \(\mathbf{\Delta y}\)
+                    </span>
+                    <strong>
+                        ):
+                    </strong>
+                    <span class="math inline">
+                        \(16 - 4 = 12\ \ \)
+                    </span>
+                </p>
+            </li>
+            <li>
+                <p>
+                    <strong>
+                        Yatay Değişim (
+                    </strong>
+                    <span class="math inline">
+                        \(\mathbf{\Delta x}\)
+                    </span>
+                    <strong>
+                        ):
+                    </strong>
+                    <span class="math inline">
+                        \(6 - 2 = 4\)
+                    </span>
+                </p>
+            </li>
+            <li>
+                <p>
+                    <strong>
+                        Formül
+                    </strong>
+                    :
+                </p>
+            </li>
+        </ol>
+        <blockquote>
+            <p>
+                <span class="math display">
+                    \[m = \frac{\Delta y}{\Delta x} = \frac{y_{2} - y_{1}}{x_{2} - x_{1}}\]
+                </span>
+            </p>
+        </blockquote>
+        <ol start="4" type="1">
+            <li>
+                <p>
+                    <strong>
+                        Hesaplama
+                    </strong>
+                    :
+                </p>
+            </li>
+        </ol>
+        <blockquote>
+            <p>
+                <span class="math display">
+                    \[m = \frac{12}{4} = 3\]
+                </span>
+            </p>
+        </blockquote>
+        <ol start="5" type="1">
+            <li>
+                <p>
+                    <strong>
+                        Ara Sonuç (Taslak Denklem):
+                    </strong>
+                    Şu an elimizde
+                    <span class="math inline">
+                        \(y = 3x + n\)
+                    </span>
+                    şeklinde bir taslak var.
+                </p>
+            </li>
+        </ol>
+        <ol start="2" type="i">
+            <li>
+                <p>
+                    <strong>
+                        2. Adım: Sabit Değeri (Kayma -
+                    </strong>
+                    <span class="math inline">
+                        \(\mathbf{n}\)
+                    </span>
+                    <strong>
+                        ) Bulmak
+                    </strong>
+                </p>
+            </li>
+        </ol>
+        <blockquote>
+            <p>
+                Bulduğumuz
+                <span class="math inline">
+                    \(3x\)
+                </span>
+                ifadesi grafiğin dikliğini (eğimini) belirler ancak grafiğin
+                <span class="math inline">
+                    \(y\)
+                </span>
+                eksenini kestiği noktayı göstermez. Denklemi doğrulamak (teraziye oturtmak) için bildiğimiz bir noktayı
+                referans alırız.
+            </p>
+        </blockquote>
+        <ol type="1">
+            <li>
+                <p>
+                    <strong>
+                        Seçilen Nokta
+                    </strong>
+                    :
+                    <span class="math inline">
+                        \(x = 2\)
+                    </span>
+                    iken
+                    <span class="math inline">
+                        \(y = 4\ \)
+                    </span>
+                    olmalıdır.
+                </p>
+            </li>
+            <li>
+                <p>
+                    Bu değerleri taslak denklemde yerine koyalım:
+                </p>
+                <ol type="a">
+                    <li>
+                        <p>
+                            <span class="math inline">
+                                \(y = 3x + n\ \)
+                            </span>
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            <span class="math inline">
+                                \(4 = 3(2) + n\ \)
+                            </span>
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            <span class="math inline">
+                                \(4 = 6 + n\ \)
+                            </span>
+                        </p>
+                    </li>
+                </ol>
+            </li>
+            <li>
+                <p>
+                    Buradan n değerini yalnız bırakırsak:
+                </p>
+                <ol type="a">
+                    <li>
+                        <p>
+                            <span class="math inline">
+                                \(n = 4 - 6\ \)
+                            </span>
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            <span class="math inline">
+                                \(n = - 2\ \)
+                            </span>
+                        </p>
+                    </li>
+                </ol>
+            </li>
+            <li>
+                <p>
+                    <strong>
+                        Sonuç
+                    </strong>
+                    : Kesinleşmiş Denklem
+                </p>
+                <ol type="a">
+                    <li>
+                        <p>
+                            Bulduğumuz eğim (
+                            <span class="math inline">
+                                \(m = 3\)
+                            </span>
+                            ) ve sabit değeri (
+                            <span class="math inline">
+                                \(n = - 2\)
+                            </span>
+                            ) birleştirdiğimizde genel denklem ortaya çıkar:
+                        </p>
+                        <ol type="i">
+                            <li>
+                                <p>
+                                    <span class="math inline">
+                                        \(y = 3x - 2\)
+                                    </span>
+                                </p>
+                            </li>
+                        </ol>
+                    </li>
+                </ol>
+            </li>
+        </ol>
+        <div class="note-card">
+            <span class="example-title">
+                ÖRNEKLER
+            </span>
+            <p>
+            </p>
+            <ul>
+                <li>
+                    <p>
+                        <strong>
+                            Çizgi Grafiği (Yol - Benzin)
+                        </strong>
+                    </p>
+                </li>
+            </ul>
+            <p>
+                <img alt="A graph with a line AI-generated content may be incorrect." src="/notlar/media/image2.png"
+                    style="width:4.72441in;height:3.54331in" />
+            </p>
+            <ul>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 1
+                    </span>
+                    <p>
+                        Bu araç 1 Litre akaryakıtla kaç km yol alır?
+                    </p>
+                    <ul>
+                        <li>
+                            <p>
+                                <strong>
+                                    Çözüm
+                                </strong>
+                                :
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        Araç 5 Litre ile 100 km yol alıyorsa, 1 Litre ile;
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <span class="math inline">
+                                            \(100/5 = 20\ km\)
+                                        </span>
+                                        yol alır.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Cevap
+                                        </strong>
+                                        : 20 km
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 2
+                    </span>
+                    <p>
+                        800 km yol alan bir araç kaç TL'lik akaryakıt harcar (Litre: 5 TL)?
+                    </p>
+                    <ul>
+                        <li>
+                            <p>
+                                <strong>
+                                    Çözüm
+                                </strong>
+                                :
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        100 km'de 5 Litre harcıyorsa, 800 km'de (8 katı) 40 Litre harcar.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        Litre fiyatı 5 TL olduğu için:
+                                        <span class="math inline">
+                                            \(40 \times 5 = 200\ TL\)
+                                        </span>
+                                        .
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Cevap
+                                        </strong>
+                                        : 200 TL
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 3
+                    </span>
+                    <p>
+                        Aracın deposu 80 Litre alıyorsa, depo doldurulup yola çıkılırsa kaç km yol alır?
+                    </p>
+                    <ul>
+                        <li>
+                            <p>
+                                <strong>
+                                    Çözüm
+                                </strong>
+                                :
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        5 Litre ile 100 km gidiyorsa, 80 Litre ile x km gider.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <span class="math inline">
+                                            \(5x = 80 \times 100\)
+                                        </span>
+                                        &rArr;
+                                        <span class="math inline">
+                                            \(x = 1600\ km.\ \ \)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Cevap
+                                        </strong>
+                                        : 1600 km
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </ul>
+            <ul>
+                <li>
+                    <p>
+                        <strong>
+                            İkili Grafik (Dönüşüm Problemi)
+                        </strong>
+                    </p>
+                </li>
+            </ul>
+            <p>
+                <img alt="A graph of a line and a line AI-generated content may be incorrect."
+                    src="/notlar/media/image3.png" style="width:4.72441in;height:1.9685in" />
+            </p>
+            <ul>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 1
+                    </span>
+                    <p>
+                        2100 adet ekmek üretmek için kaç kg un gereklidir?
+                    </p>
+                    <ul>
+                        <li>
+                            <p>
+                                <strong>
+                                    Çözüm
+                                </strong>
+                                :
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        Her iki grafikteki ortak madde Hamurdur. Hamur miktarlarını eşitlememiz gerekir.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        1. Grafikte hamur 7, 2. grafikte hamur 3'tür. Bunları 21'de eşitleyelim.
+                                    </p>
+                                    <ul>
+                                        <li>
+                                            <p>
+                                                1. Grafik (3 ile genişlet): 30 Un &rArr; 21 Hamur
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                2. Grafik (7 ile genişlet): 21 Hamur &rArr; 210 Ekmek
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <strong>
+                                                    Orantı
+                                                </strong>
+                                                : 30 kg Un kullanıldığında 210 Ekmek elde ediliyor.
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                2100 Ekmek için (10 katı) ne kadar un gerekir?
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <span class="math inline">
+                                                    \(30 \times 10 = 300\ kg\)
+                                                </span>
+                                                un.
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <strong>
+                                                    Cevap
+                                                </strong>
+                                                : 300 kg
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </ul>
+            <ul>
+                <li>
+                    <p>
+                        <strong>
+                            Tablo Yorumlama (Uyku Süreleri)
+                        </strong>
+                    </p>
+                </li>
+            </ul>
+            <p>
+                <img alt="A graph of purple bars AI-generated content may be incorrect." src="/notlar/media/image4.png"
+                    style="width:4.72441in;height:2.83454in" />
+            </p>
+            <ul>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 1
+                    </span>
+                    <p>
+                        Bu kişinin 7 gün boyunca uyuduğu toplam süre daire grafiği ile gösterilirse, çarşamba gününe ait
+                        merkez açı kaç derece olur?
+                    </p>
+                    <ul>
+                        <li>
+                            <p>
+                                <strong>
+                                    Çözüm
+                                </strong>
+                                :
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        Toplam 40 saat 360 dereceye denk gelir. Çarşamba (8 saat) kaça denk gelir?
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <span class="math inline">
+                                            \(40\ saat \rightarrow \ 360{^\circ}\ \ \)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <span class="math inline">
+                                            \(8\ saat \rightarrow \ x{^\circ}\ \ \)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        (5'te 1'i)
+                                        <span class="math inline">
+                                            \(360/5 = 72{^\circ}.\ \ \)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Cevap
+                                        </strong>
+                                        : 72°
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 2
+                    </span>
+                    <p>
+                        Salı günü uyuduğu süre, Cuma günü uyuduğu sürenin yüzde kaçıdır?
+                    </p>
+                    <ul>
+                        <li>
+                            <p>
+                                <strong>
+                                    Çözüm
+                                </strong>
+                                :
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        Salı 5 saat, Cuma 8 saat.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        5, 8'in yüzde kaçıdır? &rArr;
+                                        <span class="math inline math-frac">
+                                            \(\frac{5}{8} = \frac{x}{100}\)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <span class="math inline">
+                                            \(x = 62.5.\ \ \)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Cevap
+                                        </strong>
+                                        : %62,5
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </ul>
+            <ul>
+                <li>
+                    <p>
+                        <strong>
+                            Sütun Grafiği (Mağaza Stoğu)
+                        </strong>
+                    </p>
+                </li>
+            </ul>
+            <p>
+                <img alt="A graph of blue bars AI-generated content may be incorrect." src="/notlar/media/image5.png"
+                    style="width:4.72441in;height:3.54331in" />
+            </p>
+            <ul>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 1
+                    </span>
+                    <p>
+                        Gün sonunda ürünlerin her birinden eşit sayıda kalması için toplam en az kaç adet ürün
+                        satılmalıdır?
+                    </p>
+                    <ul>
+                        <li>
+                            <p>
+                                <strong>
+                                    Çözüm
+                                </strong>
+                                :
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        Eşit sayıda kalmaları için hepsinin en az miktarda olan ürüne (D: 4) eşitlenmesi
+                                        gerekir (Hiçbiri artmayacak şekilde, hepsi satılmak zorunda değil).
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Kalan miktar hedefi
+                                        </strong>
+                                        : 4
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Satılanlar
+                                        </strong>
+                                        :
+                                    </p>
+                                    <ul>
+                                        <li>
+                                            <p>
+                                                A:
+                                                <span class="math inline">
+                                                    \(8 - 4 = 4\ \ \)
+                                                </span>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                B:
+                                                <span class="math inline">
+                                                    \(6 - 4 = 2\ \ \)
+                                                </span>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                C:
+                                                <span class="math inline">
+                                                    \(12 - 4 = 8\ \ \)
+                                                </span>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                D:
+                                                <span class="math inline">
+                                                    \(4 - 4 = 0\ \ \)
+                                                </span>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                E:
+                                                <span class="math inline">
+                                                    \(\ 10 - 4 = 6\ \ \)
+                                                </span>
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Toplam Satılan
+                                        </strong>
+                                        :
+                                        <span class="math inline">
+                                            \(4 + 2 + 8 + 0 + 6 = 20.\ \ \)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Cevap
+                                        </strong>
+                                        : 20
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </ul>
+            <ul>
+                <li>
+                    <p>
+                        <strong>
+                            Daire Grafiği (Ürün Dağılımı)
+                        </strong>
+                    </p>
+                </li>
+            </ul>
+            <p>
+                <img alt="A pie chart with different colored circles AI-generated content may be incorrect."
+                    src="/notlar/media/image6.png" style="width:4.72441in;height:4.72441in" />
+            </p>
+            <ul>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 1
+                    </span>
+                    <p>
+                        Arpa üretimi tüm üretimin yüzde kaçıdır?
+                    </p>
+                    <ul>
+                        <li>
+                            <p>
+                                <strong>
+                                    Çözüm
+                                </strong>
+                                :
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        Arpa 90°. Tüm daire 360°.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <span class="math inline math-frac">
+                                            \(\frac{90}{360} = \frac{1}{4} = \% 25\)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Cevap
+                                        </strong>
+                                        : %25
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 2
+                    </span>
+                    <p>
+                        Buğday miktarı Nohut miktarından 150 ton fazladır. Arpa miktarı Pirinç miktarından kaç ton
+                        fazladır?
+                    </p>
+                    <ul>
+                        <li>
+                            <p>
+                                <strong>
+                                    Çözüm
+                                </strong>
+                                :
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        Açı ile miktar doğru orantılıdır (x diyelim).
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        Buğday (135x) - Nohut (60x) = 150 ton
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <span class="math inline">
+                                            \(75x = 150\)
+                                        </span>
+                                        &rArr;
+                                        <span class="math inline">
+                                            \(x = 2.\ \ \)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Sorulan
+                                        </strong>
+                                        : Arpa (90x) - Pirinç (75x) = ?
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <span class="math inline">
+                                            \(15x = 15 \times 2 = 30\ ton.\ \ \)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Cevap
+                                        </strong>
+                                        : 30 ton
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </ul>
+            <ul>
+                <li>
+                    <p>
+                        <strong>
+                            Çizgi Grafiği (Yol - Benzin 2)
+                        </strong>
+                    </p>
+                </li>
+            </ul>
+            <p>
+                <img alt="A graph with a red line AI-generated content may be incorrect." src="/notlar/media/image7.png"
+                    style="width:4.72441in;height:3.54331in" />
+            </p>
+            <ul>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 1
+                    </span>
+                    <p>
+                        Bu araç 48 litre benzinle kaç km yol alır?
+                    </p>
+                    <ul>
+                        <li>
+                            <p>
+                                <strong>
+                                    Çözüm
+                                </strong>
+                                :
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        12 Litre ile 60 km gidiyorsa, 48 Litre (4 katı) ile;
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <span class="math inline">
+                                            \(60 \times 4 = 240\ km.\ \ \)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Cevap
+                                        </strong>
+                                        : 240 km
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 2
+                    </span>
+                    <p>
+                        Bu araç 360 km'lik mesafede kaç litre benzin harcar?
+                    </p>
+                    <ul>
+                        <li>
+                            <p>
+                                <strong>
+                                    Çözüm
+                                </strong>
+                                :
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        60 km'de 12 litre harcıyorsa, 360 km'de (6 katı);
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <span class="math inline">
+                                            \(12 \times 6 = 72\ litre.\ \ \)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Cevap
+                                        </strong>
+                                        : 72 litre
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </ul>
+            <ul>
+                <li>
+                    <p>
+                        <strong>
+                            İkili Daire Grafiği (Sayı ve Ağırlık)
+                        </strong>
+                    </p>
+                </li>
+            </ul>
+            <p>
+                <img alt="A pie chart with different colored circles AI-generated content may be incorrect."
+                    src="/notlar/media/image8.png" style="width:4.72441in;height:2.3622in" />
+            </p>
+            <ul>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 1
+                    </span>
+                    <p>
+                        Depoda toplam 1200 tane ürün varsa, bunların kaçı C ürünüdür? (C'nin açısı 75° olarak
+                        görünüyor/hesaplanıyor).
+                    </p>
+                    <ul>
+                        <li>
+                            <p>
+                                <strong>
+                                    Çözüm
+                                </strong>
+                                :
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        360° &rArr; 1200 adet ise, 75° &rArr; x adet.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        Orantı kurulduğunda
+                                        <span class="math inline">
+                                            \(x = 250.\ \ \)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Cevap
+                                        </strong>
+                                        : 250 adet
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 2
+                    </span>
+                    <p>
+                        D ürünlerinin toplam ağırlığı 100 kg ise (D'nin ağırlık grafiğindeki açısı 45°), depoda toplam
+                        kaç kg ürün vardır?
+                    </p>
+                    <ul>
+                        <li>
+                            <p>
+                                <strong>
+                                    Çözüm
+                                </strong>
+                                : 45° &rArr; 100 kg ise, 360° (tamamı) &rArr; x kg.
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        45'in 8 katı 360'tır.
+                                        <span class="math inline">
+                                            \(100 \times 8 = 800\ kg.\)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Cevap
+                                        </strong>
+                                        : 800 kg
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 3
+                    </span>
+                    <p>
+                        Bir B ürününün ağırlığı, bir A ürününün ağırlığının kaç katıdır?
+                    </p>
+                    <ul>
+                        <li>
+                            <p>
+                                <strong>
+                                    Veriler
+                                </strong>
+                                :
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Sayı grafiğinde
+                                        </strong>
+                                        : A=120x adet, B=90x adet.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Ağırlık grafiğinde
+                                        </strong>
+                                        : A=60y ağırlık, B=180y ağırlık.
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <p>
+                                <strong>
+                                    Çözüm
+                                </strong>
+                                :
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        Bir tane A'nın ağırlığı =
+                                        <span class="math inline">
+                                            \(Toplam\ Ağ\imath rl\imath k\ /\ Toplam\ Say\imath\ = \ 60/120 = 0.5\
+                                            birim.\ \)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        Bir tane B'nin ağırlığı =
+                                        <span class="math inline">
+                                            \(180/90 = 2\ birim.\ \ \)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Oran
+                                        </strong>
+                                        :
+                                        <span class="math inline math-frac">
+                                            \(\frac{B}{A} = \frac{2}{0.5} = 4\)
+                                        </span>
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <p>
+                                <strong>
+                                    Cevap
+                                </strong>
+                                : 4 katıdır.
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </ul>
+            <ul>
+                <li>
+                    <p>
+                        <strong>
+                            Daire Grafiği (Miras Paylaşımı)
+                        </strong>
+                    </p>
+                </li>
+            </ul>
+            <p>
+                <img alt="A colorful circle with text AI-generated content may be incorrect."
+                    src="/notlar/media/image9.png" style="width:4.72441in;height:4.72441in" />
+            </p>
+            <ul>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 1
+                    </span>
+                    <p>
+                        Hakan ve Burcu paylarından vazgeçiyor. Bu paylar diğerlerine (Murat ve Doruk) eşit
+                        paylaştırılıyor. Murat'ın payı yüzde kaç artar?
+                    </p>
+                    <ul>
+                        <li>
+                            <p>
+                                <strong>
+                                    Çözüm
+                                </strong>
+                                :
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        Vazgeçilen paylar: Hakan (80) + Burcu (100) = 180. Eşit paylaşım:
+                                        <span class="math inline">
+                                            \(180\ /\ 2\ = \ 90\)
+                                        </span>
+                                        . Her birine 90 eklenir.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        Murat'ın ilk payı: 120. Eklenen: 90.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        Artış oranı: 120'de 90 artarsa, 100'de kaç artar?
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <span class="math inline math-frac">
+                                            \(\frac{90}{120} = \frac{3}{4} = \% 75\)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <strong>
+                                            Cevap
+                                        </strong>
+                                        : %75
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 2
+                    </span>
+                    <p>
+                        Toplam 3600 m² arsa var. Burcu ve Doruk kendi paylarını satıyorlar ve eşit miktarda para elde
+                        ediyorlar. Burcu metrekaresini 120 TL'den sattıysa, Doruk kaçtan satmıştır?
+                    </p>
+                    <li>
+                        <p>
+                            <strong>
+                                Çözüm
+                            </strong>
+                            :
+                        </p>
+                        <ul>
+                            <li>
+                                <p>
+                                    Metrekare hesabı (360° &rArr; 3600 m² ise 1° &rArr; 10 m²):
+                                </p>
+                                <ul>
+                                    <li>
+                                        <p>
+                                            <strong>
+                                                Burcu (100°):
+                                            </strong>
+                                            1000 m².
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p>
+                                            <strong>
+                                                Doruk (60°):
+                                            </strong>
+                                            600 m².
+                                        </p>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <p>
+                                    Burcu'nun kazancı:
+                                    <span class="math inline">
+                                        \(1000m^{2} \times 120\text{ TL} = 120.000\ TL.\)
+                                    </span>
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    Doruk'un kazancı eşit olmalı:
+                                    <span class="math inline">
+                                        \(600m^{2} \times x\text{ TL} = 120.000\)
+                                    </span>
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    <span class="math inline">
+                                        \(x = 200\ TL.\ \ \)
+                                    </span>
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    <strong>
+                                        Cevap
+                                    </strong>
+                                    : 200 TL
+                                </p>
+                            </li>
+                        </ul>
+                    </li>
+                </div>
+            </ul>
+            <ul>
+                <li>
+                    <p>
+                        <strong>
+                            Çizgi Grafiği (Bitki Büyüme)
+                        </strong>
+                    </p>
+                </li>
+            </ul>
+            <p>
+                <img alt="A graph with a green line AI-generated content may be incorrect."
+                    src="/notlar/media/image10.png" style="width:4.72441in;height:3.54331in" />
+            </p>
+            <ul>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 1
+                    </span>
+                    <p>
+                        B bitkisi ayda kaç cm büyümektedir?
+                    </p>
+                    <li>
+                        <p>
+                            <strong>
+                                Çözüm
+                            </strong>
+                            :
+                        </p>
+                        <ul>
+                            <li>
+                                <p>
+                                    A bitkisi 4 ayda:
+                                    <span class="math inline">
+                                        \(4 \times 2 = 8\ cm\)
+                                    </span>
+                                    uzar. Boyu
+                                    <span class="math inline">
+                                        \(28 + 8 = 36\ cm\)
+                                    </span>
+                                    olur.
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    Eşitlendikleri için 4. ayda B'nin boyu da 36 cm'dir.
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    B'nin uzaması:
+                                    <span class="math inline">
+                                        \(36(son) - 12(ilk) = 24\ cm.\)
+                                    </span>
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    Süre 4 ay olduğuna göre aylık uzama:
+                                    <span class="math inline">
+                                        \(24/4 = 6\ cm.\ \ \)
+                                    </span>
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    <strong>
+                                        Cevap
+                                    </strong>
+                                    : 6 cm
+                                </p>
+                            </li>
+                        </ul>
+                    </li>
+                </div>
+            </ul>
+            <ul>
+                <li>
+                    <p>
+                        <strong>
+                            Çizgi Grafiği (Hareket Problemi)
+                        </strong>
+                    </p>
+                </li>
+            </ul>
+            <blockquote>
+                <p>
+                    <img alt="A diagram of a problem AI-generated content may be incorrect."
+                        src="/notlar/media/image11.png" style="width:4.72441in;height:3.54331in" />
+                </p>
+            </blockquote>
+            <ul>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 1
+                    </span>
+                    <p>
+                        Karşılaşmadan (yan yana geldikten) kaç saat sonra aralarındaki mesafe 60 km olur?
+                    </p>
+                    <li>
+                        <p>
+                            <strong>
+                                Çözüm
+                            </strong>
+                            :
+                        </p>
+                        <ul>
+                            <li>
+                                <p>
+                                    4. saatte yan yanalar (100. km'de). Bundan sonra A (25) B'den (15) hızlı olduğu için
+                                    fark açılacak.
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    Hız farkı:
+                                    <span class="math inline">
+                                        \(25 - 15 = 10\ km\text{/}s.\)
+                                    </span>
+                                    Farkın 60 km olması için:
+                                    <span class="math inline">
+                                        \(60\ = \ 10\ \times t\ \rightarrow t = 6\ saat.\)
+                                    </span>
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    <strong>
+                                        Cevap
+                                    </strong>
+                                    : 6 saat sonra
+                                </p>
+                            </li>
+                        </ul>
+                    </li>
+                </div>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 2
+                    </span>
+                    <p>
+                        İlk hareketten 12 saat sonra aralarındaki mesafe ne olur?
+                    </p>
+                    <ul>
+                        <li>
+                            <p>
+                                <strong>
+                                    Çözüm
+                                </strong>
+                                :
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        4 saatte yan yana geldiler (Fark 0). Geriye 8 saat kaldı.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        8 saat boyunca hız farkı (10) kadar açılacaklar.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <span class="math inline">
+                                            \(8 \times 10 = 80\ km.\ \ \)
+                                        </span>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        Cevap: 80 km
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="note-card">
+                    <span class="example-title">
+                        Soru 3
+                    </span>
+                    <p>
+                        A hareketlisinin B hareketlisini 2 saat sonra yakalaması için A hızını kaç km arttırmalıdır?
+                    </p>
+                    <li>
+                        <p>
+                            <strong>
+                                Çözüm
+                            </strong>
+                            :
+                        </p>
+                        <ul>
+                            <li>
+                                <p>
+                                    Başlangıçtaki mesafe 40 km. Süre 2 saat.
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    <strong>
+                                        Yakalama formülü
+                                    </strong>
+                                    :
+                                    <span class="math inline">
+                                        \(\text{Mesafe} = \left( \text{Hız Farkı} \right) \times \text{Zaman}\)
+                                    </span>
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    <span class="math inline">
+                                        \(40 = \left( V_{\text{yeni}} - 15 \right) \times 2 \Rightarrow 20 =
+                                        V_{\text{yeni}} - 15 \rightarrow V_{\text{yeni}} = 35\ km/s\ \)
+                                    </span>
+                                    olmalı.
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    Eski hızı 25 idi. Artış miktarı:
+                                    <span class="math inline">
+                                        \(35 - 25 = 10\ km/s.\ \ \)
+                                    </span>
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    <strong>
+                                        Cevap
+                                    </strong>
+                                    : 10 km/s arttırmalıdır.
+                                </p>
+                            </li>
+                        </ul>
+                    </li>
+                </div>
+            </ul>
+        </div>
+    </main>
+</body>
+
+</html>

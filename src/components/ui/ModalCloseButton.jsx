@@ -1,27 +1,18 @@
-import React from 'react';
 import { X } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
-const ModalCloseButton = React.forwardRef(({ className, onClick, ...props }, ref) => {
+const ModalCloseButton = ({ className, ...props }) => {
     return (
-        <Button
-            ref={ref}
-            variant="ghost"
-            size="icon"
-            onClick={onClick}
+        <button
             className={cn(
-                "h-10 w-10 round-full hover:bg-muted text-muted-foreground hover:text-foreground focus-visible:ring-0 focus-visible:ring-offset-0 outline-none shrink-0 [&_svg]:size-6",
+                "rounded-full p-2 hover:bg-muted transition-colors",
                 className
             )}
             {...props}
         >
-            <X size={24} />
-            <span className="sr-only">Kapat</span>
-        </Button>
+            <X className="h-5 w-5 text-muted-foreground" />
+        </button>
     );
-});
-
-ModalCloseButton.displayName = "ModalCloseButton";
+};
 
 export default ModalCloseButton;

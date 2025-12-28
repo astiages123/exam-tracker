@@ -1,99 +1,59 @@
-import React, { useEffect } from 'react';
 import { motion as Motion } from 'framer-motion';
-import { CheckCircle, AlertCircle, XCircle, Info, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
+import { useEffect } from 'react';
 
-const TOAST_TYPES = {
-    success: {
-        icon: CheckCircle,
-        accent: 'text-emerald-400',
-        bg: 'bg-emerald-400/10',
-        border: 'border-emerald-400/20',
-        bar: 'bg-emerald-400',
-        title: 'Başarılı'
-    },
-    error: {
-        icon: XCircle,
-        accent: 'text-rose-400',
-        bg: 'bg-rose-400/10',
-        border: 'border-rose-400/20',
-        bar: 'bg-rose-400',
-        title: 'Hata'
-    },
-    warning: {
-        icon: AlertCircle,
-        accent: 'text-amber-400',
-        bg: 'bg-amber-400/10',
-        border: 'border-amber-400/20',
-        bar: 'bg-amber-400',
-        title: 'Uyarı'
-    },
-    info: {
-        icon: Info,
-        accent: 'text-primary',
-        bg: 'bg-primary/10',
-        border: 'border-primary/20',
-        bar: 'bg-primary',
-        title: 'Bilgi'
-    }
+const iconMap = {
+    success: CheckCircle,
+    error: AlertCircle,
+    warning: AlertTriangle,
+    info: Info
 };
 
-const DURATION = 4000;
+const colorMap = {
+    success: 'bg-emerald-500/20 border-emerald-500/30 text-emerald-100',
+    error: 'bg-red-500/20 border-red-500/30 text-red-100',
+    warning: 'bg-amber-500/20 border-amber-500/30 text-amber-100',
+    info: 'bg-sky-500/20 border-sky-500/30 text-sky-100'
+};
 
-export default function Toast({ id, message, type = 'info', onClose }) {
-    const style = TOAST_TYPES[type] || TOAST_TYPES.info;
-    const Icon = style.icon;
+const iconColorMap = {
+    success: 'text-emerald-400',
+    error: 'text-red-400',
+    warning: 'text-amber-400',
+    info: 'text-sky-400'
+};
+
+const Toast = ({ id, message, type = 'info', onClose }) => {
+    const Icon = iconMap[type] || Info;
 
     useEffect(() => {
         const timer = setTimeout(() => {
             onClose(id);
-        }, DURATION);
-
+        }, 4000);
         return () => clearTimeout(timer);
     }, [id, onClose]);
 
     return (
         <Motion.div
-            layout
-            initial={{ opacity: 0, x: 20, y: -10 }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-            className={cn(
-                "pointer-events-auto relative min-w-[300px] max-w-[400px] overflow-hidden rounded-2xl border shadow-2xl backdrop-blur-xl flex flex-col",
-                "bg-card border-secondary/40"
-            )}
+            initial={{ opacity: 0, x: 50, scale: 0.9 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: 50, scale: 0.9 }}
+            className={`
+                pointer-events-auto flex items-center gap-3 px-4 py-3 
+                rounded-lg border backdrop-blur-sm shadow-lg
+                ${colorMap[type]}
+            `}
         >
-            <div className="p-4 flex items-start gap-4">
-                <div className={cn("shrink-0 w-10 h-10 rounded-xl flex items-center justify-center border", style.bg, style.border)}>
-                    <Icon size={20} className={style.accent} />
-                </div>
-
-                <div className="flex-1 min-w-0 pt-0.5">
-                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">
-                        {style.title}
-                    </p>
-                    <p className="text-[14px] font-medium text-foreground leading-relaxed">
-                        {message}
-                    </p>
-                </div>
-
-                <button
-                    onClick={() => onClose(id)}
-                    className="shrink-0 p-1.5 rounded-lg text-muted-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
-                >
-                    <X size={16} />
-                </button>
-            </div>
-
-            {/* Smooth Progress Bar */}
-            <div className="h-[2px] w-full bg-white/5">
-                <Motion.div
-                    initial={{ width: '100%' }}
-                    animate={{ width: 0 }}
-                    transition={{ duration: DURATION / 1000, ease: 'linear' }}
-                    className={cn("h-full opacity-60", style.bar)}
-                />
-            </div>
+            <Icon className={`w-5 h-5 flex-shrink-0 ${iconColorMap[type]}`} />
+            <span className="text-sm font-medium">{message}</span>
+            <button
+                onClick={() => onClose(id)}
+                className="ml-2 p-1 rounded-full hover:bg-white/10 transition-colors"
+            >
+                <X className="w-4 h-4" />
+            </button>
         </Motion.div>
     );
-}
+};
+
+export default Toast;

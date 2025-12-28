@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Lock, User } from 'lucide-react';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
 
 export default function Login() {
     const [username, setUsername] = useState('');
@@ -47,11 +49,11 @@ export default function Login() {
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <User className="h-5 w-5 text-secondary" />
                             </div>
-                            <input
+                            <Input
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                className="block w-full pl-10 pr-3 py-3 border border-secondary rounded-xl bg-background text-foreground placeholder-secondary/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
+                                className="pl-10 py-3 rounded-xl"
                                 placeholder="kullaniciadi"
                                 required
                             />
@@ -66,11 +68,11 @@ export default function Login() {
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <Lock className="h-5 w-5 text-secondary" />
                             </div>
-                            <input
+                            <Input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="block w-full pl-10 pr-3 py-3 border border-secondary rounded-xl bg-background text-foreground placeholder-secondary/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors"
+                                className="pl-10 py-3 rounded-xl"
                                 placeholder="••••••"
                                 required
                             />
@@ -83,12 +85,13 @@ export default function Login() {
                         </div>
                     )}
 
-                    <button
+                    <Button
                         type="submit"
-                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg shadow-primary/20 text-sm font-semibold text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                        className="w-full py-3 rounded-xl shadow-lg shadow-primary/20 font-semibold"
+                        size="lg"
                     >
                         Giriş Yap
-                    </button>
+                    </Button>
                 </form>
             </div>
         </div>

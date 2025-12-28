@@ -329,9 +329,6 @@ export default function App() {
     // 1. Find newly added videos
     const addedIds = newCompletedIds.filter(id => !oldCompletedIds.includes(id));
 
-    // 2. Find removed videos
-    const removedIds = oldCompletedIds.filter(id => !newCompletedIds.includes(id));
-
     // --- History Logic ---
     // Only add new records - we don't remove records when unchecking
     // This preserves the original completion timestamp when re-completing a video

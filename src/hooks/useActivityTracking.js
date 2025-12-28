@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 
 /**
  * Returns the date string in YYYY-MM-DD format for a given date object
@@ -12,13 +12,11 @@ const getLocalYMD = (date) => {
 };
 
 export const useActivityTracking = (sessions = [], videoHistory = [], isDataLoaded = false) => {
-    const [activityLog, setActivityLog] = useState({});
-
-    useEffect(() => {
-        if (!isDataLoaded) return;
+    // Use useMemo instead of useState + useEffect to avoid cascading renders
+    const activityLog = useMemo(() => {
+        if (!isDataLoaded) return {};
 
         // Calculate activity log purely from source of truth (sessions & history)
-        // This eliminates the need for volatile localStorage baselines
         const newActivityLog = {};
 
         // 1. Map Work Sessions to Dates
@@ -35,8 +33,7 @@ export const useActivityTracking = (sessions = [], videoHistory = [], isDataLoad
             newActivityLog[dateStr] = (newActivityLog[dateStr] || 0) + 1;
         });
 
-        setActivityLog(newActivityLog);
-
+        return newActivityLog;
     }, [sessions, videoHistory, isDataLoaded]);
 
     return activityLog;

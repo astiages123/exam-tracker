@@ -10,6 +10,131 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { renderMathText } from "../utils/mathText";
+import {
+    LineChart, Line,
+    BarChart, Bar,
+    PieChart, Pie, Cell,
+    AreaChart, Area,
+    XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, LabelList
+} from 'recharts';
+
+// Grafik renk paleti
+const CHART_COLORS = ['#04b2a6', '#f97316', '#8b5cf6', '#ec4899', '#22c55e', '#3b82f6', '#eab308', '#ef4444'];
+
+// Custom label for pie chart - inside the slice
+// Supports both angle (216°) and percent (%60) display modes
+const createPieLabel = (displayMode) => ({ cx, cy, midAngle, innerRadius, outerRadius, percent, payload }) => {
+    const RADIAN = Math.PI / 180;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    // Açı modu: 216° formatında göster
+    // Yüzde modu: %60 formatında göster
+    const displayText = displayMode === 'angle' && payload.angle
+        ? `${payload.angle}°`
+        : `%${(percent * 100).toFixed(0)}`;
+
+    return (
+        <text x={x} y={y} fill="#fff" textAnchor="middle" dominantBaseline="central" fontSize={12} fontWeight="bold">
+            {displayText}
+        </text>
+    );
+};
+
+// Grafik render bileşeni
+const QuizChart = ({ chartData }) => {
+    if (!chartData || !chartData.data || chartData.data.length === 0) return null;
+
+    const { type, title, xAxisLabel, yAxisLabel, data, displayMode } = chartData;
+
+    const commonProps = {
+        margin: { top: 25, right: 30, left: 0, bottom: 0 }
+    };
+
+    const renderChart = () => {
+        switch (type) {
+            case 'line':
+                return (
+                    <LineChart data={data} {...commonProps}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                        <XAxis dataKey="label" tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                        <YAxis tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                        <Legend />
+                        <Line type="monotone" dataKey="value" stroke="#04b2a6" strokeWidth={2} dot={{ fill: '#04b2a6', r: 5 }}>
+                            <LabelList dataKey="value" position="top" fill="#f3f4f6" fontSize={11} />
+                        </Line>
+                    </LineChart>
+                );
+            case 'bar':
+                return (
+                    <BarChart data={data} {...commonProps}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                        <XAxis dataKey="label" tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                        <YAxis tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                        <Legend />
+                        <Bar dataKey="value" fill="#04b2a6" radius={[4, 4, 0, 0]}>
+                            <LabelList dataKey="value" position="top" fill="#f3f4f6" fontSize={11} />
+                        </Bar>
+                    </BarChart>
+                );
+            case 'pie':
+                return (
+                    <PieChart>
+                        <Pie
+                            data={data}
+                            dataKey="value"
+                            nameKey="label"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={80}
+                            label={createPieLabel(displayMode || 'percent')}
+                            labelLine={false}
+                        >
+                            {data.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                            ))}
+                        </Pie>
+                        <Legend />
+                    </PieChart>
+                );
+            case 'area':
+                return (
+                    <AreaChart data={data} {...commonProps}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                        <XAxis dataKey="label" tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                        <YAxis tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                        <Legend />
+                        <Area type="monotone" dataKey="value" stroke="#04b2a6" fill="#04b2a6" fillOpacity={0.3}>
+                            <LabelList dataKey="value" position="top" fill="#f3f4f6" fontSize={11} />
+                        </Area>
+                    </AreaChart>
+                );
+            default:
+                return null;
+        }
+    };
+
+    return (
+        <div className="my-4 p-4 bg-muted/30 rounded-xl border border-border">
+            {title && (
+                <h4 className="text-sm font-semibold text-foreground mb-3 text-center">{title}</h4>
+            )}
+            <div className="h-[250px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                    {renderChart()}
+                </ResponsiveContainer>
+            </div>
+            {(xAxisLabel || yAxisLabel) && (
+                <div className="flex justify-between text-xs text-muted-foreground mt-2 px-4">
+                    {xAxisLabel && <span>X: {xAxisLabel}</span>}
+                    {yAxisLabel && <span>Y: {yAxisLabel}</span>}
+                </div>
+            )}
+        </div>
+    );
+};
 
 export default function QuizModal({ isOpen, onClose, courseId, courseName, notePath }) {
     const [questions, setQuestions] = useState([]);
@@ -217,7 +342,6 @@ export default function QuizModal({ isOpen, onClose, courseId, courseName, noteP
     const triggerAutoGenerate = async () => {
         if (isAutoGenerating || !notePath) return;
         setIsAutoGenerating(true);
-        console.log("Auto-generating 50 more questions in background...");
         try {
             const rawText = await fetchNoteContent(notePath);
             if (!rawText || rawText.length < 100) return;
@@ -227,11 +351,11 @@ export default function QuizModal({ isOpen, onClose, courseId, courseName, noteP
                 .slice(0, 3)
                 .map(s => s.topic);
 
+            // 10 soru üret (varsayılan)
             const newQuestions = await generateQuestions(courseId, courseName, rawText, questions.length, weak);
 
             if (newQuestions && newQuestions.length > 0) {
                 setQuestions(prev => [...prev, ...newQuestions]);
-                console.log(`Successfully added ${newQuestions.length} auto-generated questions.`);
             }
         } catch (err) {
             console.error("Auto generation background error:", err);
@@ -241,9 +365,9 @@ export default function QuizModal({ isOpen, onClose, courseId, courseName, noteP
     };
 
     const handleNextQuestion = () => {
-        // Auto-generate if 10 questions left
+        // Auto-generate if 5 questions left
         const remaining = questions.length - (currentIndex + 1);
-        if (remaining <= 10 && !isAutoGenerating) {
+        if (remaining <= 5 && !isAutoGenerating) {
             triggerAutoGenerate();
         }
 
@@ -470,8 +594,13 @@ export default function QuizModal({ isOpen, onClose, courseId, courseName, noteP
 
                                         <div className="space-y-6">
                                             <h3 className="text-lg font-medium text-foreground leading-relaxed">
-                                                {questions[currentIndex].question_text}
+                                                {renderMathText(questions[currentIndex].question_text)}
                                             </h3>
+
+                                            {/* Grafik Alanı - Soru ve Şıklar Arasında */}
+                                            {questions[currentIndex].chart_data && (
+                                                <QuizChart chartData={questions[currentIndex].chart_data} />
+                                            )}
 
                                             <div className="space-y-3">
                                                 {questions[currentIndex].options.map((option, idx) => {
@@ -503,7 +632,7 @@ export default function QuizModal({ isOpen, onClose, courseId, courseName, noteP
                                                                 )}>
                                                                     {String.fromCharCode(65 + idx)}
                                                                 </span>
-                                                                <span className="text-[15px]">{option}</span>
+                                                                <span className="text-[15px]">{renderMathText(option)}</span>
                                                             </div>
                                                             {isSubmitted && isCorrect && <CheckCircle className="text-green-500" size={20} />}
                                                             {isSubmitted && isSelected && !isCorrect && <XCircle className="text-destructive" size={20} />}

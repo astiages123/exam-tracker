@@ -36,12 +36,9 @@ import {
     BarChart,
     Percent,
     Divide,
-    BarChart3,
-    FileText,
-    Activity,
-    Cpu,
-    Zap
+    BarChart3
 } from 'lucide-react';
+
 
 // ============================================================================
 // CATEGORY STYLES - Used in App.jsx for course categories

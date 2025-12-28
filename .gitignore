@@ -28,3 +28,7 @@ dist-ssr
 *.sln
 *.sw?
 .vite/
+
+# DOCX source files (not needed in repo)
+uploads/
+.temp-pandoc/

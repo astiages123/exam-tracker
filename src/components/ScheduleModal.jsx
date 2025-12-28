@@ -153,13 +153,15 @@ export default function ScheduleModal({ onClose, schedule = {}, setSchedule }) {
                                                         </span>
 
                                                         {isEditing && (
-                                                            <button
+                                                            <Button
+                                                                variant="destructive"
+                                                                size="icon"
                                                                 onClick={() => handleDeleteItem(day, idx)}
-                                                                className="absolute -right-1 -top-1 bg-destructive text-destructive-foreground p-1 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-sm hover:scale-110"
+                                                                className="absolute -right-1 -top-1 h-5 w-5 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-sm"
                                                                 title="Sil"
                                                             >
                                                                 <Trash2 size={10} />
-                                                            </button>
+                                                            </Button>
                                                         )}
                                                     </div>
                                                 );
