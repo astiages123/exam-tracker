@@ -79,6 +79,53 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
         };
     }, []);
 
+    const subModalActiveRef = React.useRef(false);
+    useEffect(() => {
+        const isAnySubModalOpen = selectedGroup || showFullHistory || confirmDelete;
+        if (isAnySubModalOpen) {
+            subModalActiveRef.current = true;
+        } else {
+            const timer = setTimeout(() => {
+                subModalActiveRef.current = false;
+            }, 300);
+            return () => clearTimeout(timer);
+        }
+    }, [selectedGroup, showFullHistory, confirmDelete]);
+
+    // Handle browser back button (gesture) for mobile
+    useEffect(() => {
+        if (!isMobile) return;
+
+        // Push a state to history so "back" gesture can be intercepted
+        window.history.pushState({ modal: 'report-active' }, '');
+
+        const handlePopState = (e) => {
+            // When user goes back (gesture or button)
+            if (selectedGroup || showFullHistory || confirmDelete) {
+                // If a submodal is open, just close it and re-push the state 
+                // so the NEXT back gesture can close the main modal
+                setSelectedGroup(null);
+                setShowFullHistory(null);
+                setConfirmDelete(null);
+                window.history.pushState({ modal: 'report-active' }, '');
+            } else {
+                // If no submodal, close the main modal
+                onClose();
+            }
+        };
+
+        window.addEventListener('popstate', handlePopState);
+
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+            // Cleanup: if the effect re-runs or component unmounts,
+            // we should pop the state we pushed to keep history clean.
+            if (window.history.state?.modal === 'report-active') {
+                window.history.back();
+            }
+        };
+    }, [isMobile, onClose, !!selectedGroup, !!showFullHistory, !!confirmDelete]);
+
     // Pre-calculate memoized styles for categories to avoid overhead
     const getCourseCategory = React.useCallback((courseId) => {
         if (!courseId) return '';
@@ -278,17 +325,17 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
     return (
         <>
             <Dialog open={true} onOpenChange={(open) => {
-                if (!open && !selectedGroup && !showFullHistory && !confirmDelete) {
+                if (!open && !subModalActiveRef.current) {
                     onClose();
                 }
             }}>
                 <DialogContent className="w-full max-w-full sm:max-w-7xl h-[100dvh] sm:h-[90vh] flex flex-col p-0 gap-0 bg-background border-border shadow-2xl overflow-hidden focus-visible:outline-none rounded-none sm:rounded-lg">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full w-full">
                         {/* Header */}
-                        <div className="p-6 sm:p-8 border-b border-border flex justify-between items-center bg-card/50">
+                        <div className="p-4 sm:p-8 border-b border-border flex justify-between items-center bg-card/50">
                             <div className="flex items-center gap-4">
-                                <div className="bg-primary/10 p-3.5 rounded-xl border border-primary/10 mt-1">
-                                    <ChartNoAxesCombined className="text-primary" size={40} />
+                                <div className="bg-primary/10 p-2.5 sm:p-3.5 rounded-xl border border-primary/10 mt-1">
+                                    <ChartNoAxesCombined className="text-primary" size={isMobile ? 28 : 40} />
                                 </div>
                                 <div className="flex flex-col">
                                     <DialogHeader>
@@ -345,7 +392,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                         {/* Content Area */}
                         <div className="flex-1 overflow-hidden relative">
                             <ScrollArea className="h-full w-full">
-                                <div className="p-6 sm:p-8 w-full">
+                                <div className="p-4 sm:p-8 w-full">
                                     <TabsContent value="list" className="mt-0 focus-visible:ring-0">
                                         {aggregatedSessions.length === 0 ? (
                                             <div className="text-center py-12 text-muted-foreground/40">
@@ -360,34 +407,36 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                                                         className="relative cursor-pointer hover:bg-muted/50 transition-colors border-border/40 shadow-sm group bg-card/30"
                                                         onClick={() => setSelectedGroup(group)}
                                                     >
-                                                        <CardContent className="p-4 sm:px-6 sm:py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
-                                                            <div className="flex items-center gap-4">
-                                                                <div className="p-3.5 rounded-full bg-primary/10 text-primary">
+                                                        <CardContent className="p-3 sm:px-6 sm:py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
+                                                            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                                                                <div className="p-2.5 sm:p-3.5 rounded-full bg-primary/10 text-primary shrink-0">
                                                                     {(() => {
                                                                         const courseName = getCourseName(group.courseId);
                                                                         const matchingKey = Object.keys(COURSE_ICONS).find(key => courseName.startsWith(key));
                                                                         const CourseIcon = matchingKey ? COURSE_ICONS[matchingKey] : BookOpen;
-                                                                        return <CourseIcon size={32} />;
+                                                                        return <CourseIcon size={isMobile ? 24 : 32} />;
                                                                     })()}
                                                                 </div>
-                                                                <div>
-                                                                    <h4 className="font-bold text-foreground text-base w-full sm:max-w-[350px] truncate leading-tight">
+                                                                <div className="min-w-0 flex-1">
+                                                                    <h4 className="font-bold text-foreground text-sm sm:text-base w-full sm:max-w-[450px] truncate leading-tight">
                                                                         {getCourseName(group.courseId)}
                                                                     </h4>
-                                                                    <div className="flex items-center gap-2.5 text-xs text-zinc-300 font-medium mt-1">
-                                                                        <Calendar size={12} />
-                                                                        {new Date(group.date).toLocaleDateString('tr-TR')}
+                                                                    <div className="flex items-center flex-wrap gap-2 text-[11px] sm:text-xs text-zinc-300 font-medium mt-1">
+                                                                        <div className="flex items-center gap-1.5 shrink-0">
+                                                                            <Calendar size={12} />
+                                                                            {new Date(group.date).toLocaleDateString('tr-TR')}
+                                                                        </div>
                                                                         {getCourseCategory(group.courseId) && (
-                                                                            <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded border-[0.5px] bg-white/5 border-white/10 text-zinc-300 ml-1 whitespace-nowrap">
+                                                                            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded border-[0.5px] bg-white/5 border-white/10 text-zinc-300 whitespace-nowrap">
                                                                                 {getCourseCategory(group.courseId)}
                                                                             </span>
                                                                         )}
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div className="flex items-center justify-end w-full sm:w-auto gap-3 mt-2 sm:mt-0">
-                                                                <div className="text-right">
-                                                                    <span className="font-mono font-bold text-zinc-200 text-lg">
+                                                            <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-3 mt-1 sm:mt-0 pt-2 sm:pt-0 border-t border-white/5 sm:border-t-0">
+                                                                <div className="sm:text-right">
+                                                                    <span className="font-mono font-bold text-zinc-200 text-base sm:text-lg">
                                                                         {(() => {
                                                                             const mins = Math.round(group.totalDuration / 60);
                                                                             const h = Math.floor(mins / 60);
@@ -540,13 +589,18 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
                         onClose={() => setSelectedGroup(null)}
                         onDelete={onDelete}
                         onUpdate={onUpdate}
+                        isMobile={isMobile}
                     />
                 )}
             </AnimatePresence>
 
             {/* Full History Graph Modal */}
             <Dialog open={!!showFullHistory} onOpenChange={(open) => !open && setShowFullHistory(null)}>
-                <DialogContent className="w-full max-w-full sm:max-w-7xl h-[100dvh] sm:h-[85vh] p-0 overflow-hidden flex flex-col bg-background border-border shadow-2xl rounded-none sm:rounded-lg">
+                <DialogContent
+                    className="w-full max-w-full sm:max-w-7xl h-[100dvh] sm:h-[85vh] p-0 overflow-hidden flex flex-col bg-background border-border shadow-2xl rounded-none sm:rounded-lg"
+                    onPointerDownOutside={(e) => e.preventDefault()}
+                    onEscapeKeyDown={(e) => e.preventDefault()}
+                >
                     <div className="p-6 sm:p-8 border-b border-border bg-card/50 flex justify-between items-center">
                         <div className="flex items-center gap-4">
                             <div className="bg-primary/10 p-3.5 rounded-xl border border-primary/10 mt-1">
@@ -667,7 +721,7 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
     );
 }
 
-function SessionChartModal({ group, courseName, workSessions, breakSessions, onClose, onDelete, onUpdate }) {
+function SessionChartModal({ group, courseName, workSessions, breakSessions, onClose, onDelete, onUpdate, isMobile }) {
     const [confirmDelete, setConfirmDelete] = useState(null); // { sessionId } or null
     const [selectedItem, setSelectedItem] = useState(null); // Timeline item
     const [editingSession, setEditingSession] = useState(null); // { sessionId, type, startTime, endTime, originalSession }
@@ -840,8 +894,8 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
             sHour = minTime.getHours();
             eHour = maxTime.getHours() + 1;
 
-            // 1 saatlik esneklik/pad ekleyelim
-            sHour = Math.max(0, sHour - 1);
+            // 1 saatlik esneklik/pad ekleyelim (mobilde ilk çalışma saatinden başlasın)
+            sHour = Math.max(0, isMobile ? sHour : sHour - 1);
             eHour = Math.min(24, eHour + 1);
         }
 
@@ -856,7 +910,7 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                 pause: Math.round(pauseTime / 60)
             }
         };
-    }, [group, workSessions, breakSessions]);
+    }, [group, workSessions, breakSessions, isMobile]);
 
     return (
         <Dialog open={true} onOpenChange={(open) => {
@@ -864,11 +918,15 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                 onClose();
             }
         }}>
-            <DialogContent className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-fit sm:max-h-[85vh] overflow-hidden flex flex-col bg-background border-border p-0 gap-0 shadow-2xl rounded-none sm:rounded-lg">
+            <DialogContent
+                className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-fit sm:max-h-[85vh] overflow-hidden flex flex-col bg-background border-border p-0 gap-0 shadow-2xl rounded-none sm:rounded-lg"
+                onPointerDownOutside={(e) => e.preventDefault()}
+                onEscapeKeyDown={(e) => e.preventDefault()}
+            >
                 <div className="p-6 border-b border-border bg-card/90 flex justify-between items-center shrink-0 relative z-20 backdrop-blur-md">
                     <div className="flex items-center gap-4">
-                        <div className="bg-primary/10 p-3.5 rounded-xl border border-primary/10 mt-1 flex-shrink-0">
-                            <ChartArea className="text-primary" size={32} />
+                        <div className="bg-primary/10 p-2.5 sm:p-3.5 rounded-xl border border-primary/10 mt-1 flex-shrink-0">
+                            <ChartArea className="text-primary" size={isMobile ? 24 : 32} />
                         </div>
                         <div>
                             <DialogTitle className="font-bold text-foreground text-lg">Günlük Zaman Çizelgesi</DialogTitle>
@@ -885,24 +943,24 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                 </div>
 
                 {/* Günlük Özet */}
-                <div className="px-8 py-5 bg-background/50 border-b border-white/5 flex items-center justify-start gap-8 shrink-0 relative z-20">
-                    <div className="flex flex-col">
+                <div className="px-4 sm:px-8 py-4 sm:py-5 bg-background/50 border-b border-white/5 flex items-center justify-start gap-4 sm:gap-8 shrink-0 relative z-20 overflow-x-auto no-scrollbar">
+                    <div className="flex flex-col shrink-0">
                         <span className="text-[9px] text-zinc-400 uppercase font-semibold tracking-wider">Toplam Çalışma</span>
-                        <span className="text-sm font-mono font-bold text-zinc-300">{dayStats.work} dk</span>
+                        <span className="text-xs sm:text-sm font-mono font-bold text-zinc-300">{dayStats.work} dk</span>
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col shrink-0">
                         <span className="text-[9px] text-zinc-400 uppercase font-semibold tracking-wider">Toplam Mola</span>
-                        <span className="text-sm font-mono font-bold text-zinc-300">{dayStats.break} dk</span>
+                        <span className="text-xs sm:text-sm font-mono font-bold text-zinc-300">{dayStats.break} dk</span>
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col shrink-0">
                         <span className="text-[9px] text-zinc-400 uppercase font-semibold tracking-wider">Duraklatma</span>
-                        <span className="text-sm font-mono font-bold text-primary">{dayStats.pause} dk</span>
+                        <span className="text-xs sm:text-sm font-mono font-bold text-primary">{dayStats.pause} dk</span>
                     </div>
                 </div>
 
                 <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar relative z-10">
-                    <div className="p-8 overflow-x-auto overflow-y-visible custom-scrollbar relative">
-                        <div className="relative min-w-[700px] h-60 pt-24">
+                    <div className="p-4 sm:p-8 overflow-x-auto overflow-y-visible custom-scrollbar relative">
+                        <div className={`relative ${isMobile ? 'min-w-[600px] h-48 pt-16' : 'min-w-[700px] h-60 pt-24'}`}>
                             <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
                                 {Array.from({ length: (endHour - startHour) * 2 + 1 }).map((_, i) => {
                                     const totalMinutes = (startHour * 60) + (i * 30);
@@ -915,7 +973,7 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                             className={`absolute top-0 bottom-0 border-l ${minute === 30 ? 'border-white/5' : 'border-white/10'} flex flex-col justify-end pb-0`}
                                             style={{ left: `${leftPercent}%` }}
                                         >
-                                            <span className="absolute top-4 -translate-x-1/2 text-[10px] text-zinc-400 font-mono font-bold whitespace-nowrap">
+                                            <span className={`absolute ${isMobile ? 'top-1' : 'top-4'} -translate-x-1/2 text-[10px] text-zinc-400 font-mono font-bold whitespace-nowrap`}>
                                                 {hour.toString().padStart(2, '0')}:{minute.toString().padStart(2, '0')}
                                             </span>
                                         </div>
@@ -960,11 +1018,11 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                     return (
                                         <div
                                             key={index}
-                                            className={`absolute h-12 rounded-lg border-2 ${bgClass} ${borderClass} shadow-lg ${shadowClass} transition-all duration-75 hover:scale-[1.01] hover:z-30 cursor-pointer group/block flex items-center justify-center will-change-transform ${selectedItem === index ? 'z-50 border-white/50 ring-2 ring-white/10' : ''}`}
+                                            className={`absolute ${isMobile ? 'h-9' : 'h-12'} rounded-lg border-2 ${bgClass} ${borderClass} shadow-lg ${shadowClass} transition-all duration-75 hover:scale-[1.01] hover:z-30 cursor-pointer group/block flex items-center justify-center will-change-transform ${selectedItem === index ? 'z-50 border-white/50 ring-2 ring-white/10' : ''}`}
                                             style={{
                                                 left: `${startPercent}%`,
                                                 width: `calc(${Math.max(durationPercent, 0.5)}% - 2px)`,
-                                                top: '84px'
+                                                top: isMobile ? '50px' : '84px'
                                             }}
                                             onMouseEnter={() => setSelectedItem(index)}
                                             onMouseLeave={() => setSelectedItem(null)}
