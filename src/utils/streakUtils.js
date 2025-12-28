@@ -79,10 +79,24 @@ export const calculateStreak = (activityLog, referenceDate = new Date()) => {
         if (hasActivity) {
             currentStreak++;
         } else if (isWeekendDay) {
-            // Weekend rest day: Don't break streak, don't increment.
-            // Just move to the previous day.
+            // Hafta sonu mantığı: Sadece bir gün tatil olabilir.
+            // Diğer hafta sonu gününü kontrol et.
+            const [y, m, d] = dateStr.split('-').map(Number);
+            const currentDate = new Date(y, m - 1, d);
+            const dayOfWeek = currentDate.getDay(); // 0: Pazar, 6: Cumartesi
+
+            const otherDate = new Date(currentDate);
+            // Pazar ise Cumartesiye, Cumartesi ise Pazara bak
+            otherDate.setDate(currentDate.getDate() + (dayOfWeek === 0 ? -1 : 1));
+            const otherDateStr = getLocalYMD(otherDate);
+
+            if (!cleanLog[otherDateStr]) {
+                // Her iki hafta sonu günü de boş -> Streak bozulur.
+                break;
+            }
+            // Sadece bir gün boş (diğeri dolu) -> Bozulmaz ama sayaç artmaz.
         } else {
-            // Missing activity on a weekday: Streak broken.
+            // Hafta içi bir gün boş -> Streak bozulur.
             break;
         }
 

@@ -11,7 +11,7 @@ const getLocalYMD = (date) => {
     return `${year}-${month}-${day}`;
 };
 
-export const useActivityTracking = (sessions = [], videoHistory = [], isDataLoaded = false) => {
+export const useActivityTracking = (sessions = [], videoHistory = [], isDataLoaded = false, progressData = {}) => {
     // Use useMemo instead of useState + useEffect to avoid cascading renders
     const activityLog = useMemo(() => {
         if (!isDataLoaded) return {};
@@ -27,14 +27,18 @@ export const useActivityTracking = (sessions = [], videoHistory = [], isDataLoad
             }
         });
 
-        // 2. Map Video History to Dates
+        // 2. Map Video History to Dates (Only if they are still marked as completed)
         videoHistory.forEach(historyItem => {
-            const dateStr = getLocalYMD(new Date(historyItem.timestamp));
-            newActivityLog[dateStr] = (newActivityLog[dateStr] || 0) + 1;
+            const courseProgress = progressData[historyItem.courseId] || [];
+            const isStillCompleted = courseProgress.some(id => Number(id) === Number(historyItem.videoId));
+            if (isStillCompleted) {
+                const dateStr = getLocalYMD(new Date(historyItem.timestamp));
+                newActivityLog[dateStr] = (newActivityLog[dateStr] || 0) + 1;
+            }
         });
 
         return newActivityLog;
-    }, [sessions, videoHistory, isDataLoaded]);
+    }, [sessions, videoHistory, isDataLoaded, progressData]);
 
     return activityLog;
 };

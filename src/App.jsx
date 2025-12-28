@@ -90,7 +90,7 @@ export default function App() {
   const [videoHistory, setVideoHistory] = useState([]); // [NEW] [{ videoId: string, timestamp: string, courseId: string }]
 
   // [REFACTORED] Activity Log is now derived from sessions and history
-  const activityLog = useActivityTracking(sessions, videoHistory, isDataLoaded);
+  const activityLog = useActivityTracking(sessions, videoHistory, isDataLoaded, progressData);
   const [lastActiveCourseId, setLastActiveCourseId] = useState(null); // Track last interacted course
 
   // Accordion States
