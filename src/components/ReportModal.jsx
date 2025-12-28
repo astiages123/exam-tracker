@@ -92,39 +92,6 @@ export default function ReportModal({ sessions = [], onClose, courses = [], onDe
         }
     }, [selectedGroup, showFullHistory, confirmDelete]);
 
-    // Handle browser back button (gesture) for mobile
-    useEffect(() => {
-        if (!isMobile) return;
-
-        // Push a state to history so "back" gesture can be intercepted
-        window.history.pushState({ modal: 'report-active' }, '');
-
-        const handlePopState = (e) => {
-            // When user goes back (gesture or button)
-            if (selectedGroup || showFullHistory || confirmDelete) {
-                // If a submodal is open, just close it and re-push the state 
-                // so the NEXT back gesture can close the main modal
-                setSelectedGroup(null);
-                setShowFullHistory(null);
-                setConfirmDelete(null);
-                window.history.pushState({ modal: 'report-active' }, '');
-            } else {
-                // If no submodal, close the main modal
-                onClose();
-            }
-        };
-
-        window.addEventListener('popstate', handlePopState);
-
-        return () => {
-            window.removeEventListener('popstate', handlePopState);
-            // Cleanup: if the effect re-runs or component unmounts,
-            // we should pop the state we pushed to keep history clean.
-            if (window.history.state?.modal === 'report-active') {
-                window.history.back();
-            }
-        };
-    }, [isMobile, onClose, !!selectedGroup, !!showFullHistory, !!confirmDelete]);
 
     // Pre-calculate memoized styles for categories to avoid overhead
     const getCourseCategory = React.useCallback((courseId) => {
