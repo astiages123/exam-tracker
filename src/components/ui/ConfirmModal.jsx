@@ -1,44 +1,49 @@
-import { motion as Motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
 import { AlertTriangle } from 'lucide-react';
 import { Button } from './button';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from './dialog';
 
-const ConfirmModal = ({ isOpen, title, message, onConfirm, onCancel }) => {
-    if (!isOpen) return null;
-
+const ConfirmModal = ({
+    isOpen,
+    title,
+    message,
+    onConfirm,
+    onCancel,
+    confirmText = "Onayla",
+    cancelText = "İptal",
+    variant = "destructive"
+}) => {
     return (
-        <AnimatePresence>
-            <Motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
-                onClick={onCancel}
-            >
-                <Motion.div
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.9, opacity: 0 }}
-                    className="bg-card border border-border rounded-xl p-6 max-w-md w-full shadow-2xl"
-                    onClick={e => e.stopPropagation()}
-                >
-                    <div className="flex items-center gap-3 mb-4">
+        <Dialog open={isOpen} onOpenChange={(open) => !open && onCancel()}>
+            <DialogContent className="max-w-md p-6 bg-card border-border shadow-2xl sm:rounded-xl">
+                <DialogHeader>
+                    <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 rounded-full bg-amber-500/20">
                             <AlertTriangle className="w-5 h-5 text-amber-400" />
                         </div>
-                        <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+                        <DialogTitle className="text-lg font-semibold text-foreground">{title}</DialogTitle>
                     </div>
-                    <p className="text-muted-foreground mb-6">{message}</p>
-                    <div className="flex gap-3 justify-end">
-                        <Button variant="outline" onClick={onCancel}>
-                            İptal
-                        </Button>
-                        <Button variant="destructive" onClick={onConfirm}>
-                            Onayla
-                        </Button>
-                    </div>
-                </Motion.div>
-            </Motion.div>
-        </AnimatePresence>
+                    <DialogDescription className="text-muted-foreground text-left">
+                        {message}
+                    </DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="flex gap-3 justify-end mt-4">
+                    <Button variant="outline" onClick={onCancel} className="px-4 py-2 rounded-xl">
+                        {cancelText}
+                    </Button>
+                    <Button variant={variant} onClick={onConfirm} className="px-4 py-2 rounded-xl">
+                        {confirmText}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 };
 

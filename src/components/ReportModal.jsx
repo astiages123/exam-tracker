@@ -966,9 +966,10 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                                 width: `calc(${Math.max(durationPercent, 0.5)}% - 2px)`,
                                                 top: '84px'
                                             }}
+                                            onMouseEnter={() => setSelectedItem(index)}
+                                            onMouseLeave={() => setSelectedItem(null)}
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                setSelectedItem(selectedItem === index ? null : index);
                                             }}
                                         >
                                             {durationPercent > 3 && (
@@ -984,56 +985,57 @@ function SessionChartModal({ group, courseName, workSessions, breakSessions, onC
                                             )}
 
                                             <div
-                                                className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-card border border-secondary text-xs p-3 rounded-xl shadow-2xl whitespace-nowrap z-50 transition-all duration-100 min-w-[180px] ${selectedItem === index ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1 pointer-events-none'
-                                                    }`}
+                                                className={`absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50 transition-all duration-100 min-w-[180px] ${selectedItem === index ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1 pointer-events-none'}`}
                                                 onClick={(e) => e.stopPropagation()}
                                             >
-                                                <div className="font-bold mb-2 text-center text-foreground border-b border-white/10 pb-2 flex items-center justify-between gap-4">
-                                                    <span>
-                                                        {item.start.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })} - {item.end.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
-                                                    </span>
-                                                    <div className="flex items-center gap-1.5">
-                                                        {item.originalSession && (
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                onClick={() => setEditingSession({
-                                                                    sessionId: item.sessionId,
-                                                                    type: item.type,
-                                                                    startTime: formatTimeForInput(item.start),
-                                                                    endTime: formatTimeForInput(item.end),
-                                                                    originalSession: item.originalSession,
-                                                                    pauseIndex: item.pauseIndex
-                                                                })}
-                                                                className="h-7 w-7 text-primary hover:bg-primary/20"
-                                                                title="Düzenle"
-                                                            >
-                                                                <Edit2 size={14} />
-                                                            </Button>
-                                                        )}
-                                                        {item.sessionId && (
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                onClick={() => setConfirmDelete({ sessionId: item.sessionId })}
-                                                                className="h-7 w-7 text-destructive hover:bg-destructive/20"
-                                                                title="Sil"
-                                                            >
-                                                                <Trash2 size={14} />
-                                                            </Button>
-                                                        )}
+                                                <div className="bg-card border border-secondary text-xs p-3 rounded-xl shadow-2xl whitespace-nowrap relative">
+                                                    <div className="font-bold mb-2 text-center text-foreground border-b border-white/10 pb-2 flex items-center justify-between gap-4">
+                                                        <span>
+                                                            {item.start.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })} - {item.end.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+                                                        </span>
+                                                        <div className="flex items-center gap-1.5">
+                                                            {item.originalSession && (
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    onClick={() => setEditingSession({
+                                                                        sessionId: item.sessionId,
+                                                                        type: item.type,
+                                                                        startTime: formatTimeForInput(item.start),
+                                                                        endTime: formatTimeForInput(item.end),
+                                                                        originalSession: item.originalSession,
+                                                                        pauseIndex: item.pauseIndex
+                                                                    })}
+                                                                    className="h-7 w-7 text-primary hover:bg-primary/20"
+                                                                    title="Düzenle"
+                                                                >
+                                                                    <Edit2 size={14} />
+                                                                </Button>
+                                                            )}
+                                                            {item.sessionId && (
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    onClick={() => setConfirmDelete({ sessionId: item.sessionId })}
+                                                                    className="h-7 w-7 text-destructive hover:bg-destructive/20"
+                                                                    title="Sil"
+                                                                >
+                                                                    <Trash2 size={14} />
+                                                                </Button>
+                                                            )}
+                                                        </div>
                                                     </div>
+                                                    <div className="flex items-center justify-center gap-2 mt-1">
+                                                        <div className={`w-2 h-2 rounded-full ${isWork ? 'bg-indigo-400' : (isBreak ? 'bg-emerald-400' : 'bg-muted-foreground/30')}`}></div>
+                                                        <span className={`${isWork ? 'text-indigo-400' : (isBreak ? 'text-emerald-400' : 'text-muted-foreground')} font-bold`}>
+                                                            {label}
+                                                        </span>
+                                                    </div>
+                                                    <div className="text-center text-muted-foreground mt-1 font-medium">
+                                                        {Math.round(item.duration / 60)} dakika
+                                                    </div>
+                                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-card"></div>
                                                 </div>
-                                                <div className="flex items-center justify-center gap-2 mt-1">
-                                                    <div className={`w-2 h-2 rounded-full ${isWork ? 'bg-indigo-400' : (isBreak ? 'bg-emerald-400' : 'bg-muted-foreground/30')}`}></div>
-                                                    <span className={`${isWork ? 'text-indigo-400' : (isBreak ? 'text-emerald-400' : 'text-muted-foreground')} font-bold`}>
-                                                        {label}
-                                                    </span>
-                                                </div>
-                                                <div className="text-center text-muted-foreground mt-1 font-medium">
-                                                    {Math.round(item.duration / 60)} dakika
-                                                </div>
-                                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-card"></div>
                                             </div>
                                         </div>
                                     );
