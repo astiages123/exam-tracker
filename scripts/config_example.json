@@ -1,0 +1,43 @@
+{
+    "_README": "Bu dosya processor.py için örnek yapılandırma dosyasıdır. Kullanmak için config.json olarak kaydedin.",
+    "paths": {
+        "_description": "Dosya ve dizin yolları. processor.py'nin bulunduğu klasörün üst dizinine (proje köküne) göre ayarlanır.",
+        "input_dir": "input",
+        "output_dir": "public/notlar",
+        "media_path": "media/"
+    },
+    "files": {
+        "_description": "HTML çıktısında kullanılacak CSS ve JS dosya adları.",
+        "css_file": "not_stilleri.css",
+        "js_file": "notes.js"
+    },
+    "patterns": {
+        "_description": "Regex desenleri ve anahtar kelimeler.",
+        "example_keywords": [
+            "Örnek",
+            "Örnekler"
+        ],
+        "question_keywords": [
+            "Soru",
+            "Çözüm",
+            "Cevap",
+            "Yanıt"
+        ],
+        "example_pattern": "^\\s*([Öö]rnek(?:ler)?)\\s*(\\d*)\\s*:?\\s*$",
+        "question_pattern": "^\\s*Soru\\s*\\d*\\s*:",
+        "label_pattern": "^(Çözüm|Cevap|Yanıt|Soru)\\s*(\\d*)\\s*:?\\s*$"
+    },
+    "features": {
+        "_description": "Açılıp kapatılabilen özellikler.",
+        "wrap_numbers": true,
+        "add_toc": true,
+        "convert_examples": true,
+        "enhance_math": true,
+        "hierarchical_numbering": true
+    },
+    "logging": {
+        "_description": "Loglama ayarları.",
+        "log_file": "processor.log",
+        "console_level": "INFO"
+    }
+}

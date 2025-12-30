@@ -11,4 +11,34 @@ export default defineConfig({
       "@": path.resolve(process.cwd(), "./src"),
     },
   },
+  server: {
+    watch: {
+      ignored: ['**/input/**', '**/scripts/**'],
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // React core - cached separately
+          'react-vendor': ['react', 'react-dom'],
+          // Charts library (large)
+          'recharts': ['recharts'],
+          // UI components
+          'radix': [
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-scroll-area',
+            '@radix-ui/react-tabs',
+            '@radix-ui/react-slot'
+          ],
+          // Animation
+          'framer': ['framer-motion'],
+          // Supabase
+          'supabase': ['@supabase/supabase-js'],
+          // AI
+          'gemini': ['@google/generative-ai']
+        }
+      }
+    }
+  }
 })
