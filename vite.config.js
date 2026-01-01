@@ -24,14 +24,25 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
+            // Core React and internals should stay together
+            if (id.includes('react') ||
+              id.includes('scheduler') ||
+              id.includes('prop-types') ||
+              id.includes('react-dom')) {
+              return 'vendor-react';
+            }
+
+            // Large stable libraries
             if (id.includes('recharts')) return 'vendor-charts';
             if (id.includes('framer-motion')) return 'vendor-animation';
             if (id.includes('lucide-react')) return 'vendor-icons';
             if (id.includes('@supabase')) return 'vendor-db';
             if (id.includes('@radix-ui')) return 'vendor-ui';
-            if (id.includes('react')) return 'vendor-react';
+
             return 'vendor-others';
           }
+
+          // Feature-based splitting
           if (id.includes('src/features/reports')) return 'feature-reports';
           if (id.includes('src/features/course')) return 'feature-course';
           if (id.includes('src/features/quiz')) return 'feature-quiz';
