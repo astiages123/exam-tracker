@@ -23,9 +23,9 @@ import SessionChartModal from '@/features/reports/components/SessionChartModal';
 import { useReportData, type GroupedSession } from '@/features/reports/hooks/useReportData';
 import ReportStats from '@/features/reports/components/ReportStats';
 import SessionListItem from '@/features/reports/components/SessionListItem';
-import DurationChart from '@/features/reports/components/DurationChart';
-import VideoChart from '@/features/reports/components/VideoChart';
-import FullHistoryModal from '@/features/reports/components/FullHistoryModal';
+const DurationChart = React.lazy(() => import('@/features/reports/components/DurationChart'));
+const VideoChart = React.lazy(() => import('@/features/reports/components/VideoChart'));
+const FullHistoryModal = React.lazy(() => import('@/features/reports/components/FullHistoryModal'));
 
 import type { StudySession, Course, VideoHistoryItem, UserProgressData } from '@/types';
 
@@ -186,16 +186,18 @@ export default function ReportModal({
 
                                     <TabsContent value="graph" className="mt-0 focus-visible:ring-0">
                                         {activeTab === 'graph' && (
-                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-                                                <DurationChart
-                                                    data={chartData}
-                                                    onShowFullHistory={() => setShowFullHistory('duration')}
-                                                />
-                                                <VideoChart
-                                                    data={videoChartData}
-                                                    onShowFullHistory={() => setShowFullHistory('videos')}
-                                                />
-                                            </div>
+                                            <React.Suspense fallback={<div className="h-64 flex items-center justify-center text-muted-foreground">Grafik yükleniyor...</div>}>
+                                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                                                    <DurationChart
+                                                        data={chartData}
+                                                        onShowFullHistory={() => setShowFullHistory('duration')}
+                                                    />
+                                                    <VideoChart
+                                                        data={videoChartData}
+                                                        onShowFullHistory={() => setShowFullHistory('videos')}
+                                                    />
+                                                </div>
+                                            </React.Suspense>
                                         )}
                                     </TabsContent>
                                 </div>
@@ -225,12 +227,14 @@ export default function ReportModal({
             </AnimatePresence>
 
             {/* Full History Modal */}
-            <FullHistoryModal
-                isOpen={!!showFullHistory}
-                type={showFullHistory}
-                data={fullChartData}
-                onClose={() => setShowFullHistory(null)}
-            />
+            <React.Suspense fallback={null}>
+                <FullHistoryModal
+                    isOpen={!!showFullHistory}
+                    type={showFullHistory}
+                    data={fullChartData}
+                    onClose={() => setShowFullHistory(null)}
+                />
+            </React.Suspense>
 
             {/* Confirm Delete Modal */}
             <ConfirmModal
