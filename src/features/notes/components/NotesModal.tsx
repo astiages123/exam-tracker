@@ -95,7 +95,10 @@ export default function NotesModal({ courseName, notePath, onClose, icon: Icon }
             iframeDocument.head.appendChild(style);
             iframeDocument.body.style.overflowX = 'hidden';
             const links = iframeDocument.querySelectorAll('a');
-            links.forEach((link: HTMLAnchorElement) => link.setAttribute('target', '_blank'));
+            links.forEach((link: HTMLAnchorElement) => {
+                link.setAttribute('target', '_blank');
+                link.setAttribute('rel', 'noopener noreferrer');
+            });
 
         } catch (err) {
             console.warn('Cross-origin restriction or style injection failed', err);

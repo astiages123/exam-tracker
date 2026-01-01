@@ -30,19 +30,19 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-[100dvh] flex items-center justify-center bg-background p-4">
+        <main className="min-h-[100dvh] flex items-center justify-center bg-background p-4">
             <div className="bg-card w-full max-w-md p-8 rounded-2xl shadow-xl shadow-primary/5 border border-secondary/30">
                 <div className="text-center mb-8">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
                         <Lock className="w-8 h-8 text-primary" />
                     </div>
-                    <h2 className="text-2xl font-bold text-foreground">Giriş Yap</h2>
+                    <h1 className="text-2xl font-bold text-foreground">Giriş Yap</h1>
                     <p className="text-muted-foreground mt-2">Devam etmek için hesabınıza erişin</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label className="block text-sm font-medium text-muted-foreground mb-2">
+                        <label htmlFor="username" className="block text-sm font-medium text-muted-foreground mb-2">
                             Kullanıcı Adı
                         </label>
                         <div className="relative">
@@ -50,6 +50,7 @@ export default function Login() {
                                 <User className="h-5 w-5 text-secondary" />
                             </div>
                             <Input
+                                id="username"
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
@@ -61,7 +62,7 @@ export default function Login() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-muted-foreground mb-2">
+                        <label htmlFor="password" className="block text-sm font-medium text-muted-foreground mb-2">
                             Şifre
                         </label>
                         <div className="relative">
@@ -69,6 +70,7 @@ export default function Login() {
                                 <Lock className="h-5 w-5 text-secondary" />
                             </div>
                             <Input
+                                id="password"
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -94,6 +96,6 @@ export default function Login() {
                     </Button>
                 </form>
             </div>
-        </div>
+        </main>
     );
 }

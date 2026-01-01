@@ -17,26 +17,24 @@ export default defineConfig({
     },
   },
   build: {
+    modulePreload: {
+      polyfill: false
+    },
     rollupOptions: {
       output: {
-        manualChunks: {
-          // React core - cached separately
-          'react-vendor': ['react', 'react-dom'],
-          // Charts library (large)
-          'recharts': ['recharts'],
-          // UI components
-          'radix': [
-            '@radix-ui/react-dialog',
-            '@radix-ui/react-scroll-area',
-            '@radix-ui/react-tabs',
-            '@radix-ui/react-slot'
-          ],
-          // Animation
-          'framer': ['framer-motion'],
-          // Supabase
-          'supabase': ['@supabase/supabase-js'],
-          // AI
-          'gemini': ['@google/generative-ai']
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('recharts')) return 'vendor-charts';
+            if (id.includes('framer-motion')) return 'vendor-animation';
+            if (id.includes('lucide-react')) return 'vendor-icons';
+            if (id.includes('@supabase')) return 'vendor-db';
+            if (id.includes('@radix-ui')) return 'vendor-ui';
+            if (id.includes('react')) return 'vendor-react';
+            return 'vendor-others';
+          }
+          if (id.includes('src/features/reports')) return 'feature-reports';
+          if (id.includes('src/features/course')) return 'feature-course';
+          if (id.includes('src/features/quiz')) return 'feature-quiz';
         }
       }
     }

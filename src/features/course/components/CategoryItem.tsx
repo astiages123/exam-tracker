@@ -87,6 +87,8 @@ const CategoryItem = React.memo(({
                 {/* Category Header */}
                 <button
                     onClick={() => handlers.toggleCategory(String(catIdx))}
+                    aria-expanded={isExpanded}
+                    aria-label={`${category.category} kategorisini ${isExpanded ? 'kapat' : 'aç'}. İlerleme: %${categoryPercent}`}
                     className="w-full p-5 sm:p-6 bg-transparent cursor-pointer block text-left outline-none"
                 >
                     <div className="flex items-start justify-between mb-4">
@@ -180,6 +182,16 @@ const CategoryItem = React.memo(({
                                             <div
                                                 className="p-5 cursor-pointer relative"
                                                 onClick={() => handlers.toggleCourse(course.id)}
+                                                role="button"
+                                                tabIndex={0}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' || e.key === ' ') {
+                                                        e.preventDefault();
+                                                        handlers.toggleCourse(course.id);
+                                                    }
+                                                }}
+                                                aria-expanded={isCourseExpanded}
+                                                aria-label={`${course.name} detaylarını ${isCourseExpanded ? 'gizle' : 'göster'}`}
                                             >
                                                 <div className="flex flex-col sm:flex-row sm:items-center gap-5">
                                                     <div className={cn(
@@ -226,24 +238,40 @@ const CategoryItem = React.memo(({
 
                                                             <div className="flex items-center gap-2.5" onClick={(e) => e.stopPropagation()}>
                                                                 {course.playlistUrl && (
-                                                                    <a href={course.playlistUrl} target="_blank" rel="noopener noreferrer" className="p-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 transition-all hover:scale-110 active:scale-95 shadow-lg shadow-red-500/5">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path><path d="m10 15 5-3-5-3z"></path></svg>
+                                                                    <a
+                                                                        href={course.playlistUrl}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        aria-label={`${course.name} oynatma listesini aç (YouTube)`}
+                                                                        className="p-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 transition-all hover:scale-110 active:scale-95 shadow-lg shadow-red-500/5"
+                                                                    >
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500" aria-hidden="true"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path><path d="m10 15 5-3-5-3z"></path></svg>
                                                                     </a>
                                                                 )}
-                                                                <button onClick={() => modals.openNotes(course, IconComponent)} className="p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 transition-all hover:scale-110 active:scale-95 shadow-lg shadow-emerald-500/5">
-                                                                    <FileText size={20} className="text-emerald-500" />
+                                                                <button
+                                                                    onClick={() => modals.openNotes(course, IconComponent)}
+                                                                    aria-label={`${course.name} notlarını aç`}
+                                                                    className="p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 transition-all hover:scale-110 active:scale-95 shadow-lg shadow-emerald-500/5"
+                                                                >
+                                                                    <FileText size={20} className="text-emerald-500" aria-hidden="true" />
                                                                 </button>
-                                                                <button onClick={() => modals.openQuiz(course)} className="p-3 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 transition-all hover:scale-110 active:scale-95 shadow-lg shadow-purple-500/5">
-                                                                    <HelpCircle size={20} className="text-purple-500" />
+                                                                <button
+                                                                    onClick={() => modals.openQuiz(course)}
+                                                                    aria-label={`${course.name} testini çöz`}
+                                                                    className="p-3 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 transition-all hover:scale-110 active:scale-95 shadow-lg shadow-purple-500/5"
+                                                                >
+                                                                    <HelpCircle size={20} className="text-purple-500" aria-hidden="true" />
                                                                 </button>
                                                                 <button
                                                                     onClick={() => handlers.toggleCourse(course.id)}
+                                                                    aria-expanded={isCourseExpanded}
+                                                                    aria-label={`${course.name} videolarını ${isCourseExpanded ? 'gizle' : 'göster'}`}
                                                                     className={cn(
                                                                         "ml-2 p-1 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300 hover:scale-110 active:scale-95 border border-white/5",
                                                                         isCourseExpanded ? "rotate-180 bg-white/10 border-white/10" : ""
                                                                     )}
                                                                 >
-                                                                    <ChevronDown size={15} className={cn("transition-colors", isCourseExpanded ? "text-white" : "text-white/60")} />
+                                                                    <ChevronDown size={15} className={cn("transition-colors", isCourseExpanded ? "text-white" : "text-white/60")} aria-hidden="true" />
                                                                 </button>
                                                             </div>
                                                         </div>

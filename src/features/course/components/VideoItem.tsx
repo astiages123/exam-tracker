@@ -15,9 +15,19 @@ interface VideoItemProps {
 const VideoItem = React.memo(({ video, courseId, index, isCompleted, onToggle }: VideoItemProps) => {
     return (
         <div
+            role="button"
+            aria-label={`${video.title} - ${isCompleted ? 'Tamamlandı' : 'Tamamlanmadı'}`}
+            aria-pressed={isCompleted}
+            tabIndex={0}
             onClick={(e) => onToggle(e, courseId, video.id)}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onToggle(e as any, courseId, video.id);
+                }
+            }}
             className={cn(
-                "flex items-center gap-3 p-3.5 rounded-xl cursor-pointer transition-all duration-150 group/video relative overflow-hidden border mb-2",
+                "flex items-center gap-3 p-3.5 rounded-xl cursor-pointer transition-all duration-150 group/video relative overflow-hidden border mb-2 outline-none focus-visible:ring-2 focus-visible:ring-primary",
                 isCompleted
                     ? "bg-gradient-to-r from-primary/15 to-accent/10 border-primary/30 shadow-[0_0_20px_-5px] shadow-primary/20"
                     : "bg-card/50 border-border/40 border-dashed hover:bg-card hover:border-primary/40 hover:shadow-[0_0_25px_-8px] hover:shadow-primary/30"

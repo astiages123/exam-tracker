@@ -30,9 +30,10 @@ export default function Header({ rankInfo, dailyFocus, currentStreak, modals, lo
 
                     {/* Row 1: Rank Info (Left) + Streak (Right) */}
                     <div className="flex items-center justify-between">
-                        <div
-                            className="flex items-center gap-3 cursor-pointer group"
+                        <button
+                            className="flex items-center gap-3 cursor-pointer group text-left appearance-none"
                             onClick={() => modals.setShowRankModal(true)}
+                            type="button"
                         >
                             <div className="bg-card p-2 rounded-xl border border-secondary/50 relative group-hover:border-primary/30 transition-colors shadow-sm">
                                 {(() => {
@@ -43,7 +44,7 @@ export default function Header({ rankInfo, dailyFocus, currentStreak, modals, lo
                             <h1 className={cn("text-xl font-bold tracking-tight text-foreground leading-tight", rankInfo.color)}>
                                 {rankInfo.title}
                             </h1>
-                        </div>
+                        </button>
 
                         <StreakDisplay streak={currentStreak} />
                     </div>
@@ -104,9 +105,11 @@ export default function Header({ rankInfo, dailyFocus, currentStreak, modals, lo
                 {/* --- DESKTOP LAYOUT --- */}
                 <div className="hidden md:flex items-center justify-between">
                     <div className="flex items-center gap-6">
-                        <div
-                            className="relative cursor-pointer hover:scale-105 transition-transform group"
+                        <button
+                            className="relative cursor-pointer hover:scale-105 transition-transform group appearance-none"
                             onClick={() => modals.setShowRankModal(true)}
+                            title="Rütbe detaylarını gör"
+                            type="button"
                         >
                             <div className="bg-card p-3 rounded-xl border border-secondary/50 relative group-hover:border-primary/30 box-border transition-colors">
                                 {(() => {
@@ -114,14 +117,15 @@ export default function Header({ rankInfo, dailyFocus, currentStreak, modals, lo
                                     return <Icon size={28} className="text-primary group-hover:drop-shadow-lg" />;
                                 })()}
                             </div>
-                        </div>
+                        </button>
                         <div className="flex flex-col gap-2">
-                            <h1
-                                className={cn("text-3xl font-bold tracking-tight text-foreground leading-tight cursor-pointer hover:opacity-80 transition-opacity", rankInfo.color)}
+                            <button
+                                className={cn("text-3xl font-bold tracking-tight text-foreground leading-tight cursor-pointer hover:opacity-80 transition-opacity text-left appearance-none", rankInfo.color)}
                                 onClick={() => modals.setShowRankModal(true)}
+                                type="button"
                             >
                                 {rankInfo.title}
-                            </h1>
+                            </button>
                             <div className="flex items-center gap-2">
                                 <div className="inline-flex items-center gap-2 bg-primary/5 px-3 py-1.5 rounded-lg border border-primary/10 w-fit hover:bg-primary/10 transition-colors">
                                     <Calendar size={14} className="text-primary" />

@@ -145,8 +145,9 @@ function StatItem({ icon, label, value, total, color, onClick }: {
     };
 
     return (
-        <div
-            className="p-3 flex flex-col items-center justify-center text-center gap-1.5 hover:bg-white/[0.05] active:bg-white/[0.1] cursor-pointer transition-colors border-r border-white/5 last:border-0"
+        <button
+            type="button"
+            className="p-3 flex flex-col items-center justify-center text-center gap-1.5 hover:bg-white/[0.05] active:bg-white/[0.1] cursor-pointer transition-colors border-r border-white/5 last:border-0 w-full"
             onClick={onClick}
         >
             <div className={cn("p-1.5 rounded-lg border mb-0.5", colorVariants[color] || "bg-white/[0.03] border-white/5")}>
@@ -159,7 +160,7 @@ function StatItem({ icon, label, value, total, color, onClick }: {
                     <span className="text-[12px] font-medium text-white/60">{total}</span>
                 </div>
             </div>
-        </div>
+        </button>
     );
 }
 
