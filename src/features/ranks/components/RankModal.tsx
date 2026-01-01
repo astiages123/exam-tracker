@@ -55,10 +55,11 @@ const RankModal = ({
     }, [sessions, videoHistory, completedHours]);
 
 
+    const currentPercentage = totalHours > 0 ? (completedHours / totalHours) * 100 : 0;
 
     return (
         <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="w-[95vw] sm:w-full max-w-3xl h-[85vh] sm:h-auto sm:max-h-[90vh] overflow-hidden flex flex-col p-0 gap-0 border-border bg-background shadow-xl">
+            <DialogContent className="w-[95vw] sm:w-full max-w-2xl h-auto max-h-[90vh] sm:max-h-[95vh] overflow-hidden flex flex-col p-0 gap-0 border-border bg-background shadow-xl">
                 {/* Header */}
                 <div className="relative p-3 sm:p-4 border-b border-border bg-card/30 overflow-hidden">
 
@@ -98,13 +99,28 @@ const RankModal = ({
                 </div>
 
                 <ScrollArea className="flex-1 px-3 sm:px-6 py-2 min-h-0">
-                    <div className="relative flex flex-col gap-2 pt-4 pb-6">
+                    <div className="relative flex flex-col pt-1 pb-1">
                         {/* Gradient Timeline Line */}
 
 
                         {RANKS.map((rank, index) => {
                             const isCompleted = index < currentRankIndex;
                             const isCurrent = index === currentRankIndex;
+
+                            // Calculate progress for this specific rank (0-100)
+                            const getRankProgress = () => {
+                                if (isCompleted) return 100;
+                                if (!isCurrent) return 0;
+
+                                const min = rank.min;
+                                const nextRank = RANKS[index + 1];
+                                const max = nextRank ? nextRank.min : 100;
+
+                                const p = ((currentPercentage - min) / (max - min)) * 100;
+                                return Math.min(Math.max(p, 0), 100);
+                            };
+
+                            const progress = getRankProgress();
 
                             // Calculate remaining days for this rank
                             let daysText = "";
@@ -118,28 +134,56 @@ const RankModal = ({
                             const IconComponent = RANK_ICONS[rank.icon as keyof typeof RANK_ICONS] || Star;
 
                             return (
-                                <div key={index} className="flex items-center gap-3 sm:gap-5 group">
-                                    <div className="flex flex-col items-center shrink-0 w-[44px] sm:w-[56px] relative">
+                                <div key={index} className="flex items-stretch gap-3 sm:gap-5 group">
+                                    <div className="flex flex-col items-center justify-center shrink-0 w-[44px] sm:w-[56px] relative">
                                         <div className={cn(
-                                            "w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-2 z-10 transition-all",
+                                            "w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-2 z-10 transition-all shadow-sm",
                                             isCompleted
-                                                ? "bg-accent text-accent-foreground border-accent"
+                                                ? "bg-accent/10 border-accent/50"
                                                 : isCurrent
-                                                    ? "bg-primary text-primary-foreground border-primary"
-                                                    : "bg-muted text-muted-foreground border-border"
+                                                    ? "bg-card border-primary"
+                                                    : "bg-secondary/50 border-border/60"
                                         )}>
-                                            {isCompleted ? (
-                                                <CheckCircle2 size={20} className="sm:w-6 sm:h-6" />
-                                            ) : (
-                                                <IconComponent size={20} className="sm:w-6 sm:h-6" />
-                                            )}
+                                            <div className="relative flex items-center justify-center">
+                                                {/* Background / Outline Icon */}
+                                                <IconComponent
+                                                    size={20}
+                                                    className={cn(
+                                                        "sm:w-6 sm:h-6 transition-colors",
+                                                        isCompleted ? "text-accent/30" : isCurrent ? "text-primary/10" : "text-white/90"
+                                                    )}
+                                                />
+
+                                                {/* Filled Icon Overlay */}
+                                                <div
+                                                    className="absolute inset-0 flex items-center justify-center overflow-hidden transition-all duration-700 ease-in-out"
+                                                    style={{ clipPath: `inset(${100 - progress}% 0 0 0)` }}
+                                                >
+                                                    <IconComponent
+                                                        size={20}
+                                                        className={cn(
+                                                            "sm:w-6 sm:h-6",
+                                                            isCompleted ? "text-accent fill-accent" : "text-primary fill-primary"
+                                                        )}
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
-                                        {/* Line Segment - Absolute positioned to not affect centering */}
+                                        {/* Line Segment - Upward part */}
+                                        {index > 0 && (
+                                            <div className={cn(
+                                                "absolute left-1/2 -translate-x-1/2 w-[2px] sm:w-[2.5px] -z-10",
+                                                "top-0 h-[calc(50%-20px)] sm:h-[calc(50%-24px)]",
+                                                isCompleted || isCurrent ? "bg-accent/40" : "bg-white/10"
+                                            )} />
+                                        )}
+
+                                        {/* Line Segment - Downward part */}
                                         {index < RANKS.length - 1 && (
                                             <div className={cn(
-                                                "absolute top-1/2 left-1/2 -translate-x-1/2 w-[2px] sm:w-[2.5px] -z-10",
-                                                "h-[calc(100%+0.5rem)]", // Extension to reach the next icon center
-                                                isCompleted ? "bg-accent/40" : "bg-muted"
+                                                "absolute left-1/2 -translate-x-1/2 w-[2px] sm:w-[2.5px] -z-10",
+                                                "top-[calc(50%+20px)] sm:top-[calc(50%+24px)] bottom-0",
+                                                isCompleted ? "bg-accent/40" : "bg-white/10"
                                             )} />
                                         )}
                                     </div>
@@ -147,19 +191,19 @@ const RankModal = ({
                                     {/* Right Side: Content Card */}
                                     <div
                                         className={cn(
-                                            "flex-1 relative flex flex-col justify-center gap-1 p-3 sm:p-4 rounded-xl border transition-all",
+                                            "flex-1 relative flex flex-col justify-center gap-1 p-2.5 sm:p-3 my-1.5 rounded-xl border transition-all",
                                             isCurrent
                                                 ? "bg-primary/5 border-primary/30"
                                                 : isCompleted
-                                                    ? "bg-card border-border"
-                                                    : "bg-muted/30 border-border/50"
+                                                    ? "bg-card border-border shadow-sm"
+                                                    : "bg-secondary/20 border-border/40"
                                         )}
                                     >
                                         <div className="flex items-center justify-between gap-3">
                                             <div className="min-w-0">
                                                 <h3 className={cn(
                                                     "font-bold text-sm sm:text-lg tracking-tight leading-none truncate",
-                                                    isCurrent ? "text-primary" : isCompleted ? "text-foreground font-medium" : "text-muted-foreground font-medium"
+                                                    isCurrent ? "text-primary" : isCompleted ? "text-foreground font-medium" : "text-white/60 font-medium"
                                                 )}>
                                                     {rank.title}
                                                 </h3>
@@ -174,7 +218,8 @@ const RankModal = ({
                                                             Tamamlandı
                                                         </span>
                                                     ) : (
-                                                        <span className="text-[10px] sm:text-xs font-medium text-muted-foreground">
+                                                        <span className="text-[10px] sm:text-xs font-medium text-white/60 flex items-center gap-1">
+                                                            <Clock size={10} />
                                                             %{rank.min} ile açılır
                                                         </span>
                                                     )}
@@ -188,12 +233,12 @@ const RankModal = ({
                                                         ? "bg-primary/20 text-primary border-primary/30"
                                                         : isCompleted
                                                             ? "bg-accent/20 text-accent border-accent/30"
-                                                            : "bg-muted/50 text-muted-foreground border-border/50"
+                                                            : "bg-secondary/40 text-white/60 border-border/30"
                                                 )}>
                                                     %{rank.min}+
                                                 </span>
                                                 {daysText && (
-                                                    <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground/60 bg-muted/30 px-1.5 py-0.5 rounded-md">
+                                                    <span className="text-[9px] sm:text-[10px] font-bold text-white/60 bg-muted/30 px-1.5 py-0.5 rounded-md">
                                                         {daysText}
                                                     </span>
                                                 )}
