@@ -1,27 +1,27 @@
 import { Suspense, lazy, useMemo } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
-import courseDataJson from './data/courses.json';
+import courseDataJson from '@/features/course/data/courses.json';
 import { CourseCategory } from './types';
 import { supabase } from './lib/supabaseClient';
 
 const courseData = courseDataJson as unknown as CourseCategory[];
-import Login from './components/Login';
+import Login from '@/features/auth/components/Login';
 
 import Header from '@/components/layout/Header';
 import ProgressCard from '@/components/layout/ProgressCard';
-import CategoryList from '@/components/course/CategoryList';
+import CategoryList from '@/features/course/components/CategoryList';
 
 import { useAppController } from '@/hooks/useAppController';
 
 // --- Lazy-loaded Components ---
-const ScheduleModal = lazy(() => import('./components/ScheduleModal'));
-const PomodoroTimer = lazy(() => import('./components/PomodoroTimer'));
-const ReportModal = lazy(() => import('./components/ReportModal'));
-const RankModal = lazy(() => import('./components/RankModal'));
-const NotesModal = lazy(() => import('./components/NotesModal'));
-const CelebrationOverlay = lazy(() => import('./components/CelebrationOverlay'));
-const QuizModal = lazy(() => import('./components/QuizModal'));
+const ScheduleModal = lazy(() => import('@/features/schedule/components/ScheduleModal'));
+const PomodoroTimer = lazy(() => import('@/features/pomodoro/components/PomodoroTimer'));
+const ReportModal = lazy(() => import('@/features/reports/components/ReportModal'));
+const RankModal = lazy(() => import('@/features/ranks/components/RankModal'));
+const NotesModal = lazy(() => import('@/features/notes/components/NotesModal'));
+const CelebrationOverlay = lazy(() => import('@/components/shared/CelebrationOverlay'));
+const QuizModal = lazy(() => import('@/features/quiz/components/QuizModal'));
 
 const ModalLoader = () => (
   <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">

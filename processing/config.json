@@ -1,0 +1,37 @@
+{
+  "paths": {
+    "input_dir": "input",
+    "output_dir": "public/notlar",
+    "media_path": "media/"
+  },
+  "files": {
+    "css_file": "not_stilleri.css",
+    "js_file": "notes.js"
+  },
+  "patterns": {
+    "example_keywords": [
+      "Örnek",
+      "Örnekler"
+    ],
+    "question_keywords": [
+      "Soru",
+      "Çözüm",
+      "Cevap",
+      "Yanıt"
+    ],
+    "example_pattern": "^\\s*([Öö]rnek(?:ler)?)\\s*(\\d*)\\s*:?\\s*(.*)$",
+    "question_pattern": "^\\s*Soru\\s*\\d*[^:]*:",
+    "label_pattern": "^(Çözüm|Cevap|Yanıt|Soru)\\s*(\\d*)([^:]*?)\\s*:?\\s*$"
+  },
+  "features": {
+    "wrap_numbers": true,
+    "add_toc": true,
+    "convert_examples": true,
+    "enhance_math": true,
+    "hierarchical_numbering": true
+  },
+  "logging": {
+    "log_file": "processor.log",
+    "console_level": "INFO"
+  }
+}

@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNotification } from '@/context/NotificationContext';
 import { useUserData } from '@/hooks/useUserData';
 import { useModals } from '@/hooks/useModals';
-import { useActivityTracking } from '@/hooks/useActivityTracking';
-import courseDataJson from '@/data/courses.json';
+import { useActivityTracking } from '@/features/reports/hooks/useActivityTracking';
+import courseDataJson from '@/features/course/data/courses.json';
 import { RANKS } from '@/features/ranks/constants/ranks';
 import { CourseCategory } from '@/types';
 import { calculateStreak } from '@/utils/streak';
@@ -47,7 +47,7 @@ export const useAppController = () => {
     const [expandedCourses, setExpandedCourses] = useState<Set<string>>(new Set());
 
     // Daily Focus Logic
-    const getDailyFocus = (): string => {
+    const dailyFocus = useMemo(() => {
         const now = new Date();
         const dayIndex = now.getDay();
 
@@ -78,8 +78,7 @@ export const useAppController = () => {
             'CUMARTESİ / PAZAR': 'MATEMATİK - BANKA',
         };
         return defaultSchedule[todayKey] || 'BELİRSİZ';
-    };
-    const dailyFocus = getDailyFocus();
+    }, [schedule]);
 
     // Stats Calculation
     const totalVideos = useMemo(() => courseData.reduce((acc, cat) =>
@@ -136,7 +135,7 @@ export const useAppController = () => {
     }, [progressData, totalHours]);
 
     // Handlers
-    const handleSessionComplete = (
+    const handleSessionComplete = useCallback((
         duration: number,
         type: 'work' | 'break',
         overrideCourseId: string | null = null,
@@ -154,21 +153,29 @@ export const useAppController = () => {
         };
 
         addSession(newSession);
-    };
+    }, [isDataLoaded, lastActiveCourseId, addSession]);
 
-    const handleUpdateSession = (oldTimestamp: number, updatedSession: any) => {
+    const handleUpdateSession = useCallback((oldTimestamp: number, updatedSession: any) => {
         updateSession(oldTimestamp, updatedSession);
-    };
+    }, [updateSession]);
 
-    const handleDeleteSessions = (sessionIds: number[]) => {
+    const handleDeleteSessions = useCallback((sessionIds: number[]) => {
         deleteSessions(sessionIds);
-    };
+    }, [deleteSessions]);
 
-    const handleUpdateProgress = (courseId: string, newIds: number[]) => {
+    const handleUpdateProgress = useCallback((courseId: string, newIds: number[]) => {
         updateProgress(courseId, newIds, (courseName) => modals.triggerCelebration(courseName));
-    };
+    }, [updateProgress, modals]);
 
-    const handleVideoClick = (e: React.MouseEvent, courseId: string, videoId: number) => {
+    // Refs for stable handlers
+    const progressDataRef = useRef(progressData);
+    useEffect(() => {
+        progressDataRef.current = progressData;
+    }, [progressData]);
+
+    const handleVideoClick = useCallback((e: React.MouseEvent, courseId: string, videoId: number) => {
+        const currentProgressData = progressDataRef.current;
+
         // Input validation
         if (!courseId || typeof videoId !== 'number' || isNaN(videoId)) {
             console.warn('Invalid video click parameters:', { courseId, videoId });
@@ -176,7 +183,7 @@ export const useAppController = () => {
         }
 
         if (e.ctrlKey || e.metaKey) {
-            const currentCompleted = progressData[courseId] || [];
+            const currentCompleted = currentProgressData[courseId] || [];
             const isCompleted = currentCompleted.includes(videoId);
             if (isCompleted) {
                 handleUpdateProgress(courseId, currentCompleted.filter((id: number) => id !== videoId));
@@ -186,7 +193,7 @@ export const useAppController = () => {
             return;
         }
 
-        const currentCompleted = progressData[courseId] || [];
+        const currentCompleted = currentProgressData[courseId] || [];
         const isCompleted = currentCompleted.includes(videoId);
         const course = courseData.flatMap(cat => cat.courses).find(c => c.id === courseId);
         const videos = course?.videos || [];
@@ -221,9 +228,9 @@ export const useAppController = () => {
             }
             handleUpdateProgress(courseId, newIds);
         }
-    };
+    }, [handleUpdateProgress]);
 
-    const toggleCategory = (categoryId: string) => {
+    const toggleCategory = useCallback((categoryId: string) => {
         setExpandedCategories(prev => {
             const next = new Set(prev);
             if (next.has(categoryId)) {
@@ -233,9 +240,9 @@ export const useAppController = () => {
             }
             return next;
         });
-    };
+    }, []);
 
-    const toggleCourse = (courseId: string) => {
+    const toggleCourse = useCallback((courseId: string) => {
         setExpandedCourses(prev => {
             const next = new Set(prev);
             if (next.has(courseId)) {
@@ -245,9 +252,9 @@ export const useAppController = () => {
             }
             return next;
         });
-    };
+    }, []);
 
-    return {
+    return useMemo(() => ({
         auth: { user, logout, loading },
         userData: {
             progressData,
@@ -283,5 +290,13 @@ export const useAppController = () => {
             toggleCourse,
             updateSchedule
         }
-    };
+    }), [
+        user, logout, loading,
+        progressData, sessions, videoHistory, schedule, isDataLoaded, lastActiveCourseId,
+        totalPercentage, rankInfo, nextRank, completedHours, completedCount, totalVideos, totalHours, currentStreak, dailyFocus,
+        modals,
+        expandedCategories, expandedCourses,
+        handleSessionComplete, handleUpdateSession, handleDeleteSessions, handleUpdateProgress, handleVideoClick, toggleCategory, toggleCourse, updateSchedule
+    ]);
 };
+

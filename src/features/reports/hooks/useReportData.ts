@@ -6,7 +6,7 @@
  */
 
 import { useMemo, useCallback } from 'react';
-import courseDataJson from '@/data/courses.json';
+import courseDataJson from '@/features/course/data/courses.json';
 import type { StudySession, Course, VideoHistoryItem, UserProgressData, CourseCategory } from '@/types';
 
 const courseData = courseDataJson as unknown as CourseCategory[];

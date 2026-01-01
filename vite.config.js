@@ -13,7 +13,7 @@ export default defineConfig({
   },
   server: {
     watch: {
-      ignored: ['**/input/**', '**/scripts/**'],
+      ignored: ['**/input/**', '**/processing/**'],
     },
   },
   build: {

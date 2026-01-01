@@ -75,8 +75,10 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
         setConfirmState(prev => ({ ...prev, isOpen: false }));
     };
 
+    const value = React.useMemo(() => ({ showToast, showConfirm }), [showToast, showConfirm]);
+
     return (
-        <NotificationContext.Provider value={{ showToast, showConfirm }}>
+        <NotificationContext.Provider value={value}>
             {children}
 
             {/* Toast Container - Fixed Position */}

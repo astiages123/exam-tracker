@@ -6,9 +6,11 @@
  */
 
 export * from './date';
-export * from './format';
+export { formatHours, formatVideoDuration } from './formatter';
 export * from './streak';
 export * from './notification';
 export * from './sound';
 export * from './mathText';
 export * from './calculations';
+
+// End of utils

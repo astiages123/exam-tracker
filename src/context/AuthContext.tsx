@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useMemo } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { User } from '@supabase/supabase-js';
 
@@ -46,8 +46,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (supabase) await supabase.auth.signOut();
     };
 
+    const value = useMemo(() => ({
+        user,
+        login,
+        logout,
+        loading
+    }), [user, loading]);
+
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
+        <AuthContext.Provider value={value}>
             {children}
         </AuthContext.Provider>
     );

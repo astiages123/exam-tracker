@@ -642,7 +642,7 @@ td {
 
 th {
     font-weight: 600;
-    text-align: left;
+    text-align: center;
 }
 
 /* Muhasebe tabloları için hizalama koruması */
@@ -743,7 +743,7 @@ pre code {
 
 img {
     max-width: 1000px;
-    width: 90% !important;
+    width: 70% !important;
     height: auto !important;
     border-radius: 12px;
     margin: 3.5rem auto;

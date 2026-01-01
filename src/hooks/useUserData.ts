@@ -8,7 +8,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabaseClient';
-import courseDataJson from '@/data/courses.json';
+import courseDataJson from '@/features/course/data/courses.json';
 import type { CourseCategory } from '@/types';
 
 const courseData = courseDataJson as unknown as CourseCategory[];

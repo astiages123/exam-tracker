@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 import { RANK_ICONS } from '@/constants/styles';
 import { Goal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import StreakDisplay from '@/components/StreakDisplay';
+import StreakDisplay from '@/components/shared/StreakDisplay';
 import type { Rank } from '@/types';
 
 interface HeaderProps {
