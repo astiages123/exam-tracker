@@ -28,16 +28,10 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            // Specific vendor libraries first to avoid being caught by generic 'react' check
             if (id.includes('recharts')) return 'vendor-charts';
             if (id.includes('framer-motion')) return 'vendor-animation';
-            if (id.includes('lucide-react')) return 'vendor-icons';
             if (id.includes('@supabase')) return 'vendor-db';
             if (id.includes('@google/generative-ai')) return 'vendor-ai';
-            if (id.includes('@radix-ui') || id.includes('class-variance-authority') || id.includes('clsx') || id.includes('tailwind-merge')) return 'vendor-ui';
-
-            // Core React dependencies last
-            if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/scheduler/')) return 'vendor-react';
 
             return 'vendor-core';
           }
