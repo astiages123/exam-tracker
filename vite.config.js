@@ -21,29 +21,9 @@ export default defineConfig({
     },
   },
   build: {
-    modulePreload: {
-      polyfill: false
-    },
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            // Keep React and core UI libraries together to prevent reference/initialization issues
-            if (id.includes('react') || id.includes('@radix-ui') || id.includes('lucide-react')) {
-              return 'vendor-react';
-            }
-            if (id.includes('recharts')) return 'vendor-charts';
-            if (id.includes('framer-motion')) return 'vendor-animation';
-            if (id.includes('@supabase')) return 'vendor-db';
-
-            return 'vendor-core';
-          }
-
-          // Feature-based splitting
-          if (id.includes('src/features/reports')) return 'feature-reports';
-          if (id.includes('src/features/course')) return 'feature-course';
-          if (id.includes('src/features/quiz')) return 'feature-quiz';
-        }
+        // Removing manualChunks temporarily to fix initialization errors
       }
     }
   }
