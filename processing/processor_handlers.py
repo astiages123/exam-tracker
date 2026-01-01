@@ -476,3 +476,36 @@ def perform_single_pass(soup: BeautifulSoup) -> None:
     for t in to_decompose:
         if t.parent:
             t.decompose()
+
+def process_tables(soup: BeautifulSoup) -> None:
+    """
+    Tablolardaki H4 içeren satırları TH'ye dönüştürür.
+    Ancak satırları oldukları yerde bırakır (thead'e taşımaz).
+    """
+    for table in soup.find_all('table'):
+        # Tablo içindeki tüm satırları (tr) topla
+        rows = table.find_all('tr')
+        if not rows:
+            continue
+
+        # Satırları tara
+        for tr in rows:
+            # Satırda h4 var mı?
+            if tr.find('h4'):
+                # Bu satır başlık olmalı
+                # 1. Satıra özel sınıf ekle
+                classes = tr.get('class', [])
+                if isinstance(classes, str):
+                    classes = [classes]
+                if 'section-header' not in classes:
+                    classes.append('section-header')
+                tr['class'] = classes
+
+                # 2. Hücreleri (td) th'ye çevir ve h4'ü kaldır
+                for cell in tr.find_all(['td', 'th']):
+                    cell.name = 'th'
+                    
+                    # H4'ü unwrap et (içeriği kalsın, tag gitsin)
+                    h4 = cell.find('h4')
+                    if h4:
+                        h4.unwrap()

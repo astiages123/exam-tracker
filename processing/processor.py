@@ -30,7 +30,10 @@ from processor_handlers import (
     cleanup_empty_tags,
     fix_math_breaks,
     add_hierarchical_numbering,
-    wrap_numbers_with_span
+    fix_math_breaks,
+    add_hierarchical_numbering,
+    wrap_numbers_with_span,
+    process_tables
 )
 
 # Import utilities
@@ -128,6 +131,7 @@ def process_html_dir(course_input_dir: Path) -> bool:
     # 6. HTML İşlemleri
     try:
         perform_single_pass(soup)
+        process_tables(soup)
 
         wrap_math_displays(soup)
         normalize_example_hierarchy(soup)

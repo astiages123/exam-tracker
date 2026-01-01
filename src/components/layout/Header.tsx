@@ -22,7 +22,7 @@ interface HeaderProps {
 
 export default function Header({ rankInfo, dailyFocus, currentStreak, modals, logout }: HeaderProps) {
     return (
-        <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-xl border-b border-secondary shadow-lg shadow-primary/5">
+        <header className="sticky top-0 z-40 bg-background border-b border-secondary shadow-lg shadow-primary/5">
             <div className="max-w-6xl mx-auto px-4 py-4">
 
                 {/* --- MOBILE LAYOUT --- */}
@@ -41,7 +41,7 @@ export default function Header({ rankInfo, dailyFocus, currentStreak, modals, lo
                                     return <Icon size={20} className="text-primary" />;
                                 })()}
                             </div>
-                            <h1 className={cn("text-xl font-bold tracking-tight text-foreground leading-tight", rankInfo.color)}>
+                            <h1 className={cn("text-xl font-bold font-rank tracking-tight text-primary leading-tight", rankInfo.color)}>
                                 {rankInfo.title}
                             </h1>
                         </button>
@@ -111,16 +111,16 @@ export default function Header({ rankInfo, dailyFocus, currentStreak, modals, lo
                             title="Rütbe detaylarını gör"
                             type="button"
                         >
-                            <div className="bg-card p-3 rounded-xl border border-secondary/50 relative group-hover:border-primary/30 box-border transition-colors">
+                            <div className="bg-card p-5 rounded-xl border border-secondary/50 relative group-hover:border-primary/30 box-border transition-colors">
                                 {(() => {
                                     const Icon = RANK_ICONS[rankInfo.icon] || Goal;
-                                    return <Icon size={28} className="text-primary group-hover:drop-shadow-lg" />;
+                                    return <Icon size={30} className="text-primary group-hover:drop-shadow-lg" />;
                                 })()}
                             </div>
                         </button>
                         <div className="flex flex-col gap-2">
                             <button
-                                className={cn("text-3xl font-bold tracking-tight text-foreground leading-tight cursor-pointer hover:opacity-80 transition-opacity text-left appearance-none", rankInfo.color)}
+                                className={cn("text-3xl font-bold font-rank tracking-wider text-primary leading-tight cursor-pointer hover:opacity-80 transition-opacity text-left appearance-none", rankInfo.color)}
                                 onClick={() => modals.setShowRankModal(true)}
                                 type="button"
                             >

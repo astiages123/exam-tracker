@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Tagesschrift&display=swap');
 
 @theme {
   /* ============================================
@@ -6,51 +7,52 @@
      ============================================ */
   --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Roboto Mono", ui-monospace, monospace;
+  --font-rank: "Tagesschrift", cursive;
 
   /* ============================================
-     COLOR PALETTE - Modern Cyan-Dark Theme
+     COLOR PALETTE - The Inspector's Desk Theme
      ============================================ */
 
-  /* Base Surfaces */
-  --color-background: oklch(0.22 0.02 230);
-  /* #1A242B - Deep Blue-Grey */
+  /* Base Primitive Colors */
+  --color-main-bg: oklch(0.16 0.01 240);
+  --color-card-bg: oklch(0.22 0.02 240);
+  --color-primary-cyan: oklch(0.75 0.15 200);
+  --color-accent-mint: oklch(0.82 0.16 170);
+  --color-border-subtle: oklch(0.28 0.02 240);
+
+  /* Semantic Colors */
+  --color-background: var(--color-main-bg);
   --color-foreground: oklch(0.94 0.008 250);
-  /* Off-white Text */
 
   /* Component Surfaces */
-  --color-card: oklch(0.28 0.025 230);
-  /* #233038 - Elevated Surface */
+  --color-card: var(--color-card-bg);
   --color-card-foreground: oklch(0.94 0.008 250);
 
-  --color-popover: oklch(0.27 0.022 255);
-  /* Slightly different hue for popovers */
+  --color-popover: var(--color-card-bg);
   --color-popover-foreground: oklch(0.94 0.008 250);
 
   /* Brand Colors */
-  --color-primary: oklch(0.80 0.15 210);
-  /* Cyan-Blue Accent */
-  --color-primary-foreground: oklch(0.10 0.02 260);
+  --color-primary: var(--color-primary-cyan);
+  --color-primary-foreground: oklch(0.10 0.02 240);
 
-  --color-secondary: oklch(0.38 0.03 255);
-  /* Muted/Slate Secondary */
+  --color-secondary: oklch(0.28 0.02 240);
   --color-secondary-foreground: oklch(0.94 0.008 250);
 
-  --color-accent: oklch(0.84 0.17 165);
-  /* Mint Green Accent */
-  --color-accent-foreground: oklch(0.10 0.02 260);
+  --color-accent: var(--color-accent-mint);
+  --color-accent-foreground: oklch(0.16 0.01 240);
 
   /* Functional Colors */
-  --color-muted: oklch(0.30 0.025 255);
+  --color-muted: oklch(0.28 0.02 240);
   --color-muted-foreground: oklch(0.70 0.02 250);
 
   --color-destructive: oklch(0.637 0.237 25.331);
   --color-destructive-foreground: oklch(0.985 0 0);
 
-  --color-border: oklch(0.38 0.025 255);
-  --color-input: oklch(0.28 0.02 255);
-  --color-ring: oklch(0.80 0.15 210);
+  --color-border: var(--color-border-subtle);
+  --color-input: var(--color-border-subtle);
+  --color-ring: var(--color-primary-cyan);
 
-  /* Special Colors */
+  /* Special Colors - Keeping previous subcourse as it wasn't in colors.md */
   --color-subcourse: oklch(0.88 0.008 250);
 
   /* ============================================
@@ -157,22 +159,24 @@
     /* Global speedup */
   }
 
-  /* Visual Effects */
+  /* Visual Effects - Simplified for Professional Look */
   .glass-card {
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    /* Removed backdrop-filter for solid professional look */
 
     &.glass-card-hover {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s ease-in-out;
 
       &:hover {
-        transform: translateY(-2px);
+        transform: translateY(-1px);
+        border-color: var(--color-primary);
       }
     }
   }
 
+  /* Deprecated: Glow removed for cleaner aesthetic */
   .text-glow {
-    text-shadow: 0 0 15px currentColor;
+    text-shadow: none;
   }
 }

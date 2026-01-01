@@ -8,7 +8,7 @@
  */
 
 import { useState } from 'react';
-import { RefreshCw, AlertCircle, HelpCircle, FileText, TrendingUp, ChevronRight } from 'lucide-react';
+import { RefreshCw, AlertCircle, HelpCircle, FileText, TrendingUp, ChevronRight, Maximize2, Minimize2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import ModalCloseButton from "@/components/ui/ModalCloseButton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -32,6 +32,7 @@ interface QuizModalProps {
 
 export default function QuizModal({ isOpen, onClose, courseId, courseName, notePath }: QuizModalProps) {
     const [activeTab, setActiveTab] = useState('quiz');
+    const [isFullscreen, setIsFullscreen] = useState(false);
 
     const [state, actions] = useQuiz({
         isOpen,
@@ -66,7 +67,14 @@ export default function QuizModal({ isOpen, onClose, courseId, courseName, noteP
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-[92vh] flex flex-col p-0 gap-0 border-border bg-card overflow-hidden rounded-none sm:rounded-lg focus-visible:outline-none">
+            <DialogContent
+                className={cn(
+                    "flex flex-col p-0 gap-0 border-border bg-card overflow-hidden transition-all duration-300 focus-visible:outline-none",
+                    isFullscreen
+                        ? "w-screen h-[100dvh] max-w-none rounded-none border-none"
+                        : "w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-[92vh] sm:rounded-lg"
+                )}
+            >
                 {/* Header */}
                 <div className="flex flex-col border-b border-border bg-card/50">
                     <div className="flex items-center justify-between p-4 sm:p-6 pb-2">
@@ -94,9 +102,20 @@ export default function QuizModal({ isOpen, onClose, courseId, courseName, noteP
                                 </p>
                             </div>
                         </div>
-                        <DialogClose asChild>
-                            <ModalCloseButton className="-mr-2" />
-                        </DialogClose>
+                        <div className="flex items-center gap-1 shrink-0">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => setIsFullscreen(!isFullscreen)}
+                                className="h-10 w-10 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors [&_svg]:size-6 hidden sm:flex"
+                                title={isFullscreen ? "Küçült" : "Tam Ekran"}
+                            >
+                                {isFullscreen ? <Minimize2 size={24} /> : <Maximize2 size={24} />}
+                            </Button>
+                            <DialogClose asChild>
+                                <ModalCloseButton className="-mr-2" />
+                            </DialogClose>
+                        </div>
                     </div>
 
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="px-6 pb-0 w-full">

@@ -1,6 +1,7 @@
 import { Play, Pause, CircleCheckBig, Coffee, BookOpen } from 'lucide-react';
 import ModalCloseButton from "@/components/ui/ModalCloseButton";
 import { COURSE_ICONS } from '@/constants/styles';
+import { cn } from '@/lib/utils';
 
 interface TimerDisplayProps {
     mode: 'work' | 'break';
@@ -14,6 +15,7 @@ interface TimerDisplayProps {
     onFinishSession: () => void;
     onSkipBreak: () => void;
     onCancel: () => void;
+    isZenMode?: boolean;
 }
 
 export default function TimerDisplay({
@@ -27,15 +29,26 @@ export default function TimerDisplay({
     onStartBreak,
     onFinishSession,
     onSkipBreak,
-    onCancel
+    onCancel,
+    isZenMode = false
 }: TimerDisplayProps) {
     return (
-        <div className="fixed bottom-6 left-6 z-50 bg-card border border-white/5 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl p-8 w-80 animate-in slide-in-from-bottom-12 fade-in duration-200 overflow-hidden">
+        <div className={cn(
+            "fixed z-[45] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card border border-white/10 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] transition-all duration-700 overflow-hidden",
+            isZenMode
+                ? "w-96 p-10 scale-110 shadow-primary/20"
+                : "w-80 p-8 scale-100",
+            "animate-in zoom-in-95 fade-in duration-300"
+        )}>
             {/* Background decoration */}
-            <div className={`absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[80px] opacity-20 transition-colors duration-100 ${mode === 'work' ? 'bg-primary' : 'bg-emerald-400'}`} />
+            <div className={cn(
+                "absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[80px] opacity-20 transition-all duration-500",
+                mode === 'work' ? 'bg-primary' : 'bg-emerald-400',
+                isZenMode && "scale-150 opacity-30"
+            )} />
 
-            {/* Close Button */}
-            <div className="absolute top-6 right-6 z-20">
+            {/* Close Button - More visible when not running */}
+            <div className={cn("absolute top-6 right-6 z-20 transition-opacity duration-500", !isActive && "opacity-100", isActive && isZenMode && "opacity-20 hover:opacity-100")}>
                 <ModalCloseButton onClick={onCancel} className="hover:bg-white/10 hover:text-destructive" title="İptal Et" />
             </div>
 

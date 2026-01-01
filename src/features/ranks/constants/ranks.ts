@@ -10,12 +10,12 @@ import { Rank } from '@/types';
  * User ranks based on completion percentage
  */
 export const RANKS: Rank[] = [
-    { title: "Stajyer", min: 0, color: "text-zinc-300", icon: "User" },
-    { title: "Gişe Asistanı", min: 10, color: "text-emerald-400", icon: "CreditCard" },
-    { title: "Müfettiş Yardımcısı", min: 25, color: "text-blue-400", icon: "Search" },
-    { title: "Kıdemli Müfettiş Yardımcısı", min: 50, color: "text-violet-400", icon: "Shield" },
-    { title: "Müfettiş", min: 75, color: "text-amber-400", icon: "Award" },
-    { title: "Kıdemli Müfettiş", min: 100, color: "text-rose-500 font-bold", icon: "Crown" }
+    { title: "Stajyer", min: 0, color: "text-zinc-300", icon: "Sprout" },
+    { title: "Gişe Asistanı", min: 10, color: "text-emerald-400", icon: "HandCoins" },
+    { title: "Müfettiş Yardımcısı", min: 25, color: "text-blue-400", icon: "SearchCheck" },
+    { title: "Kıdemli Müfettiş Yardımcısı", min: 50, color: "text-violet-400", icon: "UserSearch" },
+    { title: "Müfettiş", min: 75, color: "text-amber-400", icon: "ShieldCheck" },
+    { title: "Kıdemli Müfettiş", min: 100, color: "text-rose-500 font-bold", icon: "Medal" }
 ];
 
 /**

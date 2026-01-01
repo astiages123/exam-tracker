@@ -13,9 +13,9 @@ export const ProgressBar = ({ progress, nextLevelMin, currentLevelMin }: Progres
     const percentage = Math.min(100, Math.max(0, (currentVal / (range || 1)) * 100));
 
     return (
-        <div className="w-full bg-black/40 rounded-full h-3 mt-4 overflow-hidden border border-white/5 relative">
+        <div className="w-full bg-black/40 rounded-full h-3 overflow-hidden border border-white/5 relative">
             <Motion.div
-                className="h-full bg-primary rounded-full relative shadow-[0_0_15px_rgba(var(--primary),0.3)]"
+                className="h-full bg-primary rounded-full relative shadow-[0_0_8px_rgba(var(--primary),0.2)]"
                 initial={{ width: 0 }}
                 animate={{ width: `${percentage}%` }}
                 transition={{ duration: 0.15 }}
@@ -42,7 +42,7 @@ export const CategoryProgressBar = ({ percentage, colorClass }: CategoryProgress
                 transition={{ duration: 0.8, ease: "easeOut" }}
             >
                 {/* Subtle sheen effect */}
-                <div className="absolute inset-0 bg-white/20 blur-[2px] -translate-y-1/2 h-[50%]" />
+                <div className="absolute inset-0 bg-white/10 -translate-y-1/2 h-[50%]" />
             </Motion.div>
         </div>
     );

@@ -10,6 +10,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Clock, ChartNoAxesCombined, BarChart2, List } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { AnimatePresence } from 'framer-motion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -53,6 +54,7 @@ export default function ReportModal({
     const [selectedGroup, setSelectedGroup] = useState<GroupedSession | null>(null);
     const [showFullHistory, setShowFullHistory] = useState<'duration' | 'videos' | null>(null);
     const [activeTab, setActiveTab] = useState<string>(initialHistoryType ? 'graph' : 'list');
+    const [confirmDelete, setConfirmDelete] = useState<{ sessionIds: number[] } | null>(null);
 
     // Handle initial sub-modal opening with a small delay for stable mounting
     useEffect(() => {
@@ -63,7 +65,6 @@ export default function ReportModal({
             return () => clearTimeout(timer);
         }
     }, [initialHistoryType]);
-    const [confirmDelete, setConfirmDelete] = useState<{ sessionIds: number[] } | null>(null);
     const [isMobile, setIsMobile] = useState(false);
 
     // Responsive check
@@ -117,12 +118,17 @@ export default function ReportModal({
 
     return (
         <>
-            <Dialog open={true} modal={false} onOpenChange={(open) => {
+            <Dialog open={true} onOpenChange={(open) => {
                 if (!open && !subModalActiveRef.current) {
                     onClose();
                 }
             }}>
-                <DialogContent className="w-full max-w-full sm:max-w-7xl h-[100dvh] sm:h-[90vh] flex flex-col p-0 gap-0 bg-background border-border shadow-2xl overflow-hidden focus-visible:outline-none rounded-none sm:rounded-lg">
+                <DialogContent
+                    className={cn(
+                        "flex flex-col p-0 gap-0 bg-background border-border shadow-2xl overflow-hidden focus-visible:outline-none transition-all duration-300",
+                        "w-full max-w-full sm:max-w-7xl h-[100dvh] sm:h-[90vh] sm:rounded-lg"
+                    )}
+                >
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full w-full">
                         {/* Header */}
                         <div className="p-4 sm:p-8 border-b border-border flex justify-between items-center bg-card/50">
@@ -149,9 +155,12 @@ export default function ReportModal({
                                     </TabsList>
                                 </div>
                             </div>
-                            <DialogClose asChild>
-                                <ModalCloseButton className="-mr-2" />
-                            </DialogClose>
+                            <div className="flex items-center gap-1 shrink-0">
+
+                                <DialogClose asChild>
+                                    <ModalCloseButton className="-mr-2" />
+                                </DialogClose>
+                            </div>
                         </div>
 
                         {/* Stats */}

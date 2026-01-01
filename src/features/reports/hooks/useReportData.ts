@@ -106,7 +106,8 @@ export const useReportData = ({
         const sessionsByDay: Record<string, Array<{ start: number; end: number }>> = {};
         [...workSessions, ...breakSessions].forEach(s => {
             if (!s.timestamp) return;
-            const dateStr = new Date(s.timestamp).toLocaleDateString("en-CA");
+            // Faster date extraction: YYYY-MM-DD
+            const dateStr = new Date(s.timestamp).toISOString().split('T')[0];
             if (!sessionsByDay[dateStr]) sessionsByDay[dateStr] = [];
 
             const internalPauseMs = s.pauses ? s.pauses.reduce((acc, p) => acc + (p.end - p.start), 0) : 0;
@@ -203,7 +204,7 @@ export const useReportData = ({
         workSessions.forEach(session => {
             if (!session.timestamp) return;
             const dateObj = new Date(session.timestamp);
-            const dateKey = dateObj.toLocaleDateString("en-CA");
+            const dateKey = dateObj.toISOString().split('T')[0];
             if (!dailyData[dateKey]) {
                 dailyData[dateKey] = { seconds: 0, courseIds: new Set() };
             }
@@ -216,7 +217,7 @@ export const useReportData = ({
         for (let i = loopDays; i >= 0; i--) {
             const d = new Date();
             d.setDate(d.getDate() - i);
-            const dateKey = d.toLocaleDateString("en-CA");
+            const dateKey = d.toISOString().split('T')[0];
             const dayInfo = dailyData[dateKey] || { seconds: 0, courseIds: new Set() };
             const courseNames = Array.from(dayInfo.courseIds).map(id => getCourseName(id));
 
@@ -238,7 +239,7 @@ export const useReportData = ({
         const dailyCounts: Record<string, { count: number; courseIds: Set<string> }> = {};
         filteredVideoHistory.forEach(history => {
             if (!history.timestamp) return;
-            const dateKey = new Date(history.timestamp).toLocaleDateString("en-CA");
+            const dateKey = new Date(history.timestamp).toISOString().split('T')[0];
             if (!dailyCounts[dateKey]) {
                 dailyCounts[dateKey] = { count: 0, courseIds: new Set() };
             }
@@ -251,7 +252,7 @@ export const useReportData = ({
         for (let i = loopDays; i >= 0; i--) {
             const d = new Date();
             d.setDate(d.getDate() - i);
-            const dateKey = d.toLocaleDateString("en-CA");
+            const dateKey = d.toISOString().split('T')[0];
             const dayInfo = dailyCounts[dateKey] || { count: 0, courseIds: new Set() };
             const courseNames = Array.from(dayInfo.courseIds).map(id => getCourseName(id));
 
@@ -280,7 +281,7 @@ export const useReportData = ({
 
         workSessions.forEach(s => {
             if (!s.timestamp) return;
-            const dateStr = new Date(s.timestamp).toLocaleDateString("en-CA");
+            const dateStr = new Date(s.timestamp).toISOString().split('T')[0];
             if (!dates[dateStr]) {
                 dates[dateStr] = {
                     hours: 0,
@@ -296,7 +297,7 @@ export const useReportData = ({
 
         filteredVideoHistory.forEach(h => {
             if (!h.timestamp) return;
-            const dateStr = new Date(h.timestamp).toLocaleDateString("en-CA");
+            const dateStr = new Date(h.timestamp).toISOString().split('T')[0];
             if (!dates[dateStr]) {
                 dates[dateStr] = {
                     hours: 0,

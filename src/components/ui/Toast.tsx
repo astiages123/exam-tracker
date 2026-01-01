@@ -49,7 +49,7 @@ const Toast = ({ id, message, type = 'info', onClose }: ToastProps) => {
             exit={{ opacity: 0, x: 50, scale: 0.9 }}
             className={`
                 pointer-events-auto flex items-center gap-3 px-4 py-3 
-                rounded-lg border backdrop-blur-sm shadow-lg
+                rounded-lg border shadow-lg
                 ${colorMap[type]}
             `}
         >

@@ -4,16 +4,21 @@
  * Centralized management of modal visibility state.
  */
 
-import { useState, useCallback, useMemo } from 'react';
-import type { LucideIcon } from 'lucide-react';
-import type { Course } from '@/types';
+import { useState, useCallback, useMemo, useEffect } from 'react';
+import { BookOpen } from 'lucide-react';
+import type { Course, CourseCategory } from '@/types';
+import courseDataJson from '@/features/course/data/courses.json';
+import { COURSE_ICONS } from '@/features/course/constants';
+
+const courseData = courseDataJson as unknown as CourseCategory[];
+const allCourses = courseData.flatMap(cat => cat.courses);
 
 // Interfaces for active modal states
 export interface ActiveNoteCourse {
     name: string;
     path: string;
     id: string;
-    icon: LucideIcon;
+    icon: any;
 }
 
 export interface ActiveQuizCourse {
@@ -26,66 +31,105 @@ export interface ActiveQuizCourse {
  * Hook for managing multiple modal states
  */
 export const useModals = () => {
-    // Timer & Reports
-    const [showTimer, setShowTimer] = useState<boolean>(false);
-    const [showReport, setShowReport] = useState<boolean>(false);
-    const [reportHistoryType, setReportHistoryType] = useState<'duration' | 'videos' | null>(null);
-    const [showSchedule, setShowSchedule] = useState<boolean>(false);
-    const [showRankModal, setShowRankModal] = useState<boolean>(false);
+    // We use a local state to trigger re-renders when URL changes
+    const [currentParams, setCurrentParams] = useState(new URLSearchParams(window.location.search));
 
-    // Course-specific modals
-    const [activeNoteCourse, setActiveNoteCourse] = useState<ActiveNoteCourse | null>(null);
-    const [activeQuizCourse, setActiveQuizCourse] = useState<ActiveQuizCourse | null>(null);
+    // Monitor URL changes (including back/forward button)
+    useEffect(() => {
+        const handlePopState = () => {
+            setCurrentParams(new URLSearchParams(window.location.search));
+        };
+        window.addEventListener('popstate', handlePopState);
+        return () => window.removeEventListener('popstate', handlePopState);
+    }, []);
 
-    // Celebration
+    // Helper to update search params and URL
+    const updateParams = useCallback((newParams: URLSearchParams) => {
+        const newUrl = `${window.location.pathname}${newParams.toString() ? '?' + newParams.toString() : ''}`;
+        window.history.pushState({}, '', newUrl);
+        setCurrentParams(newParams);
+    }, []);
+
+    // --- State Getters ---
+    const modalType = currentParams.get('modal');
+    const courseId = currentParams.get('courseId');
+    const reportHistoryType = currentParams.get('type') as 'duration' | 'videos' | null;
+
+    // Non-URL Transient States
     const [celebratingCourse, setCelebratingCourse] = useState<string | null>(null);
+    const [isZenMode, setIsZenMode] = useState<boolean>(false);
 
-    // Open handlers
-    const openTimer = useCallback(() => setShowTimer(true), []);
-    const openReport = useCallback(() => setShowReport(true), []);
-    const openSchedule = useCallback(() => setShowSchedule(true), []);
-    const openRankModal = useCallback(() => setShowRankModal(true), []);
+    // Derived States
+    const showTimer = modalType === 'timer';
+    const showReport = modalType === 'report';
+    const showSchedule = modalType === 'schedule';
+    const showRankModal = modalType === 'rank';
 
-    // Close handlers
-    const closeTimer = useCallback(() => setShowTimer(false), []);
-    const closeReport = useCallback(() => {
-        setShowReport(false);
-        setReportHistoryType(null);
-    }, []);
-    const openReportWithHistory = useCallback((type: 'duration' | 'videos') => {
-        setReportHistoryType(type);
-        setShowReport(true);
-    }, []);
-    const closeSchedule = useCallback(() => setShowSchedule(false), []);
-    const closeRankModal = useCallback(() => setShowRankModal(false), []);
-
-    // Notes modal
-    const openNotes = useCallback((course: Course, icon: any) => {
-        if (!course.notePath) return; // Guard clause
-        setActiveNoteCourse({
+    const activeNoteCourse = useMemo(() => {
+        if (modalType !== 'note' || !courseId) return null;
+        const course = allCourses.find(c => c.id === courseId);
+        if (!course || !course.notePath) return null;
+        const matchingKey = Object.keys(COURSE_ICONS).find(key => course.name.startsWith(key));
+        const icon = matchingKey ? COURSE_ICONS[matchingKey] : BookOpen;
+        return {
             name: course.name,
             path: course.notePath,
             id: course.id,
-            icon: icon
-        });
-    }, []);
-    const closeNotes = useCallback(() => setActiveNoteCourse(null), []);
+            icon
+        } as ActiveNoteCourse;
+    }, [modalType, courseId]);
 
-    // Quiz modal
-    const openQuiz = useCallback((course: Course) => {
-        if (!course.notePath) return;
-        setActiveQuizCourse({
+    const activeQuizCourse = useMemo(() => {
+        if (modalType !== 'quiz' || !courseId) return null;
+        const course = allCourses.find(c => c.id === courseId);
+        if (!course || !course.notePath) return null;
+        return {
             name: course.name,
             path: course.notePath,
             id: course.id
-        });
-    }, []);
-    const closeQuiz = useCallback(() => setActiveQuizCourse(null), []);
+        } as ActiveQuizCourse;
+    }, [modalType, courseId]);
+
+    // --- Action Handlers ---
+    const setModal = useCallback((type: string | null, params: Record<string, string> = {}) => {
+        const p = new URLSearchParams();
+        if (type) {
+            p.set('modal', type);
+            Object.entries(params).forEach(([k, v]) => p.set(k, v));
+        }
+        updateParams(p);
+    }, [updateParams]);
+
+    const closeAll = useCallback(() => setModal(null), [setModal]);
+
+    // Open handlers
+    const openTimer = useCallback(() => setModal('timer'), [setModal]);
+    const openReport = useCallback(() => setModal('report'), [setModal]);
+    const openSchedule = useCallback(() => setModal('schedule'), [setModal]);
+    const openRankModal = useCallback(() => setModal('rank'), [setModal]);
+
+    const openReportWithHistory = useCallback((type: 'duration' | 'videos') => {
+        setModal('report', { type });
+    }, [setModal]);
+
+    const openNotes = useCallback((course: Course) => {
+        if (!course.notePath) return;
+        setModal('note', { courseId: course.id });
+    }, [setModal]);
+
+    const openQuiz = useCallback((course: Course) => {
+        if (!course.notePath) return;
+        setModal('quiz', { courseId: course.id });
+    }, [setModal]);
+
+    // Legacy Support (Setters)
+    const setShowTimer = useCallback((show: boolean) => show ? openTimer() : closeAll(), [openTimer, closeAll]);
+    const setShowReport = useCallback((show: boolean) => show ? openReport() : closeAll(), [openReport, closeAll]);
+    const setShowSchedule = useCallback((show: boolean) => show ? openSchedule() : closeAll(), [openSchedule, closeAll]);
+    const setShowRankModal = useCallback((show: boolean) => show ? openRankModal() : closeAll(), [openRankModal, closeAll]);
 
     // Celebration
-    const triggerCelebration = useCallback((courseName: string) => {
-        setCelebratingCourse(courseName);
-    }, []);
+    const triggerCelebration = useCallback((courseName: string) => setCelebratingCourse(courseName), []);
     const closeCelebration = useCallback(() => setCelebratingCourse(null), []);
 
     // Memoized return object for stable reference
@@ -98,43 +142,44 @@ export const useModals = () => {
         activeNoteCourse,
         activeQuizCourse,
         celebratingCourse,
+        isZenMode,
+        reportHistoryType,
 
-        // Toggle/Set methods (Exposed setters)
+        // Setters (Legacy & Direct)
         setShowTimer,
         setShowReport,
         setShowSchedule,
         setShowRankModal,
+        setIsZenMode,
 
         // Open/Close handlers
         openTimer,
-        closeTimer,
+        closeTimer: closeAll,
         openReport,
-        closeReport,
+        closeReport: closeAll,
         openSchedule,
-        closeSchedule,
+        closeSchedule: closeAll,
         openRankModal,
-        closeRankModal,
+        closeRankModal: closeAll,
 
         // Course modals
         openNotes,
-        closeNotes,
+        closeNotes: closeAll,
         openQuiz,
-        closeQuiz,
+        closeQuiz: closeAll,
 
         // Celebration
         triggerCelebration,
         closeCelebration,
 
         // Special openers
-        openReportWithHistory,
-        reportHistoryType
+        openReportWithHistory
     }), [
         showTimer, showReport, showSchedule, showRankModal,
-        activeNoteCourse, activeQuizCourse, celebratingCourse,
-        openTimer, closeTimer, openReport, closeReport,
-        openSchedule, closeSchedule, openRankModal, closeRankModal,
-        openNotes, closeNotes, openQuiz, closeQuiz,
-        triggerCelebration, closeCelebration,
-        openReportWithHistory, reportHistoryType
+        activeNoteCourse, activeQuizCourse, celebratingCourse, isZenMode,
+        setShowTimer, setShowReport, setShowSchedule, setShowRankModal,
+        openTimer, openReport, openSchedule, openRankModal,
+        openNotes, openQuiz, triggerCelebration, closeCelebration,
+        openReportWithHistory, reportHistoryType, closeAll
     ]);
 };

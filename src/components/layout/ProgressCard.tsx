@@ -1,11 +1,11 @@
-import { Youtube, Timer, BadgeCheck, Zap } from 'lucide-react';
+import { Youtube, Timer } from 'lucide-react';
 import { RANK_ICONS } from '@/constants/styles';
 import { Goal } from 'lucide-react';
 import { ProgressBar } from '@/components/stats/ProgressBars';
 import { formatHours } from '@/utils';
 import type { Rank } from '@/types';
 import { motion as Motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
+
 
 interface ProgressCardProps {
     totalPercentage: number;
@@ -42,60 +42,46 @@ export default function ProgressCard({
             <div className="absolute -inset-1 bg-primary/5 blur-2xl rounded-[2rem] opacity-30" />
 
             <div className="relative glass-card rounded-[1.5rem] overflow-hidden border border-white/10 bg-primary/10 shadow-xl shadow-black/40">
-                <div className="p-4 sm:p-5">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
-                        {/* Current Rank & Next Goal */}
-                        <div className="flex items-center gap-5">
-                            <div className="relative group">
-                                <div className="relative p-3 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center">
-                                    <Icon size={24} className="text-primary" />
-                                </div>
-                            </div>
-                            <div>
-                                <div className="flex items-center gap-2 mb-1">
-                                    <span className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em]">Sonraki Rütbe</span>
-                                    <Zap size={10} className="text-amber-400 fill-amber-400/20" />
-                                </div>
-                                <h2 className="text-xl font-black text-white tracking-tight flex items-center gap-2">
-                                    {nextRank.title}
-                                    <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                                </h2>
-                                <p className="text-white/60 text-[13px] font-medium mt-0.5">
-                                    Hedefe ulaşmak için <span className="text-primary font-bold">{(nextRank.min - totalPercentage).toFixed(1)}%</span> daha çalışmalısın
-                                </p>
+                <div className="p-4 sm:p-4.5">
+                    <div className="flex flex-col md:flex-row items-center gap-5 mb-4">
+                        {/* 1. Icon Box - More Compact */}
+                        <div className="relative group shrink-0">
+                            <div className="relative p-3.5 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center shadow-lg shadow-black/20">
+                                <Icon size={28} className="text-primary drop-shadow-[0_0_10px_rgba(var(--primary),0.3)]" />
                             </div>
                         </div>
 
-                        {/* Overall Progress Circle/Display */}
-                        <div className="flex items-center gap-4 bg-white/[0.02] p-3 sm:p-4 rounded-xl border border-white/5 ml-auto">
-                            <div className="text-right">
-                                <span className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em] block mb-0.5">Genel İlerleme</span>
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-2xl sm:text-3xl font-black text-white tracking-tighter">
-                                        {totalPercentage.toFixed(1)}
-                                    </span>
-                                    <span className="text-base font-bold text-primary">%</span>
-                                </div>
+                        {/* 2. Rank Info - More Compact */}
+                        <div className="flex-1 text-center md:text-left min-w-0">
+                            <div className="flex items-center justify-center md:justify-start gap-2 mb-0.5">
+                                <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">Sonraki Rütbe</span>
                             </div>
-                            <div className="h-10 w-[1px] bg-white/10" />
-                            <div className="flex flex-col gap-0.5">
-                                <div className="flex items-center gap-1.5 text-[12px] font-bold text-white/70">
-                                    <BadgeCheck size={14} className="text-emerald-400" />
-                                    <span>{completedCount} Video</span>
-                                </div>
-                                <div className="flex items-center gap-1.5 text-[12px] font-bold text-white/70">
-                                    <Timer size={14} className="text-sky-400" />
-                                    <span>{formatHours(completedHours)}</span>
-                                </div>
+                            <h2 className="text-xl font-black text-white/80 flex items-center justify-center md:justify-start gap-2">
+                                {nextRank.title}
+                                <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_var(--color-primary)]" />
+                            </h2>
+                            <p className="text-white/60 text-[13px] font-medium leading-tight">
+                                Hedefe ulaşmak için <span className="text-primary font-bold">{(nextRank.min - totalPercentage).toFixed(1)}%</span> daha çalışmalısın
+                            </p>
+                        </div>
+
+                        {/* 3. General Progress - More Compact */}
+                        <div className="flex flex-col items-center justify-center shrink-0 bg-white/[0.04] p-2.5 px-5 rounded-xl border border-white/5 min-w-[130px]">
+                            <span className="text-[10px] font-bold text-white/80 uppercase tracking-[0.2em] mb-0.5">Toplam İlerleme</span>
+                            <div className="flex items-center gap-1">
+                                <span className="text-2xl font-black text-primary tracking-tighter">
+                                    {totalPercentage.toFixed(1)}
+                                </span>
+                                <span className="text-base font-bold text-primary">%</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Main Progress Bar */}
-                    <div className="space-y-3">
-                        <div className="flex justify-between items-end px-1">
-                            <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest">{rankInfo.title}</span>
-                            <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest">{nextRank.title}</span>
+                    {/* Main Progress Bar - More Integrated */}
+                    <div className="space-y-2">
+                        <div className="flex justify-between items-end px-0.5 h-3">
+                            <span className="text-[11px] font-bold text-primary uppercase tracking-widest">{rankInfo.title}</span>
+                            <span className="text-[11px] font-bold text-primary uppercase tracking-widest">{nextRank.title}</span>
                         </div>
                         <ProgressBar
                             progress={totalPercentage}
@@ -105,22 +91,20 @@ export default function ProgressCard({
                     </div>
                 </div>
 
-                {/* Bottom Stats Grid */}
-                <div className="grid grid-cols-2 border-t border-white/10 bg-black/20">
+                {/* Bottom Stats Grid - Simplified */}
+                <div className="grid grid-cols-2 border-t border-white/5">
                     <StatItem
-                        icon={<Youtube size={18} className="text-red-400" />}
+                        icon={<Youtube size={16} className="text-red-500" />}
                         label="Tamamlanan"
                         value={completedCount.toString()}
                         total={`/ ${totalVideos}`}
-                        color="red"
                         onClick={onCompletedClick}
                     />
                     <StatItem
-                        icon={<Timer size={18} className="text-sky-400" />}
+                        icon={<Timer size={16} className="text-primary" />}
                         label="Toplam Süre"
                         value={formatHours(completedHours)}
                         total={`/ ${formatHours(totalHours)}`}
-                        color="sky"
                         onClick={onDurationClick}
                     />
                 </div>
@@ -129,35 +113,27 @@ export default function ProgressCard({
     );
 }
 
-function StatItem({ icon, label, value, total, color, onClick }: {
+function StatItem({ icon, label, value, total, onClick }: {
     icon: React.ReactNode,
     label: string,
     value: string,
     total: string,
-    color: string,
     onClick?: () => void
 }) {
-    const colorVariants: Record<string, string> = {
-        red: "bg-red-500/10 border-red-500/20",
-        sky: "bg-sky-500/10 border-sky-500/20",
-        emerald: "bg-emerald-500/10 border-emerald-500/20",
-        violet: "bg-violet-500/10 border-violet-500/20"
-    };
-
     return (
         <button
             type="button"
-            className="p-3 flex flex-col items-center justify-center text-center gap-1.5 hover:bg-white/[0.05] active:bg-white/[0.1] cursor-pointer transition-colors border-r border-white/5 last:border-0 w-full"
+            className="p-3 flex flex-row items-center justify-center gap-3 hover:bg-white/[0.02] active:bg-white/[0.05] cursor-pointer transition-colors border-r border-white/5 last:border-0 w-full group"
             onClick={onClick}
         >
-            <div className={cn("p-1.5 rounded-lg border mb-0.5", colorVariants[color] || "bg-white/[0.03] border-white/5")}>
+            <div className="p-1.5 rounded-lg bg-white/5 text-white/40 group-hover:text-white/80 group-hover:bg-white/10 transition-colors">
                 {icon}
             </div>
-            <div className="flex flex-col">
-                <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest">{label}</span>
-                <div className="flex items-baseline justify-center gap-1 mt-0.5">
-                    <span className="text-base font-black text-white">{value}</span>
-                    <span className="text-[12px] font-medium text-white/60">{total}</span>
+            <div className="flex flex-col items-start gap-0.5">
+                <span className="text-[10px] font-bold text-white/90 uppercase tracking-widest">{label}</span>
+                <div className="flex items-baseline gap-1">
+                    <span className="text-sm font-bold text-white/90">{value}</span>
+                    <span className="text-[10px] font-medium text-white/70">{total}</span>
                 </div>
             </div>
         </button>

@@ -20,7 +20,7 @@ interface CategoryItemProps {
         handleVideoClick: (e: React.MouseEvent, courseId: string, videoId: number) => void;
     };
     modals: {
-        openNotes: (course: any, icon: any) => void;
+        openNotes: (course: any) => void;
         openQuiz: (course: any) => void;
     };
 }
@@ -82,7 +82,7 @@ const CategoryItem = React.memo(({
                 "relative glass-card glass-card-hover rounded-[1.5rem] overflow-hidden transition-all duration-300",
                 styles.bg,
                 isExpanded ? "ring-2 ring-white/10" : "hover:ring-1 hover:ring-white/10",
-                styles.border
+                categoryPercent === 100 ? "border-primary/30 shadow-[0_0_20px_-5px_var(--color-primary)]" : styles.border
             )}>
                 {/* Category Header */}
                 <button
@@ -153,7 +153,7 @@ const CategoryItem = React.memo(({
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
                             transition={{ duration: 0.3, ease: "easeInOut" }}
-                            className="bg-black/20 backdrop-blur-sm border-t border-white/5"
+                            className="bg-black/40 border-t border-white/5"
                         >
                             <div className="p-5 sm:p-6 space-y-4">
                                 {category.courses.map(course => {
@@ -175,12 +175,12 @@ const CategoryItem = React.memo(({
                                             className={cn(
                                                 "rounded-2xl border transition-all duration-300 group/course shadow-lg shadow-black/20",
                                                 isCourseCompleted
-                                                    ? "bg-amber-400/[0.05] border-amber-400/30"
-                                                    : "bg-black/40 border-white/10 hover:border-white/20"
+                                                    ? "bg-amber-400/[0.05] border-amber-400/40"
+                                                    : "bg-black/40 border-white/20 hover:border-white/30"
                                             )}
                                         >
                                             <div
-                                                className="p-5 cursor-pointer relative"
+                                                className="p-3.5 sm:p-4 cursor-pointer relative"
                                                 onClick={() => handlers.toggleCourse(course.id)}
                                                 role="button"
                                                 tabIndex={0}
@@ -193,88 +193,85 @@ const CategoryItem = React.memo(({
                                                 aria-expanded={isCourseExpanded}
                                                 aria-label={`${course.name} detaylarını ${isCourseExpanded ? 'gizle' : 'göster'}`}
                                             >
-                                                <div className="flex flex-col sm:flex-row sm:items-center gap-5">
+                                                <div className="flex items-center gap-4">
+                                                    {/* Compact Icon */}
                                                     <div className={cn(
-                                                        "p-3 rounded-xl shrink-0 h-fit w-fit transition-transform group-hover/course:scale-105",
+                                                        "p-3 rounded-xl shrink-0 transition-transform group-hover/course:scale-105 hidden xs:flex",
                                                         styles.iconBg
                                                     )}>
                                                         {(() => {
                                                             const matchingKey = Object.keys(COURSE_ICONS).find(key => course.name.startsWith(key));
                                                             const CourseIcon = matchingKey ? COURSE_ICONS[matchingKey] : IconComponent;
-                                                            return <CourseIcon className={cn(isCourseCompleted ? "text-amber-400" : styles.accent)} size={22} />;
+                                                            return <CourseIcon className={cn(isCourseCompleted ? "text-amber-400" : styles.accent)} size={20} />;
                                                         })()}
                                                     </div>
 
                                                     <div className="flex-1 min-w-0">
-                                                        <div className="flex items-center justify-between mb-3">
+                                                        <div className="flex items-center gap-2 mb-1">
                                                             <h4 className={cn(
-                                                                "font-bold text-[15px] truncate capitalize",
-                                                                isCourseCompleted ? "text-amber-400" : "text-white/90"
+                                                                "font-bold text-[15px] sm:text-[16px] truncate capitalize tracking-tight",
+                                                                isCourseCompleted ? "text-amber-400" : "text-white/75"
                                                             )}>
-                                                                {course.name}
+                                                                {course.name.split(' - ')[0]}
                                                             </h4>
-                                                            <div className="bg-black/40 px-3 py-1 rounded-lg border border-white/5">
-                                                                <span className={cn("text-sm font-bold", isCourseCompleted ? "text-amber-400" : styles.accent)}>
-                                                                    %{coursePercent}
-                                                                </span>
-                                                            </div>
+                                                            <span className={cn(
+                                                                "text-[12px] font-black px-1.5 py-0.5 rounded-md bg-black/40 border border-white/10 shrink-0",
+                                                                isCourseCompleted ? "text-amber-400" : styles.accent
+                                                            )}>
+                                                                %{coursePercent}
+                                                            </span>
                                                         </div>
 
-                                                        <div className="flex flex-wrap items-center justify-between gap-4">
-                                                            <div className="flex items-center gap-3">
-                                                                <div className="flex items-center gap-1.5 text-[11px] font-bold">
-                                                                    <Timer size={13} className={cn(isCourseCompleted ? "text-amber-400" : styles.accent)} />
-                                                                    <span className="text-white/90">{formatHours(courseCompletedHours)}</span>
-                                                                    <span className="text-white/40">/</span>
-                                                                    <span className="text-white/60">{formatHours(course.totalHours)}</span>
-                                                                </div>
-                                                                <div className="flex items-center gap-1.5 text-[11px] font-bold">
-                                                                    <MonitorPlay size={13} className={cn(isCourseCompleted ? "text-amber-400" : styles.accent)} />
-                                                                    <span className="text-white/90">{courseCompletedCount}</span>
-                                                                    <span className="text-white/40">/</span>
-                                                                    <span className="text-white/60">{course.totalVideos}</span>
-                                                                </div>
+                                                        <div className="flex items-center gap-4 overflow-hidden">
+                                                            <div className="flex items-center gap-1.5 text-[11px] sm:text-[12px] font-bold shrink-0">
+                                                                <Timer size={13} className={cn(isCourseCompleted ? "text-amber-400" : styles.accent)} />
+                                                                <span className="text-white/75">{formatHours(courseCompletedHours)}</span>
+                                                                <span className="text-white/30">/</span>
+                                                                <span className="text-white/50">{formatHours(course.totalHours)}</span>
                                                             </div>
-
-                                                            <div className="flex items-center gap-2.5" onClick={(e) => e.stopPropagation()}>
-                                                                {course.playlistUrl && (
-                                                                    <a
-                                                                        href={course.playlistUrl}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                        aria-label={`${course.name} oynatma listesini aç (YouTube)`}
-                                                                        className="p-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 transition-all hover:scale-110 active:scale-95 shadow-lg shadow-red-500/5"
-                                                                    >
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500" aria-hidden="true"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path><path d="m10 15 5-3-5-3z"></path></svg>
-                                                                    </a>
-                                                                )}
-                                                                <button
-                                                                    onClick={() => modals.openNotes(course, IconComponent)}
-                                                                    aria-label={`${course.name} notlarını aç`}
-                                                                    className="p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 transition-all hover:scale-110 active:scale-95 shadow-lg shadow-emerald-500/5"
-                                                                >
-                                                                    <FileText size={20} className="text-emerald-500" aria-hidden="true" />
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => modals.openQuiz(course)}
-                                                                    aria-label={`${course.name} testini çöz`}
-                                                                    className="p-3 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 transition-all hover:scale-110 active:scale-95 shadow-lg shadow-purple-500/5"
-                                                                >
-                                                                    <HelpCircle size={20} className="text-purple-500" aria-hidden="true" />
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => handlers.toggleCourse(course.id)}
-                                                                    aria-expanded={isCourseExpanded}
-                                                                    aria-label={`${course.name} videolarını ${isCourseExpanded ? 'gizle' : 'göster'}`}
-                                                                    className={cn(
-                                                                        "ml-2 p-1 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300 hover:scale-110 active:scale-95 border border-white/5",
-                                                                        isCourseExpanded ? "rotate-180 bg-white/10 border-white/10" : ""
-                                                                    )}
-                                                                >
-                                                                    <ChevronDown size={15} className={cn("transition-colors", isCourseExpanded ? "text-white" : "text-white/60")} aria-hidden="true" />
-                                                                </button>
+                                                            <div className="flex items-center gap-1.5 text-[11px] sm:text-[12px] font-bold shrink50">
+                                                                <MonitorPlay size={13} className={cn(isCourseCompleted ? "text-amber-400" : styles.accent)} />
+                                                                <span className="text-white/75">{courseCompletedCount}</span>
+                                                                <span className="text-white/30">/</span>
+                                                                <span className="text-white/50">{course.totalVideos}</span>
                                                             </div>
                                                         </div>
+                                                    </div>
+
+                                                    <div className="flex items-center gap-3 shrink-0 ml-1" onClick={(e) => e.stopPropagation()}>
+                                                        <div className="hidden sm:flex items-center bg-black/40 p-1 rounded-xl border border-white/10">
+                                                            {course.playlistUrl && (
+                                                                <a
+                                                                    href={course.playlistUrl}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="p-2 rounded-lg hover:bg-red-500/10 transition-colors"
+                                                                >
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path><path d="m10 15 5-3-5-3z"></path></svg>
+                                                                </a>
+                                                            )}
+                                                            <button
+                                                                onClick={() => modals.openNotes(course)}
+                                                                className="p-2 rounded-lg hover:bg-emerald-500/10 transition-colors"
+                                                            >
+                                                                <FileText size={18} className="text-emerald-500" />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => modals.openQuiz(course)}
+                                                                className="p-2 rounded-lg hover:bg-purple-500/10 transition-colors"
+                                                            >
+                                                                <HelpCircle size={18} className="text-purple-500" />
+                                                            </button>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => handlers.toggleCourse(course.id)}
+                                                            className={cn(
+                                                                "p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 border border-white/20",
+                                                                isCourseExpanded ? "rotate-180 bg-white/10" : ""
+                                                            )}
+                                                        >
+                                                            <ChevronDown size={16} className="text-white/60" />
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>

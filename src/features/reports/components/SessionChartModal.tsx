@@ -8,7 +8,8 @@
 import React from 'react';
 import { Clock, BookOpen, Trash2, Edit2, Save, ChartArea, Pause } from 'lucide-react';
 import { COURSE_ICONS } from '@/constants/styles';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import { Modal } from '@/components/ui/modal';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ConfirmModal from '@/components/ui/ConfirmModal';
@@ -300,62 +301,57 @@ const SessionChartModal: React.FC<SessionChartModalProps> = ({
             />
 
             {/* Edit Modal */}
-            <Dialog open={!!editingSession} onOpenChange={(open) => !open && setEditingSession(null)}>
-                <DialogContent className="max-w-sm p-6 bg-card border-secondary shadow-2xl">
-                    <DialogHeader>
-                        <div className="flex items-center justify-between w-full mb-4">
-                            <DialogTitle className="text-lg font-bold text-foreground flex items-center gap-2">
-                                <Edit2 size={20} className="text-primary" />
-                                Süreyi Düzenle
-                            </DialogTitle>
-                            <DialogClose asChild>
-                                <ModalCloseButton className="-mr-2" />
-                            </DialogClose>
-                        </div>
-                        <DialogDescription className="sr-only">
-                            Çalışma veya mola süresini düzenleyin.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                        <div>
-                            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Başlangıç Saati</label>
-                            <Input
-                                type="time"
-                                value={editingSession?.startTime || ""}
-                                onChange={(e) => editingSession && setEditingSession({ ...editingSession, startTime: e.target.value })}
-                                className="font-mono rounded-xl"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Bitiş Saati</label>
-                            <Input
-                                type="time"
-                                value={editingSession?.endTime || ""}
-                                onChange={(e) => editingSession && setEditingSession({ ...editingSession, endTime: e.target.value })}
-                                className="font-mono rounded-xl"
-                            />
-                        </div>
-                        <div className="flex gap-3 pt-2">
-                            <Button
-                                variant="outline"
-                                onClick={() => setEditingSession(null)}
-                                className="flex-1 px-4 py-2.5 rounded-xl border-secondary text-muted-foreground font-bold hover:bg-background transition-colors"
-                            >
-                                İptal
-                            </Button>
-                            {editingSession && (
-                                <Button
-                                    onClick={() => handleSaveEdit(editingSession.startTime, editingSession.endTime)}
-                                    className="flex-1 px-4 py-2.5 rounded-xl bg-primary text-white font-bold hover:bg-primary/80 transition-colors flex items-center justify-center gap-2"
-                                >
-                                    <Save size={18} />
-                                    Kaydet
-                                </Button>
-                            )}
-                        </div>
+            <Modal
+                open={!!editingSession}
+                onOpenChange={(open) => !open && setEditingSession(null)}
+                className="max-w-sm"
+                title={
+                    <div className="flex items-center gap-2">
+                        <Edit2 size={20} className="text-primary" />
+                        Süreyi Düzenle
                     </div>
-                </DialogContent>
-            </Dialog>
+                }
+                description="Çalışma veya mola süresini düzenleyin."
+            >
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Başlangıç Saati</label>
+                        <Input
+                            type="time"
+                            value={editingSession?.startTime || ""}
+                            onChange={(e) => editingSession && setEditingSession({ ...editingSession, startTime: e.target.value })}
+                            className="font-mono rounded-xl"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Bitiş Saati</label>
+                        <Input
+                            type="time"
+                            value={editingSession?.endTime || ""}
+                            onChange={(e) => editingSession && setEditingSession({ ...editingSession, endTime: e.target.value })}
+                            className="font-mono rounded-xl"
+                        />
+                    </div>
+                    <div className="flex gap-3 pt-2">
+                        <Button
+                            variant="outline"
+                            onClick={() => setEditingSession(null)}
+                            className="flex-1 px-4 py-2.5 rounded-xl border-secondary text-muted-foreground font-bold hover:bg-background transition-colors"
+                        >
+                            İptal
+                        </Button>
+                        {editingSession && (
+                            <Button
+                                onClick={() => handleSaveEdit(editingSession.startTime, editingSession.endTime)}
+                                className="flex-1 px-4 py-2.5 rounded-xl bg-primary text-white font-bold hover:bg-primary/80 transition-colors flex items-center justify-center gap-2"
+                            >
+                                <Save size={18} />
+                                Kaydet
+                            </Button>
+                        )}
+                    </div>
+                </div>
+            </Modal>
         </Dialog>
     );
 }

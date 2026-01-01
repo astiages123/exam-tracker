@@ -26,6 +26,7 @@ interface PomodoroTimerProps {
         pauses?: Array<{ start: number; end: number }>
     ) => void;
     onClose: () => void;
+    onZenModeChange?: (isZen: boolean) => void;
 }
 
 export default function PomodoroTimer({
@@ -33,7 +34,8 @@ export default function PomodoroTimer({
     courses,
     sessionsCount = 0,
     onSessionComplete,
-    onClose
+    onClose,
+    onZenModeChange
 }: PomodoroTimerProps) {
     const [state, actions] = usePomodoroTimer({
         initialCourse,
@@ -41,6 +43,21 @@ export default function PomodoroTimer({
         onSessionComplete,
         onClose
     });
+
+    // Zen Mode Logic
+    useEffect(() => {
+        if (onZenModeChange) {
+            // Dashboard'u blurlamak ve UI'ı gizlemek için 'timer' görünümüne geçince Zen Mode'u tetikle
+            onZenModeChange(state.view === 'timer');
+        }
+
+        return () => {
+            if (onZenModeChange) {
+                // Modal kapandığında Zen Mode'u mutlaka sıfırla
+                onZenModeChange(false);
+            }
+        };
+    }, [state.view, onZenModeChange]);
 
     // Handle escape key and scroll lock for selection view
     useEffect(() => {
@@ -86,6 +103,7 @@ export default function PomodoroTimer({
             onFinishSession={actions.handleFinishSession}
             onSkipBreak={actions.handleSkipBreak}
             onCancel={actions.handleCancel}
+            isZenMode={state.isActive && state.mode === 'work'}
         />
     );
 }

@@ -1,6 +1,7 @@
 import { Suspense, lazy, useMemo } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import courseDataJson from '@/features/course/data/courses.json';
 import { CourseCategory } from '@/types';
 import Header from '@/components/layout/Header';
@@ -91,6 +92,7 @@ export default function Dashboard({ logout }: DashboardProps) {
                         sessionsCount={sessions.filter(s => s.type === 'work' && new Date(s.timestamp).toDateString() === new Date().toDateString()).length}
                         onSessionComplete={handlers.handleSessionComplete}
                         onClose={modals.closeTimer}
+                        onZenModeChange={modals.setIsZenMode}
                     />
                 </Suspense>
             )}
@@ -157,16 +159,21 @@ export default function Dashboard({ logout }: DashboardProps) {
             )}
 
             {/* Top Header Dashboard */}
-            <Header
-                rankInfo={rankInfo}
-                dailyFocus={dailyFocus}
-                currentStreak={currentStreak}
-                modals={modals}
-                logout={logout}
-            />
+            <div className={cn("transition-all duration-700", modals.isZenMode ? "opacity-0 pointer-events-none translate-y-[-20px]" : "opacity-100")}>
+                <Header
+                    rankInfo={rankInfo}
+                    dailyFocus={dailyFocus}
+                    currentStreak={currentStreak}
+                    modals={modals}
+                    logout={logout}
+                />
+            </div>
 
             {/* Main Content Grid */}
-            <main className="max-w-6xl mx-auto p-4 sm:p-6 md:p-8">
+            <main className={cn(
+                "max-w-6xl mx-auto p-4 sm:p-6 md:p-8 transition-all duration-700",
+                modals.isZenMode ? "opacity-0 pointer-events-none scale-[0.98] blur-xl" : "opacity-100 scale-100 blur-0"
+            )}>
                 {/* Progress Stats */}
                 <ProgressCard
                     totalPercentage={totalPercentage}
@@ -189,6 +196,11 @@ export default function Dashboard({ logout }: DashboardProps) {
                     modals={modals}
                 />
             </main >
+
+            {/* Zen Mode Background Deepening */}
+            {modals.isZenMode && (
+                <div className="fixed inset-0 bg-background/60 backdrop-blur-[20px] z-40 animate-in fade-in duration-1000" />
+            )}
         </>
     );
 }

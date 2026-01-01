@@ -12,7 +12,7 @@ interface CategoryListProps {
         handleVideoClick: (e: React.MouseEvent, courseId: string, videoId: number) => void;
     };
     modals: {
-        openNotes: (course: any, icon: any) => void;
+        openNotes: (course: any) => void;
         openQuiz: (course: any) => void;
     };
 }

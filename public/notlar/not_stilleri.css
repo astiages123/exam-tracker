@@ -219,7 +219,6 @@ body::-webkit-scrollbar-thumb:hover {
         0 15px 35px -15px rgba(0, 0, 0, 0.5),
         inset 0 1px 1px rgba(255, 255, 255, 0.05);
     transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-    backdrop-filter: blur(8px);
     position: relative;
     overflow: visible;
     /* Legend ve diğer elementlerin görünmesi için visible */
@@ -629,8 +628,9 @@ table {
     background: var(--color-bg-card);
 }
 
-thead {
-    background: var(--color-bg-sidebar);
+thead,
+tr.section-header {
+    background: var(--color-bg-sidebar) !important;
 }
 
 th,

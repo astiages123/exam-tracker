@@ -31,6 +31,7 @@ export default function ScheduleModal({ onClose, schedule, setSchedule }: Schedu
     // Temp state for new entries, KEYED BY DAY
     const [newItems, setNewItems] = useState<NewItemsState>({});
 
+
     // Initialize local state when modal opens
     useEffect(() => {
         if (schedule) {
@@ -95,8 +96,13 @@ export default function ScheduleModal({ onClose, schedule, setSchedule }: Schedu
 
     return (
         <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-auto sm:max-h-[90vh] flex flex-col p-0 gap-0 bg-card border-border overflow-hidden rounded-none sm:rounded-lg">
-                <div className="p-4 sm:p-6 border-b border-border bg-card/50 flex justify-between items-center">
+            <DialogContent
+                className={cn(
+                    "flex flex-col p-0 gap-0 bg-card border-border overflow-hidden transition-all duration-300 focus-visible:outline-none",
+                    "w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-auto sm:max-h-[90vh] sm:rounded-lg"
+                )}
+            >
+                <div className="p-4 sm:p-6 border-b border-border bg-card/50 flex justify-between items-center shrink-0">
                     <div className="flex items-center gap-4">
                         <div className="bg-primary/10 p-3.5 rounded-xl border border-primary/10 mt-1">
                             <CalendarDays className="text-primary" size={32} />
@@ -112,9 +118,12 @@ export default function ScheduleModal({ onClose, schedule, setSchedule }: Schedu
                             </DialogHeader>
                         </div>
                     </div>
-                    <DialogClose asChild>
-                        <ModalCloseButton className="-mr-2" />
-                    </DialogClose>
+                    <div className="flex items-center gap-1 shrink-0">
+
+                        <DialogClose asChild>
+                            <ModalCloseButton className="-mr-2" />
+                        </DialogClose>
+                    </div>
                 </div>
 
                 <div className="p-6 overflow-y-auto flex-1 bg-background/50 custom-scrollbar">
