@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { TooltipProps } from 'recharts';
+import { formatHours } from '@/utils';
 
 interface ChartDataPayload {
     name: string;
@@ -30,13 +31,11 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload
         let valueText = '';
         if (isDuration) {
             const val = Number(payload[0].value) || 0;
-            const totalMinutes = Math.round(val * 60);
-            const hours = Math.floor(totalMinutes / 60);
-            const minutes = totalMinutes % 60;
-            valueText = hours > 0 ? `${hours} sa ${minutes} dk` : `${minutes} dk`;
+            valueText = formatHours(val);
         } else {
             valueText = `${payload[0].value} video`;
         }
+
 
         // Get the relevant course list based on the active metric
         const displayCourses = isDuration ? data.workCourses : data.videoCourses;

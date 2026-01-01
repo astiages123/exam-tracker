@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { COURSE_ICONS } from '@/constants/styles';
 import type { GroupedSession } from '../hooks/useReportData';
+import { formatHours } from '@/utils';
 
 interface SessionListItemProps {
     group: GroupedSession;
@@ -22,13 +23,6 @@ const SessionListItem = React.memo(({
     onSelect,
     onDelete
 }: SessionListItemProps) => {
-    const formatDuration = (totalSeconds: number) => {
-        const mins = Math.round(totalSeconds / 60);
-        const h = Math.floor(mins / 60);
-        const m = mins % 60;
-        return h > 0 ? `${h}sa ${m}dk` : `${m}dk`;
-    };
-
     const matchingKey = Object.keys(COURSE_ICONS).find(key => courseName.startsWith(key));
     const CourseIcon = matchingKey ? COURSE_ICONS[matchingKey as keyof typeof COURSE_ICONS] : BookOpen;
 
@@ -62,9 +56,10 @@ const SessionListItem = React.memo(({
                 <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-3 mt-1 sm:mt-0 pt-2 sm:pt-0 border-t border-border/30 sm:border-t-0">
                     <div className="sm:text-right">
                         <span className="font-mono font-bold text-primary text-base sm:text-lg">
-                            {formatDuration(group.totalDuration)}
+                            {formatHours(group.totalDuration / 3600)}
                         </span>
                     </div>
+
                     <Button
                         variant="ghost"
                         size="icon"

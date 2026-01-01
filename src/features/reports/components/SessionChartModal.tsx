@@ -93,15 +93,15 @@ const SessionChartModal: React.FC<SessionChartModalProps> = ({
                 <div className="px-4 sm:px-8 py-4 sm:py-5 bg-background/50 border-b border-white/5 flex items-center justify-start gap-4 sm:gap-8 shrink-0 relative z-20 overflow-x-auto no-scrollbar">
                     <div className="flex flex-col shrink-0">
                         <span className="text-[9px] text-zinc-400 uppercase font-semibold tracking-wider">Toplam Çalışma</span>
-                        <span className="text-xs sm:text-sm font-mono font-bold text-zinc-300">{dayStats.work} dk</span>
+                        <span className="text-xs sm:text-sm font-mono font-bold text-zinc-300">{dayStats.work}dk</span>
                     </div>
                     <div className="flex flex-col shrink-0">
                         <span className="text-[9px] text-zinc-400 uppercase font-semibold tracking-wider">Toplam Mola</span>
-                        <span className="text-xs sm:text-sm font-mono font-bold text-zinc-300">{dayStats.break} dk</span>
+                        <span className="text-xs sm:text-sm font-mono font-bold text-zinc-300">{dayStats.break}dk</span>
                     </div>
                     <div className="flex flex-col shrink-0">
                         <span className="text-[9px] text-zinc-400 uppercase font-semibold tracking-wider">Duraklatma</span>
-                        <span className="text-xs sm:text-sm font-mono font-bold text-primary">{dayStats.pause} dk</span>
+                        <span className="text-xs sm:text-sm font-mono font-bold text-primary">{dayStats.pause}dk</span>
                     </div>
                 </div>
 
@@ -253,7 +253,7 @@ const SessionChartModal: React.FC<SessionChartModalProps> = ({
                                                         </span>
                                                     </div>
                                                     <div className="text-center text-muted-foreground mt-1 font-medium">
-                                                        {Math.round(item.duration / 60)} dakika
+                                                        {Math.round(item.duration / 60)}dk
                                                     </div>
                                                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-8 border-transparent border-b-card"></div>
                                                 </div>

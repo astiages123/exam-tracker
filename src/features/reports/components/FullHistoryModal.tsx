@@ -10,6 +10,8 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/compone
 import ModalCloseButton from '@/components/ui/ModalCloseButton';
 import CustomTooltip from './CustomTooltip';
 import type { ChartItem } from '../hooks/useReportData';
+import { formatHours } from '@/utils';
+
 
 interface FullHistoryModalProps {
     isOpen: boolean;
@@ -29,11 +31,7 @@ export default function FullHistoryModal({ isOpen, type, data, onClose }: FullHi
     const peakHours = Math.max(...data.map(d => d.hours || 0), 0);
     const peakVideos = Math.max(...data.map(d => d.count || 0), 0);
 
-    const formatHours = (hours: number) => {
-        const h = Math.floor(hours);
-        const m = Math.round((hours - h) * 60);
-        return h > 0 ? `${h}sa ${m}dk` : `${m}dk`;
-    };
+
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -83,7 +81,7 @@ export default function FullHistoryModal({ isOpen, type, data, onClose }: FullHi
                                     allowDecimals={false}
                                     tickFormatter={(v) => {
                                         if (!isDuration) return v;
-                                        return v === 0 ? "0" : `${v} sa`;
+                                        return v === 0 ? "0" : formatHours(v);
                                     }}
                                     ticks={!isDuration ? [0, 3, 6, 9, 12] : undefined}
                                     domain={!isDuration ? [0, (max: number) => Math.max(12, Math.ceil(max / 3) * 3)] : [0, 'auto']}

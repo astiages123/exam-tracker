@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import CustomTooltip from './CustomTooltip';
 import type { ChartItem } from '../hooks/useReportData';
+import { formatHours } from '@/utils';
+
 
 interface DurationChartProps {
     data: ChartItem[];
@@ -58,7 +60,7 @@ const DurationChart = React.memo(({ data, onShowFullHistory }: DurationChartProp
                                     tickLine={false}
                                     axisLine={false}
                                     allowDecimals={false}
-                                    tickFormatter={(v) => v === 0 ? "0" : `${v} sa`}
+                                    tickFormatter={(v) => v === 0 ? "0" : formatHours(v)}
                                 />
                                 <Tooltip content={<CustomTooltip />} />
                                 <Line

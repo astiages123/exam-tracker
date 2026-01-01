@@ -2,6 +2,7 @@ import React from 'react';
 import { Goal, Star, CheckCircle2, Clock, TrendingUp } from 'lucide-react';
 import { RANKS } from '@/features/ranks/constants/ranks';
 import { cn } from '@/lib/utils';
+import { formatHours } from '@/utils/formatter';
 import { RANK_ICONS } from '@/constants/styles';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogDescription } from "@/components/ui/dialog";
 import ModalCloseButton from "@/components/ui/ModalCloseButton";
@@ -53,12 +54,7 @@ const RankModal = ({
         };
     }, [sessions, videoHistory, completedHours]);
 
-    const formatAvg = (h: number) => {
-        const hrs = Math.floor(h);
-        const mins = Math.round((h - hrs) * 60);
-        if (hrs === 0) return `${mins} dk`;
-        return `${hrs}sa ${mins} dk`;
-    };
+
 
     return (
         <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
@@ -89,7 +85,7 @@ const RankModal = ({
                                     <div className="flex items-center gap-1.5 text-xs bg-primary/10 text-primary px-2.5 py-1 rounded-lg border border-primary/20">
                                         <Clock size={12} />
                                         <span className="font-semibold">Günlük Ort:</span>
-                                        <span className="font-bold">{formatAvg(stats.avg)}</span>
+                                        <span className="font-bold">{formatHours(stats.avg)}</span>
                                     </div>
                                     <div className="flex items-center gap-1.5 text-xs bg-accent/10 text-accent px-2.5 py-1 rounded-lg border border-accent/20">
                                         <TrendingUp size={12} />
