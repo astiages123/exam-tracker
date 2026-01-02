@@ -66,12 +66,10 @@ export default function PomodoroTimer({
                 if (e.key === 'Escape') onClose();
             };
 
-            document.body.style.overflow = 'hidden';
             window.addEventListener('keydown', handleKeyDown);
 
             return () => {
                 window.removeEventListener('keydown', handleKeyDown);
-                document.body.style.overflow = 'unset';
             };
         }
     }, [state.view, onClose]);

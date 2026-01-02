@@ -59,8 +59,6 @@ const RankCelebrationOverlay = ({ rank, onComplete }: RankCelebrationOverlayProp
             onComplete();
         }, 6000);
 
-        // Modal scroll lock
-        document.body.style.overflow = 'hidden';
 
         // Keyboard support for Escape
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -75,14 +73,13 @@ const RankCelebrationOverlay = ({ rank, onComplete }: RankCelebrationOverlayProp
             clearInterval(interval);
             clearTimeout(timer);
             window.removeEventListener('keydown', handleKeyDown);
-            document.body.style.overflow = 'unset';
         };
     }, [onComplete]);
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div
-                className="absolute inset-0 bg-black/60 backdrop-blur-md"
+                className="absolute inset-0 bg-black/95 backdrop-blur-md"
                 onClick={onComplete}
             />
 

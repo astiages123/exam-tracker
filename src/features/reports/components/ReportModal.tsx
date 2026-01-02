@@ -75,13 +75,6 @@ export default function ReportModal({
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
-    // Lock body scroll
-    useEffect(() => {
-        document.body.style.overflow = 'hidden';
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
-    }, []);
 
     // Track sub-modal state for proper close handling
     const subModalActiveRef = React.useRef(false);

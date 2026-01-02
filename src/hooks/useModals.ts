@@ -133,7 +133,7 @@ export const useModals = () => {
     const closeRankCelebration = useCallback(() => setCelebratingRank(null), []);
 
     // Memoized return object for stable reference
-    return useMemo(() => ({
+    const hookResult = useMemo(() => ({
         // States
         showTimer,
         showReport,
@@ -191,4 +191,26 @@ export const useModals = () => {
         triggerRankCelebration, closeRankCelebration,
         openReportWithHistory, reportHistoryType, closeAll, courseId, modalType
     ]);
+
+    // Global Scroll Lock Side Effect
+    useEffect(() => {
+        const isAnyModalOpen = showTimer || showReport || showSchedule || showRankModal || showQuiz || showStats || activeNoteCourse || isZenMode || celebratingCourse || celebratingRank;
+
+        if (isAnyModalOpen) {
+            document.body.style.overflow = 'hidden';
+            // Also ensure the background is appropriate if needed, but handled by components typically.
+            // Adding a class to body can help if we want global CSS targeting
+            document.body.classList.add('modal-open');
+        } else {
+            document.body.style.overflow = 'unset';
+            document.body.classList.remove('modal-open');
+        }
+
+        return () => {
+            document.body.style.overflow = 'unset';
+            document.body.classList.remove('modal-open');
+        };
+    }, [showTimer, showReport, showSchedule, showRankModal, showQuiz, showStats, activeNoteCourse, isZenMode, celebratingCourse, celebratingRank]);
+
+    return hookResult;
 };

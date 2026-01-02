@@ -288,11 +288,23 @@ async function parseHtmlFile(filePath) {
 
     for (const el of allHeadings) {
         const $el = $(el);
-        const tagName = el.tagName.toLowerCase(); // Will be 'h2'
-        const rawTitle = $el.text().trim();
+        let tagName = el.tagName.toLowerCase(); // Will be 'h2'
+        let rawTitle = $el.text().trim();
+        let title = rawTitle.replace(/^[A-Z0-9]+\.\s*/, '').trim();
+        let startNode = el; // İçerik toplamaya normalde bu elementten sonra başlanır
 
-        // Başlık harfini ve numarasını temizle (A. B. 1. 2. gibi)
-        const title = rawTitle.replace(/^[A-Z0-9]+\.\s*/, '').trim();
+        // ÖZEL KURAL: H2'den hemen sonra H3 geliyorsa (arada içerik yoksa), başlığı H3 yap
+        const $next = $el.next();
+        if ($next.length && $next.prop('tagName').toLowerCase() === 'h3') {
+            const h3Title = $next.text().trim();
+            console.log(`     👉 H2 atlandı, H3 alındı: "${title}" -> "${h3Title}"`);
+
+            // Değişkenleri güncelle
+            rawTitle = h3Title;
+            tagName = 'h3';
+            title = rawTitle.replace(/^[A-Z0-9]+\.\s*/, '').trim();
+            startNode = $next[0]; // İçerik toplamaya h3'ten sonra başla
+        }
 
         // Çok kısa başlıkları atla (boş veya sadece numara)
         if (title.length < 3) {
@@ -306,7 +318,7 @@ async function parseHtmlFile(filePath) {
         const stopTags = ['h1', 'h2'];
 
         // Bu heading ile sonraki aynı/üst seviye heading arasındaki içeriği al
-        const htmlContent = getContentBetweenHeadings($, el, stopTags);
+        const htmlContent = getContentBetweenHeadings($, startNode, stopTags);
 
         // İçerik çok kısa ise atla (en az 50 karakter)
         if (htmlContent.length < 50) {

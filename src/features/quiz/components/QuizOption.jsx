@@ -39,7 +39,8 @@ export function QuizOption({
     isRevealed,
     showResult,
     onSelect,
-    disabled
+    disabled,
+    className
 }) {
     const getVariant = () => {
         if (!showResult) {
@@ -58,23 +59,23 @@ export function QuizOption({
             text-left w-full
         `;
 
+        let styles = baseStyles;
+
         if (!showResult) {
-            return `${baseStyles} ${isSelected
+            styles += isSelected
                 ? 'border-indigo-500 bg-indigo-500/10'
-                : 'border-gray-600 bg-gray-800 hover:border-gray-500 hover:bg-gray-700'
-                }`;
+                : 'border-gray-600 bg-gray-800 hover:border-gray-500 hover:bg-gray-700';
+        } else if (isSelected && isCorrect) {
+            styles += ' border-green-500 bg-green-500/20';
+        } else if (isSelected && !isCorrect) {
+            styles += ' border-red-500 bg-red-500/20';
+        } else if (isCorrect && isRevealed) {
+            styles += ' border-green-500 bg-green-500/10';
+        } else {
+            styles += ' border-gray-700 bg-gray-800/30 opacity-60';
         }
 
-        if (isSelected && isCorrect) {
-            return `${baseStyles} border-green-500 bg-green-500/20`;
-        }
-        if (isSelected && !isCorrect) {
-            return `${baseStyles} border-red-500 bg-red-500/20`;
-        }
-        if (isCorrect && isRevealed) {
-            return `${baseStyles} border-green-500 bg-green-500/10`;
-        }
-        return `${baseStyles} border-gray-700 bg-gray-800/30 opacity-60`;
+        return `${styles} ${className || ''}`;
     };
 
     return (
@@ -90,7 +91,7 @@ export function QuizOption({
             {/* Option Key Badge */}
             <span className={`
                 flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center
-                text-sm font-bold
+                text-base font-bold
                 ${showResult && isCorrect
                     ? 'bg-green-500 text-white'
                     : showResult && isSelected && !isCorrect
@@ -111,7 +112,7 @@ export function QuizOption({
 
             {/* Option Text */}
             <span className={`
-                flex-1 text-sm leading-relaxed
+                flex-1 text-base leading-relaxed
                 ${showResult && isCorrect
                     ? 'text-green-300 font-medium'
                     : showResult && isSelected && !isCorrect

@@ -259,7 +259,7 @@ export function QuizModal({
     return (
         <AnimatePresence>
             <motion.div
-                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                className={`fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm ${isFullScreen ? '' : 'p-4'}`}
                 variants={overlayVariants}
                 initial="hidden"
                 animate="visible"
@@ -268,8 +268,8 @@ export function QuizModal({
             >
                 <motion.div
                     className={`relative w-full flex flex-col bg-gray-900 border border-gray-700 transition-all duration-300 ease-in-out ${isFullScreen
-                        ? 'fixed inset-0 h-screen rounded-none z-[60]'
-                        : 'max-w-4xl max-h-[90vh] rounded-2xl overflow-hidden'
+                        ? 'fixed inset-0 w-screen h-[100dvh] rounded-none z-[60] border-0'
+                        : 'max-w-4xl max-h-[96vh] rounded-2xl overflow-hidden'
                         }`}
                     variants={modalVariants}
                     onClick={(e) => e.stopPropagation()}
@@ -301,7 +301,7 @@ export function QuizModal({
                     </div>
 
                     {/* Content */}
-                    <div className={`flex-1 overflow-y-auto custom-scrollbar p-6 ${isFullScreen ? 'max-w-5xl mx-auto w-full' : ''}`}>
+                    <div className={`flex-1 flex flex-col justify-center overflow-y-auto custom-scrollbar p-4 ${isFullScreen ? 'max-w-5xl mx-auto w-full' : ''}`}>
                         {/* Progress Bar */}
                         <QuizProgressBar
                             currentQuestion={currentIndex + 1}
@@ -316,11 +316,11 @@ export function QuizModal({
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
-                            className="mb-6"
+                            className="mb-8"
                         >
                             <LatexRenderer
                                 content={currentQuestion?.question}
-                                className="text-lg text-white leading-relaxed"
+                                className={`${isFullScreen ? 'text-xl' : 'text-lg'} text-white leading-relaxed font-medium text-center`}
                             />
                         </motion.div>
 
@@ -333,7 +333,7 @@ export function QuizModal({
                         )}
 
                         {/* Options */}
-                        <div className="space-y-3 mb-4">
+                        <div className="space-y-3 mb-4 w-full max-w-3xl mx-auto">
                             {currentQuestion?.options && Object.entries(currentQuestion.options).map(([key, value]) => (
                                 <QuizOption
                                     key={key}
@@ -345,6 +345,7 @@ export function QuizModal({
                                     showResult={showResult}
                                     onSelect={handleSelectAnswer}
                                     disabled={showResult}
+                                    className={isFullScreen ? 'p-5 text-lg' : ''}
                                 />
                             ))}
                         </div>

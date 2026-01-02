@@ -15,7 +15,7 @@ export function QuizProgressBar({
     const answeredCount = correctCount + incorrectCount;
 
     return (
-        <div className="quiz-progress w-full mb-6">
+        <div className="quiz-progress w-full mb-3">
             {/* Stats Row */}
             <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-gray-400">
@@ -64,7 +64,7 @@ export function QuizProgressBar({
             </div>
 
             {/* Question Dots */}
-            <div className="flex items-center justify-center gap-1 mt-3">
+            <div className="flex items-center justify-center gap-1 mt-2">
                 {Array.from({ length: totalQuestions }).map((_, index) => (
                     <motion.div
                         key={index}
