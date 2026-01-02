@@ -2,16 +2,17 @@ import React from 'react';
 import { MonitorPlay } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import CustomTooltip from './CustomTooltip';
 import type { ChartItem } from '../hooks/useReportData';
+import { cn } from '@/lib/utils';
 
 interface VideoChartProps {
     data: ChartItem[];
     onShowFullHistory: () => void;
+    className?: string;
 }
 
-const VideoChart = React.memo(({ data, onShowFullHistory }: VideoChartProps) => {
+const VideoChart = React.memo(({ data, onShowFullHistory, className }: VideoChartProps) => {
     return (
         <Card
             className="cursor-pointer hover:bg-white/[0.03] transition-all group border-border/40"
@@ -27,20 +28,9 @@ const VideoChart = React.memo(({ data, onShowFullHistory }: VideoChartProps) => 
                             Son 1 haftayı gösterir
                         </p>
                     </div>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-auto px-1.5 py-0.5 bg-orange-400/10 border border-orange-400/20 rounded text-[9px] text-orange-400 font-bold uppercase tracking-tight hover:bg-orange-400/25 hover:text-orange-400 shadow-none"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onShowFullHistory();
-                        }}
-                    >
-                        Tümü
-                    </Button>
                 </div>
                 {data.length > 0 ? (
-                    <div className="w-full h-[200px] sm:h-[260px]">
+                    <div className={cn("w-full h-[200px] sm:h-[260px]", className)}>
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />

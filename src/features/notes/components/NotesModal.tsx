@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ExternalLink, FileQuestion, Loader2, Maximize2, Minimize2 } from 'lucide-react';
+import { SquareArrowOutUpRight, FileQuestion, Loader2, Maximize, Minimize } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import ModalCloseButton from "@/components/ui/ModalCloseButton";
@@ -8,7 +8,7 @@ import { Lightbox } from "@/components/ui/lightbox";
 
 interface NotesModalProps {
     courseName: string;
-    notePath: string; // e.g. /notlar/ekonomi_1.html
+    notePath: string; // e.g. /content/ekonomi_1.html
     onClose: () => void;
     icon?: React.ElementType;
 }
@@ -160,21 +160,22 @@ export default function NotesModal({ courseName, notePath, onClose, icon: Icon }
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        onClick={() => setIsFullscreen(!isFullscreen)}
-                                        className="h-10 w-10 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors [&_svg]:size-6 hidden sm:flex"
-                                        title={isFullscreen ? "Küçült" : "Tam Ekran"}
+                                        asChild
+                                        className="h-10 w-10 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors [&_svg]:size-5"
+                                        title="Dış Bağlantıda Aç"
                                     >
-                                        {isFullscreen ? <Minimize2 size={24} /> : <Maximize2 size={24} />}
+                                        <a href={notePath} target="_blank" rel="noopener noreferrer">
+                                            <SquareArrowOutUpRight size={20} />
+                                        </a>
                                     </Button>
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        asChild
-                                        className="h-10 w-10 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors [&_svg]:size-6"
+                                        onClick={() => setIsFullscreen(!isFullscreen)}
+                                        className="h-10 w-10 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors [&_svg]:size-5 hidden sm:flex"
+                                        title={isFullscreen ? "Küçült" : "Tam Ekran"}
                                     >
-                                        <a href={notePath} target="_blank" rel="noopener noreferrer">
-                                            <ExternalLink size={24} />
-                                        </a>
+                                        {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
                                     </Button>
                                     <DialogClose asChild>
                                         <ModalCloseButton className="-mr-1" />

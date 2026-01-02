@@ -72,10 +72,10 @@ export const useAppController = () => {
         const defaultSchedule: Record<string, string> = {
             'PAZARTESİ': 'EKONOMİ',
             'SALI': 'HUKUK',
-            'ÇARŞAMBA': 'MUHASEBE - İŞLETME - MALİYE',
+            'ÇARŞAMBA': 'MUHASEBE - MALİYE',
             'PERŞEMBE': 'EKONOMİ',
             'CUMA': 'HUKUK',
-            'CUMARTESİ / PAZAR': 'MATEMATİK - BANKA',
+            'CUMARTESİ / PAZAR': 'MATEMATİK - İŞLETME',
         };
         return defaultSchedule[todayKey] || 'BELİRSİZ';
     }, [schedule]);
@@ -172,6 +172,28 @@ export const useAppController = () => {
     useEffect(() => {
         progressDataRef.current = progressData;
     }, [progressData]);
+
+    // Rank Change Detection
+    const prevRankRef = useRef<any | null>(null);
+
+    useEffect(() => {
+        if (!isDataLoaded) return;
+
+        // Initialize ref on first loaded render
+        if (prevRankRef.current === null) {
+            prevRankRef.current = rankInfo;
+            return;
+        }
+
+        // Check for rank change
+        if (prevRankRef.current.title !== rankInfo.title) {
+            // Only celebrate if it's an upgrade (higher completion percentage requirement)
+            if (rankInfo.min > prevRankRef.current.min) {
+                modals.triggerRankCelebration(rankInfo);
+            }
+            prevRankRef.current = rankInfo;
+        }
+    }, [rankInfo, isDataLoaded, modals]);
 
     const handleVideoClick = useCallback((e: React.MouseEvent, courseId: string, videoId: number) => {
         const currentProgressData = progressDataRef.current;

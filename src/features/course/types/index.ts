@@ -8,6 +8,7 @@ export interface Video {
 export interface Course {
     id: string;
     name: string;
+    lessonType?: string; // For quiz system - maps to lessons.name in database
     totalVideos: number;
     totalHours: number;
     notePath?: string;

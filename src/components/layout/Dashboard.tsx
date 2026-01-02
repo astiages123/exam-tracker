@@ -9,6 +9,8 @@ import ProgressCard from '@/components/layout/ProgressCard';
 import CategoryList from '@/features/course/components/CategoryList';
 import { useAppController } from '@/hooks/useAppController';
 
+
+
 const courseData = courseDataJson as unknown as CourseCategory[];
 
 // --- Lazy-loaded Components ---
@@ -17,8 +19,11 @@ const PomodoroTimer = lazy(() => import('@/features/pomodoro/components/Pomodoro
 const ReportModal = lazy(() => import('@/features/reports/components/ReportModal'));
 const RankModal = lazy(() => import('@/features/ranks/components/RankModal'));
 const NotesModal = lazy(() => import('@/features/notes/components/NotesModal'));
+import QuizContainer from '@/features/quiz/components/QuizContainer';
 const CelebrationOverlay = lazy(() => import('@/components/shared/CelebrationOverlay'));
-const QuizModal = lazy(() => import('@/features/quiz/components/QuizModal'));
+const RankCelebrationOverlay = lazy(() => import('@/components/shared/RankCelebrationOverlay'));
+const CourseStatsModal = lazy(() => import('@/features/reports/components/CourseStatsModal'));
+
 
 const ModalLoader = () => (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
@@ -79,6 +84,14 @@ export default function Dashboard({ logout }: DashboardProps) {
                         <CelebrationOverlay
                             courseName={modals.celebratingCourse}
                             onComplete={modals.closeCelebration}
+                        />
+                    </Suspense>
+                )}
+                {modals.celebratingRank && (
+                    <Suspense fallback={null}>
+                        <RankCelebrationOverlay
+                            rank={modals.celebratingRank}
+                            onComplete={modals.closeRankCelebration}
                         />
                     </Suspense>
                 )}
@@ -146,17 +159,29 @@ export default function Dashboard({ logout }: DashboardProps) {
                 </Suspense>
             )}
 
-            {modals.activeQuizCourse && (
+            {modals.showQuiz && modals.quizCourseId && (
+                <QuizContainer
+                    courseId={modals.quizCourseId}
+                    courseName={flatCourses.find(c => c.id === modals.quizCourseId)?.name || 'Quiz'}
+                    lessonType={flatCourses.find(c => c.id === modals.quizCourseId)?.lessonType || flatCourses.find(c => c.id === modals.quizCourseId)?.name || 'Genel'}
+                    onClose={modals.closeQuiz}
+                />
+            )}
+
+            {modals.showStats && modals.statsCourseId && (
                 <Suspense fallback={<ModalLoader />}>
-                    <QuizModal
-                        isOpen={!!modals.activeQuizCourse}
-                        onClose={modals.closeQuiz}
-                        courseId={modals.activeQuizCourse.id}
-                        courseName={modals.activeQuizCourse.name}
-                        notePath={modals.activeQuizCourse.path}
+                    <CourseStatsModal
+                        courseId={modals.statsCourseId}
+                        courseName={flatCourses.find(c => c.id === modals.statsCourseId)?.name || 'Ders'}
+                        sessions={sessions}
+                        videoHistory={videoHistory}
+                        progressData={progressData}
+                        courses={flatCourses}
+                        onClose={modals.closeStats}
                     />
                 </Suspense>
             )}
+
 
             {/* Top Header Dashboard */}
             <div className={cn("transition-all duration-700", modals.isZenMode ? "opacity-0 pointer-events-none translate-y-[-20px]" : "opacity-100")}>
@@ -171,7 +196,7 @@ export default function Dashboard({ logout }: DashboardProps) {
 
             {/* Main Content Grid */}
             <main className={cn(
-                "max-w-6xl mx-auto p-4 sm:p-6 md:p-8 transition-all duration-700",
+                "max-w-6xl mx-auto px-4 py-4 sm:px-6 sm:py-6 md:px-8 md:py-6 transition-all duration-700",
                 modals.isZenMode ? "opacity-0 pointer-events-none scale-[0.98] blur-xl" : "opacity-100 scale-100 blur-0"
             )}>
                 {/* Progress Stats */}
@@ -201,6 +226,8 @@ export default function Dashboard({ logout }: DashboardProps) {
             {modals.isZenMode && (
                 <div className="fixed inset-0 bg-background/60 backdrop-blur-[20px] z-40 animate-in fade-in duration-1000" />
             )}
+
+
         </>
     );
 }

@@ -52,7 +52,7 @@ export const CATEGORY_STYLES: Record<string, {
         iconBg: 'bg-rose-500/20',
         barColor: 'bg-rose-300'
     },
-    'MUHASEBE - İŞLETME - MALİYE': {
+    'MUHASEBE - MALİYE': {
         bg: 'bg-emerald-400/8 hover:bg-emerald-900/30',
         border: 'border-emerald-500/20',
         accent: 'text-emerald-300',
@@ -60,7 +60,7 @@ export const CATEGORY_STYLES: Record<string, {
         iconBg: 'bg-emerald-500/20',
         barColor: 'bg-emerald-300'
     },
-    'MATEMATİK - BANKA': {
+    'MATEMATİK - İŞLETME': {
         bg: 'bg-violet-400/8 hover:bg-violet-900/30',
         border: 'border-violet-500/20',
         accent: 'text-violet-300',
@@ -81,8 +81,8 @@ export const CATEGORY_STYLES: Record<string, {
 export const CATEGORY_ICONS: Record<string, any> = {
     'EKONOMİ': Banknote,
     'HUKUK': Scale,
-    'MUHASEBE - İŞLETME - MALİYE': Receipt,
-    'MATEMATİK - BANKA': SquareFunction,
+    'MUHASEBE - MALİYE': Receipt,
+    'MATEMATİK - İŞLETME': SquareFunction,
     'DEFAULT': BookOpen
 };
 

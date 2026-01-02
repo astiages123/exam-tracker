@@ -6,14 +6,16 @@ import { Button } from "@/components/ui/button";
 import CustomTooltip from './CustomTooltip';
 import type { ChartItem } from '../hooks/useReportData';
 import { formatHours } from '@/utils';
+import { cn } from '@/lib/utils';
 
 
 interface DurationChartProps {
     data: ChartItem[];
     onShowFullHistory: () => void;
+    className?: string;
 }
 
-const DurationChart = React.memo(({ data, onShowFullHistory }: DurationChartProps) => {
+const DurationChart = React.memo(({ data, onShowFullHistory, className }: DurationChartProps) => {
     return (
         <Card
             className="cursor-pointer hover:bg-white/[0.03] transition-all group border-border/40"
@@ -42,7 +44,7 @@ const DurationChart = React.memo(({ data, onShowFullHistory }: DurationChartProp
                     </Button>
                 </div>
                 {data.length > 0 ? (
-                    <div className="w-full h-[200px] sm:h-[260px]">
+                    <div className={cn("w-full h-[200px] sm:h-[260px]", className)}>
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
@@ -50,6 +52,7 @@ const DurationChart = React.memo(({ data, onShowFullHistory }: DurationChartProp
                                     dataKey="displayDate"
                                     stroke="#d4d4d8"
                                     fontSize={10}
+                                    fontFamily="var(--font-mono)"
                                     tickLine={false}
                                     axisLine={false}
                                     tickMargin={10}
@@ -57,6 +60,7 @@ const DurationChart = React.memo(({ data, onShowFullHistory }: DurationChartProp
                                 <YAxis
                                     stroke="#d4d4d8"
                                     fontSize={10}
+                                    fontFamily="var(--font-mono)"
                                     tickLine={false}
                                     axisLine={false}
                                     allowDecimals={false}

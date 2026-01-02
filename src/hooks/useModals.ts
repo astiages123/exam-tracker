@@ -21,11 +21,7 @@ export interface ActiveNoteCourse {
     icon: any;
 }
 
-export interface ActiveQuizCourse {
-    name: string;
-    path: string;
-    id: string;
-}
+
 
 /**
  * Hook for managing multiple modal states
@@ -64,6 +60,9 @@ export const useModals = () => {
     const showReport = modalType === 'report';
     const showSchedule = modalType === 'schedule';
     const showRankModal = modalType === 'rank';
+    const showQuiz = modalType === 'quiz';
+
+    const showStats = modalType === 'stats';
 
     const activeNoteCourse = useMemo(() => {
         if (modalType !== 'note' || !courseId) return null;
@@ -79,16 +78,7 @@ export const useModals = () => {
         } as ActiveNoteCourse;
     }, [modalType, courseId]);
 
-    const activeQuizCourse = useMemo(() => {
-        if (modalType !== 'quiz' || !courseId) return null;
-        const course = allCourses.find(c => c.id === courseId);
-        if (!course || !course.notePath) return null;
-        return {
-            name: course.name,
-            path: course.notePath,
-            id: course.id
-        } as ActiveQuizCourse;
-    }, [modalType, courseId]);
+
 
     // --- Action Handlers ---
     const setModal = useCallback((type: string | null, params: Record<string, string> = {}) => {
@@ -118,9 +108,14 @@ export const useModals = () => {
     }, [setModal]);
 
     const openQuiz = useCallback((course: Course) => {
-        if (!course.notePath) return;
         setModal('quiz', { courseId: course.id });
     }, [setModal]);
+
+    const openStats = useCallback((course: Course) => {
+        setModal('stats', { courseId: course.id });
+    }, [setModal]);
+
+
 
     // Legacy Support (Setters)
     const setShowTimer = useCallback((show: boolean) => show ? openTimer() : closeAll(), [openTimer, closeAll]);
@@ -132,6 +127,11 @@ export const useModals = () => {
     const triggerCelebration = useCallback((courseName: string) => setCelebratingCourse(courseName), []);
     const closeCelebration = useCallback(() => setCelebratingCourse(null), []);
 
+    // Rank Celebration
+    const [celebratingRank, setCelebratingRank] = useState<any | null>(null); // Using any temporarily to avoid import issues if Rank is not exported or complex, but ideally should be Rank
+    const triggerRankCelebration = useCallback((rank: any) => setCelebratingRank(rank), []);
+    const closeRankCelebration = useCallback(() => setCelebratingRank(null), []);
+
     // Memoized return object for stable reference
     return useMemo(() => ({
         // States
@@ -139,9 +139,10 @@ export const useModals = () => {
         showReport,
         showSchedule,
         showRankModal,
+        showStats,
         activeNoteCourse,
-        activeQuizCourse,
         celebratingCourse,
+        celebratingRank,
         isZenMode,
         reportHistoryType,
 
@@ -167,19 +168,27 @@ export const useModals = () => {
         closeNotes: closeAll,
         openQuiz,
         closeQuiz: closeAll,
+        openStats,
+        closeStats: closeAll,
+        showQuiz,
+        quizCourseId: modalType === 'quiz' ? courseId : null,
+        statsCourseId: modalType === 'stats' ? courseId : null,
 
         // Celebration
         triggerCelebration,
         closeCelebration,
+        triggerRankCelebration,
+        closeRankCelebration,
 
         // Special openers
         openReportWithHistory
     }), [
-        showTimer, showReport, showSchedule, showRankModal,
-        activeNoteCourse, activeQuizCourse, celebratingCourse, isZenMode,
+        showTimer, showReport, showSchedule, showRankModal, showQuiz, showStats,
+        activeNoteCourse, celebratingCourse, celebratingRank, isZenMode,
         setShowTimer, setShowReport, setShowSchedule, setShowRankModal,
-        openTimer, openReport, openSchedule, openRankModal,
-        openNotes, openQuiz, triggerCelebration, closeCelebration,
-        openReportWithHistory, reportHistoryType, closeAll
+        openTimer, openReport, openSchedule, openRankModal, openQuiz, openStats,
+        openNotes, triggerCelebration, closeCelebration,
+        triggerRankCelebration, closeRankCelebration,
+        openReportWithHistory, reportHistoryType, closeAll, courseId, modalType
     ]);
 };

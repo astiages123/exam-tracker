@@ -36,7 +36,7 @@ export default function ProgressCard({
         <Motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-4xl mx-auto mb-4 relative"
+            className="max-w-4xl mx-auto mb-5 relative"
         >
             {/* Ambient Background Glow */}
             <div className="absolute -inset-1 bg-primary/5 blur-2xl rounded-[2rem] opacity-30" />

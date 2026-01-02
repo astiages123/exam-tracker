@@ -6,6 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 // --- Lazy-loaded Components ---
 const Login = lazy(() => import('@/features/auth/components/Login'));
 const Dashboard = lazy(() => import('@/components/layout/Dashboard'));
+const AutoQuizGenerator = lazy(() => import('@/features/quiz/components/AutoQuizGenerator').then(module => ({ default: module.AutoQuizGenerator })));
 
 const ModalLoader = () => (
   <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
@@ -41,7 +42,13 @@ export default function App() {
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
       <Suspense fallback={<ModalLoader />}>
-        {!user ? <Login /> : <Dashboard logout={logout} />}
+        {!user ? (
+          <Login />
+        ) : window.location.pathname === '/autoquiz' ? (
+          <AutoQuizGenerator />
+        ) : (
+          <Dashboard logout={logout} />
+        )}
       </Suspense>
     </div>
   );

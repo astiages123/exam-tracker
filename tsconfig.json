@@ -26,6 +26,27 @@
         "paths": {
             "@/*": [
                 "./src/*"
+            ],
+            "@features/*": [
+                "./src/features/*"
+            ],
+            "@components/*": [
+                "./src/components/*"
+            ],
+            "@ui/*": [
+                "./src/components/ui/*"
+            ],
+            "@hooks/*": [
+                "./src/hooks/*"
+            ],
+            "@utils/*": [
+                "./src/utils/*"
+            ],
+            "@services/*": [
+                "./src/services/*"
+            ],
+            "@lib/*": [
+                "./src/lib/*"
             ]
         }
     },

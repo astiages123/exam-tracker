@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { AnimatePresence, motion as Motion } from 'framer-motion';
-import { ChevronDown, MonitorPlay, BadgeCheck, Timer, FileText, HelpCircle } from 'lucide-react';
+import { ChevronDown, MonitorPlay, BadgeCheck, Timer, BookMarked, Atom, ChartNoAxesCombined, SquarePlay } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CATEGORY_STYLES, CATEGORY_ICONS, COURSE_ICONS } from '@/constants/styles';
 import { formatHours } from '@/utils/formatter';
@@ -22,6 +22,7 @@ interface CategoryItemProps {
     modals: {
         openNotes: (course: any) => void;
         openQuiz: (course: any) => void;
+        openStats: (course: any) => void;
     };
 }
 
@@ -212,7 +213,7 @@ const CategoryItem = React.memo(({
                                                                 "font-bold text-[15px] sm:text-[16px] truncate capitalize tracking-tight",
                                                                 isCourseCompleted ? "text-amber-400" : "text-white/75"
                                                             )}>
-                                                                {course.name.split(' - ')[0]}
+                                                                {course.name.split(' - ')[0].replace(/\s*\(AÖF\)\s*/g, '')}
                                                             </h4>
                                                             <span className={cn(
                                                                 "text-[12px] font-black px-1.5 py-0.5 rounded-md bg-black/40 border border-white/10 shrink-0",
@@ -246,21 +247,31 @@ const CategoryItem = React.memo(({
                                                                     target="_blank"
                                                                     rel="noopener noreferrer"
                                                                     className="p-2 rounded-lg hover:bg-red-500/10 transition-colors"
+                                                                    title="Oynatma Listesini Aç"
                                                                 >
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path><path d="m10 15 5-3-5-3z"></path></svg>
+                                                                    <SquarePlay size={18} className="text-red-500" />
                                                                 </a>
                                                             )}
                                                             <button
                                                                 onClick={() => modals.openNotes(course)}
                                                                 className="p-2 rounded-lg hover:bg-emerald-500/10 transition-colors"
+                                                                title="Notlara Bak"
                                                             >
-                                                                <FileText size={18} className="text-emerald-500" />
+                                                                <BookMarked size={18} className="text-emerald-500" />
                                                             </button>
                                                             <button
                                                                 onClick={() => modals.openQuiz(course)}
                                                                 className="p-2 rounded-lg hover:bg-purple-500/10 transition-colors"
+                                                                title="Quiz Başlat"
                                                             >
-                                                                <HelpCircle size={18} className="text-purple-500" />
+                                                                <Atom size={18} className="text-purple-400" />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => modals.openStats(course)}
+                                                                className="p-2 rounded-lg hover:bg-blue-500/10 transition-colors"
+                                                                title="İstatistikler"
+                                                            >
+                                                                <ChartNoAxesCombined size={18} className="text-blue-500" />
                                                             </button>
                                                         </div>
                                                         <button

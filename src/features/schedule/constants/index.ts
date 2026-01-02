@@ -17,13 +17,13 @@ export const SUBJECT_STYLES: Record<string, {
         border: 'border-rose-500/30',
         badge: 'bg-rose-500/30'
     },
-    'MUHASEBE - İŞLETME - MALİYE': {
+    'MUHASEBE - MALİYE': {
         bg: 'bg-emerald-500/20',
         text: 'text-emerald-700 dark:text-emerald-100',
         border: 'border-emerald-500/30',
         badge: 'bg-emerald-500/30'
     },
-    'MATEMATİK - BANKA': {
+    'MATEMATİK - İŞLETME': {
         bg: 'bg-violet-500/20',
         text: 'text-violet-700 dark:text-violet-100',
         border: 'border-violet-500/30',
@@ -40,8 +40,8 @@ export const SUBJECT_STYLES: Record<string, {
 export const SUBJECT_OPTIONS = [
     "EKONOMİ",
     "HUKUK",
-    "MUHASEBE - İŞLETME - MALİYE",
-    "MATEMATİK - BANKA"
+    "MUHASEBE - MALİYE",
+    "MATEMATİK - İŞLETME"
 ];
 
 export const DAYS = [
