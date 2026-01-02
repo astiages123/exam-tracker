@@ -184,7 +184,7 @@ export default function Dashboard({ logout }: DashboardProps) {
 
 
             {/* Top Header Dashboard */}
-            <div className={cn("transition-all duration-700", modals.isZenMode ? "opacity-0 pointer-events-none translate-y-[-20px]" : "opacity-100")}>
+            <div className={cn("sticky top-0 z-40 transition-all duration-700", modals.isZenMode ? "opacity-0 pointer-events-none translate-y-[-20px]" : "opacity-100")}>
                 <Header
                     rankInfo={rankInfo}
                     dailyFocus={dailyFocus}

@@ -31,6 +31,14 @@ export default function ScheduleModal({ onClose, schedule, setSchedule }: Schedu
     // Temp state for new entries, KEYED BY DAY
     const [newItems, setNewItems] = useState<NewItemsState>({});
 
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 640);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
 
     // Initialize local state when modal opens
     useEffect(() => {
@@ -99,7 +107,8 @@ export default function ScheduleModal({ onClose, schedule, setSchedule }: Schedu
             <DialogContent
                 className={cn(
                     "flex flex-col p-0 gap-0 bg-card border-border overflow-hidden transition-all duration-300 focus-visible:outline-none",
-                    "w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-auto sm:max-h-[90vh] sm:rounded-lg"
+                    "w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-auto sm:max-h-[90vh] sm:rounded-lg",
+                    isMobile && "rounded-none h-[100dvh] border-none"
                 )}
             >
                 <div className="p-4 sm:p-6 border-b border-border bg-card/50 flex justify-between items-center shrink-0">
@@ -119,15 +128,28 @@ export default function ScheduleModal({ onClose, schedule, setSchedule }: Schedu
                         </div>
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
-
+                        {!isEditing && (
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => setIsEditing(true)}
+                                className="h-10 w-10 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+                                title="Programı Düzenle"
+                            >
+                                <Edit2 size={24} />
+                            </Button>
+                        )}
                         <DialogClose asChild>
                             <ModalCloseButton className="-mr-2" />
                         </DialogClose>
                     </div>
                 </div>
 
-                <div className="p-6 overflow-y-auto flex-1 bg-background/50 custom-scrollbar">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="p-4 sm:p-6 overflow-y-auto flex-1 bg-background/50 custom-scrollbar">
+                    <div className={cn(
+                        "grid gap-4",
+                        isMobile ? "grid-cols-1 pb-20" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+                    )}>
                         {DAYS.map((day) => {
                             const dayItems = localSchedule[day] || [];
                             const currentNewItem = newItems[day] || { time: '', subject: 'EKONOMİ' };
@@ -135,8 +157,14 @@ export default function ScheduleModal({ onClose, schedule, setSchedule }: Schedu
                             return (
                                 <div key={day} className="flex flex-col bg-card border border-border rounded-xl overfloy-hidden hover:border-primary/20 transition-colors h-full shadow-sm">
                                     {/* Day Header */}
-                                    <div className="p-3 bg-muted/30 border-b border-border flex justify-between items-center rounded-t-xl">
-                                        <span className="font-bold text-foreground text-sm tracking-wide">
+                                    <div className={cn(
+                                        "border-b border-border flex justify-between items-center",
+                                        isMobile ? "p-4 bg-muted/20" : "p-3 bg-muted/30 rounded-t-xl"
+                                    )}>
+                                        <span className={cn(
+                                            "font-bold text-foreground tracking-wide",
+                                            isMobile ? "text-base" : "text-sm"
+                                        )}>
                                             {day}
                                         </span>
                                         {dayItems.length > 0 && (
@@ -176,7 +204,10 @@ export default function ScheduleModal({ onClose, schedule, setSchedule }: Schedu
                                                                 variant="destructive"
                                                                 size="icon"
                                                                 onClick={() => handleDeleteItem(day, idx)}
-                                                                className="absolute -right-1 -top-1 h-5 w-5 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-sm"
+                                                                className={cn(
+                                                                    "absolute -right-1 -top-1 h-5 w-5 rounded-full shadow-sm transition-all",
+                                                                    isMobile ? "opacity-100 scale-110" : "opacity-0 group-hover:opacity-100"
+                                                                )}
                                                                 title="Sil"
                                                             >
                                                                 <Trash2 size={10} />
@@ -233,24 +264,20 @@ export default function ScheduleModal({ onClose, schedule, setSchedule }: Schedu
                     </div>
                 </div>
 
-                <div className="p-4 border-t border-border bg-card flex justify-end gap-3 sticky bottom-0 z-10">
-                    {isEditing ? (
-                        <>
-                            <Button variant="ghost" onClick={handleCancelEdit}>
-                                Vazgeç
-                            </Button>
-                            <Button onClick={handleSave} className="gap-2">
-                                <Save size={18} />
-                                Kaydet
-                            </Button>
-                        </>
-                    ) : (
-                        <Button variant="secondary" onClick={() => setIsEditing(true)} className="gap-2">
-                            <Edit2 size={16} />
-                            Düzenle
+                {isEditing && (
+                    <div className={cn(
+                        "p-4 border-t border-border bg-card flex justify-end gap-3 sticky bottom-0 z-10",
+                        isMobile && "pb-6 pt-4 shadow-[0_-5px_20px_-5px_rgba(0,0,0,0.3)] bg-gradient-to-b from-card to-background"
+                    )}>
+                        <Button variant="ghost" onClick={handleCancelEdit} className="flex-1 sm:flex-none">
+                            Vazgeç
                         </Button>
-                    )}
-                </div>
+                        <Button onClick={handleSave} className="gap-2 flex-1 sm:flex-none">
+                            <Save size={18} />
+                            Kaydet
+                        </Button>
+                    </div>
+                )}
             </DialogContent>
         </Dialog>
     );
