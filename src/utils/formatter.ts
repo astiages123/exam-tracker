@@ -1,7 +1,11 @@
-export const formatHours = (hours: number): string => {
+export const formatHours = (hours: number, short: boolean = false): string => {
     const totalMinutes = Math.round(hours * 60);
     const h = Math.floor(totalMinutes / 60);
     const m = totalMinutes % 60;
+
+    if (short) {
+        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+    }
 
     const hPart = h > 0 ? `${h}sa` : '';
     const mPart = m > 0 ? `${m}dk` : '';

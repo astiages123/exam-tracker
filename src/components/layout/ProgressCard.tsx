@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { Youtube, Timer } from 'lucide-react';
 import { RANK_ICONS } from '@/constants/styles';
 import { Goal } from 'lucide-react';
@@ -31,6 +32,14 @@ export default function ProgressCard({
     onDurationClick
 }: ProgressCardProps) {
     const Icon = RANK_ICONS[nextRank.icon] || Goal;
+
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 640);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     return (
         <Motion.div
@@ -103,8 +112,8 @@ export default function ProgressCard({
                     <StatItem
                         icon={<Timer size={16} className="text-primary" />}
                         label="Toplam Süre"
-                        value={formatHours(completedHours)}
-                        total={`/ ${formatHours(totalHours)}`}
+                        value={formatHours(completedHours, isMobile)}
+                        total={`/ ${formatHours(totalHours, isMobile)}`}
                         onClick={onDurationClick}
                     />
                 </div>
@@ -123,17 +132,17 @@ function StatItem({ icon, label, value, total, onClick }: {
     return (
         <button
             type="button"
-            className="p-3 flex flex-row items-center justify-center gap-3 hover:bg-white/[0.02] active:bg-white/[0.05] cursor-pointer transition-colors border-r border-white/5 last:border-0 w-full group"
+            className="p-2 sm:p-3 flex flex-row items-center justify-center gap-2 sm:gap-3 hover:bg-white/[0.02] active:bg-white/[0.05] cursor-pointer transition-colors border-r border-white/5 last:border-0 w-full group"
             onClick={onClick}
         >
-            <div className="p-1.5 rounded-lg bg-white/5 text-white/40 group-hover:text-white/80 group-hover:bg-white/10 transition-colors">
+            <div className="p-1.5 rounded-lg bg-white/5 text-white/40 group-hover:text-white/80 group-hover:bg-white/10 transition-colors shrink-0">
                 {icon}
             </div>
-            <div className="flex flex-col items-start gap-0.5">
-                <span className="text-[10px] font-bold text-white/90 uppercase tracking-widest">{label}</span>
-                <div className="flex items-baseline gap-1">
+            <div className="flex flex-col items-start gap-0.5 min-w-0">
+                <span className="text-[10px] font-bold text-white/90 uppercase tracking-widest truncate max-w-full">{label}</span>
+                <div className="flex items-baseline gap-1 truncate max-w-full">
                     <span className="text-sm font-bold text-white/90">{value}</span>
-                    <span className="text-[10px] font-medium text-white/70">{total}</span>
+                    <span className="text-[10px] font-medium text-white/70 truncate">{total}</span>
                 </div>
             </div>
         </button>

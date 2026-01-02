@@ -107,7 +107,7 @@ const SessionChartModal: React.FC<SessionChartModalProps> = ({
                 </div>
 
                 <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar relative z-10">
-                    <div className="p-4 sm:p-8 overflow-x-auto overflow-y-visible custom-scrollbar relative">
+                    <div className="sm:p-8 p-0 overflow-x-auto overflow-y-visible custom-scrollbar relative">
                         <div className={`relative ${isMobile ? 'min-w-[600px] h-48 pt-16' : 'min-w-[700px] h-60 pt-24'}`}>
                             <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
                                 {Array.from({ length: (endHour - startHour) * 2 + 1 }).map((_, i) => {

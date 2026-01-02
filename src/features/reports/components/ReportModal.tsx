@@ -163,12 +163,14 @@ export default function ReportModal({
                             </div>
                         </div>
 
-                        {/* Stats */}
-                        <ReportStats {...stats} />
+                        {/* Stats - Desktop (Sticky) */}
+                        {!isMobile && <ReportStats {...stats} />}
 
                         {/* Content Area */}
                         <div className="flex-1 overflow-hidden relative">
                             <ScrollArea className="h-full w-full">
+                                {/* Stats - Mobile (Scrolls with content) */}
+                                {isMobile && <div className="mb-[-1px]"><ReportStats {...stats} /></div>}
                                 <div className="p-4 sm:p-8 w-full">
                                     <TabsContent value="list" className="mt-0 focus-visible:ring-0">
                                         {activeTab === 'list' && (aggregatedSessions.length === 0 ? (

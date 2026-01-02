@@ -36,6 +36,14 @@ export default function CourseStatsModal({
     const [isLoadingQuiz, setIsLoadingQuiz] = useState(true);
     const [showFullHistory, setShowFullHistory] = useState<'duration' | 'videos' | null>(null);
 
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 640);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     // Filter data for this course
     const courseSessions = useMemo(() =>
         sessions.filter(s => s.courseId === courseId),
@@ -56,7 +64,7 @@ export default function CourseStatsModal({
         courses,
         videoHistory: courseVideoHistory,
         progressData,
-        isMobile: false // We handle slicing ourselves
+        isMobile: isMobile
     });
 
     // Handle "5 points" requirement: Take last 5 points of activity
@@ -110,7 +118,7 @@ export default function CourseStatsModal({
     return (
         <>
             <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-                <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col p-0 gap-0 overflow-hidden border-none text-foreground bg-gradient-to-b from-zinc-900 to-zinc-950 focus:outline-none shadow-2xl">
+                <DialogContent className="w-full max-w-4xl h-[100dvh] sm:h-fit sm:max-h-[85vh] flex flex-col p-0 gap-0 overflow-hidden border-none text-foreground bg-gradient-to-b from-zinc-900 to-zinc-950 focus:outline-none shadow-2xl rounded-none sm:rounded-lg">
                     {/* Header */}
                     <div className="p-4 sm:p-5 border-b border-white/5 bg-white/[0.02] flex justify-between items-center shrink-0">
                         <DialogHeader>
@@ -132,47 +140,47 @@ export default function CourseStatsModal({
                         </DialogClose>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar">
-                        <div className="p-4 sm:p-6 space-y-6">
+                    <div className="flex-1 overflow-y-auto sm:overflow-y-auto overflow-x-hidden custom-scrollbar">
+                        <div className="p-3.5 sm:p-6 space-y-4 sm:space-y-6">
                             {/* Summary Cards */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
                                 <Card className="bg-white/[0.03] border-white/5 shadow-none overflow-hidden group">
-                                    <CardContent className="p-4 flex items-center gap-4 relative">
-                                        <div className="bg-purple-500/10 p-2.5 rounded-xl text-purple-400 border border-purple-500/20 group-hover:scale-110 transition-transform">
-                                            <Clock size={20} />
+                                    <CardContent className="p-3 sm:p-4 flex items-center gap-3 sm:gap-4 relative">
+                                        <div className="bg-purple-500/10 p-2 sm:p-2.5 rounded-xl text-purple-400 border border-purple-500/20 group-hover:scale-110 transition-transform">
+                                            <Clock size={18} />
                                         </div>
                                         <div>
-                                            <p className="text-[10px] uppercase tracking-wider text-purple-300/50 font-bold mb-0.5">Süre</p>
-                                            <h4 className="text-xl font-bold text-white tracking-tight">
-                                                {stats.totalHours}<span className="text-sm font-medium text-white/40 ml-0.5 whitespace-nowrap">s {stats.remainingMins}dk</span>
+                                            <p className="text-[9px] sm:text-[10px] uppercase tracking-wider text-purple-300/50 font-bold mb-0.5">Süre</p>
+                                            <h4 className="text-base sm:text-xl font-bold text-white tracking-tight">
+                                                {stats.totalHours}<span className="text-[10px] sm:text-sm font-medium text-white/40 ml-0.5 whitespace-nowrap">s {stats.remainingMins}dk</span>
                                             </h4>
                                         </div>
                                     </CardContent>
                                 </Card>
 
                                 <Card className="bg-white/[0.03] border-white/5 shadow-none overflow-hidden group">
-                                    <CardContent className="p-4 flex items-center gap-4 relative">
-                                        <div className="bg-orange-500/10 p-2.5 rounded-xl text-orange-400 border border-orange-500/20 group-hover:scale-110 transition-transform">
-                                            <MonitorPlay size={20} />
+                                    <CardContent className="p-3 sm:p-4 flex items-center gap-3 sm:gap-4 relative">
+                                        <div className="bg-orange-500/10 p-2 sm:p-2.5 rounded-xl text-orange-400 border border-orange-500/20 group-hover:scale-110 transition-transform">
+                                            <MonitorPlay size={18} />
                                         </div>
                                         <div>
-                                            <p className="text-[10px] uppercase tracking-wider text-orange-300/50 font-bold mb-0.5">Video</p>
-                                            <h4 className="text-xl font-bold text-white tracking-tight">
-                                                {courseVideoHistory.length} <span className="text-sm font-medium text-white/40">izlendi</span>
+                                            <p className="text-[9px] sm:text-[10px] uppercase tracking-wider text-orange-300/50 font-bold mb-0.5">Video</p>
+                                            <h4 className="text-base sm:text-xl font-bold text-white tracking-tight">
+                                                {courseVideoHistory.length} <span className="text-[10px] sm:text-sm font-medium text-white/40">izlendi</span>
                                             </h4>
                                         </div>
                                     </CardContent>
                                 </Card>
 
-                                <Card className="bg-white/[0.03] border-white/5 shadow-none overflow-hidden group">
-                                    <CardContent className="p-4 flex items-center gap-4 relative">
-                                        <div className="bg-emerald-500/10 p-2.5 rounded-xl text-emerald-400 border border-emerald-500/20 group-hover:scale-110 transition-transform">
-                                            <Brain size={20} />
+                                <Card className="bg-white/[0.03] border-white/5 shadow-none overflow-hidden group col-span-2 md:col-span-1">
+                                    <CardContent className="p-3 sm:p-4 flex items-center gap-3 sm:gap-4 relative">
+                                        <div className="bg-emerald-500/10 p-2 sm:p-2.5 rounded-xl text-emerald-400 border border-emerald-500/20 group-hover:scale-110 transition-transform">
+                                            <Brain size={18} />
                                         </div>
                                         <div>
-                                            <p className="text-[10px] uppercase tracking-wider text-emerald-300/50 font-bold mb-0.5">Başarı</p>
-                                            <h4 className="text-xl font-bold text-white tracking-tight">
-                                                %{quizStats.avgScore} <span className="text-sm font-medium text-white/40">quiz</span>
+                                            <p className="text-[9px] sm:text-[10px] uppercase tracking-wider text-emerald-300/50 font-bold mb-0.5">Başarı</p>
+                                            <h4 className="text-base sm:text-xl font-bold text-white tracking-tight">
+                                                %{quizStats.avgScore} <span className="text-[10px] sm:text-sm font-medium text-white/40">quiz</span>
                                             </h4>
                                         </div>
                                     </CardContent>
@@ -180,77 +188,92 @@ export default function CourseStatsModal({
                             </div>
 
                             <Tabs defaultValue="study" className="w-full">
-                                <TabsList className="w-full justify-start bg-black/40 p-1 rounded-xl mb-4 border border-white/5">
-                                    <TabsTrigger value="study" className="flex-1 gap-2 text-xs font-bold data-[state=active]:bg-white/10 data-[state=active]:text-white">
-                                        Çalışma Süresi
+                                <TabsList className="w-full justify-start bg-black/40 p-1 rounded-xl mb-3 sm:mb-4 border border-white/5">
+                                    <TabsTrigger value="study" className="flex-1 gap-2 text-[10px] sm:text-xs font-bold data-[state=active]:bg-white/10 data-[state=active]:text-white">
+                                        {isMobile ? "Çalışma" : "Çalışma Süresi"}
                                     </TabsTrigger>
-                                    <TabsTrigger value="video" className="flex-1 gap-2 text-xs font-bold data-[state=active]:bg-white/10 data-[state=active]:text-white">
-                                        Video İlerlemesi
-                                    </TabsTrigger>
-                                    <TabsTrigger value="quiz" className="flex-1 gap-2 text-xs font-bold data-[state=active]:bg-white/10 data-[state=active]:text-white">
+                                    {!isMobile && (
+                                        <TabsTrigger value="video" className="flex-1 gap-2 text-[10px] sm:text-xs font-bold data-[state=active]:bg-white/10 data-[state=active]:text-white">
+                                            Video İlerlemesi
+                                        </TabsTrigger>
+                                    )}
+                                    <TabsTrigger value="quiz" className="flex-1 gap-2 text-[10px] sm:text-xs font-bold data-[state=active]:bg-white/10 data-[state=active]:text-white">
                                         Quiz Başarısı
                                     </TabsTrigger>
                                 </TabsList>
 
-                                <TabsContent value="study" className="mt-0 outline-none">
+                                <TabsContent value="study" className="mt-0 outline-none space-y-3">
                                     {displayData.length > 0 ? (
-                                        <DurationChart
-                                            data={displayData}
-                                            onShowFullHistory={() => setShowFullHistory('duration')}
-                                            className="h-[220px]"
-                                        />
+                                        <>
+                                            <DurationChart
+                                                data={displayData}
+                                                onShowFullHistory={() => setShowFullHistory('duration')}
+                                                className={isMobile ? "h-[160px]" : "h-[220px]"}
+                                            />
+                                            {isMobile && (
+                                                <VideoChart
+                                                    data={displayData}
+                                                    onShowFullHistory={() => setShowFullHistory('videos')}
+                                                    className="h-[160px]"
+                                                />
+                                            )}
+                                        </>
                                     ) : (
-                                        <div className="h-[220px] flex items-center justify-center text-muted-foreground bg-white/[0.02] rounded-2xl border border-white/5 text-sm uppercase tracking-widest font-bold">
+                                        <div className="h-[180px] sm:h-[220px] flex items-center justify-center text-muted-foreground bg-white/[0.02] rounded-2xl border border-white/5 text-[10px] sm:text-sm uppercase tracking-widest font-bold">
                                             Veri Bulunmuyor
                                         </div>
                                     )}
                                 </TabsContent>
 
-                                <TabsContent value="video" className="mt-0 outline-none">
-                                    {displayData.length > 0 ? (
-                                        <VideoChart
-                                            data={displayData}
-                                            onShowFullHistory={() => setShowFullHistory('videos')}
-                                            className="h-[220px]"
-                                        />
-                                    ) : (
-                                        <div className="h-[220px] flex items-center justify-center text-muted-foreground bg-white/[0.02] rounded-2xl border border-white/5 text-sm uppercase tracking-widest font-bold">
-                                            Veri Bulunmuyor
-                                        </div>
-                                    )}
-                                </TabsContent>
+                                {!isMobile && (
+                                    <TabsContent value="video" className="mt-0 outline-none">
+                                        {displayData.length > 0 ? (
+                                            <VideoChart
+                                                data={displayData}
+                                                onShowFullHistory={() => setShowFullHistory('videos')}
+                                                className="h-[220px]"
+                                            />
+                                        ) : (
+                                            <div className="h-[220px] flex items-center justify-center text-muted-foreground bg-white/[0.02] rounded-2xl border border-white/5 text-sm uppercase tracking-widest font-bold">
+                                                Veri Bulunmuyor
+                                            </div>
+                                        )}
+                                    </TabsContent>
+                                )}
+
+
 
                                 <TabsContent value="quiz" className="mt-0 outline-none">
                                     <Card className="border-white/5 bg-white/[0.02] shadow-none overflow-hidden">
-                                        <CardContent className="p-4 sm:p-6">
+                                        <CardContent className="p-3 sm:p-6">
                                             {isLoadingQuiz ? (
-                                                <div className="h-[220px] flex items-center justify-center text-muted-foreground">
+                                                <div className="h-[180px] sm:h-[220px] flex items-center justify-center text-muted-foreground">
                                                     Yükleniyor...
                                                 </div>
                                             ) : quizChartData.length > 0 ? (
-                                                <div className="h-[220px]">
-                                                    <div className="flex justify-between items-center mb-4">
-                                                        <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                                                            <div className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
+                                                <div className="h-[180px] sm:h-[220px]">
+                                                    <div className="flex justify-between items-center mb-2 sm:mb-4">
+                                                        <h3 className="text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                                                            <div className="w-1.5 h-1.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
                                                             Son Quiz Sonuçları
                                                         </h3>
                                                     </div>
                                                     <ResponsiveContainer width="100%" height="100%">
                                                         <BarChart data={quizChartData}>
                                                             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                                                            <XAxis dataKey="date" stroke="#52525b" fontSize={10} tickLine={false} axisLine={false} tickMargin={8} />
-                                                            <YAxis stroke="#52525b" fontSize={10} tickLine={false} axisLine={false} unit="%" domain={[0, 100]} ticks={[0, 50, 100]} />
+                                                            <XAxis dataKey="date" stroke="#52525b" fontSize={9} tickLine={false} axisLine={false} tickMargin={8} />
+                                                            <YAxis stroke="#52525b" fontSize={9} tickLine={false} axisLine={false} unit="%" domain={[0, 100]} ticks={[0, 50, 100]} />
                                                             <Tooltip
                                                                 contentStyle={{ backgroundColor: '#18181b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }}
-                                                                itemStyle={{ color: '#fff', fontSize: '12px' }}
+                                                                itemStyle={{ color: '#fff', fontSize: '10px' }}
                                                                 cursor={{ fill: 'rgba(255,255,255,0.05)', radius: 4 }}
                                                             />
-                                                            <Bar dataKey="score" fill="#f59e0b" radius={[4, 4, 0, 0]} name="Başarı Oranı" barSize={35} />
+                                                            <Bar dataKey="score" fill="#f59e0b" radius={[4, 4, 0, 0]} name="Başarı Oranı" barSize={isMobile ? 25 : 35} />
                                                         </BarChart>
                                                     </ResponsiveContainer>
                                                 </div>
                                             ) : (
-                                                <div className="h-[220px] flex flex-col items-center justify-center text-muted-foreground/40 text-sm uppercase tracking-widest font-bold">
+                                                <div className="h-[180px] sm:h-[220px] flex flex-col items-center justify-center text-muted-foreground/40 text-[10px] sm:text-sm uppercase tracking-widest font-bold">
                                                     Kayıt Yok
                                                 </div>
                                             )}

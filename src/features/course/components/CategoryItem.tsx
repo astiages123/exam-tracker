@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { AnimatePresence, motion as Motion } from 'framer-motion';
 import { ChevronDown, MonitorPlay, BadgeCheck, Timer, BookMarked, Atom, ChartNoAxesCombined, SquarePlay } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -35,6 +35,14 @@ const CategoryItem = React.memo(({
     handlers,
     modals
 }: CategoryItemProps) => {
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 640);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     // Memoize calculations used in render
     const {
         categoryTotalHours,
@@ -110,16 +118,16 @@ const CategoryItem = React.memo(({
                                     </h3>
                                     {categoryPercent === 100 && <BadgeCheck size={18} className="text-amber-400 animate-pulse" />}
                                 </div>
-                                <div className="flex gap-3 mt-2">
-                                    <div className="flex items-center gap-1.5 bg-white/[0.03] px-2.5 py-1 rounded-full border border-white/5">
+                                <div className="flex gap-2 sm:gap-3 mt-2 overflow-x-auto no-scrollbar mask-grad-right pb-1 -mb-1 w-full max-w-[calc(100vw-6rem)] sm:max-w-none">
+                                    <div className="flex items-center gap-1.5 bg-white/[0.03] px-2 sm:px-2.5 py-1 rounded-full border border-white/5 shrink-0">
                                         <Timer size={15} className={styles.darkAccent} />
                                         <span className="text-[12px] font-bold text-white/70">
-                                            {formatHours(categoryCompletedHours)}
+                                            {formatHours(categoryCompletedHours, isMobile)}
                                             <span className="mx-1 text-white/40">/</span>
-                                            <span className="opacity-70">{formatHours(categoryTotalHours)}</span>
+                                            <span className="opacity-70">{formatHours(categoryTotalHours, isMobile)}</span>
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-1.5 bg-white/[0.03] px-2.5 py-1 rounded-full border border-white/5">
+                                    <div className="flex items-center gap-1.5 bg-white/[0.03] px-2 sm:px-2.5 py-1 rounded-full border border-white/5 shrink-0">
                                         <MonitorPlay size={15} className={styles.darkAccent} />
                                         <span className="text-[12px] font-bold text-white/70">
                                             {categoryCompletedVideos}
@@ -223,24 +231,62 @@ const CategoryItem = React.memo(({
                                                             </span>
                                                         </div>
 
-                                                        <div className="flex items-center gap-4 overflow-hidden">
-                                                            <div className="flex items-center gap-1.5 text-[11px] sm:text-[12px] font-bold shrink-0">
-                                                                <Timer size={13} className={cn(isCourseCompleted ? "text-amber-400" : styles.accent)} />
-                                                                <span className="text-white/75">{formatHours(courseCompletedHours)}</span>
-                                                                <span className="text-white/30">/</span>
-                                                                <span className="text-white/50">{formatHours(course.totalHours)}</span>
+                                                        <div className="flex flex-col gap-2">
+                                                            <div className="flex items-center gap-4 overflow-hidden order-1">
+                                                                <div className="flex items-center gap-1.5 text-[11px] sm:text-[12px] font-bold shrink-0">
+                                                                    <Timer size={13} className={cn(isCourseCompleted ? "text-amber-400" : styles.accent)} />
+                                                                    <span className="text-white/75">{formatHours(courseCompletedHours, isMobile)}</span>
+                                                                    <span className="text-white/30">/</span>
+                                                                    <span className="text-white/50">{formatHours(course.totalHours, isMobile)}</span>
+                                                                </div>
+                                                                <div className="flex items-center gap-1.5 text-[11px] sm:text-[12px] font-bold shrink50">
+                                                                    <MonitorPlay size={13} className={cn(isCourseCompleted ? "text-amber-400" : styles.accent)} />
+                                                                    <span className="text-white/75">{courseCompletedCount}</span>
+                                                                    <span className="text-white/30">/</span>
+                                                                    <span className="text-white/50">{course.totalVideos}</span>
+                                                                </div>
                                                             </div>
-                                                            <div className="flex items-center gap-1.5 text-[11px] sm:text-[12px] font-bold shrink50">
-                                                                <MonitorPlay size={13} className={cn(isCourseCompleted ? "text-amber-400" : styles.accent)} />
-                                                                <span className="text-white/75">{courseCompletedCount}</span>
-                                                                <span className="text-white/30">/</span>
-                                                                <span className="text-white/50">{course.totalVideos}</span>
+
+                                                            {/* Mobile Actions */}
+                                                            <div className="flex sm:hidden items-center bg-black/40 p-1 rounded-xl border border-white/10 scale-90 origin-left w-fit order-2">
+                                                                {course.playlistUrl && (
+                                                                    <a
+                                                                        href={course.playlistUrl}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        className="p-2 rounded-lg hover:bg-red-500/10 transition-colors"
+                                                                        title="Oynatma Listesini Aç"
+                                                                    >
+                                                                        <SquarePlay size={18} className="text-red-500" />
+                                                                    </a>
+                                                                )}
+                                                                <button
+                                                                    onClick={() => modals.openNotes(course)}
+                                                                    className="p-2 rounded-lg hover:bg-emerald-500/10 transition-colors"
+                                                                    title="Notlara Bak"
+                                                                >
+                                                                    <BookMarked size={18} className="text-emerald-500" />
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => modals.openQuiz(course)}
+                                                                    className="p-2 rounded-lg hover:bg-purple-500/10 transition-colors"
+                                                                    title="Quiz Başlat"
+                                                                >
+                                                                    <Atom size={18} className="text-purple-400" />
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => modals.openStats(course)}
+                                                                    className="p-2 rounded-lg hover:bg-blue-500/10 transition-colors"
+                                                                    title="İstatistikler"
+                                                                >
+                                                                    <ChartNoAxesCombined size={18} className="text-blue-500" />
+                                                                </button>
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div className="flex items-center gap-3 shrink-0 ml-1" onClick={(e) => e.stopPropagation()}>
-                                                        <div className="hidden sm:flex items-center bg-black/40 p-1 rounded-xl border border-white/10">
+                                                        <div className="hidden sm:flex items-center bg-black/40 p-1 rounded-xl border border-white/10 sm:scale-100 scale-90 origin-right">
                                                             {course.playlistUrl && (
                                                                 <a
                                                                     href={course.playlistUrl}

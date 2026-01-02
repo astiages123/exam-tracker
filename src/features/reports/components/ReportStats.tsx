@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { formatHours } from '@/utils';
 
@@ -19,6 +19,14 @@ const ReportStats = React.memo(({
     totalPauseHours,
     remainingPauseMins
 }: ReportStatsProps) => {
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 640);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     // Combine hours and mins back to fractional hours for formatHours
     const workHours = totalHours + (remainingMins / 60);
     const breakHrs = totalBreakHours + (remainingBreakMins / 60);
@@ -32,7 +40,7 @@ const ReportStats = React.memo(({
                         Toplam Çalışma
                     </span>
                     <div className="text-base sm:text-lg font-mono font-bold text-zinc-200 mt-0.5">
-                        {formatHours(workHours)}
+                        {formatHours(workHours, isMobile)}
                     </div>
                 </CardContent>
             </Card>
@@ -42,7 +50,7 @@ const ReportStats = React.memo(({
                         Toplam Mola
                     </span>
                     <div className="text-base sm:text-lg font-mono font-bold text-zinc-200 mt-0.5">
-                        {formatHours(breakHrs)}
+                        {formatHours(breakHrs, isMobile)}
                     </div>
                 </CardContent>
             </Card>
@@ -52,7 +60,7 @@ const ReportStats = React.memo(({
                         Toplam Duraklatma
                     </span>
                     <div className="text-base sm:text-lg font-mono font-bold text-zinc-200 mt-0.5 whitespace-nowrap">
-                        {formatHours(pauseHrs)}
+                        {formatHours(pauseHrs, isMobile)}
                     </div>
                 </CardContent>
             </Card>
