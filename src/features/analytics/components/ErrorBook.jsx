@@ -104,7 +104,7 @@ function ErrorCard({ error, isExpanded, onToggle, onViewSource }) {
                 className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-700/30 transition-colors"
             >
                 <div className="flex items-center gap-3">
-                    <AlertTriangle className="text-red-400 flex-shrink-0" size={18} />
+                    <AlertTriangle className="text-red-400 shrink-0" size={18} />
                     <div>
                         <div className="text-sm font-medium text-white">
                             {error.chunk_title || 'Soru'}
@@ -175,7 +175,7 @@ function ErrorCard({ error, isExpanded, onToggle, onViewSource }) {
                             {error.ai_advice && (
                                 <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 mb-4">
                                     <div className="flex items-start gap-3">
-                                        <Lightbulb className="text-amber-400 flex-shrink-0 mt-0.5" size={18} />
+                                        <Lightbulb className="text-amber-400 shrink-0 mt-0.5" size={18} />
                                         <div>
                                             <h4 className="text-sm font-semibold text-amber-400 mb-1">
                                                 🔍 Müfettiş Tavsiyesi

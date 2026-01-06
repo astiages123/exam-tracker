@@ -231,7 +231,7 @@ const CategoryItem = React.memo(({
                                                                 <span className="text-white/30">/</span>
                                                                 <span className="text-white/50">{formatHours(course.totalHours)}</span>
                                                             </div>
-                                                            <div className="flex items-center gap-1.5 text-[11px] sm:text-[12px] font-bold shrink50">
+                                                            <div className="flex items-center gap-1.5 text-[11px] sm:text-[12px] font-bold shrink-0">
                                                                 <MonitorPlay size={13} className={cn(isCourseCompleted ? "text-amber-400" : styles.accent)} />
                                                                 <span className="text-white/75">{courseCompletedCount}</span>
                                                                 <span className="text-white/30">/</span>

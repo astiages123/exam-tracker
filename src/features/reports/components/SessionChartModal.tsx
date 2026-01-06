@@ -73,7 +73,7 @@ const SessionChartModal: React.FC<SessionChartModalProps> = ({
             >
                 <div className="p-6 border-b border-border bg-card/90 flex justify-between items-center shrink-0 relative z-20 backdrop-blur-md">
                     <div className="flex items-center gap-4">
-                        <div className="bg-primary/10 p-2.5 sm:p-3.5 rounded-xl border border-primary/10 mt-1 flex-shrink-0">
+                        <div className="bg-primary/10 p-2.5 sm:p-3.5 rounded-xl border border-primary/10 mt-1 shrink-0">
                             <ChartArea className="text-primary" size={isMobile ? 24 : 32} />
                         </div>
                         <div>

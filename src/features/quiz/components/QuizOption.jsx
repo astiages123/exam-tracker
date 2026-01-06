@@ -101,7 +101,7 @@ export function QuizOption({
         >
             {/* Option Key Badge */}
             <span className={`
-                flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center
+                shrink-0 w-8 h-8 rounded-lg flex items-center justify-center
                 text-sm font-bold
                 ${showResult && isCorrect
                     ? 'bg-green-500 text-white'
@@ -140,7 +140,7 @@ export function QuizOption({
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 0.2, type: 'spring' }}
-                    className="flex-shrink-0"
+                    className="shrink-0"
                 >
                     {isCorrect ? (
                         <Check className="text-green-400" size={20} />

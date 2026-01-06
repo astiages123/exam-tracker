@@ -193,7 +193,7 @@ const QuizContainer: React.FC<QuizContainerProps> = ({
                             <button
                                 onClick={handleStartExisting}
                                 disabled={current === 0}
-                                className="w-full py-4 px-4 bg-indigo-600 hover:bg-indigo-500 disabled:bg-white/5 disabled:text-white/20 disabled:cursor-not-allowed text-white rounded-xl transition-all font-medium flex items-center justify-center gap-3 group"
+                                className="w-full p-4 bg-indigo-600 hover:bg-indigo-500 disabled:bg-white/5 disabled:text-white/20 disabled:cursor-not-allowed text-white rounded-xl transition-all font-medium flex items-center justify-center gap-3 group"
                             >
                                 <Play size={20} className={current > 0 ? "fill-white" : ""} />
                                 <div className="text-left">
@@ -204,7 +204,7 @@ const QuizContainer: React.FC<QuizContainerProps> = ({
 
                             <button
                                 onClick={handleStartGeneration}
-                                className="w-full py-4 px-4 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all font-medium flex items-center justify-center gap-3 border border-white/10 hover:border-white/20 group"
+                                className="w-full p-4 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all font-medium flex items-center justify-center gap-3 border border-white/10 hover:border-white/20 group"
                             >
                                 <RefreshCcw size={20} className="text-purple-400 group-hover:rotate-12 transition-transform" />
                                 <div className="text-left">

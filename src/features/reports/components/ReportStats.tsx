@@ -27,7 +27,7 @@ const ReportStats = React.memo(({
     return (
         <div className="px-6 py-8 sm:px-8 grid grid-cols-1 sm:grid-cols-3 gap-6 border-b border-border bg-card/50">
             <Card className="bg-card border-border/50 shadow-none">
-                <CardContent className="p-3 flex flex-row sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
+                <CardContent className="p-3 flex sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
                     <span className="text-[10px] text-zinc-300 uppercase tracking-wider font-semibold">
                         Toplam Çalışma
                     </span>
@@ -37,7 +37,7 @@ const ReportStats = React.memo(({
                 </CardContent>
             </Card>
             <Card className="bg-card border-border/50 shadow-none">
-                <CardContent className="p-3 flex flex-row sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
+                <CardContent className="p-3 flex sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
                     <span className="text-[10px] text-zinc-300 uppercase tracking-wider font-semibold">
                         Toplam Mola
                     </span>
@@ -47,7 +47,7 @@ const ReportStats = React.memo(({
                 </CardContent>
             </Card>
             <Card className="bg-card border-border/50 shadow-none">
-                <CardContent className="p-3 flex flex-row sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
+                <CardContent className="p-3 flex sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
                     <span className="text-[10px] text-zinc-300 uppercase tracking-wider font-semibold">
                         Toplam Duraklatma
                     </span>

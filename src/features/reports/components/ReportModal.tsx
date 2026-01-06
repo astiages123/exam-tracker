@@ -242,7 +242,7 @@ export default function ReportModal({
                                                 {/* Total Stats Section */}
                                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                                                     <div className="rounded-xl border text-card-foreground bg-card border-border/50 shadow-none">
-                                                        <div className="p-3 flex flex-row sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
+                                                        <div className="p-3 flex sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
                                                             <span className="text-[10px] text-zinc-300 uppercase tracking-wider font-semibold">Toplam Çalışma</span>
                                                             <div className="text-base sm:text-lg font-mono font-bold text-zinc-200 mt-0.5">
                                                                 {formatHours(stats.totalHours + stats.remainingMins / 60)}
@@ -250,7 +250,7 @@ export default function ReportModal({
                                                         </div>
                                                     </div>
                                                     <div className="rounded-xl border text-card-foreground bg-card border-border/50 shadow-none">
-                                                        <div className="p-3 flex flex-row sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
+                                                        <div className="p-3 flex sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
                                                             <span className="text-[10px] text-zinc-300 uppercase tracking-wider font-semibold">Toplam Mola</span>
                                                             <div className="text-base sm:text-lg font-mono font-bold text-zinc-200 mt-0.5">
                                                                 {formatHours(stats.totalBreakHours + stats.remainingBreakMins / 60)}
@@ -258,7 +258,7 @@ export default function ReportModal({
                                                         </div>
                                                     </div>
                                                     <div className="rounded-xl border text-card-foreground bg-card border-border/50 shadow-none">
-                                                        <div className="p-3 flex flex-row sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
+                                                        <div className="p-3 flex sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
                                                             <span className="text-[10px] text-zinc-300 uppercase tracking-wider font-semibold">Toplam Duraklatma</span>
                                                             <div className="text-base sm:text-lg font-mono font-bold text-zinc-200 mt-0.5 whitespace-nowrap">
                                                                 {formatHours(stats.totalPauseHours + stats.remainingPauseMins / 60)}

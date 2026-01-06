@@ -25,7 +25,7 @@ Görevin: Sana gönderilen Markdown formatındaki ders notlarından, KPSS A Grub
 ## 2. SORU FORMATI VE YAZIM (ÖNEMLİ)
 - **Cümle Tamamlama**: Eğer soru bir cümleyi tamamlama şeklindeyse (örn: "...temsil edildiği nokta bütçe kısıtları çizgisinin"), cümlenin sonuna **MUTLAKA** üç nokta (...) koy veya soruyu "Aşağıdakilerden hangisidir?" şeklinde bitir.
 - **Seçenek Ayrımı**: Soru metni ile seçenekler birbirine karışmamalı. Soru metni net bir şekilde bitmeli.
-- **Matematiksel Gösterim**: Çarpma işlemi için * yerine $\times$ veya $\cdot$ kullan. Örneğin $P_x * Q_x$ yerine $P_x \cdot Q_x$ yaz.
+- **Matematiksel Gösterim**: Çarpma işlemi için * yerine $\\times$ veya $\\cdot$ kullan. Örneğin $P_x * Q_x$ yerine $P_x \\cdot Q_x$ yaz.
 
 ## 2. SORU DAĞILIMI
 Her soru setinde şu dağılıma uy:

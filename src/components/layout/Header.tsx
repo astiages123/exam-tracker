@@ -23,7 +23,7 @@ interface HeaderProps {
 export default function Header({ rankInfo, dailyFocus, currentStreak, modals, logout }: HeaderProps) {
     return (
         <header className="sticky top-0 z-40 bg-background border-b border-secondary shadow-lg shadow-primary/5">
-            <div className="max-w-6xl mx-auto px-4 py-4">
+            <div className="max-w-6xl mx-auto p-4">
 
                 {/* --- MOBILE LAYOUT --- */}
                 <div className="md:hidden flex flex-col gap-3">

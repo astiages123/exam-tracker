@@ -147,7 +147,7 @@ function StatItem({ icon, label, value, total, onClick }: {
     return (
         <button
             type="button"
-            className="p-3 flex flex-row items-center justify-center gap-3 hover:bg-white/[0.02] active:bg-white/[0.05] cursor-pointer transition-colors border-r border-white/5 last:border-0 w-full group"
+            className="p-3 flex items-center justify-center gap-3 hover:bg-white/[0.02] active:bg-white/[0.05] cursor-pointer transition-colors border-r border-white/5 last:border-0 w-full group"
             onClick={onClick}
         >
             <div className="p-1.5 rounded-lg bg-white/5 text-white/40 group-hover:text-white/80 group-hover:bg-white/10 transition-colors">

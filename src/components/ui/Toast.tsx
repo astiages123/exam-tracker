@@ -53,7 +53,7 @@ const Toast = ({ id, message, type = 'info', onClose }: ToastProps) => {
                 ${colorMap[type]}
             `}
         >
-            <Icon className={`w-5 h-5 flex-shrink-0 ${iconColorMap[type]}`} />
+            <Icon className={`w-5 h-5 shrink-0 ${iconColorMap[type]}`} />
             <span className="text-sm font-medium">{message}</span>
             <button
                 onClick={() => onClose(id)}

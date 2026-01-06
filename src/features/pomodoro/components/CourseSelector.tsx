@@ -33,7 +33,7 @@ export default function CourseSelector({
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="relative flex items-center justify-start gap-3 mb-6">
-                    <div className="bg-primary/10 p-2 rounded-xl border border-primary/10 flex-shrink-0">
+                    <div className="bg-primary/10 p-2 rounded-xl border border-primary/10 shrink-0">
                         <Timer className="text-primary" size={22} />
                     </div>
                     <h3 className="text-lg font-bold text-foreground">Çalışmaya Başla</h3>

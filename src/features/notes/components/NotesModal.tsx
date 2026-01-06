@@ -143,7 +143,7 @@ export default function NotesModal({ courseName, notePath, onClose, icon: Icon }
                         }
                     }}
                 >
-                    <div className="flex flex-row items-center px-3 py-3 sm:px-6 sm:py-4 border-b border-border bg-card/50 shrink-0 gap-2">
+                    <div className="flex items-center p-3 sm:px-6 sm:py-4 border-b border-border bg-card/50 shrink-0 gap-2">
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between w-full">
                                 <DialogHeader className="text-left space-y-0 p-0">
