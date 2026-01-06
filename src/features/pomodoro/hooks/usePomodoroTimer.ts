@@ -369,7 +369,7 @@ export const usePomodoroTimer = ({
         onSessionComplete(
             breakElapsedTime,
             'break',
-            null,
+            selectedCourseId,
             originalStartTimeRef.current || undefined,
             pausesRef.current
         );

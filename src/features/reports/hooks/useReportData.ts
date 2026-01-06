@@ -6,6 +6,7 @@
  */
 
 import { useMemo, useCallback } from 'react';
+import { getLocalYMD } from '@/utils/date';
 import courseDataJson from '@/features/course/data/courses.json';
 import type { StudySession, Course, VideoHistoryItem, UserProgressData, CourseCategory } from '@/types';
 
@@ -90,10 +91,17 @@ export const useReportData = ({
         const totalBreakHours = Math.floor(totalBreakMinutesRaw / 60);
         const remainingBreakMins = Math.round(totalBreakMinutesRaw % 60);
 
+        const pauseSessions = safeSessions.filter(s => s && s.type === 'pause');
+
         // Calculate total pause minutes
         let totalPauseMs = 0;
 
-        // 1. Pauses within work sessions
+        // 1. Explicit pause sessions (New system)
+        pauseSessions.forEach(s => {
+            totalPauseMs += (s.duration || 0) * 1000;
+        });
+
+        // 2. Pauses within work sessions (Legacy system)
         workSessions.forEach(s => {
             if (s.pauses) {
                 s.pauses.forEach(p => {
@@ -102,11 +110,10 @@ export const useReportData = ({
             }
         });
 
-        // 2. Gaps between sessions on the same day
+        // 3. Gaps between sessions on the same day (Automatic pause detection)
         const sessionsByDay: Record<string, Array<{ start: number; end: number }>> = {};
-        [...workSessions, ...breakSessions].forEach(s => {
+        [...workSessions, ...breakSessions, ...pauseSessions].forEach(s => {
             if (!s.timestamp) return;
-            // Faster date extraction: YYYY-MM-DD
             const dateStr = new Date(s.timestamp).toISOString().split('T')[0];
             if (!sessionsByDay[dateStr]) sessionsByDay[dateStr] = [];
 
@@ -137,7 +144,7 @@ export const useReportData = ({
             totalPauseHours,
             remainingPauseMins
         };
-    }, [workSessions, breakSessions]);
+    }, [workSessions, breakSessions, safeSessions]);
 
     // Filtered video history (only currently completed videos)
     const filteredVideoHistory = useMemo(() => {
@@ -167,7 +174,9 @@ export const useReportData = ({
             groups[key].sessionIds.push(session.timestamp);
         });
         return Object.values(groups).sort((a, b) => b.date - a.date);
-    }, [workSessions]);    // Weekend gap filtering logic
+    }, [workSessions]);
+
+    // Weekend gap filtering logic
     const filterWeekendGaps = useCallback((data: ChartItem[]) => {
         return data.filter((item) => {
             const d = new Date(item.date);
@@ -198,13 +207,14 @@ export const useReportData = ({
             return day === 0;
         });
     }, []);
+
     // Chart data for duration
     const chartData = useMemo(() => {
         const dailyData: Record<string, { seconds: number; courseIds: Set<string> }> = {};
         workSessions.forEach(session => {
             if (!session.timestamp) return;
             const dateObj = new Date(session.timestamp);
-            const dateKey = dateObj.toISOString().split('T')[0];
+            const dateKey = getLocalYMD(dateObj);
             if (!dailyData[dateKey]) {
                 dailyData[dateKey] = { seconds: 0, courseIds: new Set() };
             }
@@ -217,7 +227,7 @@ export const useReportData = ({
         for (let i = loopDays; i >= 0; i--) {
             const d = new Date();
             d.setDate(d.getDate() - i);
-            const dateKey = d.toISOString().split('T')[0];
+            const dateKey = getLocalYMD(d);
             const dayInfo = dailyData[dateKey] || { seconds: 0, courseIds: new Set() };
             const courseNames = Array.from(dayInfo.courseIds).map(id => getCourseName(id));
 
@@ -239,7 +249,7 @@ export const useReportData = ({
         const dailyCounts: Record<string, { count: number; courseIds: Set<string> }> = {};
         filteredVideoHistory.forEach(history => {
             if (!history.timestamp) return;
-            const dateKey = new Date(history.timestamp).toISOString().split('T')[0];
+            const dateKey = getLocalYMD(history.timestamp);
             if (!dailyCounts[dateKey]) {
                 dailyCounts[dateKey] = { count: 0, courseIds: new Set() };
             }
@@ -252,7 +262,7 @@ export const useReportData = ({
         for (let i = loopDays; i >= 0; i--) {
             const d = new Date();
             d.setDate(d.getDate() - i);
-            const dateKey = d.toISOString().split('T')[0];
+            const dateKey = getLocalYMD(d);
             const dayInfo = dailyCounts[dateKey] || { count: 0, courseIds: new Set() };
             const courseNames = Array.from(dayInfo.courseIds).map(id => getCourseName(id));
 
@@ -281,7 +291,7 @@ export const useReportData = ({
 
         workSessions.forEach(s => {
             if (!s.timestamp) return;
-            const dateStr = new Date(s.timestamp).toISOString().split('T')[0];
+            const dateStr = getLocalYMD(s.timestamp);
             if (!dates[dateStr]) {
                 dates[dateStr] = {
                     hours: 0,
@@ -297,7 +307,7 @@ export const useReportData = ({
 
         filteredVideoHistory.forEach(h => {
             if (!h.timestamp) return;
-            const dateStr = new Date(h.timestamp).toISOString().split('T')[0];
+            const dateStr = getLocalYMD(h.timestamp);
             if (!dates[dateStr]) {
                 dates[dateStr] = {
                     hours: 0,

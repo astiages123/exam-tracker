@@ -1,13 +1,18 @@
+// Legacy pause interface - kept for backward compatibility during migration
 export interface Pause {
     start: number;
     end: number;
 }
 
+// Session types
+export type SessionType = 'work' | 'break' | 'long_break' | 'pause';
+
 // Renamed to StudySession to avoid conflict with Auth Session
 export interface StudySession {
     timestamp: number;
     duration: number;
-    type: 'work' | 'break' | 'long_break'; // Assuming potential types
-    courseId: string;
+    type: SessionType;
+    courseId: string | null;
+    // Legacy field - pauses are now separate sessions, but kept for old data compatibility
     pauses?: Pause[];
 }

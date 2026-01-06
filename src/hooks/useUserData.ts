@@ -3,9 +3,11 @@
  * 
  * Encapsulates all user data loading, saving, and state management
  * for progress, sessions, schedule, and video history.
+ * 
+ * Uses legacy user_progress table with JSONB columns
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '@/config/supabase';
 import courseDataJson from '@/features/course/data/courses.json';
@@ -18,6 +20,11 @@ import type {
     WeeklySchedule,
     VideoHistoryItem
 } from '@/types';
+
+// Activity log type
+interface ActivityLog {
+    [date: string]: number; // date (YYYY-MM-DD) -> video count
+}
 
 // Define the return type of the hook
 interface UseUserDataReturn {
@@ -45,6 +52,7 @@ interface UseUserDataReturn {
 
 /**
  * Hook for managing user data persistence with Supabase
+ * Uses legacy user_progress table with JSONB columns
  * 
  * @param user - The authenticated user object (Supabase User)
  * @returns User data state and methods
@@ -55,12 +63,19 @@ export const useUserData = (user: User | null): UseUserDataReturn => {
     const [sessions, setSessions] = useState<StudySession[]>([]);
     const [schedule, setSchedule] = useState<WeeklySchedule>({});
     const [videoHistory, setVideoHistory] = useState<VideoHistoryItem[]>([]);
+    const [activityLog, setActivityLog] = useState<ActivityLog>({});
     const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
 
     // Track the last active course for session management
     const [lastActiveCourseId, setLastActiveCourseId] = useState<string | null>(null);
 
-    // Load user data from Supabase
+    // Track added sessions - use ref to detect new sessions reliably
+    const prevSessionsCountRef = useRef<number>(0);
+
+    // Debounce timer ref for saving
+    const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Load user data from user_progress table
     useEffect(() => {
         // Reset state immediately to prevent data leakage from previous user
         setIsDataLoaded(false);
@@ -68,67 +83,61 @@ export const useUserData = (user: User | null): UseUserDataReturn => {
         setSessions([]);
         setSchedule({});
         setVideoHistory([]);
+        setActivityLog({});
+        prevSessionsCountRef.current = 0;
 
         async function loadData() {
             if (user && supabase) {
                 try {
-                    // Fetch all normalized data in parallel
-                    const [
-                        { data: progressRows },
-                        { data: sessionRows },
-                        { data: scheduleRows },
-                        { data: videoHistoryRows }
-                    ] = await Promise.all([
-                        supabase.from('course_progress').select('course_id, completed_video_ids').eq('user_id', user.id),
-                        supabase.from('study_sessions').select('*').eq('user_id', user.id).order('started_at', { ascending: true }),
-                        supabase.from('user_schedule').select('day_of_week, time_slot, subject').eq('user_id', user.id),
-                        supabase.from('video_history').select('course_id, video_id, watched_at').eq('user_id', user.id).order('watched_at', { ascending: true })
-                    ]);
+                    const { data, error } = await supabase
+                        .from('user_progress')
+                        .select('progress_data, sessions, schedule, activity_log, video_history')
+                        .eq('user_id', user.id)
+                        .single();
 
-                    // Map course_progress to UserProgressData
-                    if (progressRows) {
-                        const pData: UserProgressData = {};
-                        progressRows.forEach(row => {
-                            pData[row.course_id] = row.completed_video_ids;
-                        });
-                        setProgressData(pData);
+                    if (error) {
+                        if (error.code === 'PGRST116') {
+                            // No row found, create initial row
+                            await supabase.from('user_progress').insert({
+                                user_id: user.id,
+                                progress_data: {},
+                                sessions: [],
+                                schedule: {},
+                                activity_log: {},
+                                video_history: []
+                            });
+                        } else {
+                            console.error('Error loading user_progress:', error);
+                        }
+                    } else if (data) {
+                        // Set progress data
+                        if (data.progress_data) {
+                            setProgressData(data.progress_data as UserProgressData);
+                        }
+
+                        // Set sessions
+                        if (data.sessions && Array.isArray(data.sessions)) {
+                            setSessions(data.sessions as StudySession[]);
+                            prevSessionsCountRef.current = data.sessions.length;
+                        }
+
+                        // Set schedule
+                        if (data.schedule) {
+                            setSchedule(data.schedule as WeeklySchedule);
+                        }
+
+                        // Set activity log
+                        if (data.activity_log) {
+                            setActivityLog(data.activity_log as ActivityLog);
+                        }
+
+                        // Set video history
+                        if (data.video_history && Array.isArray(data.video_history)) {
+                            setVideoHistory(data.video_history as VideoHistoryItem[]);
+                        }
                     }
-
-                    // Map study_sessions to StudySession[]
-                    if (sessionRows) {
-                        const sData: StudySession[] = sessionRows.map(row => ({
-                            timestamp: new Date(row.started_at).getTime(),
-                            duration: row.duration_ms,
-                            type: row.session_type as any,
-                            courseId: row.course_id,
-                            pauses: row.pauses
-                        }));
-                        setSessions(sData);
-                    }
-
-                    // Map user_schedule to WeeklySchedule
-                    if (scheduleRows) {
-                        const schData: WeeklySchedule = {};
-                        scheduleRows.forEach(row => {
-                            const day = row.day_of_week;
-                            if (!schData[day]) schData[day] = [];
-                            schData[day].push({ time: row.time_slot, subject: row.subject });
-                        });
-                        setSchedule(schData);
-                    }
-
-                    // Map video_history to VideoHistoryItem[]
-                    if (videoHistoryRows) {
-                        const vhData: VideoHistoryItem[] = videoHistoryRows.map(row => ({
-                            videoId: row.video_id,
-                            courseId: row.course_id,
-                            timestamp: row.watched_at
-                        }));
-                        setVideoHistory(vhData);
-                    }
-
                 } catch (error) {
-                    console.error('Error loading normalized data:', error);
+                    console.error('Error loading user data:', error);
                 }
                 setIsDataLoaded(true);
             }
@@ -136,131 +145,118 @@ export const useUserData = (user: User | null): UseUserDataReturn => {
         loadData();
     }, [user]);
 
-    // Debounced save to Supabase (Individual table updates)
-    // Note: In a fully optimized app, we would update tables immediately on action,
-    // but to keep the current hook logic, we sync the state.
-    useEffect(() => {
-        if (user && isDataLoaded && supabase) {
-            const saveData = async () => {
-                if (!supabase) return;
+    // Save all data to user_progress table (debounced)
+    const saveData = useCallback(async () => {
+        if (!user || !supabase || !isDataLoaded) return;
 
-                try {
-                    // 1. Update Course Progress
-                    for (const [courseId, videoIds] of Object.entries(progressData)) {
-                        await supabase.rpc('update_course_progress', {
-                            p_course_id: courseId,
-                            p_completed_video_ids: videoIds
-                        });
-                    }
+        try {
+            const { error } = await supabase
+                .from('user_progress')
+                .update({
+                    progress_data: progressData,
+                    sessions: sessions,
+                    schedule: schedule,
+                    activity_log: activityLog,
+                    video_history: videoHistory,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('user_id', user.id);
 
-                    // 2. Update Schedule (simplified: delete and re-insert for the user)
-                    // In a production app, you might want to be more surgical
-                    if (Object.keys(schedule).length > 0) {
-                        await supabase.from('user_schedule').delete().eq('user_id', user.id);
-                        const scheduleInserts = Object.entries(schedule).flatMap(([day, items]) =>
-                            items.map(item => ({
-                                user_id: user.id,
-                                day_of_week: day,
-                                time_slot: item.time,
-                                subject: item.subject
-                            }))
-                        );
-                        if (scheduleInserts.length > 0) {
-                            await supabase.from('user_schedule').insert(scheduleInserts);
-                        }
-                    }
-
-                    // Note: Sessions and Video History are typically added via actions, 
-                    // not debounced state sync, to avoid duplicates.
-                    // The useEffect here handles progress and schedule sync.
-
-                } catch (e) {
-                    console.error('Unexpected error saving data:', e instanceof Error ? e.message : e);
-                }
-            };
-
-            const timeoutId = setTimeout(saveData, 1000); // Longer debounce for batch updates
-            return () => clearTimeout(timeoutId);
-        }
-    }, [user, progressData, schedule, isDataLoaded]);
-
-    // Track added sessions separately to avoid bulk sync issues
-    useEffect(() => {
-        if (user && isDataLoaded && supabase && sessions.length > 0) {
-            const lastSession = sessions[sessions.length - 1];
-            // Simple check: if it's very recent, add it to DB
-            const isRecent = (Date.now() - lastSession.timestamp) < 5000;
-            if (isRecent) {
-                supabase.rpc('add_study_session', {
-                    p_course_id: lastSession.courseId,
-                    p_session_type: lastSession.type,
-                    p_duration_ms: lastSession.duration,
-                    p_pauses: lastSession.pauses
-                });
+            if (error) {
+                console.error('[useUserData] Error saving data:', error);
             }
+        } catch (e) {
+            console.error('[useUserData] Exception saving data:', e);
         }
-    }, [sessions.length]);
+    }, [user, isDataLoaded, progressData, sessions, schedule, activityLog, videoHistory]);
+
+    // Trigger save whenever data changes (debounced)
+    useEffect(() => {
+        if (!isDataLoaded) return;
+
+        if (saveTimeoutRef.current) {
+            clearTimeout(saveTimeoutRef.current);
+        }
+
+        saveTimeoutRef.current = setTimeout(() => {
+            saveData();
+        }, 1000);
+
+        return () => {
+            if (saveTimeoutRef.current) {
+                clearTimeout(saveTimeoutRef.current);
+            }
+        };
+    }, [progressData, sessions, schedule, activityLog, videoHistory, isDataLoaded, saveData]);
 
     /**
      * Update progress for a specific course
      * Handles video history updates and triggers celebrations
      */
     const updateProgress = useCallback((courseId: string, newCompletedIds: number[], onCelebration?: (courseName: string) => void) => {
+        if (!user) return;
+
         setLastActiveCourseId(courseId);
 
-        // Get old state for comparison
+        // Calculate changes
         setProgressData(prev => {
             const oldCompletedIds = prev[courseId] || [];
-
-            // Find newly added videos
             const addedIds = newCompletedIds.filter(id => !oldCompletedIds.includes(id));
+            const removedIds = oldCompletedIds.filter(id => !newCompletedIds.includes(id));
 
-            // Update video history for new completions
+            // Update video history for added videos
             if (addedIds.length > 0) {
+                const now = new Date();
+                const newHistoryItems: VideoHistoryItem[] = addedIds.map(vidId => ({
+                    videoId: vidId,
+                    courseId: courseId,
+                    timestamp: now.toISOString()
+                }));
+
                 setVideoHistory(prevHistory => {
-                    let updatedHistory = [...prevHistory];
-
-                    addedIds.forEach(vidId => {
-                        const alreadyExists = updatedHistory.some(
-                            h => h.courseId === courseId && h.videoId === vidId
-                        );
-                        if (!alreadyExists) {
-                            updatedHistory.push({
-                                videoId: vidId,
-                                courseId: courseId,
-                                timestamp: new Date().toISOString()
-                            });
-                        }
-                    });
-
-                    return updatedHistory;
+                    const existingIds = new Set(
+                        prevHistory
+                            .filter(h => h.courseId === courseId)
+                            .map(h => h.videoId)
+                    );
+                    const toAdd = newHistoryItems.filter(item => !existingIds.has(item.videoId));
+                    return [...prevHistory, ...toAdd];
                 });
+
+                // Update activity log
+                const dateKey = now.toISOString().split('T')[0];
+                setActivityLog(prevLog => ({
+                    ...prevLog,
+                    [dateKey]: (prevLog[dateKey] || 0) + addedIds.length
+                }));
             }
 
-            // Trigger celebration for course completion
+            // Remove from video history for removed videos
+            if (removedIds.length > 0) {
+                setVideoHistory(prevHistory =>
+                    prevHistory.filter(h => !(h.courseId === courseId && removedIds.includes(h.videoId)))
+                );
+            }
+
+            // Celebration logic
             const course = courseData.flatMap(cat => cat.courses).find(c => c.id === courseId);
-            if (course && newCompletedIds.length === course.totalVideos) {
-                const wasCompletedBefore = oldCompletedIds.length === course.totalVideos;
-                if (!wasCompletedBefore && onCelebration) {
-                    onCelebration(course.name);
-                }
+            if (course && newCompletedIds.length === course.totalVideos && oldCompletedIds.length < course.totalVideos) {
+                if (onCelebration) onCelebration(course.name);
             }
 
-            // Update progress data
+            // Return new progress state
+            const newState = { ...prev };
             if (newCompletedIds.length === 0) {
-                const newState = { ...prev };
                 delete newState[courseId];
-                return newState;
+            } else {
+                newState[courseId] = newCompletedIds;
             }
-            return {
-                ...prev,
-                [courseId]: newCompletedIds
-            };
+            return newState;
         });
-    }, []);
+    }, [user]);
 
     /**
-     * Add a new session (work or break)
+     * Add a new session (work, break, or pause)
      */
     const addSession = useCallback((session: StudySession) => {
         setSessions(prev => [...prev, session]);
@@ -270,8 +266,9 @@ export const useUserData = (user: User | null): UseUserDataReturn => {
      * Delete sessions by their timestamps
      */
     const deleteSessions = useCallback((timestampsToDelete: number[]) => {
+        if (!user) return;
         setSessions(prev => prev.filter(s => !timestampsToDelete.includes(s.timestamp)));
-    }, []);
+    }, [user]);
 
     /**
      * Update the schedule
@@ -284,8 +281,9 @@ export const useUserData = (user: User | null): UseUserDataReturn => {
      * Update an existing session
      */
     const updateSession = useCallback((oldTimestamp: number, updatedSession: StudySession) => {
+        if (!user) return;
         setSessions(prev => prev.map(s => s.timestamp === oldTimestamp ? updatedSession : s));
-    }, []);
+    }, [user]);
 
     return {
         // Data state

@@ -16,7 +16,7 @@ export const formatVideoDuration = (minutes: number): string => {
     const s = totalSeconds % 60;
 
     if (h > 0) {
-        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     }
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 };

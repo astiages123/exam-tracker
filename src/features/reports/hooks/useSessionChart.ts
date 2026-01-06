@@ -30,6 +30,7 @@ interface UseSessionChartProps {
     };
     workSessions: StudySession[];
     breakSessions: StudySession[];
+    pauseSessions?: StudySession[]; // New: pause sessions as separate entities
     isMobile: boolean;
     onUpdate: (oldTimestamp: number, updatedSession: StudySession) => void;
 }
@@ -38,6 +39,7 @@ export const useSessionChart = ({
     group,
     workSessions,
     breakSessions,
+    pauseSessions = [],
     isMobile,
     onUpdate
 }: UseSessionChartProps) => {
@@ -89,56 +91,90 @@ export const useSessionChart = ({
         const targetDate = new Date(group.date);
         const dayWork = workSessions.filter(s => isSameDay(s.timestamp, targetDate) && s.courseId === group.courseId);
         const dayBreaks = breakSessions.filter(s => isSameDay(s.timestamp, targetDate));
+        const dayPauses = pauseSessions.filter(s => isSameDay(s.timestamp, targetDate) && s.courseId === group.courseId);
 
         let finalItems: TimelineItem[] = [];
 
+        // Process work sessions
         dayWork.forEach(s => {
-            const pauses = [...(s.pauses || [])].sort((a, b) => a.start - b.start);
-            const totalPauseMs = pauses.reduce((acc, p) => acc + (p.end - p.start), 0);
-            const sessionEndMs = s.timestamp + (s.duration * 1000) + totalPauseMs;
+            // Check if session has nested pauses (legacy data)
+            const hasNestedPauses = s.pauses && s.pauses.length > 0;
 
-            let currentStart = s.timestamp;
-            let segmentIndex = 1;
-            const hasPauses = pauses.length > 0;
+            if (hasNestedPauses) {
+                // Legacy handling: split work session by nested pauses
+                const pauses = [...(s.pauses || [])].sort((a, b) => a.start - b.start);
+                const totalPauseMs = pauses.reduce((acc, p) => acc + (p.end - p.start), 0);
+                const sessionEndMs = s.timestamp + (s.duration * 1000) + totalPauseMs;
 
-            pauses.forEach((p, pIdx) => {
-                if (p.start > currentStart) {
+                let currentStart = s.timestamp;
+                let segmentIndex = 1;
+
+                pauses.forEach((p, pIdx) => {
+                    if (p.start > currentStart) {
+                        finalItems.push({
+                            start: new Date(currentStart),
+                            end: new Date(p.start),
+                            type: 'work',
+                            duration: (p.start - currentStart) / 1000,
+                            sessionId: s.timestamp,
+                            originalSession: s,
+                            segmentLabel: segmentIndex === 1 ? 'Başlangıç' : 'Devam'
+                        });
+                        segmentIndex++;
+                    }
+                    finalItems.push({
+                        start: new Date(p.start),
+                        end: new Date(p.end),
+                        type: 'pause-interval',
+                        duration: (p.end - p.start) / 1000,
+                        sessionId: s.timestamp,
+                        pauseIndex: pIdx,
+                        originalSession: s
+                    });
+                    currentStart = p.end;
+                });
+
+                if (sessionEndMs > currentStart) {
                     finalItems.push({
                         start: new Date(currentStart),
-                        end: new Date(p.start),
+                        end: new Date(sessionEndMs),
                         type: 'work',
-                        duration: (p.start - currentStart) / 1000,
+                        duration: (sessionEndMs - currentStart) / 1000,
                         sessionId: s.timestamp,
                         originalSession: s,
-                        segmentLabel: hasPauses ? (segmentIndex === 1 ? 'Başlangıç' : 'Devam') : null
+                        segmentLabel: segmentIndex === 1 ? null : 'Devam'
                     });
-                    segmentIndex++;
                 }
+            } else {
+                // New format: simple work session without nested pauses
+                const start = new Date(s.timestamp);
+                const end = new Date(s.timestamp + (s.duration * 1000));
                 finalItems.push({
-                    start: new Date(p.start),
-                    end: new Date(p.end),
-                    type: 'pause-interval',
-                    duration: (p.end - p.start) / 1000,
-                    sessionId: s.timestamp,
-                    pauseIndex: pIdx,
-                    originalSession: s
-                });
-                currentStart = p.end;
-            });
-
-            if (sessionEndMs > currentStart) {
-                finalItems.push({
-                    start: new Date(currentStart),
-                    end: new Date(sessionEndMs),
+                    start,
+                    end,
                     type: 'work',
-                    duration: (sessionEndMs - currentStart) / 1000,
+                    duration: s.duration,
                     sessionId: s.timestamp,
-                    originalSession: s,
-                    segmentLabel: hasPauses ? (segmentIndex === 1 ? 'Başlangıç' : 'Devam') : null
+                    originalSession: s
                 });
             }
         });
 
+        // Process pause sessions (new format - separate sessions)
+        dayPauses.forEach(s => {
+            const start = new Date(s.timestamp);
+            const end = new Date(s.timestamp + (s.duration * 1000));
+            finalItems.push({
+                start,
+                end,
+                type: 'pause-interval',
+                duration: s.duration,
+                sessionId: s.timestamp,
+                originalSession: s
+            });
+        });
+
+        // Process break sessions
         dayBreaks.forEach(s => {
             const start = new Date(s.timestamp);
             const end = new Date(s.timestamp + (s.duration * 1000));

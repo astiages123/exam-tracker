@@ -144,15 +144,63 @@ export const useAppController = () => {
     ) => {
         if (!isDataLoaded) return;
 
-        const newSession = {
-            timestamp: startTime || new Date().setSeconds(0, 0),
-            duration,
-            type,
-            courseId: overrideCourseId || lastActiveCourseId || 'general',
-            pauses: pauses || []
-        };
+        // Her zaman aktif kurs ID'sini kullan (bulamazsa 'general')
+        const currentCourseId = overrideCourseId || lastActiveCourseId || 'general';
 
-        addSession(newSession);
+        // If there are pauses, we need to split the session into segments
+        if (pauses && pauses.length > 0) {
+            const sortedPauses = [...pauses].sort((a, b) => a.start - b.start);
+            let currentStart = startTime;
+
+            sortedPauses.forEach(pause => {
+                if (pause.start > currentStart) {
+                    const segmentDuration = Math.floor((pause.start - currentStart) / 1000);
+                    if (segmentDuration > 0) {
+                        addSession({
+                            timestamp: currentStart,
+                            duration: segmentDuration,
+                            type: type, // Use original session type
+                            courseId: currentCourseId
+                        });
+                    }
+                }
+
+                const pauseDuration = Math.floor((pause.end - pause.start) / 1000);
+                if (pauseDuration > 0) {
+                    addSession({
+                        timestamp: pause.start,
+                        duration: pauseDuration,
+                        type: 'pause',
+                        courseId: currentCourseId // Pause should belong to the current course
+                    });
+                }
+                currentStart = pause.end;
+            });
+
+            // Final segment after the last pause
+            const sessionEndTime = startTime + (duration * 1000);
+            const totalPauseMs = sortedPauses.reduce((acc, p) => acc + (p.end - p.start), 0);
+            const adjustedEndTime = sessionEndTime + totalPauseMs;
+
+            if (adjustedEndTime > currentStart) {
+                const remainingDuration = Math.floor((adjustedEndTime - currentStart) / 1000);
+                if (remainingDuration > 0) {
+                    addSession({
+                        timestamp: currentStart,
+                        duration: remainingDuration,
+                        type: type, // Use original session type
+                        courseId: currentCourseId
+                    });
+                }
+            }
+        } else {
+            addSession({
+                timestamp: startTime || Date.now(),
+                duration,
+                type,
+                courseId: currentCourseId
+            });
+        }
     }, [isDataLoaded, lastActiveCourseId, addSession]);
 
     const handleUpdateSession = useCallback((oldTimestamp: number, updatedSession: StudySession) => {
