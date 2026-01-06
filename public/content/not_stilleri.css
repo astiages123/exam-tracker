@@ -1,0 +1,1234 @@
+/*
+ * Not Stilleri (not_stilleri.css)
+ * ================================
+ * Pandoc HTML çıktıları için profesyonel web tasarımı
+ * 
+ * Fontlar:
+ *   - Gövde metni: Poppins / Figtree / Geist (User Choice)
+ *   - Başlıklar: Outfit
+ * 
+ * Tasarım Sistemi: Premium Glassmorphism & Modern Dark Theme
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+/* ============================================================================
+   CSS DEĞİŞKENLERİ
+   ============================================================================ */
+
+:root {
+    /* Renkler - Cyan-ish Modern Theme */
+    --color-bg: #14181E;
+    --color-bg-secondary: #1E2530;
+    --color-bg-card: #242B38;
+    --color-bg-sidebar: #10141A;
+
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #f3f4f6;
+    --color-text-muted: #d1d5db;
+
+    --color-accent: #5CC8FA;
+    --color-accent-secondary: #4AE8A8;
+    --color-accent-light: rgba(92, 200, 250, 0.15);
+    --color-border: rgba(255, 255, 255, 0.18);
+    --color-border-dark: rgba(0, 0, 0, 0.3);
+
+    /* Gölgeler - Modern Flat Layering */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+    --shadow-card: 0 4px 12px -2px rgba(0, 0, 0, 0.3), 0 2px 6px -2px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
+
+    /* Boyutlar */
+    --sidebar-width: 300px;
+    --content-max-width: 900px;
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================================
+   TEMEL STİLLER
+   ============================================================================ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--color-text-primary);
+    background-color: var(--color-bg);
+    display: flex;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Sayılar ve hiyerarşik işaretler için Roboto */
+.num,
+.prefix-num {
+    font-family: 'Outfit', 'SF Mono', Consolas, monospace;
+    font-weight: 500;
+}
+
+/* ============================================================================
+   SIDEBAR - İÇİNDEKİLER
+   ============================================================================ */
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    background-color: var(--color-bg-sidebar);
+    border-right: 3px solid var(--color-accent);
+    padding: 3rem 1.5rem 2rem 1.5rem;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+body::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: rgba(56, 189, 248, 0.25);
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(56, 189, 248, 0.45);
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: var(--color-border-dark);
+    border-radius: 2px;
+}
+
+.sidebar h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-accent);
+    margin-top: 0.715rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    opacity: 1;
+    border-bottom: 2px solid var(--color-accent);
+    text-align: center;
+    justify-content: center;
+    display: flex;
+}
+
+.toc-list {
+    list-style: none;
+}
+
+.toc-list>li {
+    margin-bottom: 0.5rem;
+}
+
+.toc-list a {
+    display: block;
+    padding: 0.6rem 0.75rem;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.toc-list a:hover,
+.toc-list a.active {
+    color: var(--color-accent);
+    background-color: var(--color-accent-light);
+    text-decoration: none;
+}
+
+.toc-sublist {
+    list-style: none;
+    margin-left: 1rem;
+    margin-top: 0.25rem;
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--color-accent);
+}
+
+.toc-sublist li {
+    margin-bottom: 0.25rem;
+}
+
+.toc-sublist a {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.5rem;
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+/* ============================================================================
+   ANA İÇERİK
+   ============================================================================ */
+
+/* Plotly Legend fixes to match disabled interactivity */
+.legend,
+.legendtext,
+.legenditems,
+.groups {
+    cursor: default !important;
+}
+
+.plotly-wrapper {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 1rem;
+    margin: 2.5rem auto;
+    /* Ortalandı ve margin düşürüldü */
+    max-width: 600px;
+    /* Tekli grafiklerin devasa olması engellendi */
+    box-shadow:
+        0 15px 35px -15px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+    overflow: visible;
+    /* Legend ve diğer elementlerin görünmesi için visible */
+}
+
+/* Grafik Yan Yana Dizilim */
+.chart-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 2.5rem 0;
+    width: 100%;
+    align-items: stretch;
+    justify-content: center;
+    /* Grafikleri ortala */
+}
+
+.chart-row .plotly-wrapper {
+    flex: 1 1 200px;
+    min-width: 200px;
+    max-width: 45%;
+    /* Yan yana geldiklerinde çok büyümesinler */
+    margin: 0;
+    padding: 0.25rem;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.chart-row .plotly-chart-container {
+    min-height: 220px;
+    /* Belirgin şekilde kısaltıldı */
+}
+
+@media (max-width: 768px) {
+    .chart-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .chart-row .plotly-wrapper {
+        min-width: 100%;
+    }
+
+    .chart-row .plotly-chart-container {
+        min-height: 280px;
+        /* Mobilde biraz daha genişlik/yükseklik dengesi */
+    }
+}
+
+.plotly-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    opacity: 0.5;
+}
+
+.plotly-wrapper:hover {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.7);
+}
+
+.plotly-chart-container {
+    width: 100%;
+    min-height: 250px;
+    /* Varsayılan yükseklik */
+    height: 100%;
+    /* Parent'ı doldur */
+    overflow: visible;
+    /* Legend ve diğer öğelerin görünmesi için */
+}
+
+.content {
+    margin-left: var(--sidebar-width);
+    flex: 1;
+    padding: 3rem 2.5rem;
+    max-width: calc(100% - var(--sidebar-width));
+    min-width: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+.content>* {
+    max-width: var(--content-max-width);
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-wrap: break-word;
+}
+
+/* Ortak Başlık Özellikleri */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Outfit', sans-serif;
+    line-height: 1.3;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 2rem 0;
+    padding-bottom: 1.5rem;
+    background: linear-gradient(90deg, var(--color-accent), var(--color-accent-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    border-bottom: 2px solid var(--color-border);
+    letter-spacing: -0.02em;
+    text-align: center;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 1.2rem 0;
+    letter-spacing: -0.01em;
+    text-align: center;
+    color: var(--color-accent);
+    padding-left: 1rem;
+}
+
+h2:first-of-type {
+    margin-top: 1rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 1.5rem 0;
+    color: var(--color-text-primary);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+h3 .prefix-num {
+    color: var(--color-accent);
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+h4,
+h5,
+h6 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 0.8rem 0;
+    color: var(--color-text-primary);
+}
+
+/* ============================================================================
+   METİN VE PARAGRAFLAR
+   ============================================================================ */
+
+p {
+    margin: 1rem 0;
+    text-indent: 0rem;
+    overflow-wrap: break-word;
+    /* Fix for long equations joining and overflowing */
+    line-height: 1.8;
+}
+
+p.no-indent {
+    text-indent: 0;
+}
+
+blockquote {
+    margin: 0.5rem 0 1.5rem 0;
+    padding: 0.5rem 0 0.5rem 1.5rem;
+    color: var(--color-text-secondary);
+    background: rgba(168, 85, 247, 0.05);
+    border-radius: 0 12px 12px 0;
+}
+
+/* Liste içindeki blockquote'ların stilini sıfırla (Sadece indentation amaçlı kullanılıyorlar) */
+li blockquote {
+    margin: 0.5rem 0;
+    padding: 0;
+    border-left: none;
+    background: transparent;
+    color: inherit;
+    border-radius: 0;
+}
+
+blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+strong,
+b {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+em,
+i {
+    font-style: italic;
+}
+
+a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: #60a5fa;
+    text-decoration: underline;
+}
+
+/* ============================================================================
+   LİSTELER
+   ============================================================================ */
+
+ul,
+ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+    color: var(--color-text-primary);
+    list-style-position: outside;
+}
+
+li {
+    margin-bottom: 1.2rem;
+    line-height: 1.5;
+    padding-left: 0.5rem;
+}
+
+li.no-bullet {
+    list-style: none;
+    padding-left: 0;
+}
+
+li p {
+    text-indent: 0;
+    margin-bottom: 0.5rem;
+}
+
+li::marker {
+    font-size: 1rem;
+    color: var(--color-accent);
+    font-weight: 700;
+}
+
+/* 1., a., i. Hiyerarşisi ve Sabitleme */
+
+/* Level 1: Sayılar (1.) */
+ol,
+ol[type="1"] {
+    list-style-type: decimal;
+}
+
+/* Level 2: Harfler (a.) */
+ol ol,
+ol[type="a"],
+ol[type="A"] {
+    list-style-type: lower-alpha;
+}
+
+/* Level 3: Romen Rakamları (i.) */
+ol ol ol,
+ol[type="i"],
+ol[type="I"] {
+    list-style-type: lower-roman;
+}
+
+/* Yapısal bozukluk durumunda (iç içe değilse) girintiyi zorla */
+ol[type="a"]:not(li > &),
+ol[type="A"]:not(li > &) {
+    margin-left: 2rem;
+}
+
+ol[type="i"]:not(li > &),
+ol[type="I"]:not(li > &) {
+    margin-left: 4rem;
+}
+
+/* Liste içindeki tabloların hizalaması */
+li .table-wrapper {
+    margin: 1rem 0;
+}
+
+/* ============================================================================
+   KARTLAR - ÖRNEK/SORU KUTULARI
+   ============================================================================ */
+
+.note-card {
+    background: var(--color-bg-card);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin: 1.5rem auto;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+}
+
+.note-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--color-accent), var(--color-accent-secondary));
+}
+
+.note-card p,
+.note-card li,
+.note-card ul,
+.note-card ol {
+    color: var(--color-text-primary);
+}
+
+.note-card strong {
+    color: var(--color-text-primary);
+}
+
+.example-title {
+    display: block;
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--color-text-primary);
+    font-size: 1rem;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0em;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 1.25rem;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    width: fit-content;
+}
+
+.example-title strong {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-right: 0.5rem;
+}
+
+.section-label {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-indent: 0 !important;
+}
+
+
+.badge {
+    display: block;
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    width: fit-content;
+}
+
+
+/* ============================================================================
+   MATEMATİK BLOKLARI
+   ============================================================================ */
+
+.math-block {
+    /* Legacy block support - keeping similar to new style */
+    background: #f8fafc;
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+}
+
+.math.display {
+    font-size: 1.1rem;
+    display: block;
+    text-align: center;
+    margin: 2rem auto;
+    /* Increased spacing to let it breathe */
+    padding: 1rem 2.5rem;
+    color: var(--color-text-primary);
+
+    /* Premium Glass/Card Look */
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+
+    box-shadow:
+        0 4px 20px -5px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+    overflow-x: auto;
+    width: fit-content;
+    min-width: 60%;
+    /* Ensure it's substantial enough */
+    max-width: 100%;
+
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.math.display:hover {
+    border-color: var(--color-accent);
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateY(-2px);
+    box-shadow:
+        0 15px 30px -10px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(92, 200, 250, 0.1);
+    /* Subtle accent glow */
+}
+
+/* Hide KaTeX scrollbar */
+.math.display::-webkit-scrollbar {
+    height: 6px;
+}
+
+.math.display::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.math.display::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+blockquote .math.display {
+    margin: 1.5rem auto;
+    background: rgba(0, 0, 0, 0.2);
+    /* Darker inside blockquotes */
+    border-color: transparent;
+    box-shadow: none;
+    width: 100%;
+    /* Full width inside blockquotes */
+    min-width: 100%;
+}
+
+.math.inline {
+    font-size: 1.1rem;
+    color: var(--color-text-primary);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.15rem 0.4rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin: 0 0.1rem;
+    vertical-align: middle;
+    transition: all 0.2s ease;
+}
+
+.math.inline:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.math.inline.math-frac {
+    font-size: 1rem;
+    line-height: 1.5;
+    padding: 0.5rem;
+    vertical-align: middle;
+    display: inline-block;
+    margin: 0 0.15rem;
+}
+
+/* KaTeX fix */
+.katex {
+    font-size: 1em !important;
+}
+
+/* Nested fractions (fractions within fractions) breathing room */
+.math.display .mfrac .mfrac {
+    font-size: 0.95em !important;
+    margin: 0.4rem 0 !important;
+    display: inline-block;
+    padding: 0.1rem 0;
+}
+
+/* ============================================================================
+   TABLOLAR
+   ============================================================================ */
+
+.table-wrapper {
+    overflow-x: auto;
+    margin: 1.5rem auto;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    -webkit-overflow-scrolling: touch;
+    max-width: var(--content-max-width);
+    border: 1px solid var(--color-border);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    background: var(--color-bg-card);
+    margin: 1.5rem auto;
+
+}
+
+thead,
+tr.section-header {
+    background: var(--color-bg-sidebar) !important;
+}
+
+th,
+td {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+}
+
+th {
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Muhasebe tabloları için hizalama koruması */
+td[style*="text-align: right"],
+td.text-right {
+    text-align: right !important;
+}
+
+td[style*="text-align: left"],
+td.text-left {
+    text-align: left !important;
+}
+
+td[style*="text-align: center"],
+td.text-center {
+    text-align: center !important;
+}
+
+tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* tbody tr:hover {
+    background: var(--color-accent-light);
+} */
+
+/* Muhasebe Tablosu Özel Stilleri */
+.table-title {
+    text-align: center;
+    background: var(--color-accent-light) !important;
+    color: var(--color-accent) !important;
+    font-size: 1rem;
+    padding: 1rem !important;
+}
+
+.split-cell {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.5rem !important;
+}
+
+.left-part {
+    font-family: 'Roboto', sans-serif;
+    color: var(--color-accent);
+    font-weight: 600;
+    min-width: 40px;
+}
+
+.right-part {
+    flex: 1;
+    text-align: left;
+    margin-left: 1rem;
+}
+
+.separator {
+    height: 10px;
+}
+
+.separator td {
+    background: rgba(255, 255, 255, 0.05) !important;
+    padding: 0 !important;
+    border: none !important;
+    height: 10px;
+}
+
+/* ============================================================================
+   KOD BLOKLARI
+   ============================================================================ */
+
+code {
+    font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+    font-size: 0.875em;
+    background: #f1f5f9;
+    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
+    color: #1e293b;
+}
+
+pre {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+}
+
+/* ============================================================================
+   GÖRSELLER
+   ============================================================================ */
+
+/* Premium Image Container Look */
+img {
+    max-width: 100%;
+    /* Responsive wrapper controls width */
+    width: auto !important;
+    /* Allow natural aspect ratio */
+    height: auto !important;
+    max-height: 500px;
+    /* Prevent overly tall images */
+
+    border-radius: 16px;
+    margin: 3rem auto;
+    /* Breathable spacing */
+    display: block;
+    cursor: zoom-in;
+
+    /* Glassy/Card effect */
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    /* Subtle border */
+    padding: 0.5rem;
+    /* Frame effect */
+
+    box-shadow:
+        0 10px 40px -10px rgba(0, 0, 0, 0.5),
+        /* Deep shadow */
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    /* Inner stroke */
+
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+img:hover {
+    transform: scale(1.02) translateY(-4px);
+    box-shadow:
+        0 20px 50px -10px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(92, 200, 250, 0.3);
+    /* Accent glow on hover */
+    background: rgba(255, 255, 255, 0.04);
+}
+
+/* Image inside blockquote - Integrated look */
+blockquote img {
+    margin: 1.5rem auto;
+    border: none;
+    padding: 0;
+    background: transparent;
+    box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.3);
+    max-height: 400px;
+}
+
+/* Modal Stilleri */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(10, 14, 20, 0.98);
+    backdrop-filter: blur(12px);
+    cursor: zoom-out;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-content {
+    margin: auto;
+    display: block;
+    max-width: 95%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    animation: zoom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-close {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    color: white;
+    font-size: 32px;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 2002;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-close:hover {
+    background: var(--color-accent);
+    color: #1a1f25;
+    transform: rotate(90deg);
+}
+
+#modal-caption {
+    margin-top: 20px;
+    display: block;
+    width: 80%;
+    max-width: 800px;
+    text-align: center;
+    color: var(--color-text-secondary);
+    padding: 10px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+figure {
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+figcaption {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-top: 0.5rem;
+}
+
+/* ============================================================================
+   RESPONSIVE TASARIM
+   ============================================================================ */
+
+@media (max-width: 1024px) {
+    :root {
+        --sidebar-width: 240px;
+    }
+
+    .content {
+        padding: 2rem 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform var(--transition-normal);
+        width: 280px;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .content {
+        margin-left: 0;
+        padding: 1.5rem;
+        max-width: 100%;
+    }
+
+    h1 {
+        font-size: 14pt;
+    }
+
+    h2 {
+        font-size: 12pt;
+        margin-top: 2rem;
+    }
+
+    h3 {
+        font-size: 11pt;
+    }
+
+    .note-card {
+        padding: 1rem 1.25rem;
+        margin: 1rem 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .content {
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 13pt;
+    }
+
+    .note-card {
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+    .math-block {
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+
+    table {
+        font-size: 0.8125rem;
+    }
+
+    th,
+    td {
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+/* ============================================================================
+   READING PROGRESS BAR
+   ============================================================================ */
+
+#reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--color-accent), var(--color-accent-secondary));
+    z-index: 9999;
+    transition: width 0.1s ease-out;
+    border-radius: 0 2px 2px 0;
+}
+
+/* ============================================================================
+   SEARCH FUNCTIONALITY
+   ============================================================================ */
+
+#search-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-bg-sidebar);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-inverse);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+#search-btn:hover {
+    background: var(--color-accent);
+    color: #1a1f25;
+    transform: scale(1.05);
+}
+
+#search-panel {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--color-bg-sidebar);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 0.5rem 0.75rem;
+    z-index: 1001;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+#search-panel.active {
+    display: flex;
+}
+
+#search-input {
+    width: 220px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-bg);
+    color: var(--color-text-inverse);
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+#search-input:focus {
+    border-color: var(--color-accent);
+}
+
+#search-input::placeholder {
+    color: var(--color-text-muted);
+}
+
+#search-count {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    min-width: 70px;
+    text-align: center;
+}
+
+#search-prev,
+#search-next,
+#search-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--color-text-inverse);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: background 0.2s ease;
+}
+
+#search-prev:hover,
+#search-next:hover {
+    background: var(--color-accent-light);
+}
+
+#search-close:hover {
+    background: rgba(255, 100, 100, 0.2);
+    color: #ff6464;
+}
+
+/* Search Highlights */
+mark.search-highlight {
+    background: rgba(56, 189, 248, 0.3);
+    color: inherit;
+    padding: 0.1em 0.2em;
+    border-radius: 3px;
+}
+
+mark.search-highlight.current {
+    background: var(--color-accent);
+    color: #0F1115;
+    font-weight: 600;
+}
+
+/* ============================================================================
+   BASKI STİLLERİ
+   ============================================================================ */
+
+@media print {
+    .sidebar {
+        display: none;
+    }
+
+    .content {
+        margin-left: 0;
+        padding: 0;
+        max-width: 100%;
+    }
+
+    .note-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    body {
+        background: white;
+        color: black;
+    }
+}

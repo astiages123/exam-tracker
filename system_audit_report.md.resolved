@@ -1,0 +1,539 @@
+# 🔍 Quiz & Soru Bankası Sistemi - Kapsamlı Denetim Raporu
+
+> **Tarih:** 6 Ocak 2026  
+> **Kapsam:** Veritabanı, SRS Motoru, Soru Fabrikası, Zengin İçerik, İstatistikler
+
+---
+
+## 📊 Mevcut Sistem Mimarisi
+
+```mermaid
+graph TB
+    subgraph "Frontend (React)"
+        QM[QuizModal.jsx]
+        QC[QuizChart.jsx]
+        QE[QuizExplanation.jsx]
+        LR[LatexRenderer]
+    end
+    
+    subgraph "Servisler (TypeScript)"
+        QS[quizService.ts]
+        SS[stockpileService.ts]
+        SE[srsEngine.ts]
+        RL[rateLimiter.ts]
+    end
+    
+    subgraph "AI Modelleri (Groq)"
+        W[Llama-3.1-8b<br/>Worker/Üretici]
+        V[Llama-3.3-70b<br/>Validator/Denetçi]
+    end
+    
+    subgraph "Supabase"
+        QB[(question_bank)]
+        LC[(lesson_chunks)]
+        UAQ[(user_answered_questions)]
+        US[(user_statistics)]
+        EB[(error_book)]
+    end
+    
+    QM --> QS
+    QS --> SE
+    QS --> QB
+    SS --> W --> V
+    SS --> QB
+    QS --> UAQ
+    SE --> UAQ
+```
+
+---
+
+## 1. 📈 VERİMLİLİK ANALİZİ
+
+### Mevcut Durum
+
+| Tablo | Tahmini Boyut | Mevcut İndeksler |
+|-------|---------------|------------------|
+| `question_bank` | 7.000+ soru hedefi | `chunk_id` üzerinde |
+| `lesson_chunks` | ~1.500 parça | `lesson_id`, `embedding (ivfflat)` |
+| `user_answered_questions` | Kullanıcı × Soru | `user_id`, `next_review_at` |
+
+### ⚠️ Kritik Eksiklikler
+
+#### 1.1 `question_bank` Tablosu İndeks Eksikliği
+
+```sql
+-- SORUN: Şu sorgu yavaşlayacak
+SELECT * FROM question_bank qb
+JOIN lesson_chunks lc ON lc.id = qb.chunk_id
+JOIN lessons l ON l.id = lc.lesson_id
+WHERE LOWER(l.name) = LOWER('Mikro İktisat')
+```
+
+> [!WARNING]
+> `ILIKE` ve `LOWER()` sorguları indeks kullanamaz. 7.000+ satırda **full table scan** yapar.
+
+**Çözüm Önerisi:**
+```sql
+-- 1. Lesson name için case-insensitive index
+CREATE INDEX IF NOT EXISTS lessons_name_lower_idx 
+ON lessons (LOWER(name));
+
+-- 2. Question bank için composite index
+CREATE INDEX IF NOT EXISTS question_bank_chunk_created_idx
+ON question_bank(chunk_id, created_at DESC);
+
+-- 3. JSONB içindeki 'verified' alanı için partial index
+CREATE INDEX IF NOT EXISTS question_bank_verified_idx
+ON question_bank ((question_data->>'verified')) 
+WHERE question_data->>'verified' = 'true';
+```
+
+#### 1.2 [fetchSmartMixQuestions](file:///Users/vedatdiyar/Desktop/exam-tracker-main/src/features/quiz/services/quizService.ts#99-194) Fonksiyonu Verimsizliği
+
+[quizService.ts:147-152](file:///Users/vedatdiyar/Desktop/exam-tracker-main/src/features/quiz/services/quizService.ts#L147-L152) dosyasında:
+
+```typescript
+// Tüm cevaplanmış soru ID'lerini çekiyor!
+const { data: answeredData } = await supabase!
+    .from('user_answered_questions')
+    .select('question_id')
+    .eq('user_id', userId);
+
+const answeredIds = new Set((answeredData || []).map((a: any) => a.question_id));
+```
+
+> [!CAUTION]
+> **Problem:** Kullanıcı 5.000 soru cevapladığında bu sorgu 5.000 UUID döndürür ve client-side filtreleme yapılır.
+
+**Çözüm:** Veritabanı seviyesinde RPC fonksiyonu:
+
+```sql
+CREATE OR REPLACE FUNCTION get_new_questions_for_user(
+    p_user_id UUID,
+    p_lesson_type TEXT,
+    p_limit INT DEFAULT 10
+)
+RETURNS SETOF question_bank
+LANGUAGE sql
+STABLE
+AS $$
+    SELECT qb.*
+    FROM question_bank qb
+    INNER JOIN lesson_chunks lc ON lc.id = qb.chunk_id
+    INNER JOIN lessons l ON l.id = lc.lesson_id
+    WHERE LOWER(l.name) = LOWER(p_lesson_type)
+      AND NOT EXISTS (
+          SELECT 1 FROM user_answered_questions uaq
+          WHERE uaq.question_id = qb.id AND uaq.user_id = p_user_id
+      )
+    ORDER BY random()
+    LIMIT p_limit;
+$$;
+```
+
+---
+
+## 2. 🧠 SRS (SM-2) ALGORİTMASI ANALİZİ
+
+### Mevcut Parametreler
+
+| Parametre | Değer | Açıklama |
+|-----------|-------|----------|
+| Başlangıç Ease Factor | 2.5 | Standart SM-2 |
+| İlk Doğru | 1 gün | ✅ Uygun |
+| İkinci Doğru | 6 gün | ✅ Uygun |
+| Sonraki Doğrular | `interval × ease` | Üstel büyüme |
+| Yanlış Ceza | EF -= 0.2 | Hafif ceza |
+| Minimum EF | 1.3 | Standart |
+
+### ⚠️ Potansiyel Sorunlar
+
+#### 2.1 "Yeni" vs "Bilinen" Ayrımı Yetersiz
+
+```typescript
+// srsEngine.ts:46-49
+if (newRepetitionCount === 1) {
+    newInterval = 1;  // İlk doğru: 1 gün
+} else if (newRepetitionCount === 2) {
+    newInterval = 6;  // İkinci doğru: 6 gün
+}
+```
+
+> [!IMPORTANT]
+> **Problem:** "Kolay bildiğim soruyu ilk kez görüyorum" ile "Zor öğrendiğim soruyu ilk kez doğru yaptım" aynı muameleyi görüyor.
+
+**Çözüm: Kullanıcıdan Güven Puanı Almak**
+
+```typescript
+// Önerilen: 0-5 skalası (Anki tarzı)
+interface SRSInput {
+    isCorrect: boolean;
+    confidence?: 'again' | 'hard' | 'good' | 'easy'; // YENİ
+    // ...
+}
+
+// easy → interval × 1.5 bonus
+// hard → interval × 0.8 penalty
+```
+
+#### 2.2 450 Saatlik Müfredat için Tempo Analizi
+
+**Hedef:** 7.000+ soru, ~450 saat çalışma
+
+| Senaryo | Günlük Yeni Soru | Günlük Review | Toplam/Gün |
+|---------|------------------|---------------|------------|
+| Yoğun Mod | 50 yeni | ~100 review | ~150 soru |
+| Normal Mod | 30 yeni | ~60 review | ~90 soru |
+| Hafif Mod | 15 yeni | ~30 review | ~45 soru |
+
+**Mevcut SM-2 Aralıkları:**
+- 1 → 6 → 15 → 38 → 95 gün...
+
+> [!NOTE]
+> Üstel büyüme çok hızlı. 5. tekrarda soru ~3 ay sonraya gidiyor. 450 saatlik yoğun hazırlık için **maksimum interval sınırı** gerekli.
+
+**Çözüm:**
+```typescript
+// srsEngine.ts'e ekle
+const MAX_INTERVAL = 30; // Sınav öncesi son 1 ay için
+newInterval = Math.min(Math.round(currentInterval * currentEaseFactor), MAX_INTERVAL);
+```
+
+---
+
+## 3. 🛡️ HATA TOLERANSI VE RETRY MEKANİZMASI
+
+### Mevcut Durum
+
+#### 3.1 [quizService.ts](file:///Users/vedatdiyar/Desktop/exam-tracker-main/src/features/quiz/services/quizService.ts) - Retry Mekanizması ✅
+
+```typescript
+// quizService.ts:396-465
+const MAX_RETRIES = 3;
+
+for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+    try {
+        // ... API çağrısı
+    } catch (error: any) {
+        if (error?.status === 429) {
+            const wait = 5000 * (attempt + 1); // Exponential backoff
+            await new Promise(res => setTimeout(res, wait));
+        }
+    }
+}
+```
+
+> [!TIP]
+> ✅ [quizService.ts](file:///Users/vedatdiyar/Desktop/exam-tracker-main/src/features/quiz/services/quizService.ts) içinde 3 deneme ve rate limit handling mevcut.
+
+#### 3.2 [stockpileService.ts](file:///Users/vedatdiyar/Desktop/exam-tracker-main/src/features/quiz/services/stockpileService.ts) - Retry Mekanizması ❌
+
+```typescript
+// stockpileService.ts:84-100
+try {
+    const completion = await openai.chat.completions.create({...});
+    return JSON.parse(completion.choices[0].message.content || "{}");
+} catch (e) {
+    console.error("Worker Generation Failed:", e);
+    return null; // ❌ Sadece null dönüyor, retry yok!
+}
+```
+
+> [!CAUTION]
+> **Problem:** Worker soru üretirken hata alırsa sistem sadece `null` dönüyor. Retry mekanizması yok!
+
+**Çözüm:**
+```typescript
+async function generateCandidateQuestion(chunkContent: string, lessonType: string): Promise<QuizQuestionData | null> {
+    const MAX_RETRIES = 3;
+    
+    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+        try {
+            await rateLimiter.waitForAvailability(2000);
+            // ... mevcut kod
+            return JSON.parse(completion.choices[0].message.content || "{}");
+        } catch (e: any) {
+            console.error(`Worker Generation Failed (Attempt ${attempt + 1}):`, e);
+            
+            if (e?.status === 429 && attempt < MAX_RETRIES - 1) {
+                await new Promise(r => setTimeout(r, 5000 * (attempt + 1)));
+                continue;
+            }
+            
+            // JSON parse hatası - içerik temizleme dene
+            if (e instanceof SyntaxError) {
+                try {
+                    const content = completion?.choices?.[0]?.message?.content || "";
+                    const cleaned = content.replace(/```json/g, '').replace(/```/g, '').trim();
+                    return JSON.parse(cleaned);
+                } catch {
+                    // Son deneme de başarısız
+                }
+            }
+        }
+    }
+    return null;
+}
+```
+
+#### 3.3 Validator Çökmesi Durumu
+
+```typescript
+// stockpileService.ts:148-151
+} catch (e) {
+    console.error("Validation Failed:", e);
+    return { isValid: false, notes: "Validation Exception" };
+}
+```
+
+> [!WARNING]
+> Validator çökerse soru **reddediliyor** (`isValid: false`). Bu güvenli bir fallback ama potansiyel olarak geçerli sorular kaybediliyor.
+
+**İyileştirme Önerisi:**
+- "Doğrulanmamış ama kayda değer" kategorisi eklenebilir
+- Daha sonra batch validation için kuyruğa alınabilir
+
+---
+
+## 4. 📊 RECHARTS GRAFİK VERİ TUTARLILIĞI
+
+### Mevcut Validasyon
+
+```typescript
+// quizService.ts:445-450
+if (parsedQuestion.chart_data) {
+    const cd = parsedQuestion.chart_data;
+    if (!cd.type || !cd.data || !Array.isArray(cd.data) || cd.data.length === 0) {
+        parsedQuestion.chart_data = null;
+    }
+}
+```
+
+### ⚠️ Eksik Kontroller
+
+> [!WARNING]
+> **Problem:** Veri yapısı kontrol ediliyor ama değerler doğrulanmıyor.
+
+```typescript
+// Bu geçer ama eksen uyumsuz olabilir:
+{
+    type: 'bar',
+    data: [
+        { label: 'A', value: 'yüz' },  // ❌ string value
+        { label: 'B', value: -50 },     // ⚠️ negatif değer
+        { label: 'C', value: null }     // ❌ null value
+    ]
+}
+```
+
+**Çözüm:**
+```typescript
+function validateChartData(chartData: any): boolean {
+    if (!chartData?.type || !chartData?.data || !Array.isArray(chartData.data)) {
+        return false;
+    }
+    
+    // Her veri noktasını kontrol et
+    return chartData.data.every((item: any) => 
+        typeof item.label === 'string' &&
+        typeof item.value === 'number' &&
+        !isNaN(item.value) &&
+        item.value >= 0 // negatif değer izin verilmiyorsa
+    );
+}
+
+// Kullanım
+if (parsedQuestion.chart_data && !validateChartData(parsedQuestion.chart_data)) {
+    console.warn('Chart data invalid, nullifying:', parsedQuestion.chart_data);
+    parsedQuestion.chart_data = null;
+}
+```
+
+### QuizChart.jsx Savunma Mekanizması
+
+```jsx
+// QuizChart.jsx:23-24
+export function QuizChart({ chartData, className = '' }) {
+    if (!chartData || !chartData.data) return null;
+    // ✅ Temel kontrol var
+```
+
+> [!TIP]
+> Render seviyesinde de try-catch eklenebilir.
+
+---
+
+## 5. 🖼️ GÖRSEL İŞLEME ANALİZİ
+
+### Mevcut Akış
+
+```mermaid
+sequenceDiagram
+    participant MD as Markdown Notu
+    participant QS as quizService.ts
+    participant AI as Groq/Llama
+    participant UI as QuizModal
+    
+    MD->>QS: extractImagesFromMarkdown()
+    QS->>QS: Görsel path'lerini çıkar
+    QS->>AI: Metin + Görsel META verisi
+    Note over AI: Görsel içeriği GÖRMİYOR<br/>Sadece path ve alt-text
+    AI->>QS: JSON response (related_image: "[GÖRSEL 1]")
+    QS->>QS: related_image → gerçek path mapping
+    QS->>UI: question_data
+    UI->>UI: <img src="/content/{path}" />
+```
+
+### ⚠️ Kritik Bulgu: Görseller AI'ya GİTMİYOR
+
+```typescript
+// quizService.ts:337-352
+const images = extractImagesFromMarkdown(sectionContent);
+// ...
+imageContexts.push(`[GÖRSEL ${index + 1} MEVCUT]: Bu noktada "${fullPath}" dosya yollu bir görsel/grafik var. Açıklaması/Etiketi: "${img.placeholder}".`);
+```
+
+> [!IMPORTANT]
+> **Sonuç:** AI modeli (Llama) görselin **içeriğini** görmüyor. Sadece:
+> - Dosya yolu
+> - Alt-text (varsa)
+> 
+> Bu, görsel tabanlı sorular için **ciddi bir kısıtlama**.
+
+### Çözüm Alternatifleri
+
+| Seçenek | Avantaj | Dezavantaj |
+|---------|---------|------------|
+| 1. GPT-4 Vision | Görsel anlama | Maliyet yüksek |
+| 2. Görsel → Metin OCR | Mevcut modelle çalışır | Karmaşık görsellerde yetersiz |
+| 3. Manuel annotasyon | En doğru | Zaman yoğun |
+| 4. Gelişmiş alt-text | Düşük maliyet | Kısıtlı bilgi |
+
+**Önerilen Hibrit Yaklaşım:**
+
+1. Markdown notlarında görsellere **detaylı alt-text** ekle:
+```markdown
+![Talep Eğrisi - X ekseninde miktar (0-100), Y ekseninde fiyat (0-50 TL), aşağı eğimli, elastik bölge işaretli](media/talep_egrisi.png)
+```
+
+2. [extractImagesFromMarkdown](file:///Users/vedatdiyar/Desktop/exam-tracker-main/src/features/quiz/services/quizUtils.ts#13-27) fonksiyonunu geliştir:
+```typescript
+export function extractImagesFromMarkdown(content: string): { 
+    placeholder: string; 
+    relativePath: string;
+    altText: string;  // YENİ
+    description?: string;  // YENİ: Ayrıştırılmış açıklama
+}[] {
+    // ... parse logic
+}
+```
+
+---
+
+## 6. 📈 İSTATİSTİK SİSTEMİ ANALİZİ
+
+### Alt Ders Bazlı Stok Doluluk Takibi
+
+```typescript
+// stockpileConfig.ts
+export const STOCKPILE_CONFIG: Record<string, number> = {
+    'Mikro İktisat': 1000,
+    'Makro İktisat': 900,
+    // ...
+};
+```
+
+### Eksik: Gerçek Zamanlı Doluluk Sorgusu
+
+> [!NOTE]
+> Stok hedefleri tanımlı ama mevcut doluluk oranını sorgulayan bir mekanizma yok.
+
+**Çözüm:**
+```sql
+CREATE OR REPLACE FUNCTION get_stockpile_status()
+RETURNS TABLE (
+    lesson_name TEXT,
+    target_count INT,
+    current_count BIGINT,
+    fill_percentage FLOAT,
+    verified_count BIGINT
+)
+LANGUAGE sql
+STABLE
+AS $$
+    SELECT 
+        l.name AS lesson_name,
+        COALESCE(sc.target, 100) AS target_count,
+        COUNT(qb.id) AS current_count,
+        (COUNT(qb.id)::FLOAT / COALESCE(sc.target, 100)) * 100 AS fill_percentage,
+        COUNT(qb.id) FILTER (WHERE qb.question_data->>'verified' = 'true') AS verified_count
+    FROM lessons l
+    LEFT JOIN lesson_chunks lc ON lc.lesson_id = l.id
+    LEFT JOIN question_bank qb ON qb.chunk_id = lc.id
+    LEFT JOIN stockpile_config sc ON sc.lesson_name = l.name  -- Bu tablo eklenmeli
+    GROUP BY l.name, sc.target
+    ORDER BY fill_percentage ASC;
+$$;
+```
+
+### SRS Başarı Takibi
+
+Mevcut migration'da [user_answered_questions](file:///Users/vedatdiyar/Desktop/exam-tracker-main/supabase/migrations/010_add_srs_fields.sql) ile SRS verileri takip ediliyor:
+- `ease_factor`
+- `interval`
+- `repetition_count`
+- `next_review_at`
+
+> [!TIP]
+> ✅ SRS tracking mevcut ve iyi yapılandırılmış.
+
+---
+
+## 📋 ÖNCELİKLİ AKSIYON ÖĞELERİ
+
+### 🔴 Kritik (Hemen Yapılmalı)
+
+1. **Stockpile Retry Mekanizması**
+   - [stockpileService.ts](file:///Users/vedatdiyar/Desktop/exam-tracker-main/src/features/quiz/services/stockpileService.ts) dosyasına retry logic ekle
+   - Tahmini süre: 1 saat
+
+2. **Chart Data Validasyonu**
+   - [quizService.ts](file:///Users/vedatdiyar/Desktop/exam-tracker-main/src/features/quiz/services/quizService.ts) içinde `validateChartData()` fonksiyonu ekle
+   - Tahmini süre: 30 dakika
+
+### 🟡 Önemli (Bu Hafta)
+
+3. **SRS Max Interval Sınırı**
+   - [srsEngine.ts](file:///Users/vedatdiyar/Desktop/exam-tracker-main/src/features/quiz/logic/srsEngine.ts) dosyasına `MAX_INTERVAL = 30` ekle
+   - Tahmini süre: 15 dakika
+
+4. **Veritabanı İndeksleri**
+   - Yeni migration dosyası oluştur: `011_performance_indexes.sql`
+   - Tahmini süre: 1 saat
+
+### 🟢 İyileştirme (Bu Ay)
+
+5. **"Yeni Soru" RPC Fonksiyonu**
+   - Client-side filtrelemeyi DB seviyesine taşı
+   - Tahmini süre: 2 saat
+
+6. **Görsel Alt-Text Zenginleştirme**
+   - Mevcut markdown notlarını gözden geçir
+   - Detaylı açıklamalar ekle
+   - Tahmini süre: Devam eden iş
+
+---
+
+## 📊 Özet Tablo
+
+| Kategori | Durum | Skor |
+|----------|-------|------|
+| Veritabanı İndeksleme | ⚠️ Kısmi | 6/10 |
+| SRS Algoritması | ✅ İyi | 8/10 |
+| Retry Mekanizması | ⚠️ Eksik | 5/10 |
+| Chart Validasyonu | ⚠️ Yetersiz | 6/10 |
+| Görsel İşleme | ⚠️ Sınırlı | 5/10 |
+| İstatistik Takibi | ✅ İyi | 8/10 |
+
+**Genel Skor: 6.3/10** - Fonksiyonel ama ölçeklenme öncesi iyileştirme gerekli.
+
