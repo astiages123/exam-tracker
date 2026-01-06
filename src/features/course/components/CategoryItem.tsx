@@ -224,7 +224,7 @@ const CategoryItem = React.memo(({
                                                             </span>
                                                         </div>
 
-                                                        <div className="flex items-center gap-4 overflow-hidden">
+                                                        <div className="flex items-center gap-3 overflow-hidden">
                                                             <div className="flex items-center gap-1.5 text-[11px] sm:text-[12px] font-bold shrink-0">
                                                                 <Timer size={13} className={cn(isCourseCompleted ? "text-amber-400" : styles.accent)} />
                                                                 <span className="text-white/75">{formatHours(courseCompletedHours)}</span>
