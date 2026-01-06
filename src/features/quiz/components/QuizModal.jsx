@@ -2,7 +2,7 @@
  * QuizModal Component
  * Main quiz modal with all features integrated
  */
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { X, ChevronRight, RotateCcw, Trophy, Maximize2, Minimize2 } from 'lucide-react';
@@ -69,8 +69,10 @@ export function QuizModal({
     const currentQuestion = questions[currentIndex];
     const isCorrect = selectedAnswer === currentQuestion?.correct_answer;
 
-    // Trigger confetti on correct answer
-
+    // Detect if this is a Scenario Question
+    const isScenario = React.useMemo(() => {
+        return currentQuestion?.question?.length > 300 || currentQuestion?.question?.includes('Senaryo') || currentQuestion?.question?.includes('Vaka');
+    }, [currentQuestion]);
 
     // Handle answer selection
     const handleSelectAnswer = useCallback(async (answer) => {
@@ -140,11 +142,6 @@ export function QuizModal({
     }, []);
 
     if (!isOpen) return null;
-
-    // Detect if this is a Scenario Question
-    const isScenario = React.useMemo(() => {
-        return currentQuestion?.question?.length > 300 || currentQuestion?.question?.includes('Senaryo') || currentQuestion?.question?.includes('Vaka');
-    }, [currentQuestion]);
 
     // Validation error state
     if (validationError) {
@@ -286,7 +283,7 @@ export function QuizModal({
             >
                 <motion.div
                     className={`relative w-full flex flex-col bg-gray-900 border border-gray-700 transition-all duration-300 ease-in-out ${isFullScreen
-                        ? 'fixed inset-0 h-screen rounded-none z-[60]'
+                        ? 'fixed inset-0 h-screen rounded-none z-60'
                         : 'max-w-4xl max-h-[90vh] rounded-2xl overflow-hidden'
                         }`}
                     variants={modalVariants}

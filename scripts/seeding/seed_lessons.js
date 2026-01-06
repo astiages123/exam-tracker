@@ -92,7 +92,7 @@ async function seedLessons() {
                     console.log(`   ✅ Lesson exists: ${lessonName}`);
                     // İsterseniz burada update de yapabilirsiniz ama şimdilik gerek yok gibi
                 } else {
-                    const { data: inserted, error } = await supabase
+                    const { error } = await supabase
                         .from('lessons')
                         .insert({ name: lessonName, slug })
                         .select()

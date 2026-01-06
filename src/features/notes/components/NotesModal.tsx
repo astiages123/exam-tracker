@@ -131,8 +131,8 @@ export default function NotesModal({ courseName, notePath, onClose, icon: Icon }
                     className={cn(
                         "flex flex-col p-0 gap-0 border-border bg-card overflow-hidden transition-all duration-300",
                         isFullscreen
-                            ? "w-screen h-[100dvh] max-w-none rounded-none border-none"
-                            : "w-full h-[100dvh] sm:h-[95vh] sm:max-w-7xl sm:rounded-lg max-w-[100vw]"
+                            ? "w-screen h-dvh max-w-none rounded-none border-none"
+                            : "w-full h-dvh sm:h-[95vh] sm:max-w-7xl sm:rounded-lg max-w-[100vw]"
                     )}
                     onInteractOutside={(e) => {
                         // Prevent closing when interacting with lightbox if it were somehow sharing events,
@@ -147,7 +147,7 @@ export default function NotesModal({ courseName, notePath, onClose, icon: Icon }
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between w-full">
                                 <DialogHeader className="text-left space-y-0 p-0">
-                                    <DialogTitle className="text-base sm:text-xl font-bold text-foreground leading-tight break-words pr-1 flex items-center gap-2">
+                                    <DialogTitle className="text-base sm:text-xl font-bold text-foreground leading-tight wrap-break-word pr-1 flex items-center gap-2">
                                         {Icon && <Icon size={24} className="text-primary shrink-0" />}
                                         <span className="text-subcourse">{courseName}</span>
                                     </DialogTitle>

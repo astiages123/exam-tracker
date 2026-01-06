@@ -81,7 +81,7 @@ const CategoryItem = React.memo(({
             className="relative group"
         >
             <div className={cn(
-                "relative glass-card glass-card-hover rounded-[1.5rem] overflow-hidden transition-all duration-300",
+                "relative glass-card glass-card-hover rounded-3xl overflow-hidden transition-all duration-300",
                 styles.bg,
                 isExpanded ? "ring-2 ring-white/10" : "hover:ring-1 hover:ring-white/10",
                 categoryPercent === 100 ? "border-primary/30 shadow-[0_0_20px_-5px_var(--color-primary)]" : styles.border
@@ -112,7 +112,7 @@ const CategoryItem = React.memo(({
                                     {categoryPercent === 100 && <BadgeCheck size={18} className="text-amber-400 animate-pulse" />}
                                 </div>
                                 <div className="flex gap-3 mt-2">
-                                    <div className="flex items-center gap-1.5 bg-white/[0.03] px-2.5 py-1 rounded-full border border-white/5">
+                                    <div className="flex items-center gap-1.5 bg-white/3 px-2.5 py-1 rounded-full border border-white/5">
                                         <Timer size={15} className={styles.darkAccent} />
                                         <span className="text-[12px] font-bold text-white/70">
                                             {formatHours(categoryCompletedHours)}
@@ -120,7 +120,7 @@ const CategoryItem = React.memo(({
                                             <span className="opacity-70">{formatHours(categoryTotalHours)}</span>
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-1.5 bg-white/[0.03] px-2.5 py-1 rounded-full border border-white/5">
+                                    <div className="flex items-center gap-1.5 bg-white/3 px-2.5 py-1 rounded-full border border-white/5">
                                         <MonitorPlay size={15} className={styles.darkAccent} />
                                         <span className="text-[12px] font-bold text-white/70">
                                             {categoryCompletedVideos}
@@ -132,8 +132,8 @@ const CategoryItem = React.memo(({
                             </div>
                         </div>
                         <div className={cn(
-                            "p-1.5 rounded-xl bg-white/[0.03] border border-white/5 transition-transform duration-300",
-                            isExpanded ? "rotate-180 bg-white/[0.08]" : ""
+                            "p-1.5 rounded-xl bg-white/3 border border-white/5 transition-transform duration-300",
+                            isExpanded ? "rotate-180 bg-white/8" : ""
                         )}>
                             <ChevronDown size={20} className="text-white/40" />
                         </div>
@@ -177,7 +177,7 @@ const CategoryItem = React.memo(({
                                             className={cn(
                                                 "rounded-2xl border transition-all duration-300 group/course shadow-lg shadow-black/20",
                                                 isCourseCompleted
-                                                    ? "bg-amber-400/[0.05] border-amber-400/40"
+                                                    ? "bg-amber-400/5 border-amber-400/40"
                                                     : "bg-black/40 border-white/20 hover:border-white/30"
                                             )}
                                         >

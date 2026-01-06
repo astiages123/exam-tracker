@@ -17,7 +17,8 @@ export { default as ErrorBookDefault } from './ErrorBook';
 // Source Reference
 export {
     SourceReferenceButton,
-    SourceReferenceModal,
-    useSourceReference
+    SourceReferenceModal
 } from './SourceReference';
+export { useSourceReference } from '../hooks/useSourceReference';
+
 export { default as SourceReferenceDefault } from './SourceReference';

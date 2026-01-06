@@ -40,11 +40,11 @@ export function QuizProgressBar({
             {/* Progress Bar */}
             <div className="relative h-2 bg-gray-700 rounded-full overflow-hidden">
                 {/* Background glow */}
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20" />
+                <div className="absolute inset-0 bg-linear-to-r from-indigo-500/20 to-purple-500/20" />
 
                 {/* Progress fill */}
                 <motion.div
-                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"
+                    className="absolute top-0 left-0 h-full bg-linear-to-r from-indigo-500 to-purple-500 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}
                     transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -52,7 +52,7 @@ export function QuizProgressBar({
 
                 {/* Shine effect */}
                 <motion.div
-                    className="absolute top-0 left-0 h-full w-1/4 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                    className="absolute top-0 left-0 h-full w-1/4 bg-linear-to-r from-transparent via-white/20 to-transparent"
                     animate={{ x: ['0%', '400%'] }}
                     transition={{
                         duration: 2,

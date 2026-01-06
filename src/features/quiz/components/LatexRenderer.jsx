@@ -18,8 +18,6 @@ import 'katex/dist/katex.min.css';
  * - Block Math: $$...$$
  */
 export function LatexRenderer({ content, className = '' }) {
-    if (!content) return null;
-
     // Pre-process content to replace '*' with '\times' for better math rendering
     // We use a regex that looks for * surrounded by spaces or numbers/vars to avoid breaking markdown
     // But since this is a math renderer, we can be more aggressive if we detect math context.
@@ -35,6 +33,8 @@ export function LatexRenderer({ content, className = '' }) {
             // (?<!\*)\*(?!\*) matches single *
             .replace(/(?<!\*)\*(?!\*)/g, ' \\times ');
     }, [content]);
+
+    if (!content) return null;
 
     return (
         <div className={`latex-content ${className}`}>
@@ -66,7 +66,7 @@ export function LatexRenderer({ content, className = '' }) {
                             {children}
                         </blockquote>
                     ),
-                    code: ({ inline, className, children, ...props }) => {
+                    code: ({ inline, children, ...props }) => {
                         return inline ? (
                             <code className="bg-gray-800 px-1.5 py-0.5 rounded text-amber-300 font-mono text-sm" {...props}>
                                 {children}
