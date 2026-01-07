@@ -4,6 +4,7 @@ import { Goal } from 'lucide-react';
 import { ProgressBar } from '@/components/stats/ProgressBars';
 import { formatHours } from '@/utils';
 import type { Rank } from '@/types';
+import { motion as Motion } from 'framer-motion';
 
 
 interface ProgressCardProps {
@@ -34,13 +35,15 @@ export default function ProgressCard({
     const Icon = RANK_ICONS[nextRank.icon] || Goal;
 
     return (
-        <div
-            className="max-w-4xl mx-auto mb-4 relative animate-fade-down opacity-0"
+        <Motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-4xl mx-auto mb-4 relative"
         >
             {/* Ambient Background Glow */}
-            <div className="absolute -inset-1 bg-primary/5 blur-2xl rounded-4xl opacity-30" />
+            <div className="absolute -inset-1 bg-primary/5 blur-2xl rounded-[2rem] opacity-30" />
 
-            <div className="relative glass-card rounded-3xl overflow-hidden border border-white/10 bg-primary/10 shadow-xl shadow-black/40">
+            <div className="relative glass-card rounded-[1.5rem] overflow-hidden border border-white/10 bg-primary/10 shadow-xl shadow-black/40">
                 <div className="p-4 sm:p-4.5">
                     <div className="flex flex-col md:flex-row items-center gap-5 mb-4">
                         {/* 1. Icon Box - More Compact */}
@@ -87,7 +90,7 @@ export default function ProgressCard({
                         </div>
 
                         {/* 3. General Progress - More Compact */}
-                        <div className="flex flex-col items-center justify-center shrink-0 bg-white/4 p-2.5 px-5 rounded-xl border border-white/5 min-w-[130px]">
+                        <div className="flex flex-col items-center justify-center shrink-0 bg-white/[0.04] p-2.5 px-5 rounded-xl border border-white/5 min-w-[130px]">
                             <span className="text-[10px] font-bold text-white/80 uppercase tracking-[0.2em] mb-0.5">Toplam İlerleme</span>
                             <div className="flex items-center gap-1">
                                 <span className="text-2xl font-black text-primary tracking-tighter">
@@ -130,7 +133,7 @@ export default function ProgressCard({
                     />
                 </div>
             </div>
-        </div>
+        </Motion.div>
     );
 }
 
@@ -144,7 +147,7 @@ function StatItem({ icon, label, value, total, onClick }: {
     return (
         <button
             type="button"
-            className="p-3 flex items-center justify-center gap-3 hover:bg-white/2 active:bg-white/5 cursor-pointer transition-colors border-r border-white/5 last:border-0 w-full group"
+            className="p-3 flex items-center justify-center gap-3 hover:bg-white/[0.02] active:bg-white/[0.05] cursor-pointer transition-colors border-r border-white/5 last:border-0 w-full group"
             onClick={onClick}
         >
             <div className="p-1.5 rounded-lg bg-white/5 text-white/40 group-hover:text-white/80 group-hover:bg-white/10 transition-colors">

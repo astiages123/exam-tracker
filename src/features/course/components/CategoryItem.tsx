@@ -74,9 +74,11 @@ const CategoryItem = React.memo(({
     const IconComponent = CATEGORY_ICONS[categoryNameRaw] || CATEGORY_ICONS['DEFAULT'];
 
     return (
-        <div
-            className="relative group animate-fade-up opacity-0"
-            style={{ animationDelay: `${Math.min(catIdx * 0.05, 1.0)}s` }} // Cap delay at 1s to prevent long waits
+        <Motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: catIdx * 0.1 }}
+            className="relative group"
         >
             <div className={cn(
                 "relative glass-card glass-card-hover rounded-3xl overflow-hidden transition-all duration-300",
@@ -316,7 +318,7 @@ const CategoryItem = React.memo(({
                     )}
                 </AnimatePresence>
             </div>
-        </div>
+        </Motion.div>
     );
 });
 

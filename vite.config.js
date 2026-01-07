@@ -31,7 +31,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           'vendor-react': ['react', 'react-dom'],
-          'vendor-framer': ['framer-motion'],
+          'vendor-ui': ['framer-motion', 'lucide-react'],
           'vendor-supabase': ['@supabase/supabase-js'],
           'vendor-charts': ['recharts'],
           'vendor-markdown': ['react-markdown', 'remark-math', 'remark-gfm', 'rehype-katex'],
