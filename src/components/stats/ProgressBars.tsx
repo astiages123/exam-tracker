@@ -1,4 +1,4 @@
-import { motion as Motion } from 'framer-motion';
+
 import { cn } from '@/lib/utils';
 
 interface ProgressBarProps {
@@ -14,15 +14,13 @@ export const ProgressBar = ({ progress, nextLevelMin, currentLevelMin }: Progres
 
     return (
         <div className="w-full bg-black/40 rounded-full h-3 overflow-hidden border border-white/5 relative">
-            <Motion.div
-                className="h-full bg-primary rounded-full relative shadow-[0_0_8px_rgba(var(--primary),0.2)]"
-                initial={{ width: 0 }}
-                animate={{ width: `${percentage}%` }}
-                transition={{ duration: 0.15 }}
+            <div
+                className="h-full bg-primary rounded-full relative shadow-[0_0_8px_rgba(var(--primary),0.2)] transition-[width] duration-300 ease-out"
+                style={{ width: `${percentage}%` }}
             >
                 {/* Glossy overlay */}
                 <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent h-[40%]" />
-            </Motion.div>
+            </div>
         </div>
     );
 };
@@ -35,15 +33,13 @@ interface CategoryProgressBarProps {
 export const CategoryProgressBar = ({ percentage, colorClass }: CategoryProgressBarProps) => {
     return (
         <div className="w-full bg-black/40 rounded-full h-2 mt-2 overflow-hidden border border-white/5 relative">
-            <Motion.div
-                className={cn("h-full relative", colorClass || "bg-primary")}
-                initial={{ width: 0 }}
-                animate={{ width: `${percentage}%` }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
+            <div
+                className={cn("h-full relative transition-[width] duration-700 ease-out", colorClass || "bg-primary")}
+                style={{ width: `${percentage}%` }}
             >
                 {/* Subtle sheen effect */}
                 <div className="absolute inset-0 bg-white/10 -translate-y-1/2 h-[50%]" />
-            </Motion.div>
+            </div>
         </div>
     );
 };

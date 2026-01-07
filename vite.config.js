@@ -23,7 +23,7 @@ export default defineConfig({
   },
   server: {
     watch: {
-      ignored: ['**/data-pipeline/**'],
+      ignored: [],
     },
   },
   build: {
@@ -31,7 +31,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           'vendor-react': ['react', 'react-dom'],
-          'vendor-ui': ['framer-motion', 'lucide-react'],
+          'vendor-framer': ['framer-motion'],
           'vendor-supabase': ['@supabase/supabase-js'],
           'vendor-charts': ['recharts'],
           'vendor-markdown': ['react-markdown', 'remark-math', 'remark-gfm', 'rehype-katex'],
