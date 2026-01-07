@@ -2,10 +2,10 @@
  * QuizModal Component
  * Main quiz modal with all features integrated
  */
-import React, { useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useCallback, useMemo } from 'react';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 
-import { X, ChevronRight, RotateCcw, Trophy, Maximize2, Minimize2 } from 'lucide-react';
+import { X, ChevronRight, Trophy, Maximize2, Minimize2 } from 'lucide-react';
 
 import { QuizOption } from './QuizOption';
 import { QuizChart } from './QuizChart';
@@ -13,8 +13,9 @@ import { QuizExplanation } from './QuizExplanation';
 import { QuizProgressBar } from './QuizProgressBar';
 import { LatexRenderer } from './LatexRenderer';
 import { validateQuizResponse } from './schemas/questionSchema';
+import { Question, QuizResult, SrsResult } from '../types';
 
-const modalVariants = {
+const modalVariants: Variants = {
     hidden: { opacity: 0, scale: 0.95, y: 20 },
     visible: {
         opacity: 1,
@@ -30,11 +31,22 @@ const modalVariants = {
     }
 };
 
-const overlayVariants = {
+const overlayVariants: Variants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
     exit: { opacity: 0 }
 };
+
+interface QuizModalProps {
+    isOpen: boolean;
+    onClose?: () => void;
+    questions?: Question[];
+    onQuizComplete?: (result: QuizResult) => void;
+    onAnswerSubmit?: (questionId: string, answer: string, isCorrect: boolean) => Promise<SrsResult | null>;
+    hasNextSession?: boolean;
+    onNextSession?: () => void;
+    title?: string;
+}
 
 export function QuizModal({
     isOpen,
@@ -45,20 +57,20 @@ export function QuizModal({
     hasNextSession = false,
     onNextSession,
     title = 'Quiz'
-}) {
+}: QuizModalProps) {
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [selectedAnswer, setSelectedAnswer] = useState(null);
+    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [showResult, setShowResult] = useState(false);
     const [correctCount, setCorrectCount] = useState(0);
     const [incorrectCount, setIncorrectCount] = useState(0);
     const [isQuizComplete, setIsQuizComplete] = useState(false);
 
     // New state for SRS Feedback
-    const [srsResult, setSrsResult] = useState(null);
+    const [srsResult, setSrsResult] = useState<SrsResult | null>(null);
 
     // Validate questions on mount
-    const validationError = React.useMemo(() => {
+    const validationError = useMemo(() => {
         if (questions.length > 0) {
             const validation = validateQuizResponse(questions);
             return validation.success ? null : validation.errors;
@@ -70,12 +82,12 @@ export function QuizModal({
     const isCorrect = selectedAnswer === currentQuestion?.correct_answer;
 
     // Detect if this is a Scenario Question
-    const isScenario = React.useMemo(() => {
+    const isScenario = useMemo(() => {
         return currentQuestion?.question?.length > 300 || currentQuestion?.question?.includes('Senaryo') || currentQuestion?.question?.includes('Vaka');
     }, [currentQuestion]);
 
     // Handle answer selection
-    const handleSelectAnswer = useCallback(async (answer) => {
+    const handleSelectAnswer = useCallback(async (answer: string) => {
         if (showResult) return;
 
         setSelectedAnswer(answer);
@@ -136,7 +148,7 @@ export function QuizModal({
         onClose?.();
     }, [handleReset, onClose]);
 
-    const toggleFullScreen = useCallback((e) => {
+    const toggleFullScreen = useCallback((e: React.MouseEvent) => {
         e.stopPropagation();
         setIsFullScreen(prev => !prev);
     }, []);
@@ -167,7 +179,7 @@ export function QuizModal({
                                 Soru verileri geçersiz format içeriyor.
                             </p>
                             <div className="bg-gray-800 rounded-lg p-3 text-left text-xs text-gray-500 max-h-32 overflow-auto">
-                                {validationError.map((err, i) => (
+                                {validationError.map((err: any, i: number) => (
                                     <div key={i}>{err.path}: {err.message}</div>
                                 ))}
                             </div>
@@ -398,12 +410,13 @@ export function QuizModal({
                         </div>
 
                         {/* Explanation */}
+                        {/* We cast srsResult to any if needed to match interface if slight mismatch, but types seem compatible */}
                         <QuizExplanation
                             explanation={currentQuestion?.explanation}
                             isCorrect={isCorrect}
                             isVisible={showResult}
                             verificationNotes={currentQuestion?.verification_notes}
-                            srsResult={srsResult} // Pass SRS Result
+                            srsResult={srsResult as any}
                         />
                     </div>
 

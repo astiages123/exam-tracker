@@ -29,7 +29,13 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        // Removing manualChunks temporarily to fix initialization errors
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-ui': ['framer-motion', 'lucide-react'],
+          'vendor-supabase': ['@supabase/supabase-js'],
+          'vendor-charts': ['recharts'],
+          'vendor-markdown': ['react-markdown', 'remark-math', 'remark-gfm', 'rehype-katex'],
+        }
       }
     }
   }

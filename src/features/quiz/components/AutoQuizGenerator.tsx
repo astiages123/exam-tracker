@@ -147,7 +147,7 @@ export const AutoQuizGenerator: React.FC = () => {
                 {/* Header */}
                 <header className="flex justify-between items-center mb-8 border-b border-emerald-900/50 pb-6">
                     <div>
-                        <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                        <h1 className="text-2xl font-bold bg-linear-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
                             Stockpile Engine v3.0
                         </h1>
                         <p className="text-xs text-emerald-600 mt-1">Dual AI: Worker (Llama-8b) + Validator (Llama-70b)</p>

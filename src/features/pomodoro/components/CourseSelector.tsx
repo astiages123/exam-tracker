@@ -111,7 +111,7 @@ export default function CourseSelector({
                     <button
                         onClick={onStartSession}
                         disabled={!selectedCourseId}
-                        className="flex-[2] py-3 bg-[#059669] text-white rounded-xl font-bold shadow-lg shadow-emerald-900/20 hover:bg-[#047857] disabled:opacity-50 disabled:cursor-not-allowed transition-all text-lg cursor-pointer"
+                        className="flex-2 py-3 bg-[#059669] text-white rounded-xl font-bold shadow-lg shadow-emerald-900/20 hover:bg-[#047857] disabled:opacity-50 disabled:cursor-not-allowed transition-all text-lg cursor-pointer"
                     >
                         Başlat
                     </button>

@@ -41,12 +41,15 @@ export const quizResponseSchema = z.array(questionSchema);
 /**
  * Validate a single question
  */
-export function validateQuestion(data) {
+/**
+ * Validate a single question
+ */
+export function validateQuestion(data: unknown) {
     const result = questionSchema.safeParse(data);
     return {
         success: result.success,
         data: result.success ? result.data : null,
-        errors: result.success ? [] : (result.error?.errors ?? result.error?.issues ?? []).map(e => ({
+        errors: result.success ? [] : (result.error?.issues ?? []).map((e: z.ZodIssue) => ({
             path: e.path.join('.'),
             message: e.message
         }))
@@ -56,18 +59,18 @@ export function validateQuestion(data) {
 /**
  * Validate quiz response (array of questions)
  */
-export function validateQuizResponse(data) {
+export function validateQuizResponse(data: unknown) {
     const result = quizResponseSchema.safeParse(data);
     return {
         success: result.success,
         data: result.success ? result.data : null,
-        errors: result.success ? [] : (result.error?.errors ?? result.error?.issues ?? []).map(e => ({
+        errors: result.success ? [] : (result.error?.issues ?? []).map((e: z.ZodIssue) => ({
             path: e.path.join('.'),
             message: e.message
         })),
         summary: {
             total: Array.isArray(data) ? data.length : 0,
-            valid: result.success ? data.length : 0
+            valid: result.success && Array.isArray(data) ? data.length : 0
         }
     };
 }

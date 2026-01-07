@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Tagesschrift&display=swap');
+/* Tagesschrift font now loaded via preload in index.html for non-blocking loading */
 
 @theme {
   /* ============================================
