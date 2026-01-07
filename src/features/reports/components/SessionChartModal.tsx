@@ -69,9 +69,9 @@ const SessionChartModal: React.FC<SessionChartModalProps> = ({
             }
         }}>
             <DialogContent
-                className="w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-fit sm:max-h-[85vh] overflow-hidden flex flex-col bg-background border-border p-0 gap-0 shadow-2xl rounded-none sm:rounded-lg"
+                className="w-full max-w-full sm:max-w-5xl h-dvh sm:h-fit sm:max-h-[85vh] overflow-hidden flex flex-col bg-background border-border p-0 gap-0 shadow-2xl rounded-none sm:rounded-lg"
             >
-                <div className="p-6 border-b border-border bg-card/90 flex justify-between items-center shrink-0 relative z-20 backdrop-blur-md">
+                <div className="p-6 border-b border-border bg-card/90 flex justify-between items-center shrink-0 relative z-20">
                     <div className="flex items-center gap-4">
                         <div className="bg-primary/10 p-2.5 sm:p-3.5 rounded-xl border border-primary/10 mt-1 shrink-0">
                             <ChartArea className="text-primary" size={isMobile ? 24 : 32} />
@@ -267,7 +267,7 @@ const SessionChartModal: React.FC<SessionChartModalProps> = ({
                     </div>
                 </div>
 
-                <div className="p-6 border-t border-secondary bg-background/60 flex justify-center flex-wrap gap-x-8 gap-y-3 text-[11px] font-bold text-foreground shrink-0 backdrop-blur-sm">
+                <div className="p-6 border-t border-secondary bg-background/60 flex justify-center flex-wrap gap-x-8 gap-y-3 text-[11px] font-bold text-foreground shrink-0">
                     <div className="flex items-center gap-2.5">
                         <div className="w-5 h-5 rounded-md bg-indigo-500/40 border border-indigo-500/50 shadow-[0_0_10px_rgba(99,102,241,0.2)]"></div>
                         <span className="opacity-80">Çalışma Oturumu</span>

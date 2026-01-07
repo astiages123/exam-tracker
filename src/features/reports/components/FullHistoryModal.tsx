@@ -36,7 +36,7 @@ export default function FullHistoryModal({ isOpen, type, data, onClose }: FullHi
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <DialogContent
-                className="w-full max-w-full sm:max-w-7xl h-[100dvh] sm:h-[85vh] p-0 overflow-hidden flex flex-col bg-background border-border shadow-2xl rounded-none sm:rounded-lg"
+                className="w-full max-w-full sm:max-w-7xl h-dvh sm:h-[90vh] sm:rounded-lg shadow-2xl overflow-hidden focus-visible:outline-none bg-background border-border rounded-none"
             >
                 <div className="p-6 sm:p-8 border-b border-border bg-card/50 flex justify-between items-center">
                     <div className="flex items-center gap-4">

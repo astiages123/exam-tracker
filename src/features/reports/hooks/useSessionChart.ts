@@ -90,7 +90,7 @@ export const useSessionChart = ({
     const { timelineItems, startHour, endHour, dayStats, isToday } = useMemo(() => {
         const targetDate = new Date(group.date);
         const dayWork = workSessions.filter(s => isSameDay(s.timestamp, targetDate) && s.courseId === group.courseId);
-        const dayBreaks = breakSessions.filter(s => isSameDay(s.timestamp, targetDate));
+        const dayBreaks = breakSessions.filter(s => isSameDay(s.timestamp, targetDate) && s.courseId === group.courseId);
         const dayPauses = pauseSessions.filter(s => isSameDay(s.timestamp, targetDate) && s.courseId === group.courseId);
 
         let finalItems: TimelineItem[] = [];
@@ -244,7 +244,7 @@ export const useSessionChart = ({
                 pause: Math.round(pauseTime / 60)
             }
         };
-    }, [group, workSessions, breakSessions, isMobile]);
+    }, [group, workSessions, breakSessions, pauseSessions, isMobile]);
 
     return {
         timelineItems,

@@ -142,7 +142,7 @@ export const AutoQuizGenerator: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-neutral-950 text-emerald-400 font-mono p-8">
-            <div className="max-w-4xl mx-auto border border-emerald-900/50 p-6 rounded-xl bg-neutral-900/80 shadow-[0_0_30px_rgba(16,185,129,0.15)] backdrop-blur-sm">
+            <div className="max-w-4xl mx-auto border border-emerald-900/50 p-6 rounded-xl bg-neutral-900/80 shadow-[0_0_30px_rgba(16,185,129,0.15)]">
 
                 {/* Header */}
                 <header className="flex justify-between items-center mb-8 border-b border-emerald-900/50 pb-6">

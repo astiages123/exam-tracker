@@ -11,7 +11,6 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, ChartNoAxesCombined, BarChart2, List, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { formatHours } from '@/utils';
 import { AnimatePresence } from 'framer-motion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -24,6 +23,7 @@ import SessionChartModal from '@/features/reports/components/SessionChartModal';
 // Feature components
 import { useReportData, type GroupedSession } from '@/features/reports/hooks/useReportData';
 import SessionListItem from '@/features/reports/components/SessionListItem';
+import ReportStats from '@/features/reports/components/ReportStats';
 const DurationChart = React.lazy(() => import('@/features/reports/components/DurationChart'));
 const VideoChart = React.lazy(() => import('@/features/reports/components/VideoChart'));
 const FullHistoryModal = React.lazy(() => import('@/features/reports/components/FullHistoryModal'));
@@ -114,7 +114,6 @@ export default function ReportModal({
         aggregatedSessions,
         stats,
         chartData,
-        videoChartData,
         fullChartData
     } = useReportData({
         sessions,
@@ -126,8 +125,9 @@ export default function ReportModal({
 
     // Work Report Logic
     const workReport = React.useMemo(() => {
-        // Calculate dates
-        const today = new Date('2026-01-05T00:00:00'); // Fixed date
+        // Calculate dates - using current date dynamically
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Start of today
         const endDate = new Date('2026-05-31T23:59:59');
         const remainingTime = endDate.getTime() - today.getTime();
         const remainingDays = Math.max(1, Math.ceil(remainingTime / (1000 * 60 * 60 * 24)));
@@ -192,7 +192,7 @@ export default function ReportModal({
                 <DialogContent
                     className={cn(
                         "flex flex-col p-0 gap-0 bg-background border-border shadow-2xl overflow-hidden focus-visible:outline-none transition-all duration-300",
-                        "w-full max-w-full sm:max-w-7xl h-[100dvh] sm:h-[90vh] sm:rounded-lg"
+                        "w-full max-w-full sm:max-w-7xl h-dvh sm:h-[90vh] sm:rounded-lg"
                     )}
                 >
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full w-full">
@@ -240,34 +240,8 @@ export default function ReportModal({
                                         {activeTab === 'list' && (
                                             <div className="flex flex-col gap-8">
                                                 {/* Total Stats Section */}
-                                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                                    <div className="rounded-xl border text-card-foreground bg-card border-border/50 shadow-none">
-                                                        <div className="p-3 flex sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
-                                                            <span className="text-[10px] text-zinc-300 uppercase tracking-wider font-semibold">Toplam Çalışma</span>
-                                                            <div className="text-base sm:text-lg font-mono font-bold text-zinc-200 mt-0.5">
-                                                                {formatHours(stats.totalHours + stats.remainingMins / 60)}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="rounded-xl border text-card-foreground bg-card border-border/50 shadow-none">
-                                                        <div className="p-3 flex sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
-                                                            <span className="text-[10px] text-zinc-300 uppercase tracking-wider font-semibold">Toplam Mola</span>
-                                                            <div className="text-base sm:text-lg font-mono font-bold text-zinc-200 mt-0.5">
-                                                                {formatHours(stats.totalBreakHours + stats.remainingBreakMins / 60)}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="rounded-xl border text-card-foreground bg-card border-border/50 shadow-none">
-                                                        <div className="p-3 flex sm:flex-col justify-between sm:justify-start items-center sm:items-start gap-3 sm:gap-0">
-                                                            <span className="text-[10px] text-zinc-300 uppercase tracking-wider font-semibold">Toplam Duraklatma</span>
-                                                            <div className="text-base sm:text-lg font-mono font-bold text-zinc-200 mt-0.5 whitespace-nowrap">
-                                                                {formatHours(stats.totalPauseHours + stats.remainingPauseMins / 60)}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <ReportStats {...stats} />
 
-                                                <div className="w-full border-t border-border/50 -mx-4 sm:-mx-8 my-1 opacity-50" />
 
                                                 {aggregatedSessions.length === 0 ? (
                                                     <div className="text-center py-12 text-muted-foreground/40">
@@ -276,7 +250,7 @@ export default function ReportModal({
                                                     </div>
                                                 ) : (
                                                     <div className="space-y-3">
-                                                        {aggregatedSessions.map((group) => (
+                                                        {aggregatedSessions.map((group, index) => (
                                                             <SessionListItem
                                                                 key={group.key}
                                                                 group={group}
@@ -285,6 +259,7 @@ export default function ReportModal({
                                                                 isMobile={isMobile}
                                                                 onSelect={() => setSelectedGroup(group)}
                                                                 onDelete={() => setConfirmDelete({ sessionIds: group.sessionIds })}
+                                                                index={index}
                                                             />
                                                         ))}
                                                     </div>
@@ -319,13 +294,13 @@ export default function ReportModal({
                                                                             return hours > 0 ? `${hours}sa ${mins}dk` : `${mins}dk`;
                                                                         })()}
                                                                     </span>
-                                                                    <span className="text-xs font-medium text-foreground/100">/gün</span>
+                                                                    <span className="text-xs font-medium text-foreground">/gün</span>
                                                                 </div>
                                                             </div>
 
                                                             <div className="text-right">
-                                                                <span className="block text-[9px] font-bold text-foreground/100 uppercase tracking-widest leading-tight mb-1">Hedef</span>
-                                                                <span className="text-base font-bold text-foreground/100">
+                                                                <span className="block text-[9px] font-bold text-foreground uppercase tracking-widest leading-tight mb-1">Hedef</span>
+                                                                <span className="text-base font-bold text-foreground">
                                                                     {(() => {
                                                                         const hours = Math.floor(workReport.study.ideal);
                                                                         const mins = Math.round((workReport.study.ideal - hours) * 60);
@@ -353,13 +328,13 @@ export default function ReportModal({
                                                                     <span className="text-xl font-black text-primary tracking-tight">
                                                                         {Math.round(workReport.video.current)}
                                                                     </span>
-                                                                    <span className="text-xs font-medium text-foreground/100">video/gün</span>
+                                                                    <span className="text-xs font-medium text-foreground">video/gün</span>
                                                                 </div>
                                                             </div>
 
                                                             <div className="text-right">
-                                                                <span className="block text-[9px] font-bold text-foreground/100 uppercase tracking-widest leading-tight mb-1">Hedef</span>
-                                                                <span className="text-base font-bold text-foreground/100">
+                                                                <span className="block text-[9px] font-bold text-foreground uppercase tracking-widest leading-tight mb-1">Hedef</span>
+                                                                <span className="text-base font-bold text-foreground">
                                                                     {Math.round(workReport.video.ideal)} video
                                                                 </span>
                                                             </div>
@@ -375,7 +350,7 @@ export default function ReportModal({
                                                             className="h-[220px] sm:h-[240px]"
                                                         />
                                                         <VideoChart
-                                                            data={videoChartData}
+                                                            data={chartData}
                                                             onShowFullHistory={() => setShowFullHistory('videos')}
                                                             className="h-[220px] sm:h-[240px]"
                                                         />

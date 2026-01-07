@@ -54,7 +54,7 @@ const QuizContainer: React.FC<QuizContainerProps> = ({
     // 1. Loading State (Global)
     if (isLoading || isGenerating || (isLoadingStats && !hasStarted)) {
         return (
-            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
                 <div className="flex flex-col items-center gap-4 p-6 bg-gray-900 rounded-2xl border border-gray-800">
                     <div className="relative">
                         <div className="w-12 h-12 rounded-full border-4 border-gray-700 border-t-indigo-500 animate-spin"></div>
@@ -96,7 +96,7 @@ const QuizContainer: React.FC<QuizContainerProps> = ({
     // 2. Error State
     if (error) {
         return (
-            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
                 <div className="bg-gray-900 rounded-2xl border border-red-500/30 p-8 max-w-md w-full text-center">
                     <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
                         <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -135,7 +135,7 @@ const QuizContainer: React.FC<QuizContainerProps> = ({
         const statusLabel = getFillStatusLabel(progress);
 
         return (
-            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
                 <div className="bg-neutral-900 rounded-2xl border border-white/10 w-full max-w-md overflow-hidden shadow-2xl relative">
                     {/* Header */}
                     <div className="p-6 border-b border-white/5 flex justify-between items-start">

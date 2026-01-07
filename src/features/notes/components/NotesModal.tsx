@@ -89,6 +89,9 @@ export default function NotesModal({ courseName, notePath, onClose, icon: Icon }
                 body {
                     overflow-x: hidden;
                     -webkit-overflow-scrolling: touch;
+                    overscroll-behavior: contain;
+                    -webkit-backface-visibility: hidden;
+                    backface-visibility: hidden;
                 }
             `;
             iframeDocument.head.appendChild(style);
@@ -129,15 +132,12 @@ export default function NotesModal({ courseName, notePath, onClose, icon: Icon }
             <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
                 <DialogContent
                     className={cn(
-                        "flex flex-col p-0 gap-0 border-border bg-card overflow-hidden transition-all duration-300",
+                        "flex flex-col p-0 gap-0 border-border bg-card overflow-hidden",
                         isFullscreen
                             ? "w-screen h-dvh max-w-none rounded-none border-none"
                             : "w-full h-dvh sm:h-[95vh] sm:max-w-7xl sm:rounded-lg max-w-[100vw]"
                     )}
                     onInteractOutside={(e) => {
-                        // Prevent closing when interacting with lightbox if it were somehow sharing events,
-                        // though separate DialogPortal handles this better now.
-                        // Keeping safety check just in case.
                         if (lightboxImage) {
                             e.preventDefault();
                         }
@@ -229,8 +229,8 @@ export default function NotesModal({ courseName, notePath, onClose, icon: Icon }
                             </div>
                         )}
                     </div>
-                </DialogContent>
-            </Dialog>
+                </DialogContent >
+            </Dialog >
 
             <Lightbox
                 src={lightboxImage}

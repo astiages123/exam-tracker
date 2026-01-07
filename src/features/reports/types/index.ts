@@ -5,7 +5,7 @@ export interface Pause {
 }
 
 // Session types
-export type SessionType = 'work' | 'break' | 'long_break' | 'pause';
+export type SessionType = 'work' | 'break' | 'pause';
 
 // Renamed to StudySession to avoid conflict with Auth Session
 export interface StudySession {

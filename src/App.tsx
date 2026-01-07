@@ -9,7 +9,7 @@ const Dashboard = lazy(() => import('@/components/layout/Dashboard'));
 const AutoQuizGenerator = lazy(() => import('@/features/quiz/components/AutoQuizGenerator').then(module => ({ default: module.AutoQuizGenerator })));
 
 const ModalLoader = () => (
-  <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
+  <div className="fixed inset-0 bg-background/80 flex items-center justify-center z-50">
     <div className="flex flex-col items-center gap-3 text-muted-foreground">
       <Loader2 className="h-8 w-8 animate-spin text-primary" />
       <span className="text-sm font-medium">Yükleniyor...</span>

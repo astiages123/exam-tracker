@@ -15,10 +15,10 @@ interface DurationChartProps {
     className?: string;
 }
 
-const DurationChart = React.memo(({ data, onShowFullHistory, className }: DurationChartProps) => {
+const DurationChart = React.memo(({ data = [], onShowFullHistory, className }: DurationChartProps) => {
     return (
         <Card
-            className="cursor-pointer hover:bg-white/[0.03] transition-all group border-border/40"
+            className="cursor-pointer hover:bg-white/3 transition-all group border-border/40"
             onClick={onShowFullHistory}
         >
             <CardContent className="p-5">

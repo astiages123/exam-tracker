@@ -40,9 +40,9 @@
 
     /* Boyutlar */
     --sidebar-width: 300px;
-    --content-max-width: 900px;
-    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-base: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --content-max-width: 1140px;
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ============================================================================
@@ -375,13 +375,21 @@ h3 .prefix-num {
 }
 
 h4,
-h5,
 h6 {
     font-size: 1.25rem;
     font-weight: 500;
     margin: 0.8rem 0;
     color: var(--color-text-primary);
 }
+
+h5 {
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0;
+    color: var(--color-text-primary);
+}
+
 
 /* ============================================================================
    METİN VE PARAGRAFLAR
@@ -626,16 +634,13 @@ li .table-wrapper {
     padding: 1rem 2.5rem;
     color: var(--color-text-primary);
 
-    /* Premium Glass/Card Look */
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    /* Premium Card Look - Removed backdrop-filter for performance */
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 16px;
 
     box-shadow:
-        0 4px 20px -5px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        0 4px 12px -2px rgba(0, 0, 0, 0.4);
 
     overflow-x: auto;
     width: fit-content;

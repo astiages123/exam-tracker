@@ -174,6 +174,25 @@ export const usePomodoroTimer = ({
         }
     }, [initialCourse, view]);
 
+    // Handle beforeunload - save session when browser closes
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            if (isActive && timeLeft >= 60 && originalStartTimeRef.current) {
+                // Save current session data to localStorage for recovery
+                // The actual save happens via localStorage which is already being updated
+                // This ensures the latest state is captured
+                localStorage.setItem(STORAGE_KEYS.TIME_LEFT, String(timeLeft));
+                localStorage.setItem(STORAGE_KEYS.IS_ACTIVE, 'true');
+                if (startTimeRef.current) {
+                    localStorage.setItem(STORAGE_KEYS.START_TIME, String(startTimeRef.current));
+                }
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [isActive, timeLeft]);
+
     // Timer interval effect
     useEffect(() => {
         if (isActive) {
@@ -210,7 +229,7 @@ export const usePomodoroTimer = ({
                         notified10MinRef.current = true;
                     }
                 }
-            }, 100);
+            }, 1000);
         } else {
             if (timerRef.current) clearInterval(timerRef.current);
         }

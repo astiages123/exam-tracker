@@ -1,0 +1,3580 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muhasebe</title>
+    <link rel="stylesheet" href="/content/not_stilleri.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {
+        delimiters: [
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\\[', right: '\\\]', display: true},
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+        ],
+        throwOnError : false,
+        strict: false
+    });"></script>
+</head>
+<body>
+    <div class="sidebar">
+<h3>İÇİNDEKİLER</h3>
+<ul class="toc-list">
+<li><a href="#h-1-giri">1. Giriş</a>
+</li>
+<li><a href="#h-2-mali-tablolar">2. Mali Tablolar</a>
+</li>
+<li><a href="#h-3-bilan-o-tablosu">3. Bilanço Tablosu</a>
+<ul class="toc-sublist">
+<li><a href="#h-4-hesap-tipi-bilan-o">a. Hesap Tipi Bilanço</a>
+</li>
+<li><a href="#h-5-rapor-tipi-bilan-o">b. Rapor Tipi Bilanço</a>
+</li>
+<li><a href="#h-6-gelir-tablosu">c. Gelir Tablosu</a>
+</li>
+<li><a href="#h-7-gelir-tablosunun-be-b-l-m">d. Gelir Tablosunun Beş Bölümü</a>
+</li></ul>
+</li>
+<li><a href="#h-8-nakit-ak-m-tablosu">4. Nakit Akım Tablosu</a>
+<ul class="toc-sublist">
+<li><a href="#h-9-faaliyetlerden-operasyonlardan-kaynaklanan-nakit-ak">a. Faaliyetlerden (Operasyonlardan) Kaynaklanan Nakit Akışı</a>
+</li>
+<li><a href="#h-10-yat-r-m-faaliyetlerinden-kaynaklanan-nakit-ak">b. Yatırım Faaliyetlerinden Kaynaklanan Nakit Akışı</a>
+</li>
+<li><a href="#h-11-finansman-faaliyetlerinden-kaynaklanan-nakit-ak">c. Finansman Faaliyetlerinden Kaynaklanan Nakit Akışı</a>
+</li></ul>
+</li>
+<li><a href="#h-12-hesap-kavram-ve-temel-kurallar">5. Hesap Kavramı ve Temel Kurallar</a>
+<ul class="toc-sublist">
+<li><a href="#h-13-t-cetveli-yap-s">a. T-Cetveli Yapısı</a>
+</li>
+<li><a href="#h-14-temel-i-lem-terimleri">b. Temel İşlem Terimleri</a>
+</li>
+<li><a href="#h-15-tekd-zen-hesap-plan">c. Tekdüzen Hesap Planı</a>
+</li>
+<li><a href="#h-16-hesap-s-n-flar">d. Hesap Sınıfları</a>
+</li>
+<li><a href="#h-17-hesap-gruplar">e. Hesap Grupları</a>
+</li>
+<li><a href="#h-18-hesap-kay-t-y-ntemi">f. Hesap Kayıt Yöntemi</a>
+</li></ul>
+</li>
+<li><a href="#h-19-muhasebede-kay-t-belgeleri-ve-defter-tutma-esaslar">6. Muhasebede Kayıt Belgeleri ve Defter Tutma Esasları</a>
+<ul class="toc-sublist">
+<li><a href="#h-20-yevmiye-defteri-g-nl-k-defter">a. Yevmiye Defteri (Günlük Defter):</a>
+</li>
+<li><a href="#h-21-b-y-k-defter-defter-i-kebir">b. Büyük Defter (Defter-i Kebir):</a>
+</li>
+<li><a href="#h-22-yard-mc-defter">c. Yardımcı Defter</a>
+</li>
+<li><a href="#h-23-envanter-defteri">d. Envanter Defteri</a>
+</li>
+<li><a href="#h-24-i-kinci-s-n-f-t-ccarlar-i-letme-hesab-esas">e. İkinci Sınıf Tüccarlar (İşletme Hesabı Esası)</a>
+</li></ul>
+</li>
+<li><a href="#h-25-muhasebe-kay-t-s-reci">7. Muhasebe Kayıt Süreci</a>
+<ul class="toc-sublist">
+<li><a href="#h-26-muhasebe-kay-t-s-reci-ve-temel-i-levler">a. Muhasebe Kayıt Süreci ve Temel İşlevler</a>
+</li>
+<li><a href="#h-27-ticari-mal-sat-n-n-mant">b. Ticari Mal Satışının Mantığı</a>
+</li>
+<li><a href="#h-28-envanter-y-ntemleri-aral-kl-ve-s-rekli">c. Envanter Yöntemleri: Aralıklı ve Sürekli</a>
+</li></ul>
+</li>
+<li><a href="#h-29-muhasebe-s-reci">8. Muhasebe Süreci</a>
+<ul class="toc-sublist">
+<li><a href="#h-30-12-temel-ad-m">a. 12 Temel Adım</a>
+</li>
+<li><a href="#h-31-envanter-karma-ve-t-rleri">b. Envanter Çıkarma ve Türleri</a>
+</li>
+<li><a href="#h-32-mizan-kavram-ve-t-rleri">c. Mizan Kavramı ve Türleri</a>
+</li>
+<li><a href="#h-33-a-l-kayd-yevmiye-kayd">d. Açılış Kaydı (Yevmiye Kaydı)</a>
+</li></ul>
+</li>
+<li><a href="#h-34-hesaplar-n-kapat-lmas">9. Hesapların Kapatılması</a>
+<ul class="toc-sublist">
+<li><a href="#h-35-gelir-ve-gider-hesaplar-n-n-kapat-lmas">a. Gelir ve Gider Hesaplarının Kapatılması</a>
+</li>
+<li><a href="#h-36-gider-hesaplar-kurallar">b. Gider Hesapları Kuralları</a>
+</li>
+<li><a href="#h-37-690-d-nem-kar-veya-zarar-hesab">c. 690 Dönem Karı veya Zararı Hesabı</a>
+</li>
+<li><a href="#h-38-aktif-ve-pasif-hesaplar-n-kapat-lmas">d. Aktif ve Pasif Hesapların Kapatılması</a>
+</li>
+</ul></li>
+</ul>
+</div>
+    <main class="content">
+        <h1>Muhasebe</h1>
+        <h3 id="h-1-giri"><span class="prefix-num">1. </span>Giriş</h3>
+
+<ul>
+<li><strong>5 unsurla ilgilenmektedir</strong>: Varlık, Borç, Özkaynak (Sermaye), Gelir, Gider
+<p></p></li><p></p>
+<li><strong>4 işlevi vardır</strong>: Kaydeder, Sınıflandırır, Özetler, Analiz Yapar ve Yorumlar
+<p></p></li>
+</ul>
+
+<h3 id="h-2-mali-tablolar"><span class="prefix-num">2. </span>Mali Tablolar</h3>
+
+<ul>
+<li>Dönem sonunda (31 Aralık) özetleme işlemedir.
+<p></p></li><p></p>
+<li>İç kullanıcı (orta ve üst yöneticiler) ve dış kullanıcı (devlet ve çalışan) için hazırlanır.
+<p></p></li><p></p>
+<li><strong>5 tablo mevcuttur:</strong>
+<ul>
+<li>Bilanço
+<p></p></li><p></p>
+<li>Gelir
+<p></p></li><p></p>
+<li>Özkaynak Değişim
+<p></p></li><p></p>
+<li>Nakit Akım
+<p></p></li><p></p>
+<li>Dipnotlar ve Açıklayıcı Notlar
+<p></p></li>
+</ul>
+</li><p></p>
+<li>Türkiye Finansal Raporlama Standartlarına (TFRS) tabidir.
+<ul>
+<li>Karşılaştırma yapabilmek adına standartlaştırılmıştır.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<h3 id="h-3-bilan-o-tablosu"><span class="prefix-num">3. </span>Bilanço Tablosu</h3>
+
+<ul>
+<li>Bir günlük varlığı ve kaynakları gösterir. Statiktir.
+<p></p></li><p></p>
+<li>"Bilanço Temel Eşitliğine" dayanır
+<p></p></li>
+</ul>
+
+<ul>
+<li>Likiditeye göre sıralanır.
+<ul>
+<li><strong>Varlıklar</strong>: En kolay paraya dönüşenden en zor paraya dönüşene doğru.
+<p></p></li><p></p>
+<li><strong>Kaynaklar</strong>: Geri ödeme süresi en kısa olandan en uzun olana doğru.
+<p></p></li>
+</ul>
+</li><p></p>
+<li>Bu sıralamaya göre kategorilenirler.
+<ul>
+<li><strong>Dönen Varlık</strong>: 1 yıl içinde paraya dönüşecek
+<p></p></li><p></p>
+<li><strong>Duran Varlık</strong>: 1 yıl içinde paraya dönüşmeyecek
+<p></p></li><p></p>
+<li><strong>Kısa Vade Yabancı Kaynak</strong>: 1 yıl içinde ödenecek
+<p></p></li><p></p>
+<li><strong>Uzun Vade Yabancı Kaynak</strong>: 1 yıl içinde ödenmeyecek
+<p></p></li><p></p>
+<li><strong>Özkaynak</strong>: Sermaye
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<h4 id="h-4-hesap-tipi-bilan-o"><span class="prefix-num">a. </span>Hesap Tipi Bilanço</h4>
+
+<table style="width:86%;">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>FİRMA ADI</strong></th>
+<th colspan="2" style="text-align: center;"><strong>TARİH</strong></th>
+<th style="text-align: center;"><strong>BİLANÇO ADI</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2"><strong>AKTİF</strong></td>
+<td colspan="2"><strong>PASİF</strong></td>
+</tr>
+<tr>
+<td colspan="2"><p>DÖNEN VARLIKLAR</p><p></p>
+<p>DURAN VARLIKLAR</p></td>
+<td colspan="2"><p>KISA VADELİ YABANCI KAYNAKLAR</p><p></p>
+<p>UZUN VADELİ YABANCI KAYNAKLAR</p>
+<p>ÖZKAYNAK</p></td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="h-5-rapor-tipi-bilan-o"><span class="prefix-num">b. </span>Rapor Tipi Bilanço</h4>
+
+<table style="width:84%;">
+<colgroup>
+<col style="width: 84%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>İŞLETME ADI / TARİH</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><p><strong>1. AKTİF</strong></p><p></p>
+<p>1.1. Dönen Varlıklar</p>
+<p>1.2.Duran Varlıklar</p>
+<p><strong>2. PASİF</strong></p>
+<p>2.1. Kısa Vadeli Yabancı Kaynaklar</p>
+<p>2.2. Uzun Vadeli Yabancı Kaynaklar Mali Borçlar</p>
+<p>2.3. Özkaynaklar</p></td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="h-6-gelir-tablosu"><span class="prefix-num">c. </span>Gelir Tablosu</h4>
+
+<p>Bir faaliyet dönemindeki gelirleri, giderleri ve faaliyet sonucunu (gelir-gider, kâr/zarar) gösterir.</p>
+
+<p><strong>Gelirler</strong></p>
+
+<table style="width:95%;">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 82%">
+</colgroup>
+<thead>
+<tr class="section-header">
+<th style="text-align: center;"><h5 id="section"></h5></th>
+<th style="text-align: center;"><h5 id="brüt-satişlar">60 BRÜT SATIŞLAR</h5></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">600</td>
+<td style="text-align: center;">Yurtiçi Satışlar</td>
+</tr>
+<tr>
+<td style="text-align: center;">601</td>
+<td style="text-align: center;">Yurtdışı Satışlar</td>
+</tr>
+<tr>
+<td style="text-align: center;">602</td>
+<td style="text-align: center;">Diğer Gelirler</td>
+</tr>
+<tr class="section-header">
+<td style="text-align: center;"><h5 id="section-1"></h5></td>
+<td style="text-align: center;"><h5 id="diğer-faaliyetlerden-olağan-gelir-ve-karlar">64 DİĞER FAALİYETLERDEN OLAĞAN GELİR VE KARLAR</h5></td>
+</tr>
+<tr>
+<td style="text-align: center;">640</td>
+<td style="text-align: center;">İştiraklerden Temettü Gelirleri</td>
+</tr>
+<tr>
+<td style="text-align: center;">641</td>
+<td style="text-align: center;">Bağlı Ortaklıklardan Temettü Gelirleri</td>
+</tr>
+<tr>
+<td style="text-align: center;">642</td>
+<td style="text-align: center;">Faiz Gelirleri</td>
+</tr>
+<tr>
+<td style="text-align: center;">643</td>
+<td style="text-align: center;">Komisyon Gelirleri</td>
+</tr>
+<tr>
+<td style="text-align: center;">644</td>
+<td style="text-align: center;">Konusu Kalmayan Karşılıklar</td>
+</tr>
+<tr>
+<td style="text-align: center;">645</td>
+<td style="text-align: center;">Menkul Kıymet Satış Karları</td>
+</tr>
+<tr>
+<td style="text-align: center;">646</td>
+<td style="text-align: center;">Kambiyo Karları</td>
+</tr>
+<tr>
+<td style="text-align: center;">647</td>
+<td style="text-align: center;">Reeskont Faiz Gelirleri</td>
+</tr>
+<tr>
+<td style="text-align: center;">648</td>
+<td style="text-align: center;">Enflasyon Düzeltmesi Karları</td>
+</tr>
+<tr>
+<td style="text-align: center;">649</td>
+<td style="text-align: center;">Diğer Olağan Gelir ve Karlar</td>
+</tr>
+<tr class="section-header">
+<td style="text-align: center;"><h5 id="section-2"></h5></td>
+<td style="text-align: center;"><h5 id="olağandişi-gelir-ve-karlar">67 OLAĞANDIŞI GELİR VE KARLAR</h5></td>
+</tr>
+<tr>
+<td style="text-align: center;">671</td>
+<td style="text-align: center;">Önceki Dönem Gelir ve Karları</td>
+</tr>
+<tr>
+<td style="text-align: center;">679</td>
+<td style="text-align: center;">Diğer Olağandışı Gelir ve Karlar</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Giderler</strong></p>
+
+<table style="width:79%;">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 56%">
+</colgroup>
+<thead>
+<tr class="section-header">
+<th style="text-align: center;"><h5 id="section-3"></h5></th>
+<th style="text-align: center;"><h5 id="satiş-indirimleri">61 SATIŞ İNDİRİMLERİ</h5></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">610</td>
+<td style="text-align: center;">Satıştan İadeler</td>
+</tr>
+<tr>
+<td style="text-align: center;">611</td>
+<td style="text-align: center;">Satış İskontoları</td>
+</tr>
+<tr>
+<td style="text-align: center;">612</td>
+<td style="text-align: center;">Diğer İndirimler</td>
+</tr>
+<tr class="section-header">
+<td style="text-align: center;"><h5 id="section-4"></h5></td>
+<td style="text-align: center;"><h5 id="satişlarin-maliyeti">62 SATIŞLARIN MALİYETİ</h5></td>
+</tr>
+<tr>
+<td style="text-align: center;">620</td>
+<td style="text-align: center;">Satılan Mamuller Maliyeti</td>
+</tr>
+<tr>
+<td style="text-align: center;">621</td>
+<td style="text-align: center;">Satılan Ticari Mallar Maliyeti</td>
+</tr>
+<tr>
+<td style="text-align: center;">622</td>
+<td style="text-align: center;">Satılan Hizmet Maliyeti</td>
+</tr>
+<tr>
+<td style="text-align: center;">623</td>
+<td style="text-align: center;">Diğer Satışların Maliyeti</td>
+</tr>
+<tr class="section-header">
+<td style="text-align: center;"><h5 id="section-5"></h5></td>
+<td style="text-align: center;"><h5 id="diğer-faaliyetlerden-olağan-gider-ve-zararlar">65 DİĞER FAALİYETLERDEN OLAĞAN GİDER VE ZARARLAR</h5></td>
+</tr>
+<tr>
+<td style="text-align: center;">630</td>
+<td style="text-align: center;">Ar-Ge Giderleri</td>
+</tr>
+<tr>
+<td style="text-align: center;">631</td>
+<td style="text-align: center;">Pazarlama, Satış ve Dağıtım Giderleri</td>
+</tr>
+<tr>
+<td style="text-align: center;">632</td>
+<td style="text-align: center;">Genel Yönetim Giderleri</td>
+</tr>
+<tr class="section-header">
+<td style="text-align: center;"><h5 id="section-6"></h5></td>
+<td style="text-align: center;"><h5 id="diğer-faaliyetlerden-olağan-gider-ve-zararlar-1">65 DİĞER FAALİYETLERDEN OLAĞAN GİDER VE ZARARLAR</h5></td>
+</tr>
+<tr>
+<td style="text-align: center;">653</td>
+<td style="text-align: center;">Komisyon Giderleri</td>
+</tr>
+<tr>
+<td style="text-align: center;">654</td>
+<td style="text-align: center;">Karşılık Giderleri</td>
+</tr>
+<tr>
+<td style="text-align: center;">655</td>
+<td style="text-align: center;">Menkul Kıymet Satış Zararları</td>
+</tr>
+<tr>
+<td style="text-align: center;">656</td>
+<td style="text-align: center;">Kambiyo Zararları</td>
+</tr>
+<tr>
+<td style="text-align: center;">657</td>
+<td style="text-align: center;">Reeskont Faiz Giderleri</td>
+</tr>
+<tr>
+<td style="text-align: center;">658</td>
+<td style="text-align: center;">Enflasyon Düzeltmesi Zararları</td>
+</tr>
+<tr>
+<td style="text-align: center;">659</td>
+<td style="text-align: center;">Diğer Olağan Gider ve Zararlar</td>
+</tr>
+<tr class="section-header">
+<td style="text-align: center;"><h5 id="section-7"></h5></td>
+<td style="text-align: center;"><h5 id="finansman-giderleri">66 FİNANSMAN GİDERLERİ</h5></td>
+</tr>
+<tr>
+<td style="text-align: center;">660</td>
+<td style="text-align: center;">Kısa Vadeli Borçlanma Giderleri</td>
+</tr>
+<tr>
+<td style="text-align: center;">661</td>
+<td style="text-align: center;">Uzun Vadeli Borçlanma Giderleri</td>
+</tr>
+<tr class="section-header">
+<td style="text-align: center;"><h5 id="section-8"></h5></td>
+<td style="text-align: center;"><h5 id="diğer-faaliyetlerden-olağan-gider-ve-zararlar-2">65 DİĞER FAALİYETLERDEN OLAĞAN GİDER VE ZARARLAR</h5></td>
+</tr>
+<tr>
+<td style="text-align: center;">680</td>
+<td style="text-align: center;">Çalışmayan Kısım Gider ve Zararları</td>
+</tr>
+<tr>
+<td style="text-align: center;">681</td>
+<td style="text-align: center;">Önceki Dönem Gider ve Zararları</td>
+</tr>
+<tr>
+<td style="text-align: center;">689</td>
+<td style="text-align: center;">Diğer Olağandışı Gider ve Zararlar</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="h-7-gelir-tablosunun-be-b-l-m"><span class="prefix-num">d. </span>Gelir Tablosunun Beş Bölümü</h4>
+
+<table style="width:93%;">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 57%">
+<col style="width: 24%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Bölüm</strong></th>
+<th style="text-align: center;"><strong>İşlem Sırası ve Kalemler</strong></th>
+<th style="text-align: center;"><strong>Örnek Hesaplama</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Brüt Satışlar</td>
+<td style="text-align: center;">1.000.000 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Satış İndirimleri (-)</td>
+<td style="text-align: center;">(50.000 TL)</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">= NET SATIŞLAR</td>
+<td style="text-align: center;">950.000 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Satışların Maliyeti (-)</td>
+<td style="text-align: center;">(600.000 TL)</td>
+</tr>
+<tr class="section-header">
+<td style="text-align: center;"><h5 id="section-9">1</h5></td>
+<td style="text-align: center;"><h5 id="brüt-satiş-kâri-zarari">BRÜT SATIŞ KÂRI / ZARARI</h5></td>
+<td style="text-align: center;"><h5 id="tl">350.000 TL</h5></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Faaliyet Giderleri (-)</td>
+<td style="text-align: center;">(150.000 TL)</td>
+</tr>
+<tr class="section-header">
+<td style="text-align: center;"><h5 id="section-10">2</h5></td>
+<td style="text-align: center;"><h5 id="faaliyet-kâri-zarari">FAALİYET KÂRI / ZARARI</h5></td>
+<td style="text-align: center;"><h5 id="tl-1">200.000 TL</h5></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Diğer Faaliyetlerden Olağan Gelir ve Kârlar (+)</td>
+<td style="text-align: center;">40.000 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Diğer Faaliyetlerden Olağan Gider ve Zararlar (-)</td>
+<td style="text-align: center;">(20.000 TL)</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Finansman Giderleri (-)</td>
+<td style="text-align: center;">(30.000 TL)</td>
+</tr>
+<tr class="section-header">
+<td style="text-align: center;"><h5 id="section-11">3</h5></td>
+<td style="text-align: center;"><h5 id="olağan-kâr-zarar">OLAĞAN KÂR / ZARAR</h5></td>
+<td style="text-align: center;"><h5 id="tl-2">190.000 TL</h5></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Olağandışı Gelir ve Kârlar (+)</td>
+<td style="text-align: center;">15.000 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Olağandışı Gider ve Zararlar (-)</td>
+<td style="text-align: center;">(5.000 TL)</td>
+</tr>
+<tr class="section-header">
+<td style="text-align: center;"><h5 id="section-12">4</h5></td>
+<td style="text-align: center;"><h5 id="dönem-kâri-zarari-vergi-öncesi">DÖNEM KÂRI / ZARARI (Vergi Öncesi)</h5></td>
+<td style="text-align: center;"><h5 id="tl-3">200.000 TL</h5></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Dönem Kârı Vergi ve Yasal Yükümlülük Karş. (-)</td>
+<td style="text-align: center;">(40.000 TL)</td>
+</tr>
+<tr class="section-header">
+<td style="text-align: center;"><h5 id="section-13">5</h5></td>
+<td style="text-align: center;"><h5 id="dönem-net-kâri-zarari">DÖNEM NET KÂRI / ZARARI</h5></td>
+<td style="text-align: center;"><h5 id="tl-4">160.000 TL</h5></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="h-8-nakit-ak-m-tablosu"><span class="prefix-num">4. </span>Nakit Akım Tablosu</h3>
+
+<p>Nakit kaynaklarını ve kullanımlarını gösterir ve üç temel bilgiyi kapsamaktadır:</p>
+
+<h4 id="h-9-faaliyetlerden-operasyonlardan-kaynaklanan-nakit-ak"><span class="prefix-num">a. </span>Faaliyetlerden (Operasyonlardan) Kaynaklanan Nakit Akışı</h4>
+
+<p>Bu bölüm, işletmenin ana işini yürüterek ne kadar nakit ürettiğini veya tükettiğini gösterir. Bir şirketin kârlı olması (Gelir Tablosu), her zaman nakit ürettiği anlamına gelmez; bu kısım, kâğıt üzerindeki kârın ne kadarının gerçek nakit olduğunu ortaya koyar.</p>
+
+<ul>
+<li><strong>Verdiği Bilgi</strong>: İşletmenin normal günlük faaliyetlerini (mal satma, hizmet sunma) sürdürerek kendi kendine yetip yetmediği, yani sürdürülebilir nakit yaratma gücü nedir?
+<p></p></li><p></p>
+<li><strong>Örneğin</strong>: Müşterilerden nakit tahsilatı, tedarikçilere yapılan nakit ödemeler, çalışan maaşları, kira ve vergi ödemeleri.
+<p></p></li>
+</ul>
+
+<h4 id="h-10-yat-r-m-faaliyetlerinden-kaynaklanan-nakit-ak"><span class="prefix-num">b. </span>Yatırım Faaliyetlerinden Kaynaklanan Nakit Akışı</h4>
+
+<p>Bu bölüm, işletmenin uzun vadeli büyüme hedefleri için yaptığı harcamaları ve varlık satışlarını gösterir.</p>
+
+<ul>
+<li><strong>Verdiği Bilgi</strong>: İşletmenin gelecekteki kapasitesini artırmak veya sürdürmek için ne tür yatırımlar yaptığı veya elindeki varlıkları nasıl yönettiği.
+<p></p></li><p></p>
+<li><strong>Örneğin</strong>: Duran varlık (makine, bina, araç) satın almak için nakit çıkışı, diğer şirketlerin hisselerini satın almak için nakit çıkışı, eski bir makineyi satmaktan elde edilen nakit girişi.
+<p></p></li>
+</ul>
+
+<h4 id="h-11-finansman-faaliyetlerinden-kaynaklanan-nakit-ak"><span class="prefix-num">c. </span>Finansman Faaliyetlerinden Kaynaklanan Nakit Akışı</h4>
+
+<p>Bu bölüm, işletmenin borç ve özkaynak yapısıyla ilgili faaliyetlerini gösterir. İşletmenin fonları nasıl sağladığını ve bu fonları sağlayanlara (bankalar, hissedarlar) nasıl ödeme yaptığını ele alır.</p>
+
+<ul>
+<li><strong>Verdiği Bilgi</strong>: İşletmenin sermaye yapısında (borç ve özkaynak) ne gibi değişiklikler olduğu ve bu finansman kaynaklarını nasıl kullandığı.
+<p></p></li><p></p>
+<li><strong>Örneğin</strong>: Bankadan kredi almak (giriş), kredi anapara ödemesi yapmak (çıkış), yeni hisse senedi ihraç etmek (giriş), hissedarlara temettü ödemesi yapmak (çıkış).
+<p></p></li>
+</ul>
+
+<h3 id="h-12-hesap-kavram-ve-temel-kurallar"><span class="prefix-num">5. </span>Hesap Kavramı ve Temel Kurallar</h3>
+
+<p>Varlık, sermaye, borç, gelir ve giderdeki artış ve azalışı kaydetmek amacıyla kullanılan çizelgelerdir.</p>
+
+<h4 id="h-13-t-cetveli-yap-s"><span class="prefix-num">a. </span>T-Cetveli Yapısı</h4>
+
+<table>
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr>
+<th colspan="2" style="text-align: center;"><strong>… HESABI</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>BORÇ (SOL)</strong></td>
+<td style="text-align: right;"><strong>ALACAK (SAĞ)</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="h-14-temel-i-lem-terimleri"><span class="prefix-num">b. </span>Temel İşlem Terimleri</h4>
+
+<ul>
+<li><strong>Hesap açmak</strong>: Bir hesaba yapılan ilk kayıt
+<p></p></li><p></p>
+<li><strong>Hesabı borçlandırmak</strong>: Borç (sol) tarafa sayı yazma işlemi
+<p></p></li><p></p>
+<li><strong>Hesabı alacaklandırmak</strong>: Alacak (sağ) tarafa sayı yazma işlemi
+<p></p></li><p></p>
+<li><strong>Kalan (Bakiye) Vermek</strong>: Borç ve Alacak toplamları arasındaki farktır.
+<p></p></li>
+</ul>
+
+<h4 id="h-15-tekd-zen-hesap-plan"><span class="prefix-num">c. </span>Tekdüzen Hesap Planı</h4>
+
+<p>Hesaplar ondalık kodlama sistemine göre sınıflandırılır. Kodların okunması şu şekildedir:</p>
+
+<ul>
+<li><strong>Hesap Sınıfları (1 Rakam):</strong> Örneğin; 1 Dönen Varlıklar
+<p></p></li><p></p>
+<li><strong>Hesap Grupları (2 Rakam):</strong> Örneğin; 10 Hazır Değerler
+<p></p></li><p></p>
+<li><strong>Ana Hesap (3 Rakam):</strong> Örneğin; 100 Kasa Hesabı
+<p></p></li>
+</ul>
+
+<h4 id="h-16-hesap-s-n-flar"><span class="prefix-num">d. </span>Hesap Sınıfları</h4>
+
+<table style="width:44%;">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Kod</strong></th>
+<th style="text-align: center;"><strong>Sınıf Adı</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Dönen Varlıklar</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">Duran Varlıklar</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">Kısa Vadeli Yabancı Kaynaklar</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">Uzun Vadeli Yabancı Kaynaklar</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">Özkaynaklar</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">Gelir Tablosu Hesapları</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">Maliyet Hesapları</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">Boş</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">Nazım Hesaplar</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="h-17-hesap-gruplar"><span class="prefix-num">e. </span>Hesap Grupları</h4>
+
+<p>Hesaplar, işletmenin varlık yapısını mı yoksa dönem içindeki performansını mı gösterdiğine göre Bilanço ve Gelir Tablosu hesapları olarak ikiye ayrılır.</p>
+
+<p><strong>Bilanço Hesapları</strong></p>
+
+<ul>
+<li><strong>Aktif Hesaplar (Varlıklar):</strong> İşletmenin sahip olduğu değerleri (Kasa, Banka, Stoklar, Demirbaşlar vb.) temsil eder. İki soruyla bulunur: "Şirkete mi ait?" ve "Ekonomik bir değer midir?"
+<ul>
+<li><strong>Hesap Grupları (1 ve 2)</strong>
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<table>
+<colgroup>
+<col style="width: 49%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>DÖNEN VARLIKLAR (1)</strong></th>
+<th style="text-align: center;"><strong>DURAN VARLIKLAR (2)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>10</strong>&nbsp;Hazır Değerler</td>
+<td style="text-align: center;"><strong>22</strong>&nbsp;Ticari Alacaklar</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>11</strong>&nbsp;Menkul Kıymetler</td>
+<td style="text-align: center;"><strong>23</strong>&nbsp;Diğer Alacaklar</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>12&nbsp;</strong>Ticari Alacaklar</td>
+<td style="text-align: center;"><strong>24</strong>&nbsp;Mali Duran Varlıklar</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>13</strong>&nbsp;Diğer Alacaklar</td>
+<td style="text-align: center;"><strong>25</strong>&nbsp;Maddi Duran Varlıklar</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>15</strong>&nbsp;Stoklar</td>
+<td style="text-align: center;"><strong>26</strong>&nbsp;Maddi Olmayan Duran Varlıklar</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>17</strong>&nbsp;Yıllara Yaygın İnşaat ve Onarım Maliyetleri</td>
+<td style="text-align: center;"><strong>28</strong>&nbsp;Gelecek Yıllara Ait Giderler ve Gelir Tahakkukları</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>18</strong>&nbsp;Gelecek Aylara Ait Giderler ve Gelir Tahakkukları</td>
+<td style="text-align: center;"><strong>29</strong>&nbsp;Diğer Duran Varlıklar</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>19</strong>&nbsp;Diğer Dönen Varlıklar</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li><strong>Temel Aktif Hesaplar</strong>
+<p></p></li>
+</ul>
+
+<table>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 25%">
+<col style="width: 61%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Hesap Kodu</strong></th>
+<th style="text-align: center;"><strong>Hesap Adı</strong></th>
+<th style="text-align: center;"><strong>Kullanım Amacı / Açıklama</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>100</strong></td>
+<td style="text-align: center;"><strong>KASA HESABI</strong></td>
+<td style="text-align: center;">İşletmenin elindeki TL veya yabancı para nakit değişimlerini izler.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>101</strong></td>
+<td style="text-align: center;"><strong>ALINAN ÇEKLER HESABI</strong></td>
+<td style="text-align: center;">Müşterilerden alınan (henüz tahsil edilmemiş) çekleri izler.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>102</strong></td>
+<td style="text-align: center;"><strong>BANKALAR HESABI</strong></td>
+<td style="text-align: center;">Bankalardaki vadesiz ve vadeli mevduatları takip eder.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>110</strong></td>
+<td style="text-align: center;"><strong>HİSSE SENETLERİ HESABI</strong></td>
+<td style="text-align: center;">Geçici yatırım amacıyla alınan hisse senetlerini izler.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>120</strong></td>
+<td style="text-align: center;"><strong>ALICILAR HESABI</strong></td>
+<td style="text-align: center;">Senetsiz&nbsp;(veresiye/açık hesap) satışlardan doğan alacakları izler.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>121</strong></td>
+<td style="text-align: center;"><strong>ALACAK SENETLERİ HESABI</strong></td>
+<td style="text-align: center;">Senede bağlı&nbsp;(bono/poliçe) satışlardan doğan alacakları izler.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>153</strong></td>
+<td style="text-align: center;"><strong>TİCARİ MALLAR HESABI</strong></td>
+<td style="text-align: center;">Satılmak amacıyla alınan, üzerinde işlem yapılmayan malları izler.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>252</strong></td>
+<td style="text-align: center;"><strong>BİNALAR HESABI</strong></td>
+<td style="text-align: center;">İşletme mülkiyetindeki ofis, dükkân, fabrika gibi gayrimenkulleri izler.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>253</strong></td>
+<td style="text-align: center;"><strong>TESİS, MAKİNE VE CİHAZLAR</strong></td>
+<td style="text-align: center;">Üretimde kullanılan ana makineler ve teknik cihazları izler.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>254</strong></td>
+<td style="text-align: center;"><strong>TAŞITLAR HESABI</strong></td>
+<td style="text-align: center;">İşletmeye ait her türlü motorlu taşıtı (otomobil, kamyon vb.) izler.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>255</strong></td>
+<td style="text-align: center;"><strong>DEMİRBAŞLAR HESABI</strong></td>
+<td style="text-align: center;">Mobilya, bilgisayar gibi işletme faaliyetinde kullanılan uzun ömürlü araçları izler.</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li>Aktif Hesapların İşleyiş Kuralları
+<ul>
+<li><strong>Açılış ve Artış</strong>: İlk kayıt ve hesaptaki artışlar daima BORÇ (SOL) tarafa yapılır.
+<p></p></li><p></p>
+<li><strong>Azalış</strong>: Hesaptaki azalışlar ALACAK (SAĞ) tarafa yazılır.
+<p></p></li><p></p>
+<li><strong>Kalan</strong>: Hesap daima BORÇ BAKİYESİ verir (Asla alacak bakiyesi vermez).
+<p></p></li><p></p>
+<li><strong>Kapatma</strong>: Hesabı kapatmak için alacaklandırılır.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<ul>
+<li><strong>Pasif Hesaplar (Kaynaklar):</strong> Pasif hesaplar, bir işletmenin varlıklarının hangi kaynaklarla (borçlar veya öz sermaye) finanse edildiğini gösterir.
+<ul>
+<li><strong>Hesap Gruplar (3, 4 ve 5)</strong>
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<table>
+<colgroup>
+<col style="width: 34%">
+<col style="width: 36%">
+<col style="width: 29%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Kısa Vadeli Yab. Kaynaklar (3)</strong></th>
+<th style="text-align: center;"><strong>Uzun Vadeli Yab. Kaynaklar (4)</strong></th>
+<th style="text-align: center;"><strong>Özkaynaklar (5)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>30</strong>&nbsp;Mali Borçlar</td>
+<td style="text-align: center;"><strong>40</strong>&nbsp;Mali Borçlar</td>
+<td style="text-align: center;"><strong>50</strong>&nbsp;Ödenmiş Sermaye</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>32</strong>&nbsp;Ticari Borçlar</td>
+<td style="text-align: center;"><strong>42</strong>&nbsp;Ticari Borçlar</td>
+<td style="text-align: center;"><strong>52</strong>&nbsp;Sermaye Yedekleri</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>33</strong>&nbsp;Diğer Borçlar</td>
+<td style="text-align: center;"><strong>43</strong>&nbsp;Diğer Borçlar</td>
+<td style="text-align: center;"><strong>54</strong>&nbsp;Kar Yedekleri</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>34</strong>&nbsp;Alınan Avanslar</td>
+<td style="text-align: center;"><strong>44</strong>&nbsp;Alınan Avanslar</td>
+<td style="text-align: center;"><strong>57</strong>&nbsp;Geçmiş Yıllar Karları</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>36</strong>&nbsp;Ödenecek Vergi ve Yük.</td>
+<td style="text-align: center;"><strong>47</strong>&nbsp;Borç ve Gider Karşılıkları</td>
+<td style="text-align: center;"><strong>58</strong>&nbsp;Geçmiş Yıllar Zararları (-)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>37</strong>&nbsp;Borç ve Gider Karşılıkları</td>
+<td style="text-align: center;"><strong>48</strong>&nbsp;Gel. Yıllara Ait Gel. ve Gid. Tah.</td>
+<td style="text-align: center;"><strong>59</strong>&nbsp;Dönem Net Karı (Zararı)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>38</strong>&nbsp;Gel. Aylara Ait Gel. ve Gid. Tah.</td>
+<td style="text-align: center;"><strong>49</strong>&nbsp;Diğer U.V. Yabancı Kaynaklar</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>39</strong>&nbsp;Diğer K.V. Yabancı Kaynaklar</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li><strong>Temel Pasif Hesaplar</strong>
+<p></p></li>
+</ul>
+
+<table>
+<colgroup>
+<col style="width: 10%">
+<col style="width: 26%">
+<col style="width: 62%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Hesap Kodu</strong></th>
+<th style="text-align: center;"><strong>Hesap Adı</strong></th>
+<th style="text-align: center;"><strong>Kullanım Amacı / Açıklama</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>103</strong></td>
+<td style="text-align: center;"><strong>Verilen Çekler ve Ödeme Emirleri (-)</strong></td>
+<td style="text-align: center;">İşletmenin verdiği çeklerin takibi. Aktif tarafta yer alır ancak yanındaki (-) işaretiyle varlık toplamını azaltır.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>300</strong></td>
+<td style="text-align: center;"><strong>Banka Kredileri</strong></td>
+<td style="text-align: center;">Bankalardan alınan, vadesi 1 yıla kadar olan nakit kredilerin takibi.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>320</strong></td>
+<td style="text-align: center;"><strong>Satıcılar</strong></td>
+<td style="text-align: center;">Senetsiz (açık hesap) ticari borçların izlendiği hesaptır.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>321</strong></td>
+<td style="text-align: center;"><strong>Borç Senetleri</strong></td>
+<td style="text-align: center;">Ticari mal veya hizmet alımı karşılığında verilen senetli borçlardır.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>500</strong></td>
+<td style="text-align: center;"><strong>Sermaye</strong></td>
+<td style="text-align: center;">Ortakların işletmeye koymayı taahhüt ettikleri veya ödedikleri ana sermaye tutarıdır.</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li><strong>Pasif Hesapların İşleyiş Kuralları</strong>
+<ul>
+<li><strong>Açılış</strong>: İlk kayıt daima ALACAK (Sağ) tarafa yapılır.
+<p></p></li><p></p>
+<li><strong>Artış</strong>: Hesaptaki artışlar ALACAK (Sağ) tarafa kaydedilir.
+<p></p></li><p></p>
+<li><strong>Azalış</strong>: Hesaptaki azalışlar BORÇ (Sol) tarafa kaydedilir.
+<p></p></li><p></p>
+<li><strong>Kalan</strong>: Hesap ya ALACAK BAKİYESİ verir ya da sıfırlanır (hiçbir zaman borç bakiyesi vermez).
+<p></p></li><p></p>
+<li><strong>Kapatma</strong>: Hesabı kapatmak için bakiye tutarı kadar BORÇ kaydı yapılır.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<strong>Gelir Tablosu Hesapları</strong>
+
+<ul>
+<li><strong>Gelir Hesapla</strong>rı: Sermayede artış yaratan işlemlerin takip edildiği, işletmeye ekonomik fayda sağlayan hesaplardır.
+<ul>
+<li><strong>Temel Gelir Hesapları</strong>
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<table>
+<colgroup>
+<col style="width: 12%">
+<col style="width: 23%">
+<col style="width: 64%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Hesap Kodu</strong></th>
+<th style="text-align: center;"><strong>Hesap Adı</strong></th>
+<th style="text-align: center;"><strong>Kullanım Amacı / Açıklama</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>600</strong></td>
+<td style="text-align: center;"><strong>YURT İÇİ SATIŞLAR</strong></td>
+<td style="text-align: center;">İşletmenin ana faaliyet konusu kapsamındaki mal ve hizmet satışlarından elde edilen brüt tutarların izlendiği hesaptır.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>642</strong></td>
+<td style="text-align: center;"><strong>FAİZ GELİRLERİ</strong></td>
+<td style="text-align: center;">Banka mevduatları, repo, tahvil ve benzeri finansal yatırımlardan elde edilen faiz gelirlerinin kaydedildiği hesaptır.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>645</strong></td>
+<td style="text-align: center;"><strong>MENKUL KIYMETSATIŞ KARLARI</strong></td>
+<td style="text-align: center;">Hisse senedi, fon veya tahvil gibi menkul kıymetlerin alış bedelinin üzerinde bir fiyata satılması durumunda doğan karın izlendiği hesaptır.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>646</strong></td>
+<td style="text-align: center;"><strong>KAMBİYO KARLARI</strong></td>
+<td style="text-align: center;">Yabancı para (döviz) satışından veya dönem sonu döviz değerlemesinden (kur artışından) doğan karların kaydedildiği hesaptır.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>649</strong></td>
+<td style="text-align: center;"><strong>DİĞER OLAĞAN GELİR VE KARLAR</strong></td>
+<td style="text-align: center;">Gayrimenkul kira gelirleri, iştiraklerden sağlanan gelirler gibi diğer hesapların kapsamına girmeyen süreklilik arz eden gelirlerin izlendiği hesaptır.</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li><strong>Gelir Hesaplarının İşleyiş Kuralları</strong>
+<ul>
+<li><strong>İlk Kayıt (Artış):</strong> Gelir gerçekleştiğinde (tahakkuk ettiğinde) ilgili gelir hesabının alacağına kaydedilir.
+<p></p></li><p></p>
+<li><strong>Dönem Sonu Kapanışı</strong>: Dönem sonunda bu hesaplar, verdikleri bakiyeler kadar borçlandırılarak kapatılır.
+<p></p></li><p></p>
+<li><strong>Kâr/Zarar Devri:</strong> Kapatılan bu tutarlar, net sonucu belirlemek amacıyla 690 Dönem Kârı veya Zararı Hesabı\'nın alacağına devredilir.
+<p></p></li><p></p>
+<li><strong>Sıfırlanma Prensibi</strong>: Bu hesaplar geçici hesaplardır; önceki dönemden devir almazlar ve sonraki döneme bakiye vermezler. Her mali yıla sıfır bakiye ile başlanır.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<ul>
+<li><strong>Gider Hesapları</strong>: Sermayede azalış yaratan, işletmenin faaliyetlerini sürdürebilmesi için katlandığı maliyetleri ve varlık çıkışlarını takip eden hesaplardır.
+<ul>
+<li><strong>Temel Gider Hesaplar</strong>
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<table>
+<colgroup>
+<col style="width: 12%">
+<col style="width: 25%">
+<col style="width: 62%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Hesap Kodu</strong></th>
+<th style="text-align: center;"><strong>Hesap Adı</strong></th>
+<th style="text-align: center;"><strong>Kullanım Amacı / Açıklama</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>655</strong></td>
+<td style="text-align: center;"><strong>MENKUL KIYMET SATIŞ ZARARLARI</strong></td>
+<td style="text-align: center;">Hisse senedi, tahvil gibi menkul kıymetlerin, alış bedellerinin altında bir fiyata satılmasıyla oluşan zararların izlendiği hesaptır.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>656</strong></td>
+<td style="text-align: center;"><strong>KAMBİYO ZARARLARI</strong></td>
+<td style="text-align: center;">Yabancı paraların (döviz) satışından veya dönem sonu kur değerlemesinden (kur düşüşünden) kaynaklanan zararların kaydedildiği hesaptır.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>770</strong></td>
+<td style="text-align: center;"><strong>GENEL YÖNETİM GİDERLERİ</strong></td>
+<td style="text-align: center;">İşletmenin yönetimi, büro hizmetleri, kira, elektrik, su, doğalgaz ve idari personel maaşları gibi yönetimsel giderlerin izlendiği hesaptır.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>780</strong></td>
+<td style="text-align: center;"><strong>FİNANSMAN GİDERLERİ</strong></td>
+<td style="text-align: center;">İşletmenin kullandığı banka kredileri ve benzeri borçlanmalar için ödenen faiz, komisyon ve kur farkı giderlerinin kaydedildiği hesaptır.</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li><strong>Gider Hesaplarının İşleyiş Kuralları</strong>
+<ul>
+<li><strong>İlk Kayıt (Artış):</strong> Bir gider doğduğu anda, ilgili gider hesabının borç tarafına kaydedilir.
+<p></p></li><p></p>
+<li><strong>Kavramsal Not</strong>: İhtiyatlılık kavramı gereği giderler doğduğu anda kaydedilir, gerçekleşmesi beklenmez. Amaç, mali tablonun en muhtemel kötü durumu yansıtarak karar alıcıları yanıltmamasıdır.
+<p></p></li><p></p>
+<li><strong>Dönem Sonu Kapanışı</strong>: Dönem sonu işlemleri sırasında bu hesaplar, verdikleri bakiye kadar alacaklandırılarak kapatılır.
+<p></p></li><p></p>
+<li><strong>Kâr/Zarar Devri</strong>: Kapatılan gider tutarları, net işletme sonucunu hesaplamak amacıyla 690 Dönem Kârı veya Zararı Hesabı\'nın borç tarafına aktarılır.
+<p></p></li><p></p>
+<li><strong>Sıfırlanma Prensibi</strong>: Gider hesapları da \"geçici hesaplar\" statüsündedir; önceki mali dönemden devir almazlar ve sonraki mali döneme bakiye (kalan) vermezler. Her yeni yıla sıfır bakiye ile başlanır.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<h4 id="h-18-hesap-kay-t-y-ntemi"><span class="prefix-num">f. </span>Hesap Kayıt Yöntemi</h4>
+
+<p><strong>Tek Taraflı Kayıt Yöntemi (Basit Yöntem)</strong></p>
+
+<p>Bu yöntem, genellikle küçük ölçekli işletmelerin kullandığı, işlemlerin sadece tek bir yönünü ele alan basit bir sistemdir.</p>
+
+<ul>
+<li><strong>Temel Özellik:</strong> Sadece bir hesap kalemindeki değişim dikkate alınır. İşlemin karşı bacağı (diğer tarafı) kaydedilmez.
+<p></p></li><p></p>
+<li><strong>Örneğin</strong>: Peşin mal alan bir işletme, sadece stoklarındaki (ticari mal) değişimi not eder; ancak kasasından çıkan nakit parayı sisteme işlemez.
+<p></p></li><p></p>
+<li><strong>Kullanım Alanı</strong>: İkinci sınıf tüccarların tutmakla yükümlü olduğu İşletme Defteri bu yöntemin tek örneğidir.
+<p></p></li>
+</ul>
+
+<strong>Çift Taraflı Kayıt Yöntemi</strong>
+
+<p>Modern muhasebenin temelini oluşturan bu sistemde, her mali işlemin en az iki hesap üzerinde etkisi olduğu kabul edilir.</p>
+
+<ul>
+<li><strong>Temel Özellik</strong>: Bir işlem gerçekleştiğinde en az iki hesap kullanılır. Toplam Borç tutarı, her zaman toplam Alacak tutarına eşit olmalıdır.
+<p></p></li><p></p>
+<li><strong>İşleyiş</strong>: Bir varlık artarken başka bir varlık azalabilir veya bir borç artabilir.
+<p></p></li><p></p>
+<li><strong>Uygulama Adımları</strong>: Çift taraflı kayıt yapılırken şu üç temel adım izlenir.
+<p></p></li><p></p>
+<li><strong>Hesap Belirleme</strong>: İşlemden etkilenen hesap isimleri ve değişim yönü (Artış/Azalış).
+<p></p></li><p></p>
+<li><strong>Hesap Sınıflandırma</strong>: Hesapların karakteri (Aktif/Pasif).
+<p></p></li><p></p>
+<li><strong>Kayıt Kuralı</strong>: Karakterine göre tutarın yönü (Borç/Alacak).
+<p></p></li>
+</ul>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 1:</strong> Ticari Malın Peşin Alınması</span>
+  <div class="example-content">
+    <p><strong>İşlem</strong>: 2.000 TL tutarında ticari mal peşin (nakit) satın alınmıştır.</p>
+<p><strong>Kayıt Özeti</strong>: Ticari Mallar Hesabı Borçlu (2.000), Kasa Hesabı Alacaklı (2.000).</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 29%">
+<col style="width: 27%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Adım</strong></th>
+<th style="text-align: center;"><strong>Analiz</strong></th>
+<th style="text-align: center;"><strong>Sonuç</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>1. Hesap Belirleme</strong></td>
+<td style="text-align: center;"><p>Ticari Mallar (+)</p><p></p>
+<p>Kasa (-)</p></td>
+<td style="text-align: center;">Mal artışı ve Nakit azalışı.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>2. Sınıflandırma</strong></td>
+<td style="text-align: center;"><p>Ticari Mallar: Aktif</p><p></p>
+<p>Kasa: Aktif</p></td>
+<td style="text-align: center;">Varlıklar arası yer değişimi.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>3. Kayıt Kuralı</strong></td>
+<td style="text-align: center;"><p>Ticari Mallar (Artış)</p><p></p>
+<p>Kasa (Azalış)</p></td>
+<td style="text-align: center;"><p>BORÇ:&nbsp;2.000</p><p></p>
+<p>ALACAK:&nbsp;2.000</p></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 2:</strong> Bankadan Nakit Para Çekilmesi</span>
+  <div class="example-content">
+    <p><strong>İşlem</strong>: İşletmenin bankadaki mevduat hesabından 6.000 TL nakit çekilmiştir.</p>
+<p><strong>Kayıt Özeti:</strong> Kasa Hesabı Borçlu (6.000), Bankalar Hesabı Alacaklı (6.000).</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<table style="width:92%;">
+<colgroup>
+<col style="width: 29%">
+<col style="width: 23%">
+<col style="width: 39%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Adım</strong></th>
+<th style="text-align: center;"><strong>Analiz</strong></th>
+<th style="text-align: center;"><strong>Sonuç</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>1. Hesap Belirleme</strong></td>
+<td style="text-align: center;"><p>Kasa (+)</p><p></p>
+<p>Bankalar (-)</p></td>
+<td style="text-align: center;">Nakit artışı ve Mevduat azalışı.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>2. Sınıflandırma</strong></td>
+<td style="text-align: center;"><p>Kasa: Aktif</p><p></p>
+<p>Bankalar: Aktif</p></td>
+<td style="text-align: center;">Varlıklar arası yer değişimi.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>3. Kayıt Kuralı</strong></td>
+<td style="text-align: center;"><p>Kasa (Artış)</p><p></p>
+<p>Bankalar (Azalış)</p></td>
+<td style="text-align: center;"><p>BORÇ:&nbsp;6.000</p><p></p>
+<p>ALACAK:&nbsp;6.000</p></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 3:</strong> Binanın Peşin Satılması</span>
+  <div class="example-content">
+    <p><strong>İşlem</strong>: Maliyet bedeli 5.000 TL olan bir bina peşin (nakit) satılmıştır.</p>
+<p><strong>Kayıt Özeti:</strong> Kasa Hesabı Borçlu (5.000), Binalar Hesabı Alacaklı (5.000).</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<table style="width:92%;">
+<colgroup>
+<col style="width: 29%">
+<col style="width: 23%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Adım</strong></th>
+<th style="text-align: center;"><strong>Analiz</strong></th>
+<th style="text-align: center;"><strong>Sonuç</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>1. Hesap Belirleme</strong></td>
+<td style="text-align: center;"><p>Kasa (+)</p><p></p>
+<p>Binalar (-)</p></td>
+<td style="text-align: center;">Nakit artışı ve Bina azalışı.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>2. Sınıflandırma</strong></td>
+<td style="text-align: center;"><p>Kasa: Aktif</p><p></p>
+<p>Binalar: Aktif</p></td>
+<td style="text-align: center;">Varlıklar arası yer değişimi.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>3. Kayıt Kuralı</strong></td>
+<td style="text-align: center;"><p>Kasa (Artış)</p><p></p>
+<p>Binalar (Azalış)</p></td>
+<td style="text-align: center;"><p>BORÇ:&nbsp;5.000</p><p></p>
+<p>ALACAK:&nbsp;5.000</p></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 4:</strong> Ticari Malın Senet Karşılığı Alınması</span>
+  <div class="example-content">
+    <p><strong>İşlem</strong>:&nbsp;8.000 TL tutarında ticari mal senet düzenlenerek satın alınmıştır.</p>
+<p><strong>Kayıt Özeti:</strong> Ticari Mallar Hesabı Borçlu (8.000), Borç Senetleri Hesabı Alacaklı (8.000).</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<table>
+<colgroup>
+<col style="width: 24%">
+<col style="width: 37%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Adım</strong></th>
+<th style="text-align: center;"><strong>Analiz</strong></th>
+<th style="text-align: center;"><strong>Sonuç</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>1. Hesap Belirleme</strong></td>
+<td style="text-align: center;"><p>Ticari Mallar (+)</p><p></p>
+<p>Borç Senetleri (+)</p></td>
+<td style="text-align: center;">Mal artışı ve Borç (Yükümlülük) artışı.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>2. Sınıflandırma</strong></td>
+<td style="text-align: center;"><p>Ticari Mallar: Aktif</p><p></p>
+<p>Borç Senetleri: Pasif</p></td>
+<td style="text-align: center;">Varlık ve Kaynak artışı.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>3. Kayıt Kuralı</strong></td>
+<td style="text-align: center;"><p>Ticari Mallar (Artış)</p><p></p>
+<p>Borç Senetleri (Artış)</p></td>
+<td style="text-align: center;"><p>BORÇ:&nbsp;8.000</p><p></p>
+<p>ALACAK:&nbsp;8.000</p></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 5:</strong> Senetsiz Alacağın Tahsil Edilmesi</span>
+  <div class="example-content">
+    <p><strong>İşlem</strong>:&nbsp;13.000 TL tutarındaki senetsiz (açık hesap) alacak nakit olarak tahsil edilmiştir.</p>
+<p><strong>Kayıt Özeti:</strong> Kasa Hesabı Borçlu (13.000), Alıcılar Hesabı Alacaklı (13.000).</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<table>
+<colgroup>
+<col style="width: 31%">
+<col style="width: 24%">
+<col style="width: 43%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Adım</strong></th>
+<th style="text-align: center;"><strong>Analiz</strong></th>
+<th style="text-align: center;"><strong>Sonuç</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>1. Hesap Belirleme</strong></td>
+<td style="text-align: center;"><p>Kasa (+)</p><p></p>
+<p>Alıcılar (-)</p></td>
+<td style="text-align: center;">Nakit artışı ve Alacak azalışı.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>2. Sınıflandırma</strong></td>
+<td style="text-align: center;"><p>Kasa: Aktif</p><p></p>
+<p>Alıcılar: Aktif</p></td>
+<td style="text-align: center;">Varlıklar arası yer değişimi.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>3. Kayıt Kuralı</strong></td>
+<td style="text-align: center;"><p>Kasa (Artış)</p><p></p>
+<p>Alıcılar (Azalış)</p></td>
+<td style="text-align: center;"><p>BORÇ:&nbsp;13.000</p><p></p>
+<p>ALACAK:&nbsp;13.000</p></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 6:</strong> Banka Kredisi ile Nakit Çekilmesi</span>
+  <div class="example-content">
+    <p><strong>İşlem</strong>:&nbsp;Bankadaki kredi hesabından 10.000 TL nakit çekilmiştir.</p>
+<p><strong>Kayıt Özeti:</strong> Kasa Hesabı Borçlu (10.000), Banka Kredileri Hesabı Alacaklı (10.000).</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<table>
+<colgroup>
+<col style="width: 27%">
+<col style="width: 29%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Adım</strong></th>
+<th style="text-align: center;"><strong>Analiz</strong></th>
+<th style="text-align: center;"><strong>Sonuç</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>1. Hesap Belirleme</strong></td>
+<td style="text-align: center;"><p>Kasa (+)</p><p></p>
+<p>Banka Kredileri (+)</p></td>
+<td style="text-align: center;">Nakit artışı ve Kredi borcu artışı.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>2. Sınıflandırma</strong></td>
+<td style="text-align: center;"><p>Kasa: Aktif</p><p></p>
+<p>Banka Kredileri: Pasif</p></td>
+<td style="text-align: center;">Varlık ve Kaynak artışı.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>3. Kayıt Kuralı</strong></td>
+<td style="text-align: center;"><p>Kasa (Artış)</p><p></p>
+<p>Banka Kredileri (Artış)</p></td>
+<td style="text-align: center;"><p>BORÇ:&nbsp;10.000</p><p></p>
+<p>ALACAK:&nbsp;10.000</p></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 7:</strong> Ticari Malın Senetsiz (Veresiye) Alınması</span>
+  <div class="example-content">
+    <p><strong>İşlem</strong>:&nbsp;7.000 TL tutarında ticari mal senetsiz olarak satın alınmıştır.</p>
+<p><strong>Kayıt Özeti:</strong> Ticari Mallar Hesabı Borçlu (7.000), Satıcılar Hesabı Alacaklı (7.000).</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<table>
+<colgroup>
+<col style="width: 29%">
+<col style="width: 28%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Adım</strong></th>
+<th style="text-align: center;"><strong>Analiz</strong></th>
+<th style="text-align: center;"><strong>Sonuç</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>1. Hesap Belirleme</strong></td>
+<td style="text-align: center;"><p>Ticari Mallar (+)</p><p></p>
+<p>Satıcılar (+)</p></td>
+<td style="text-align: center;">Mal artışı ve Ticari borç artışı.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>2. Sınıflandırma</strong></td>
+<td style="text-align: center;"><p>Ticari Mallar: Aktif</p><p></p>
+<p>Satıcılar: Pasif</p></td>
+<td style="text-align: center;">Varlık ve Kaynak artışı.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>3. Kayıt Kuralı</strong></td>
+<td style="text-align: center;"><p>Ticari Mallar (Artış)</p><p></p>
+<p>Satıcılar (Artış)</p></td>
+<td style="text-align: center;"><p>BORÇ:&nbsp;7.000</p><p></p>
+<p>ALACAK:&nbsp;7.000</p></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<h3 id="h-19-muhasebede-kay-t-belgeleri-ve-defter-tutma-esaslar"><span class="prefix-num">6. </span>Muhasebede Kayıt Belgeleri ve Defter Tutma Esasları</h3>
+
+<p>Muhasebenin temel işlevi olan kaydetme fonksiyonunun yerine getirilmesi için işletmelerin türüne ve büyüklüğüne göre farklı defterler kullanılır:</p>
+
+<h4 id="h-20-yevmiye-defteri-g-nl-k-defter"><span class="prefix-num">a. </span>Yevmiye Defteri (Günlük Defter):</h4>
+
+<p>Yevmiye defteri, mali nitelikteki işlemlerin tarih sırasıyla, yasal bir belgeye dayandırılarak kaydedildiği resmi defterdir.</p>
+
+<p><strong>Genel Format</strong></p>
+
+<table style="width:97%;">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 18%">
+<col style="width: 28%">
+<col style="width: 14%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Madde No</strong></th>
+<th style="text-align: center;"><strong>Tarih</strong></th>
+<th style="text-align: center;"><strong>Hesap Açıklaması</strong></th>
+<th style="text-align: center;"><strong>Borç (TL)</strong></th>
+<th style="text-align: center;"><strong>Alacak (TL)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="3" style="text-align: center;">1</td>
+<td rowspan="3" style="text-align: center;">[Gün/Ay/Yıl]</td>
+<td style="text-align: left;">BORÇLU HESAP</td>
+<td style="text-align: left;">1.000</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: right;">ALACAKLI HESAP</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">Açıklama</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Temel Kavramlar</strong></p>
+
+<ul>
+<li><strong>Açılış Kaydı</strong>: Yevmiye defterine yapılan ilk kayıttır. Kuruluş veya dönem başı bilançosuna dayanır.
+<p></p></li><p></p>
+<li><strong>Yevmiye Maddesi</strong>: İki tarih çizgisi arasında kalan tüm unsurların oluşturduğu kayıt bütünüdür.
+<p></p></li><p></p>
+<li><strong>Zaafı</strong>: Yevmiye defteri tek başına kasada ne kadar para olduğunu doğrudan göstermez; bunun için tüm kayıtların tek tek toplanması veya Büyük Deftere bakılması gerekir.
+<p></p></li>
+</ul>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek:</strong> 7.000 TL'lik ticari mal senetsiz (veresiye) olarak alınmıştır.</span>
+  <div class="example-content">
+    <p><span class="badge">Çözüm:</span> - <strong>İşlemin Analizi ve Hesapların Belirlenmesi</strong></p>
+<ul>
+<li>Kayıt yapılmadan önce işlemin hangi hesapları etkilediği ve bu hesapların bilançodaki karakteri belirlenir:
+<p></p></li><p></p>
+<li><strong>153 Ticari Mallar</strong>: İşletme stoklarına mal girişi olduğu için bu hesapta artış meydana gelir. Bu bir Aktif (Varlık) hesabıdır.
+<p></p></li><p></p>
+<li><strong>320 Satıcılar</strong>: Mal \"senetsiz\" (veresiye) alındığı için işletmenin üçüncü şahıslara olan borcu artmıştır. Muhasebede ticari mal alışından doğan senetsiz borçlar bu hesapta izlenir. Bu bir Pasif (Kaynak) hesabıdır.
+<p></p></li>
+</ul>
+<p></p>
+<ul>
+<li><strong>Muhasebe Çalışma Kurallarının Uygulanması</strong>
+<ul>
+<li>Hesapların karakterine göre artış ve azalış yönleri belirlenir:
+<ul>
+<li><strong>Aktif Hesaplarda Artış (Ticari Mallar):</strong> Varlık hesaplarındaki artışlar daima hesabın BORÇ tarafına kaydedilir.
+<p></p></li><p></p>
+<li><strong>Pasif Hesaplarda Artış (Satıcılar):</strong> Kaynak (borç) hesaplarındaki artışlar daima hesabın ALACAK tarafına kaydedilir.
+<p></p></li>
+</ul>
+</li>
+</ul>
+</li><p></p>
+<li><strong>Yevmiye Defteri Kaydı (Yevmiye Maddesi)</strong>
+<p></p></li>
+</ul>
+<p>Belirlenen kurallar çerçevesinde yevmiye maddesi oluşturulur. Borçlu hesaplar sola, alacaklı hesaplar ise sağa (içeriden) yazılarak tutarlar ilgili sütunlara işlenir.</p>
+<p></p>
+<p></p>
+<table>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 15%">
+<col style="width: 44%">
+<col style="width: 11%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Madde No</strong></th>
+<th style="text-align: center;"><strong>Tarih</strong></th>
+<th style="text-align: center;"><strong>Açıklama</strong></th>
+<th style="text-align: center;"><strong>Borç (TL)</strong></th>
+<th style="text-align: center;"><strong>Alacak (TL)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="3" style="text-align: center;">1</td>
+<td rowspan="3" style="text-align: center;">24.12.2025</td>
+<td style="text-align: left;">153 TİCARİ MALLAR HS.</td>
+<td style="text-align: left;">7.000</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;">320 SATICILAR HS.</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">7.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">7.000 TL'lik malın veresiye (senetsiz) alınması</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<p><strong>Yevmiye Maddesi Türleri</strong></p>
+
+<p>Yevmiye maddeleri, kayıtta yer alan hesapların sayısına göre üç biçimde olabilir:</p>
+
+<ul>
+<li><strong>Basit (Yalın) Madde</strong>
+<p></p></li>
+</ul>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek:</strong> Nakit olarak 4.000 TL tutarında ticari mal alınması.</span>
+  <div class="example-content">
+    <p></p>
+<table style="width:91%;">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 15%">
+<col style="width: 32%">
+<col style="width: 12%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Madde No</strong></th>
+<th style="text-align: center;"><strong>Tarih</strong></th>
+<th style="text-align: center;"><strong>Açıklama</strong></th>
+<th style="text-align: center;"><strong>Borç (TL)</strong></th>
+<th style="text-align: center;"><strong>Alacak (TL)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="3" style="text-align: center;">1</td>
+<td rowspan="3" style="text-align: center;">01.01.2025</td>
+<td style="text-align: left;">153 TİCARİ MALLAR HS.</td>
+<td style="text-align: left;">4.000</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;">100 KASA HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">4.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">Peşin mal alımı açıklaması</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<ul>
+<li><strong>Bileşik Madde</strong>
+<p></p></li>
+</ul>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek:</strong> 12.000 TL\'lik mal alımı; 4.000 TL nakit, 4.000 TL senetle, 4.000 TL veresiye.</span>
+  <div class="example-content">
+    <p></p>
+<table style="width:92%;">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 15%">
+<col style="width: 35%">
+<col style="width: 12%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Madde No</strong></th>
+<th style="text-align: center;"><strong>Tarih</strong></th>
+<th style="text-align: center;"><strong>Açıklama</strong></th>
+<th style="text-align: center;"><strong>Borç (TL)</strong></th>
+<th style="text-align: center;"><strong>Alacak (TL)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="5" style="text-align: center;">2</td>
+<td rowspan="5" style="text-align: center;">02.01.2025</td>
+<td style="text-align: left;">153 TİCARİ MALLAR HS.</td>
+<td style="text-align: left;">12.000</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;">100 KASA HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">4.000</td>
+</tr>
+<tr>
+<td style="text-align: right;">321 BORÇ SENETLERİ HS.</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">4.000</td>
+</tr>
+<tr>
+<td style="text-align: right;">320 SATICILAR HS.</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">4.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">Çeşitli ödeme yolları ile mal alımı</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<ul>
+<li>Karma Madde
+<p></p></li>
+</ul>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek:</strong> 24.000 TL\'lik satışın yarısının nakit, yarısının çekle tahsil edilmesi</span>
+  <div class="example-content">
+    <p></p>
+<table style="width:90%;">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 15%">
+<col style="width: 33%">
+<col style="width: 12%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Madde No</th>
+<th style="text-align: center;">Tarih</th>
+<th style="text-align: center;">Açıklama</th>
+<th style="text-align: center;">Borç (TL)</th>
+<th style="text-align: center;">Alacak (TL)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="5" style="text-align: center;">3</td>
+<td rowspan="5" style="text-align: center;">03.01.2025</td>
+<td style="text-align: left;">100 KASA HESABI</td>
+<td style="text-align: left;">12.000</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">101 ALINAN ÇEKLER HS.</td>
+<td style="text-align: left;">12.000</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: right;">600 YURT İÇİ SATIŞLAR HS.</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">20.000</td>
+</tr>
+<tr>
+<td style="text-align: right;">321 HESAPLANAN KDV HS.</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">4.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">Mal satışı ve tahsilatı</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<h4 id="h-21-b-y-k-defter-defter-i-kebir"><span class="prefix-num">b. </span>Büyük Defter (Defter-i Kebir):</h4>
+
+<p>Büyük defter, yevmiye defterine kaydedilmiş olan işlemleri sistemli bir şekilde ilgili hesaplara dağıtan ve burada sınıflandıran muhasebe defteridir. Muhasebenin temel işlevlerinden biri olan sınıflandırma bu defter aracılığıyla gerçekleştirilir.</p>
+
+<p><strong>Temel Özellikleri</strong></p>
+
+<ul>
+<li><strong>Sınıflandırma İşlevi</strong>: Yevmiye defterindeki karmaşık ve tarih sırasına göre dizilmiş işlemleri, hesap bazında gruplandırır.
+<p></p></li><p></p>
+<li><strong>Bilgi Kaynağı</strong>: Belirli bir hesabın (örneğin Kasa hesabı) durumu hakkında toplu ve detaylı bilgi verir.
+<p></p></li><p></p>
+<li><strong>Çift Taraflı Yapı</strong>: Bir hesabın artış ve azalışlarını izlemek için \"Borç\" ve \"Alacak\" olmak üzere iki ana bölümden oluşur.
+<p></p></li><p></p>
+<li><strong>Yasal Zorunluluk</strong>: Vergi Usul Kanunu (VUK) ve Türk Ticaret Kanunu (TTK) uyarınca tutulması zorunlu olan defterlerden biridir.
+<p></p></li>
+</ul>
+
+<blockquote><strong>Defter Yapısı ve İşleyişi</strong></blockquote>
+
+<p>Büyük defterde her hesap için ayrı bir sayfa (veya karşılıklı iki sayfa) ayrılır. Sayfanın sol tarafı girişleri, sağ tarafı ise çıkışları veya alacak kayıtlarını temsil eder.</p>
+
+<table style="width:76%;">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 26%">
+<col style="width: 28%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>BORÇ</strong></th>
+<th colspan="2" style="text-align: center;"><strong>... HESABI</strong></th>
+<th style="text-align: center;"><strong>ALACAK</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" style="text-align: left;">Tutar</td>
+<td colspan="2" style="text-align: right;">Tutar</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="h-22-yard-mc-defter"><span class="prefix-num">c. </span>Yardımcı Defter</h4>
+
+<p>Büyük Defter'de (Defter-i Kebir) toplu olarak görünen hesapların ayrıntılarının izlendiği defterdir.</p>
+
+<p><strong>Temel İşlevi</strong></p>
+
+<p>Muhasebe sisteminde Büyük Defter hesapları (örneğin \"120 Alıcılar\") tüm müşterileri tek bir toplam rakam olarak gösterir. Ancak işletmenin hangi müşteriden ne kadar alacağı olduğunu veya hangi bankada ne kadar parası olduğunu görebilmesi için Yardımcı Defterlere ihtiyacı vardır.</p>
+
+<table style="width:99%;">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 18%">
+<col style="width: 26%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Ana Hesap Kodu</strong></th>
+<th style="text-align: center;"><strong>Ana Hesap Adı</strong></th>
+<th style="text-align: center;"><strong>Yardımcı Hesap Kodu</strong></th>
+<th style="text-align: center;"><strong>Yardımcı Hesap Adı (Detay)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>100</strong></td>
+<td style="text-align: center;"><strong>KASA</strong></td>
+<td style="text-align: center;"><strong>100.01</strong></td>
+<td style="text-align: center;"><strong>TL Kasası</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>100.02</strong></td>
+<td style="text-align: center;"><strong>USD Kasası</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>102</strong></td>
+<td style="text-align: center;"><strong>BANKALAR</strong></td>
+<td style="text-align: center;"><strong>102.01</strong></td>
+<td style="text-align: center;"><strong>A Bankası Vadesiz TL Hesabı</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>102.02</strong></td>
+<td style="text-align: center;"><strong>B Bankası Vadeli USD Hesabı</strong></td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="h-23-envanter-defteri"><span class="prefix-num">d. </span>Envanter Defteri</h4>
+
+<p>İşletmenin dönem başında ve dönem sonunda yaptığı sayım sonuçlarının; varlıklarının, alacaklarının ve borçlarının detaylı olarak kaydedildiği resmi defterdir.</p>
+
+<p><strong>Yasal Zorunluluk ve Kapsam</strong></p>
+
+<ul>
+<li><strong>VUK Hükmü</strong>: Vergi Usul Kanunu\'na göre 1. Sınıf Tüccarlar (bilanço esasına göre defter tutanlar), Yevmiye Defteri ve Büyük Defter'in yanı sıra Envanter Defteri tutmak zorundadır.
+<p></p></li><p></p>
+<li><strong>Kayıt Zamanı</strong>: Teknik olarak bu defter yılda iki kez işlem görür: Dönem başında (işe başlama) ve dönem sonunda (kapanış).
+<p></p></li>
+</ul>
+
+<blockquote><strong>Envanter Çıkarma İşlemi</strong></blockquote>
+
+<p>Deftere kayıt yapılmadan önce \"envanter çıkarma\" süreci gerçekleştirilir.</p>
+
+<ul>
+<li>Bu süreç şu aşamalardan oluşur:
+<ul>
+<li><strong>Tespit</strong>: Mevcutların, alacakların ve borçların; sayılması, ölçülmesi ve tartılması.
+<p></p></li><p></p>
+<li><strong>Değerleme</strong>: Tespit edilen değerlerin para birimi cinsinden kesin ve ayrıntılı şekilde hesaplanması.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Neden Önemlidir?</strong>
+<ul>
+<li><strong>Doğruluk Kontrolü</strong>: Muhasebe kayıtlarındaki verilerin fiziki gerçeklikle uyuşup uyuşmadığını denetler.
+<p></p></li><p></p>
+<li><strong>Mali Tablo Hazırlığı</strong>: İşletmenin elindeki değerlerin (örneğin ticari malların) gerçekte var olup olmadığı teyit edilmeden sağlıklı bir Bilanço veya Gelir Tablosu hazırlanması mümkün değildir.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<h4 id="h-24-i-kinci-s-n-f-t-ccarlar-i-letme-hesab-esas"><span class="prefix-num">e. </span>İkinci Sınıf Tüccarlar (İşletme Hesabı Esası)</h4>
+
+<p>Daha küçük ölçekli işletmeleri kapsar. Bu sistemde temel amaç, dönem içindeki gelir ve giderlerin takibini yaparak kar/zarar durumunu basitçe tespit etmektir.</p>
+
+<p><strong>Tutulması Gereken Defterler</strong></p>
+
+<ul>
+<li><strong>İşletme Hesabı Defteri</strong>: Sol sayfası Gider, sağ sayfası Gelir kalemlerinden oluşan, basit yapılı bir defterdir.
+<p></p></li><p></p>
+<li><strong>Günlük Perakende Satış ve Hasılat Defteri</strong>: (İlgili mükellefiyet türüne göre) Günlük satışların ve elde edilen hasılatın kaydedildiği yardımcı defterdir.
+<p></p></li>
+</ul>
+
+<h3 id="h-25-muhasebe-kay-t-s-reci"><span class="prefix-num">7. </span>Muhasebe Kayıt Süreci</h3>
+
+<h4 id="h-26-muhasebe-kay-t-s-reci-ve-temel-i-levler"><span class="prefix-num">a. </span>Muhasebe Kayıt Süreci ve Temel İşlevler</h4>
+
+<p>Muhasebe işlemleri rastgele değil, belirli bir mantık sırasıyla ilerler. Her adım, muhasebenin temel bir işlevini yerine getirir:</p>
+
+<ul>
+<li><strong>Kaydetme (Yevmiye Defteri):</strong> Her işlemin bir yasal belgeye (fatura, fiş vb.) dayanarak tarih sırasına göre kaydedildiği yerdir. İşlemi bir bütün olarak görmemizi sağlar.
+<p></p></li><p></p>
+<li><strong>Sınıflandırma (Büyük Defter / Defter-i Kebir):</strong> Yevmiye defterindeki karmaşık kayıtların hesap bazında (Kasa, Bankalar, Borçlar vb.) gruplandırılmasıdır. Ayrıntıları ve hesap bakiyelerini burada görürüz.
+<p></p></li><p></p>
+<li><strong>Özetleme (Mali Tablolar):</strong> Büyük defterdeki bilgilerin dönem sonunda Bilanço ve Gelir Tablosu gibi tablolar aracılığıyla özet bir rapor haline getirilmesidir.
+<p></p></li>
+</ul>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 1:</strong> İpek İşletmesi, 100.000 TL nakit sermaye ile kurulmuştur.</span>
+  <div class="example-content">
+    <p></p>
+<table style="width:95%;">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 13%">
+<col style="width: 18%">
+<col style="width: 11%">
+<col style="width: 16%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Hesap Kodu ve Adı</strong></th>
+<th style="text-align: center;"><strong>Mali Tablo</strong></th>
+<th style="text-align: center;"><strong>Hesap Türü</strong></th>
+<th style="text-align: center;"><strong>Değişim</strong></th>
+<th style="text-align: center;"><strong>Borç / Alacak</strong></th>
+<th style="text-align: center;"><strong>Tutar</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">100 KASA HESABI</td>
+<td style="text-align: center;">Bilanço</td>
+<td style="text-align: center;">Aktif (Varlık)</td>
+<td style="text-align: center;">Artış (+)</td>
+<td style="text-align: center;">BORÇ</td>
+<td style="text-align: center;">100.000 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;">500 SERMAYE HS.</td>
+<td style="text-align: center;">Bilanço</td>
+<td style="text-align: center;">Pasif (Özkaynak)</td>
+<td style="text-align: center;">Artış (+)</td>
+<td style="text-align: center;">ALACAK</td>
+<td style="text-align: center;">100.000 TL</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<p></p>
+<table style="width:89%;">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 45%">
+<col style="width: 12%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Tarih</strong></th>
+<th style="text-align: center;"><strong>Açıklama</strong></th>
+<th style="text-align: center;"><strong>Borç (TL)</strong></th>
+<th style="text-align: center;"><strong>Alacak (TL)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="3" style="text-align: center;">01/01/2025</td>
+<td style="text-align: left;">100 KASA HESABI</td>
+<td style="text-align: left;">100.000</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;">500 SERMAYE HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">100.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">İşletmenin kuruluşu ve sermaye tevdii</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 2:</strong> Bankadan 20.000 TL kredi çekilerek işletmenin mevduat hesabına aktarılmıştır.</span>
+  <div class="example-content">
+    <p></p>
+<table>
+<colgroup>
+<col style="width: 23%">
+<col style="width: 15%">
+<col style="width: 21%">
+<col style="width: 10%">
+<col style="width: 16%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Hesap Kodu ve Adı</strong></th>
+<th style="text-align: center;"><strong>Mali Tablo</strong></th>
+<th style="text-align: center;"><strong>Hesap Türü</strong></th>
+<th style="text-align: center;"><strong>Değişim</strong></th>
+<th style="text-align: center;"><strong>Borç/Alacak</strong></th>
+<th style="text-align: center;"><strong>Tutar</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">102 BANKALAR</td>
+<td style="text-align: center;">Bilanço</td>
+<td style="text-align: center;">Aktif (Varlık)</td>
+<td style="text-align: center;">Artış (+)</td>
+<td style="text-align: center;">BORÇ</td>
+<td style="text-align: center;">20.000 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;">300 BANKA KREDİLERİ</td>
+<td style="text-align: center;">Bilanço</td>
+<td style="text-align: center;">Pasif (K.V. Yab. Kaynak)</td>
+<td style="text-align: center;">Artış (+)</td>
+<td style="text-align: center;">ALACAK</td>
+<td style="text-align: center;">20.000 TL</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<p></p>
+<table style="width:92%;">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 48%">
+<col style="width: 12%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Tarih</strong></th>
+<th style="text-align: center;"><strong>Açıklama</strong></th>
+<th style="text-align: center;"><strong>Borç (TL)</strong></th>
+<th style="text-align: center;"><strong>Alacak (TL)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="3" style="text-align: center;">02/01/2025</td>
+<td style="text-align: left;">102 BANKALAR HESABI</td>
+<td style="text-align: left;">20.000</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;">300 BANKA KREDİLERİ HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">20.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">Banka kredisi çekilmesi ve hesaba aktarımı</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 3:</strong> Maliyet bedeli 12.000 TL olan bina nakit olarak satın alınmıştır.</span>
+  <div class="example-content">
+    <p></p>
+<table style="width:97%;">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 13%">
+<col style="width: 21%">
+<col style="width: 11%">
+<col style="width: 16%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Hesap Kodu ve Adı</strong></th>
+<th style="text-align: center;"><strong>Mali Tablo</strong></th>
+<th style="text-align: center;"><strong>Hesap Türü</strong></th>
+<th style="text-align: center;"><strong>Değişim</strong></th>
+<th style="text-align: center;"><strong>Borç / Alacak</strong></th>
+<th style="text-align: center;"><strong>Tutar</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">252 BİNALAR</td>
+<td style="text-align: center;">Bilanço</td>
+<td style="text-align: center;">Aktif (Duran Varlık)</td>
+<td style="text-align: center;">Artış (+)</td>
+<td style="text-align: center;">BORÇ</td>
+<td style="text-align: center;">12.000 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;">100 KASA HESABI</td>
+<td style="text-align: center;">Bilanço</td>
+<td style="text-align: center;">Aktif (Dönen Varlık)</td>
+<td style="text-align: center;">Azalış (-)</td>
+<td style="text-align: center;">ALACAK</td>
+<td style="text-align: center;">12.000 TL</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<p></p>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 51%">
+<col style="width: 12%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Tarih</strong></th>
+<th style="text-align: center;"><strong>Açıklama</strong></th>
+<th style="text-align: center;"><strong>Borç (TL)</strong></th>
+<th style="text-align: center;"><strong>Alacak (TL)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="3" style="text-align: center;">03/01/2025</td>
+<td style="text-align: left;">252 BİNALAR HESABI</td>
+<td style="text-align: left;">12.000</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;">100 KASA HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">12.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">Bina satın alınması ve bedelinin nakden ödenmesi</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 4:</strong> 35.000 TL değerinde ticari mal, yarısı peşin (nakit), diğer yarısı kredili (veresiye/satıcılara borçlanarak) satın alınmıştır.</span>
+  <div class="example-content">
+    <p></p>
+<table style="width:93%;">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 13%">
+<col style="width: 16%">
+<col style="width: 11%">
+<col style="width: 16%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Hesap Kodu ve Adı</strong></th>
+<th style="text-align: center;"><strong>Mali Tablo</strong></th>
+<th style="text-align: center;"><strong>Hesap Türü</strong></th>
+<th style="text-align: center;"><strong>Değişim</strong></th>
+<th style="text-align: center;"><strong>Borç / Alacak</strong></th>
+<th style="text-align: center;"><strong>Tutar</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">153 TİCARİ MALLAR</td>
+<td style="text-align: center;">Bilanço</td>
+<td style="text-align: center;">Aktif (Varlık)</td>
+<td style="text-align: center;">Artış (+)</td>
+<td style="text-align: center;">BORÇ</td>
+<td style="text-align: center;">35.000 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;">100 KASA HESABI</td>
+<td style="text-align: center;">Bilanço</td>
+<td style="text-align: center;">Aktif (Varlık)</td>
+<td style="text-align: center;">Azalış (-)</td>
+<td style="text-align: center;">ALACAK</td>
+<td style="text-align: center;">17.500 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;">320 SATICILAR</td>
+<td style="text-align: center;">Bilanço</td>
+<td style="text-align: center;">Pasif (K.V.Y.K.)</td>
+<td style="text-align: center;">Artış (+)</td>
+<td style="text-align: center;">ALACAK</td>
+<td style="text-align: center;">17.500 TL</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<p></p>
+<table style="width:84%;">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 40%">
+<col style="width: 12%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Tarih</strong></th>
+<th style="text-align: center;"><strong>Açıklama</strong></th>
+<th style="text-align: center;"><strong>Borç (TL)</strong></th>
+<th style="text-align: center;"><strong>Alacak (TL)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="4" style="text-align: center;">04/01/2025</td>
+<td style="text-align: left;">153 TİCARİ MALLAR HESABI</td>
+<td style="text-align: left;">35.000</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;">100 KASA HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">17.500</td>
+</tr>
+<tr>
+<td style="text-align: right;">320 SATICILAR HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">17.500</td>
+</tr>
+<tr>
+<td style="text-align: center;">Yarısı peşin yarısı kredili mal alımı</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 5:</strong> Bankaya olan 20.000 TL kredi borcu, 2.000 TL faizi ile (toplam 22.000 TL) nakden ödenmiştir.</span>
+  <div class="example-content">
+    <p></p>
+<table>
+<colgroup>
+<col style="width: 30%">
+<col style="width: 15%">
+<col style="width: 14%">
+<col style="width: 11%">
+<col style="width: 16%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Hesap Kodu ve Adı</strong></th>
+<th style="text-align: center;"><strong>Mali Tablo</strong></th>
+<th style="text-align: center;"><strong>Hesap Türü</strong></th>
+<th style="text-align: center;"><strong>Değişim</strong></th>
+<th style="text-align: center;"><strong>Borç/Alacak</strong></th>
+<th style="text-align: center;"><strong>Tutar</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">300 BANKA KREDİLERİ</td>
+<td style="text-align: center;">Bilanço</td>
+<td style="text-align: center;">Pasif (Borç)</td>
+<td style="text-align: center;">Azalış (-)</td>
+<td style="text-align: center;">BORÇ</td>
+<td style="text-align: center;">20.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">780 FİNANSMAN GİDERLERİ</td>
+<td style="text-align: center;">Gelir Tablosu</td>
+<td style="text-align: center;">Gider</td>
+<td style="text-align: center;">Artış (+)</td>
+<td style="text-align: center;">BORÇ</td>
+<td style="text-align: center;">2.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">100 KASA HESABI</td>
+<td style="text-align: center;">Bilanço</td>
+<td style="text-align: center;">Aktif (Varlık)</td>
+<td style="text-align: center;">Azalış (-)</td>
+<td style="text-align: center;">ALACAK</td>
+<td style="text-align: center;">22.000</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<p></p>
+<table style="width:85%;">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 41%">
+<col style="width: 12%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Tarih</th>
+<th style="text-align: center;">Açıklama</th>
+<th style="text-align: center;">Borç (TL)</th>
+<th style="text-align: center;">Alacak (TL)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="4" style="text-align: center;">05/01/2025</td>
+<td style="text-align: left;">300 BANKA KREDİLERİ HESABI</td>
+<td style="text-align: left;">20.000</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">780 FİNANSMAN GİDERLERİ HS.</td>
+<td style="text-align: left;">2.000</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;">100 KASA HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">22.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">Kredi anapara ve faizinin ödenmesi</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<h4 id="h-27-ticari-mal-sat-n-n-mant"><span class="prefix-num">b. </span>Ticari Mal Satışının Mantığı</h4>
+
+<p>Ticari mal satışı, diğer kayıtlardan farklı olarak iki yönlü düşünülmelidir. Bir satış gerçekleştiğinde şu iki soru hayati önem taşır:</p>
+
+<ul>
+<li><strong>Gelir Kaydı:</strong> \"Kaç liraya sattım?\" sorusunun cevabıdır. Satış bedeli üzerinden Yurtiçi Satışlar hesabına gelir kaydedilir.
+<p></p></li>
+</ul>
+
+<table style="width:97%;">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 15%">
+<col style="width: 14%">
+<col style="width: 11%">
+<col style="width: 16%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Hesap Kodu ve Adı</strong></th>
+<th style="text-align: center;"><strong>Mali Tablo</strong></th>
+<th style="text-align: center;"><strong>Hesap Türü</strong></th>
+<th style="text-align: center;"><strong>Değişim</strong></th>
+<th style="text-align: center;"><strong>Borç / Alacak</strong></th>
+<th style="text-align: center;"><strong>Tutar</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">100 KASA HESABI</td>
+<td style="text-align: center;">Bilanço</td>
+<td style="text-align: center;">Aktif (Varlık)</td>
+<td style="text-align: center;">Artış (+)</td>
+<td style="text-align: center;">BORÇ</td>
+<td style="text-align: center;">70.000 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;">600 YURT İÇİ SATIŞLAR</td>
+<td style="text-align: center;">Gelir Tablosu</td>
+<td style="text-align: center;">Gelir</td>
+<td style="text-align: center;">Artış (+)</td>
+<td style="text-align: center;">ALACAK</td>
+<td style="text-align: center;">70.000 TL</td>
+</tr>
+</tbody>
+</table>
+
+<table style="width:76%;">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 33%">
+<col style="width: 12%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Tarih</th>
+<th style="text-align: center;">Açıklama</th>
+<th style="text-align: center;">Borç (TL)</th>
+<th style="text-align: center;">Alacak (TL)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="3" style="text-align: center;">06/01/2025</td>
+<td style="text-align: left;">100 KASA HESABI</td>
+<td style="text-align: left;">70.000</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;">600 YURT İÇİ SATIŞLAR HS.</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">70.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">Peşin mal satışı</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li><strong>Maliyet Kaydı:</strong> \"Sattığım mal bana kaça mal olmuştu?\" sorusunun cevabıdır. Elden çıkan malın bedeli kadar Satılan Ticari Malların Maliyeti hesabına gider kaydedilir.
+<p></p></li>
+</ul>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek:</strong> Maliyet bedeli 10.000 TL olan ticari mal, 70.000 TL\'ye kredili (veresiye) olarak satılmıştır.</span>
+  <div class="example-content">
+    <p></p>
+<table>
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>İşlem Aşaması</strong></th>
+<th style="text-align: center;"><strong>Hesap Kodu ve Adı</strong></th>
+<th style="text-align: center;"><strong>Mali Tablo</strong></th>
+<th style="text-align: center;"><strong>Hesap Türü</strong></th>
+<th style="text-align: center;"><strong>Değişim</strong></th>
+<th style="text-align: center;"><strong>Borç/Alacak</strong></th>
+<th style="text-align: center;"><strong>Tutar</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">A. Satış</td>
+<td style="text-align: center;">120 ALICILAR</td>
+<td style="text-align: center;">Bilanço</td>
+<td style="text-align: center;">Aktif (Varlık)</td>
+<td style="text-align: center;">Artış (+)</td>
+<td style="text-align: center;">BORÇ</td>
+<td style="text-align: center;">70.000</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">600 YURT İÇİ SAT.</td>
+<td style="text-align: center;">Gelir Tab.</td>
+<td style="text-align: center;">Gelir</td>
+<td style="text-align: center;">Artış (+)</td>
+<td style="text-align: center;">ALACAK</td>
+<td style="text-align: center;">70.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">B. Maliyet</td>
+<td style="text-align: center;">621 S.T.M.M.</td>
+<td style="text-align: center;">Gelir Tab.</td>
+<td style="text-align: center;">Gider</td>
+<td style="text-align: center;">Artış (+)</td>
+<td style="text-align: center;">BORÇ</td>
+<td style="text-align: center;">10.000</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">153 TİCARİ MALLAR</td>
+<td style="text-align: center;">Bilanço</td>
+<td style="text-align: center;">Aktif (Varlık)</td>
+<td style="text-align: center;">Azalış (-)</td>
+<td style="text-align: center;">ALACAK</td>
+<td style="text-align: center;">10.000</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<p></p>
+<table style="width:86%;">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 39%">
+<col style="width: 13%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Tarih</strong></th>
+<th style="text-align: center;"><strong>Açıklama</strong></th>
+<th style="text-align: center;"><strong>Borç (TL)</strong></th>
+<th style="text-align: center;"><strong>Alacak (TL)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="3" style="text-align: center;">07/01/2025</td>
+<td style="text-align: left;">120 ALICILAR HESABI</td>
+<td style="text-align: left;">70.000</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;">600 YURT İÇİ SATIŞLAR HS.</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">70.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">Kredili mal satışı</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td rowspan="3" style="text-align: center;">07/01/2025</td>
+<td style="text-align: left;">621 SAT. TİC. MALLAR MALİYETİ</td>
+<td style="text-align: left;">10.000</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;">153 TİCARİ MALLAR HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">10.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">Satılan malın stoktan çıkışı</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<p><strong>Önemli Not:</strong> Muhasebe, satış anında karı veya zararı doğrudan kaydetmez. Geliri ayrı, gideri ayrı kaydeder. Aradaki fark (Kar/Zarar) dönem sonunda mali tablolar hazırlanırken kendiliğinden ortaya çıkar.</p>
+
+<h4 id="h-28-envanter-y-ntemleri-aral-kl-ve-s-rekli"><span class="prefix-num">c. </span>Envanter Yöntemleri: Aralıklı ve Sürekli</h4>
+
+<p>Her işletme mal satışını aynı şekilde kaydetmez. Bu, satılan malın çeşidine ve sayısına bağlıdır:</p>
+
+<p><strong>Aralıklı Envanter Yöntemi</strong></p>
+
+<ul>
+<li><strong>Tanım:</strong> Bu yöntem, genellikle mal çeşidi çok fazla olan ve satış anında her bir malın maliyetini tek tek takip etmenin zor olduğu işletmeler tarafından tercih edilir. Eczaneler, süpermarketler veya kırtasiyeler bu duruma en iyi örneklerdir.
+<p></p></li><p></p>
+<li><strong>Kayıt Mantığı:</strong> Satış gerçekleştiği anda işletme sadece elde ettiği geliri (satış bedelini) kaydeder.
+<p></p></li><p></p>
+<li><strong>Maliyet Takibi:</strong> Satılan malın maliyeti satış anında hesaplanmaz. Bunun yerine, dönem sonunda (genellikle yıl sonu) depodaki mallar fiziksel olarak sayılır. Bu sayım sonucunda \"Satılan Ticari Malların Maliyeti\" toplu bir şekilde hesaplanarak tek bir kayıtla sisteme işlenir.
+<p></p></li>
+</ul>
+
+<strong>Sürekli (Aralıksız) Envanter Yöntemi</strong>
+
+<ul>
+<li><strong>Tanım</strong>: Bu yöntem, mal çeşidi az, birim değeri yüksek ve takibi kolay olan ürünleri satan işletmeler için uygundur. Otomobil galerileri veya beyaz eşya bayileri bu yöntemi yaygın olarak kullanır.
+<p></p></li><p></p>
+<li><strong>Kayıt Mantığı</strong>: Her satış yapıldığında iki işlem aynı anda gerçekleştirilir:
+<p></p></li><p></p>
+<li>Hem satıştan doğan gelir kaydedilir hem de satılan malın maliyeti (depodan çıkan değer) anında sisteme işlenir.
+<p></p></li><p></p>
+<li><strong>Anlık Takip</strong>: Bu yöntemin en büyük avantajı, işletmenin herhangi bir fiziksel sayım yapmaya gerek duymadan, her satıştan sonra ne kadar kâr ettiğini ve deposunda ne kadar mal kaldığını anlık olarak görebilmesidir.
+<p></p></li>
+</ul>
+
+<h3 id="h-29-muhasebe-s-reci"><span class="prefix-num">8. </span>Muhasebe Süreci</h3>
+
+<h4 id="h-30-12-temel-ad-m"><span class="prefix-num">a. </span>12 Temel Adım</h4>
+
+<p>Muhasebe süreci, 1 Ocak\'tan 31 Aralık\'a kadar yapılan işlemlerin kronolojik sıralamasıdır. Bu süreçte ilk yapılan işlem kayıt değil, tespittir.</p>
+
+<p><strong>Dönem Başında Yapılan İlk 5 İşlem (1 Ocak):</strong></p>
+
+<ul>
+<li><strong>Açılış Envanterini Çıkarma</strong>: Sayım yaparak neyin var neyin yok tespit edilmesi.
+<p></p></li><p></p>
+<li><strong>Açılış Bilançosunu Hazırlama</strong>: Tespit edilen varlık ve kaynakların tabloya dökülmesi.
+<p></p></li><p></p>
+<li><strong>Envanter Defterine Kayıt</strong>: Yapılan sayımın deftere işlenmesi.
+<p></p></li><p></p>
+<li><strong>Açılış (Yevmiye) Kaydı</strong>: Muhasebe kayıt sürecinin başladığı ilk yevmiye maddesidir.
+<p></p></li><p></p>
+<li><strong>Büyük Deftere (Defter-i Kebir) Aktarma</strong>: Yevmiye kayıtlarının ilgili hesaplara dağıtılması.
+<p></p></li>
+</ul>
+
+<strong>Dönem İçinde Yapılan İşlemler:</strong>
+
+<ul>
+<li><strong>Günlük İşlemlerin Yevmiye Defterine Aktarımı</strong>: Günlük işlemlerin yevmiye defterine kaydedilmesi ve büyük deftere aktarılması.
+<p></p></li><p></p>
+<li><strong>Mizan Düzenleme:</strong> Her ay sonunda aktarmaların doğruluğunu kontrol etmek için tablo hazırlanması.
+<p></p></li>
+</ul>
+
+<strong>Dönem Sonunda Yapılan İşlemler (31 Aralık):</strong>
+
+<ul>
+<li><strong>Genel Geçici Mizanın Çıkarılması</strong>
+<p></p></li><p></p>
+<li><strong>Dönem Sonu Envanteri</strong>: Yıl sonu sayımı ve değerleme yapılması.
+<p></p></li><p></p>
+<li><strong>Envanter Kayıtları</strong>: Sayım farklarının düzeltilmesi ve en önemlisi gelir-gider hesaplarının kapatılması.
+<p></p></li><p></p>
+<li><strong>Kesin Mizanın Çıkarılması</strong>
+<p></p></li><p></p>
+<li><strong>Mali Tabloların Hazırlanması ve Kapanış Kaydı</strong>
+<p></p></li>
+</ul>
+
+<h4 id="h-31-envanter-karma-ve-t-rleri"><span class="prefix-num">b. </span>Envanter Çıkarma ve Türleri</h4>
+
+<p>Envanter; saymak, ölçmek, tartmak ve değerlemek suretiyle varlık ve borçların kesin olarak tespit edilmesidir.</p>
+
+<p><strong>İki aşamadan oluşur:</strong></p>
+
+<ul>
+<li><strong>Muhasebe Dışı Envanter</strong>: Kayıtlar dikkate alınmadan yapılan fiili sayım ve değerleme işlemleridir (Örneğin: Kasadaki parayı fiilen saymak).
+<p></p></li><p></p>
+<li><strong>Muhasebe İçi Envanter</strong>: Muhasebe dışı envanter sonuçlarının kayıtlarla karşılaştırılması ve gereken düzeltme kayıtlarının yapılmasıdır.
+<p></p></li>
+</ul>
+
+<h4 id="h-32-mizan-kavram-ve-t-rleri"><span class="prefix-num">c. </span>Mizan Kavramı ve Türleri</h4>
+
+<p>Mizan, yevmiye defterinden büyük deftere yapılan aktarmaların matematiksel olarak doğru olup olmadığını kontrol eden tablodur.</p>
+
+<p><strong>Mizanda Olması Gereken 3 Temel Eşitlik:</strong></p>
+
+<blockquote>$${Borç\ Toplam\imath\  = \ Alacak\ Toplam\imath
+<p>}{Borç\ Kalan\imath = Alacak\ Kalan\imath
+}{Mizan\ Toplamlar\imath = Yevmiye\ Defter\ Toplamlar\imath}$$</p></blockquote>
+
+<p><strong>Mizan Türleri:</strong></p>
+
+<ul>
+<li><strong>Aylık Mizan</strong>: Her ay sonu hazırlanan mizan.
+<p></p></li><p></p>
+<li><strong>Genel Geçici Mizan</strong>: 31 Aralık\'ta, envanter işlemlerinden önce hazırlanan mizan. İçinde henüz kapatılmamış gelir ve gider hesapları yer alır ve kalan verir.
+<p></p></li><p></p>
+<li><strong>Kesin Mizan:</strong> Envanter kayıtlarından sonra hazırlanan nihai mizan. Bu mizanda gelir ve gider hesapları yer alır ancak kalan vermezler (çünkü bu aşamada tümü kapatılmıştır).
+<p></p></li>
+</ul>
+
+<h4 id="h-33-a-l-kayd-yevmiye-kayd"><span class="prefix-num">d. </span>Açılış Kaydı (Yevmiye Kaydı)</h4>
+
+<p>Açılış kaydı, işletmenin dönem başındaki varlık ve kaynaklarını muhasebe sistemine girdiği ilk kayıttır.</p>
+
+<p><strong>Açılış Kaydı Kuralları:</strong></p>
+
+<ul>
+<li>Bilançonun Aktifindeki hesaplar yevmiye kaydının Borç tarafına yazılır.
+<p></p></li><p></p>
+<li>Bilançonun Pasifindeki hesaplar yevmiye kaydının Alacak tarafına yazılır.
+<p></p></li><p></p>
+<li><strong>Kritik Uyarı:</strong> Bir açılış kaydında asla gelir veya gider hesabı bulunmaz; sadece aktif ve pasif hesaplar yer alır.
+<p></p></li>
+</ul>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek:</strong> İpek Yayıncılık LTD. ŞTİ\'nin 1 Ocak 2027 tarihli açılış bilanço verileri şöyledir;</span>
+  <div class="example-content">
+    <p></p>
+<table style="width:88%;">
+<colgroup>
+<col style="width: 47%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>100</strong> Kasa Hesabı</th>
+<th style="text-align: center;">12.000 TL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>110</strong> Hisse Senetleri Hesabı</td>
+<td style="text-align: center;">6.000 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>153</strong> Ticari Mallar Hesabı</td>
+<td style="text-align: center;">10.000 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>253</strong> Tesis, Makine ve Cihazlar</td>
+<td style="text-align: center;">8.000 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>255</strong> Demirbaşlar Hesabı</td>
+<td style="text-align: center;">6.000 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>300</strong> Banka Kredileri Hesabı</td>
+<td style="text-align: center;">4.000 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>320</strong> Satıcılar Hesabı</td>
+<td style="text-align: center;">5.000 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>321</strong> Borç Senetleri Hesabı</td>
+<td style="text-align: center;">8.000 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>405</strong> Çıkarılmış Bonolar ve Senetler</td>
+<td style="text-align: center;">6.000 TL</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>500</strong> Sermaye Hesabı</td>
+<td style="text-align: center;">19.000 TL</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<ul>
+<li><strong>Muhasebede</strong> <strong>denklik ilkesine göre varlıklar toplamı, kaynaklar (borçlar + özkaynaklar) toplamına eşit olmalıdır.</strong>
+<p></p></li>
+</ul>
+<p></p>
+<blockquote>$$VARLIK\  = \ ÖZKAYNAK\  + \ BORÇLAR$$</blockquote>
+<p></p>
+<table>
+<colgroup>
+<col style="width: 18%">
+<col style="width: 14%">
+<col style="width: 18%">
+<col style="width: 14%">
+<col style="width: 20%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>VARLIKLAR</strong></th>
+<th style="text-align: center;"><strong>TUTAR</strong></th>
+<th style="text-align: center;"><strong>ÖZ KAYNAKLAR</strong></th>
+<th style="text-align: center;"><strong>TUTAR (TL)</strong></th>
+<th style="text-align: center;"><strong>BORÇLAR</strong></th>
+<th style="text-align: center;"><strong>TUTAR</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Kasa Hesabı</td>
+<td style="text-align: center;">12.000</td>
+<td style="text-align: center;">Sermaye</td>
+<td style="text-align: center;">19.000</td>
+<td style="text-align: center;">Banka Kredileri</td>
+<td style="text-align: center;">4.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">Hisse Senetleri Hs.</td>
+<td style="text-align: center;">6.000</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Borç Senetleri</td>
+<td style="text-align: center;">8.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">Ticari Mallar Hs.</td>
+<td style="text-align: center;">10.000</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Çık. Bono ve Senetler</td>
+<td style="text-align: center;">6.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">Demirbaşlar Hs.</td>
+<td style="text-align: center;">6.000</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Satıcılar</td>
+<td style="text-align: center;">5.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">Tes. Mak. ve Cih. Hs.</td>
+<td style="text-align: center;">8.000</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>TOPLAM</strong></td>
+<td style="text-align: center;"><strong>42.000</strong></td>
+<td style="text-align: center;"><strong>TOPLAM</strong></td>
+<td style="text-align: center;"><strong>19.000</strong></td>
+<td style="text-align: center;"><strong>TOPLAM</strong></td>
+<td style="text-align: center;"><strong>23.000</strong></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<ul>
+<li><strong>İpek İşletmesi'nin Açılış Bilançosu (01.01.2027)</strong>
+<p></p></li>
+</ul>
+<p></p>
+<p></p>
+<table>
+<colgroup>
+<col style="width: 34%">
+<col style="width: 10%">
+<col style="width: 45%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>AKTİF (VARLIKLAR)</strong></th>
+<th style="text-align: center;"><strong>TUTAR</strong></th>
+<th style="text-align: center;"><strong>PASİF (KAYNAKLAR)</strong></th>
+<th style="text-align: center;"><strong>TUTAR</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">I. DÖNEN VARLIKLAR</td>
+<td style="text-align: center;">28.000</td>
+<td style="text-align: center;">III. KISA VADELİ YABANCI KAYNAKLAR</td>
+<td style="text-align: center;">23.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">100 Kasa Hesabı</td>
+<td style="text-align: center;">12.000</td>
+<td style="text-align: center;">300 Banka Kredileri</td>
+<td style="text-align: center;">4.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">110 Hisse Senetleri Hesabı</td>
+<td style="text-align: center;">6.000</td>
+<td style="text-align: center;">305 Çıkarılmış Bono ve Senetler</td>
+<td style="text-align: center;">6.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">153 Ticari Mallar Hesabı</td>
+<td style="text-align: center;">10.000</td>
+<td style="text-align: center;">320 Satıcılar Hesabı</td>
+<td style="text-align: center;">5.000</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">321 Borç Senetleri Hesabı</td>
+<td style="text-align: center;">8.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">II. DURAN VARLIKLAR</td>
+<td style="text-align: center;">14.000</td>
+<td style="text-align: center;">IV. UZUN VADELİ YABANCI KAYNAKLAR</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">253 Tesis, Makine ve Cihazlar</td>
+<td style="text-align: center;">8.000</td>
+<td style="text-align: center;">V. ÖZ KAYNAKLAR</td>
+<td style="text-align: center;">19.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">255 Demirbaşlar Hesabı</td>
+<td style="text-align: center;">6.000</td>
+<td style="text-align: center;">500 Sermaye Hesabı</td>
+<td style="text-align: center;">19.000</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>AKTİF TOPLAM</strong></td>
+<td style="text-align: center;"><strong>42.000</strong></td>
+<td style="text-align: center;"><strong>PASİF TOPLAM</strong></td>
+<td style="text-align: center;"><strong>42.000</strong></td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<ul>
+<li><strong>İpek İşletmesi'nin Açılış Yevmiye Kaydı (Muhasebeleştirme)</strong>
+<p></p></li>
+</ul>
+<p></p>
+<p></p>
+<table style="width:75%;">
+<colgroup>
+<col style="width: 49%">
+<col style="width: 11%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Hesap Adı</strong></th>
+<th style="text-align: center;"><strong>Borç (₺)</strong></th>
+<th style="text-align: center;"><strong>Alacak (₺)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">100 KASA HESABI</td>
+<td style="text-align: left;">12.000</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">110 HİSSE SENETLERİ HESABI</td>
+<td style="text-align: left;">6.000</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">153 TİCARİ MALLAR HESABI</td>
+<td style="text-align: left;">10.000</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">253 TESİS, MAKİNE VE CİHAZLAR HS.</td>
+<td style="text-align: left;">6.000</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">255 DEMİRBAŞLAR HESABI</td>
+<td style="text-align: left;">8.000</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: right;">300 BANKA KREDİLERİ HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">4.000</td>
+</tr>
+<tr>
+<td style="text-align: right;">305 ÇIKARILMIŞ BONO VE SENETLER HS.</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">6.000</td>
+</tr>
+<tr>
+<td style="text-align: right;">320 SATICILAR HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">5.000</td>
+</tr>
+<tr>
+<td style="text-align: right;">321 BORÇ SENETLERİ HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">8.000</td>
+</tr>
+<tr>
+<td style="text-align: right;">500 SERMAYE HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">19.000</td>
+</tr>
+<tr>
+<td style="text-align: center;">TOPLAM</td>
+<td style="text-align: left;">42.000</td>
+<td style="text-align: right;">42.000</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+
+<h3 id="h-34-hesaplar-n-kapat-lmas"><span class="prefix-num">9. </span>Hesapların Kapatılması</h3>
+
+<p>Bir hesabın kapatılması, o hesabın borç ve alacak toplamlarının eşitlenmesi (kalan vermemesi) anlamına gelir</p>
+
+<ul>
+<li>Önce gelir ve gider hesapları kapatılır.
+<p></p></li><p></p>
+<li>Sonra aktif ve pasif (bilanço) hesapları kapatılır
+<p></p></li>
+</ul>
+
+<h4 id="h-35-gelir-ve-gider-hesaplar-n-n-kapat-lmas"><span class="prefix-num">a. </span>Gelir ve Gider Hesaplarının Kapatılması</h4>
+
+<p>Bu hesapların kapatılma nedeni \"Dönemsellik\" temel kavramıdır. Her dönemin gelir ve gideri diğerlerinden bağımsız olmalı, sonraki yıla devredilmemelidir</p>
+
+<ul>
+<li><strong>Gelir Hesapları Kuralları</strong>
+<ul>
+<li>Gelir gerçekleştiğinde hesabın alacağına yazılır.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<table style="width:75%;">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 41%">
+<col style="width: 11%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Tarih</strong></th>
+<th style="text-align: center;"><strong>Açıklama</strong></th>
+<th style="text-align: center;"><strong>Borç (₺)</strong></th>
+<th style="text-align: center;"><strong>Alacak (₺)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="2" style="text-align: center;">.../...</td>
+<td style="text-align: left;"><strong>100</strong> KASA HESABI</td>
+<td style="text-align: left;">X.XXX</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>6XX</strong> GELİR HESABI (Örn: 600, 642)</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">X.XXX</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li>Dönem sonunda borçlandırılarak kapatılır.
+<p></p></li><p></p>
+<li>690 Dönem Karı veya Zararı hesabının alacağına aktarılır.
+<p></p></li>
+</ul>
+
+<table style="width:90%;">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 49%">
+<col style="width: 11%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Tarih / No</th>
+<th style="text-align: center;">Açıklama</th>
+<th style="text-align: center;">Borç (₺)</th>
+<th style="text-align: center;">Alacak (₺)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="2" style="text-align: center;">31.12</td>
+<td style="text-align: left;"><strong>6XX</strong> GELİR HESABI (Örn: 600, 642)</td>
+<td style="text-align: left;">X.XXX</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>690</strong> DÖNEM KARI VEYA ZARARI HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">X.XXX</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li>Önceki dönemden kalan almaz, sonraki döneme kalan vermez.
+<p></p></li>
+</ul>
+
+<h4 id="h-36-gider-hesaplar-kurallar"><span class="prefix-num">b. </span>Gider Hesapları Kuralları</h4>
+
+<ul>
+<li>Gider doğduğunda hesabın borcuna yazılır.
+<p></p></li>
+</ul>
+
+<table style="width:76%;">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 36%">
+<col style="width: 11%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Tarih / No</strong></th>
+<th style="text-align: center;"><strong>Açıklama</strong></th>
+<th style="text-align: center;"><strong>Borç (₺)</strong></th>
+<th style="text-align: center;"><strong>Alacak (₺)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="2" style="text-align: center;">.../...</td>
+<td style="text-align: left;"><strong>6XX/7XX</strong> İLGİLİ GİDER HESABI</td>
+<td style="text-align: left;">X.XXX</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>100</strong> KASA HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">X.XXX</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li>Dönem sonunda alacaklandırılarak kapatılır.
+<p></p></li><p></p>
+<li>690 Dönem Karı veya Zararı hesabının borcuna aktarılır.
+<p></p></li>
+</ul>
+
+<table style="width:91%;">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 48%">
+<col style="width: 12%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Tarih / No</th>
+<th style="text-align: center;">Açıklama</th>
+<th style="text-align: center;">Borç (₺)</th>
+<th style="text-align: center;">Alacak (₺)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="2" style="text-align: center;">31.12.</td>
+<td style="text-align: left;"><strong>690</strong> DÖNEM KARI VEYA ZARARI HESABI</td>
+<td style="text-align: left;">X.XXX</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>6XX / 7XX</strong> İLGİLİ GİDER HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">X.XXX</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="h-37-690-d-nem-kar-veya-zarar-hesab"><span class="prefix-num">c. </span>690 Dönem Karı veya Zararı Hesabı</h4>
+
+<p>Gelir ve gider hesaplarının toplandığı ana hesaptır.</p>
+
+<ul>
+<li><strong>Borç tarafı</strong>: Toplam giderleri gösterir.
+<p></p></li><p></p>
+<li><strong>Alacak tarafı</strong>: Toplam gelirleri gösterir.
+<p></p></li><p></p>
+<li><strong>Hesap alacak kalanı verirse</strong>: Vergi öncesi kârı ifade eder
+<p></p></li><p></p>
+<li><strong>Hesap borç kalanı verirse</strong>: Dönem zararını ifade eder.
+<ul>
+<li><strong>Önemli Uyarı</strong>: Bu hesabın adı tam olarak \"Dönem Karı veya Zararı\"dır; \"Dönem Net Karı\" gibi isimlerle karıştırılmamalıdır
+<p></p></li><p></p>
+<li><strong>Sınav Tüyosu</strong>: Sınavlarda \"Hangisi 690\'ın borcuna devredilir?\" sorusu aslında \"Hangisi gider hesabıdır?\" demektir.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<table style="width:100%;">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 23%">
+<col style="width: 24%">
+<col style="width: 12%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr>
+<th colspan="2" style="text-align: center;"><strong>GİDER HESABI</strong></th>
+<th colspan="2" style="text-align: center;"></th>
+<th colspan="2" style="text-align: center;"><strong>GELİR HESABI</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>BORÇ</strong></td>
+<td style="text-align: center;"><strong>ALACAK</strong></td>
+<td colspan="2" rowspan="3" style="text-align: center;"></td>
+<td style="text-align: center;"><strong>BORÇ</strong></td>
+<td style="text-align: center;"><strong>ALACAK</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">X.XXX TL (Dönem İçi)</td>
+<td style="text-align: center;">X.XXX TL (Kapanış)</td>
+<td style="text-align: center;">Y.YYY TL (Kapanış)</td>
+<td style="text-align: center;">Y.YYY TL (Dönem İçi)</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Kalan: 0</td>
+<td style="text-align: center;">Kalan: 0</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td colspan="2" rowspan="3" style="text-align: center;"></td>
+<td colspan="2" style="text-align: center;"><strong>690</strong> <strong>DÖNEM KARI VEYA ZARARI HESABI</strong></td>
+<td colspan="2" rowspan="3" style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>GİDER</strong></td>
+<td style="text-align: center;"><strong>GELİR</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">X.XXX TL</td>
+<td style="text-align: center;">Y.YYY TL</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="h-38-aktif-ve-pasif-hesaplar-n-kapat-lmas"><span class="prefix-num">d. </span>Aktif ve Pasif Hesapların Kapatılması</h4>
+
+<p>Aktif (varlık) ve pasif (kaynak) hesaplar, gelir/gider hesaplarının aksine ertesi yıla devredilebilir. Ancak dönemi bitirmek ve devir işlemini gerçekleştirmek için bu hesapların da kapatılması gerekir.</p>
+
+<ul>
+<li><strong>Kapanış Kaydı</strong>: Dönem sonunda yapılan bu kayıtta; pasif hesaplar borçlandırılır, aktif hesaplar ise alacaklandırılarak hesaplar sıfırlanır.
+<p></p></li>
+</ul>
+
+<table style="width:79%;">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 38%">
+<col style="width: 11%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Tarih / No</strong></th>
+<th style="text-align: center;"><strong>Açıklama</strong></th>
+<th style="text-align: center;"><strong>Borç (₺)</strong></th>
+<th style="text-align: center;"><strong>Alacak (₺)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="2" style="text-align: center;">31.12.2025</td>
+<td style="text-align: left;"><strong>3XX/4XX/5XX</strong> PASİF HESAPLAR</td>
+<td style="text-align: left;">X.XXX</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>1XX/2XX</strong> AKTİF HESAPLAR</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">X.XXX</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li><strong>Açılış Kaydı</strong>: İzleyen yılın başında (1 Ocak) yapılan bu kayıtta; aktif hesaplar tekrar borçlandırılır, pasif hesaplar ise alacaklandırılır. Böylece varlıklar ve borçlar yeni yıla taşınmış olur.
+<p></p></li>
+</ul>
+
+<table style="width:79%;">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 38%">
+<col style="width: 11%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Tarih / No</strong></th>
+<th style="text-align: center;"><strong>Açıklama</strong></th>
+<th style="text-align: center;"><strong>Borç (₺)</strong></th>
+<th style="text-align: center;"><strong>Alacak (₺)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="2" style="text-align: center;">31.12.2025</td>
+<td style="text-align: left;"><strong>1XX/2XX</strong> AKTİF HESAPLAR</td>
+<td style="text-align: left;">X.XXX</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>3XX/4XX/5XX</strong> PASİF HESAPLAR</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">X.XXX</td>
+</tr>
+</tbody>
+</table>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek:</strong></span>
+  <div class="example-content">
+    <ul>
+<li><strong>Bir işletme aşağıdaki faaliyetleri gerçekleştirmiştir:</strong>
+<ul>
+<li>1.000 TL\'lik ticari mal, 5.000 TL\'ye peşin satılmıştır.
+<p></p></li><p></p>
+<li>3.000 TL\'lik kira geliri tahsil edilmiştir.
+<p></p></li><p></p>
+<li>500 TL komisyon gideri ödenmiştir.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Bu üç işlemi topluca yazalım:</strong>
+<p></p></li>
+</ul>
+<p></p>
+<p></p>
+<table style="width:85%;">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 50%">
+<col style="width: 12%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>No</strong></th>
+<th style="text-align: center;"><strong>Açıklama</strong></th>
+<th style="text-align: center;"><strong>Borç (TL)</strong></th>
+<th style="text-align: center;"><strong>Alacak (TL)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="section-header">
+<td colspan="4"><h5 id="ticari-mal-satış-kaydı">Ticari mal satış kaydı</h5></td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: center;">1.1</td>
+<td style="text-align: left;"><strong>100</strong> KASA HESABI</td>
+<td style="text-align: left;">5.000</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>600</strong> YURT İÇİ SATIŞLAR HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">5.000</td>
+</tr>
+<tr class="section-header">
+<td colspan="4"><h5 id="satılan-malların-stoktan-çıkış-maliyet-kaydı">Satılan malların stoktan çıkış (maliyet) kaydı</h5></td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: center;">1.2</td>
+<td style="text-align: left;"><strong>621</strong> SATILAN TİCARİ MALLARIN MALİYETİ</td>
+<td style="text-align: left;">1.000</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>153</strong> TİCARİ MALLAR HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr class="section-header">
+<td colspan="4"><h5 id="kira-gelirinin-nakit-olarak-tahsil-edilmesi">Kira gelirinin nakit olarak tahsil edilmesi</h5></td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: center;">2</td>
+<td style="text-align: left;"><strong>100</strong> KASA HESABI</td>
+<td style="text-align: left;">3.000</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>649</strong> DİĞER OLAĞAN GELİR VE KARLAR HS.</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">3.000</td>
+</tr>
+<tr class="section-header">
+<td colspan="4"><h5 id="komisyon-giderinin-kasadan-ödenmesi">Komisyon giderinin kasadan ödenmesi</h5></td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: center;">3</td>
+<td style="text-align: left;"><strong>653</strong> KOMİSYON GİDERLERİ</td>
+<td style="text-align: left;">500</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>100</strong> KASA HESABI</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">500</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<ul>
+<li><strong>Dönem sonu gelir ve gider hesaplarının kapanışlarını yazalım.</strong>
+<p></p></li>
+</ul>
+<p></p>
+<p></p>
+<table style="width:92%;">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 48%">
+<col style="width: 18%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>No</strong></th>
+<th style="text-align: center;"><strong>Açıklama</strong></th>
+<th style="text-align: center;"><strong>Borç (TL)</strong></th>
+<th style="text-align: center;"><strong>Alacak (TL)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="section-header">
+<td colspan="4"><h5 id="gelir-hesaplarının-kapatılması">Gelir Hesaplarının Kapatılması</h5></td>
+</tr>
+<tr>
+<td rowspan="3" style="text-align: center;">1</td>
+<td style="text-align: left;"><strong>600</strong> YURT İÇİ SATIŞLAR HS.</td>
+<td style="text-align: left;">5.000</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>649</strong> D. OLAĞAN GELİR VE KARLAR HS.</td>
+<td style="text-align: left;">3.000</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>690</strong> DÖNEM KARI VEYA ZARARI HS.</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">8.000</td>
+</tr>
+<tr class="section-header">
+<td colspan="4"><h5 id="gider-hesaplarının-kapatılması">Gider Hesaplarının Kapatılması</h5></td>
+</tr>
+<tr>
+<td rowspan="3" style="text-align: center;">2</td>
+<td style="text-align: left;"><strong>690</strong> DÖNEM KARI VEYA ZARARI HS.</td>
+<td style="text-align: left;">1.500</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>621</strong> SATILAN TİCARİ MALLARIN MALİYETİ</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>653</strong> KOMİSYON GİDERLERİ</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">500</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<ul>
+<li><strong>Büyük Defter'e geçirelim</strong>
+<p></p></li>
+</ul>
+<p></p>
+<p></p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 11%">
+<col style="width: 8%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 10%">
+<col style="width: 9%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr>
+<th colspan="2" style="text-align: center;"><strong>621</strong> S.T.M.M. Hesabı</th>
+<th colspan="2" style="text-align: center;"><strong>653</strong> Komisyon Gid. Hes.</th>
+<th colspan="2" style="text-align: center;"></th>
+<th colspan="2" style="text-align: center;"><strong>600</strong> Yurt İçi Satışlar Hs.</th>
+<th colspan="2" style="text-align: center;"><strong>649</strong> Diğer Olağan Gel. Ve Kar.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>Borç</strong></td>
+<td style="text-align: center;"><strong>Alacak</strong></td>
+<td style="text-align: center;"><strong>Borç</strong></td>
+<td style="text-align: center;"><strong>Alacak</strong></td>
+<td colspan="2" rowspan="3" style="text-align: center;"></td>
+<td style="text-align: center;"><strong>Borç</strong></td>
+<td style="text-align: center;"><strong>Alacak</strong></td>
+<td style="text-align: center;"><strong>Borç</strong></td>
+<td style="text-align: center;"><strong>Alacak</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">1.000</td>
+<td style="text-align: center;">1.000 (Kapanış)</td>
+<td style="text-align: center;">500</td>
+<td style="text-align: center;">500 (Kapanış)</td>
+<td style="text-align: center;">5.000 (Kapanış)</td>
+<td style="text-align: center;">5.000</td>
+<td style="text-align: center;">3.000 (Kapanış)</td>
+<td style="text-align: center;">3.000</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Kalan: 0</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Kalan: 0</td>
+<td style="text-align: center;">Kalan: 0</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Kalan: 0</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td colspan="4" rowspan="6" style="text-align: center;"></td>
+<td colspan="2" style="text-align: center;"><strong>690</strong> <strong>Dönem Karı veya Zararı Hesabı</strong></td>
+<td colspan="4" rowspan="6" style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Gider</strong></td>
+<td style="text-align: center;"><strong>Gelir</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">1.000 (621'den)</td>
+<td style="text-align: center;">5.000 (600'den)</td>
+</tr>
+<tr>
+<td style="text-align: center;">500 (770’ten)</td>
+<td style="text-align: center;">3.000 (649'dan)</td>
+</tr>
+<tr>
+<td style="text-align: center;">Toplam: 1.500</td>
+<td style="text-align: center;">Toplam: 8.000</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Bakiye: 6.500 (Kar)</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+  </div>
+</div>
+    </main>
+    <script src="/content/notes.js"></script>
+</body>
+</html>

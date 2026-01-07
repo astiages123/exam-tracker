@@ -49,6 +49,34 @@ interface ReportStats {
     remainingPauseMins: number;
 }
 
+export interface PeriodStats {
+    totalHours: number;
+    sessionCount: number;
+    videoCount: number;
+    activeDays: number;
+    averagePerDay: number;
+}
+
+export interface TrendComparison {
+    current: PeriodStats;
+    previous: PeriodStats;
+    percentChange: number;  // Positive = increase, negative = decrease
+}
+
+export interface WeeklyChartItem {
+    weekLabel: string;
+    weekStart: string;
+    hours: number;
+    videoCount: number;
+}
+
+export interface MonthlyChartItem {
+    monthLabel: string;
+    monthStart: string;
+    hours: number;
+    videoCount: number;
+}
+
 export const useReportData = ({
     sessions,
     courses,
@@ -208,76 +236,59 @@ export const useReportData = ({
         });
     }, []);
 
-    // Chart data for duration
+    // Unified Chart data for duration and videos
     const chartData = useMemo(() => {
-        const dailyData: Record<string, { seconds: number; courseIds: Set<string> }> = {};
+        const dailyDuration: Record<string, { seconds: number; courseIds: Set<string> }> = {};
         workSessions.forEach(session => {
             if (!session.timestamp) return;
             const dateObj = new Date(session.timestamp);
             const dateKey = getLocalYMD(dateObj);
-            if (!dailyData[dateKey]) {
-                dailyData[dateKey] = { seconds: 0, courseIds: new Set() };
+            if (!dailyDuration[dateKey]) {
+                dailyDuration[dateKey] = { seconds: 0, courseIds: new Set() };
             }
-            dailyData[dateKey].seconds += (session.duration || 0);
-            if (session.courseId) dailyData[dateKey].courseIds.add(session.courseId);
+            dailyDuration[dateKey].seconds += (session.duration || 0);
+            if (session.courseId) dailyDuration[dateKey].courseIds.add(session.courseId);
         });
 
-        const result: ChartItem[] = [];
-        const loopDays = isMobile ? 3 : 6;
-        for (let i = loopDays; i >= 0; i--) {
-            const d = new Date();
-            d.setDate(d.getDate() - i);
-            const dateKey = getLocalYMD(d);
-            const dayInfo = dailyData[dateKey] || { seconds: 0, courseIds: new Set() };
-            const courseNames = Array.from(dayInfo.courseIds).map(id => getCourseName(id));
-
-            result.push({
-                date: dateKey,
-                hours: dayInfo.seconds / 3600,
-                count: 0,
-                fullDate: d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }),
-                displayDate: d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }),
-                workCourses: courseNames,
-                videoCourses: []
-            });
-        }
-        return filterWeekendGaps(result);
-    }, [workSessions, getCourseName, isMobile, filterWeekendGaps]);
-
-    // Chart data for videos
-    const videoChartData = useMemo(() => {
-        const dailyCounts: Record<string, { count: number; courseIds: Set<string> }> = {};
+        const dailyVideoCounts: Record<string, { count: number; courseIds: Set<string> }> = {};
         filteredVideoHistory.forEach(history => {
             if (!history.timestamp) return;
             const dateKey = getLocalYMD(history.timestamp);
-            if (!dailyCounts[dateKey]) {
-                dailyCounts[dateKey] = { count: 0, courseIds: new Set() };
+            if (!dailyVideoCounts[dateKey]) {
+                dailyVideoCounts[dateKey] = { count: 0, courseIds: new Set() };
             }
-            dailyCounts[dateKey].count += 1;
-            if (history.courseId) dailyCounts[dateKey].courseIds.add(history.courseId);
+            dailyVideoCounts[dateKey].count += 1;
+            if (history.courseId) dailyVideoCounts[dateKey].courseIds.add(history.courseId);
         });
 
         const result: ChartItem[] = [];
-        const loopDays = isMobile ? 3 : 6;
-        for (let i = loopDays; i >= 0; i--) {
-            const d = new Date();
-            d.setDate(d.getDate() - i);
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const daysInMonth = now.getDate(); // Show up to today
+
+        for (let i = 0; i < daysInMonth; i++) {
+            const d = new Date(startOfMonth);
+            d.setDate(d.getDate() + i);
             const dateKey = getLocalYMD(d);
-            const dayInfo = dailyCounts[dateKey] || { count: 0, courseIds: new Set() };
-            const courseNames = Array.from(dayInfo.courseIds).map(id => getCourseName(id));
+
+            const durationInfo = dailyDuration[dateKey] || { seconds: 0, courseIds: new Set<string>() };
+            const videoInfo = dailyVideoCounts[dateKey] || { count: 0, courseIds: new Set<string>() };
+
+            const workCourseNames = Array.from(durationInfo.courseIds).map(id => getCourseName(id));
+            const videoCourseNames = Array.from(videoInfo.courseIds).map(id => getCourseName(id));
 
             result.push({
                 date: dateKey,
-                hours: 0,
-                count: dayInfo.count,
+                hours: durationInfo.seconds / 3600,
+                count: videoInfo.count,
                 fullDate: d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }),
                 displayDate: d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }),
-                workCourses: [],
-                videoCourses: courseNames
+                workCourses: workCourseNames,
+                videoCourses: videoCourseNames
             });
         }
         return filterWeekendGaps(result);
-    }, [filteredVideoHistory, getCourseName, isMobile, filterWeekendGaps]);
+    }, [workSessions, filteredVideoHistory, getCourseName, isMobile, filterWeekendGaps]);
 
     // Full chart data for history modal
     const fullChartData = useMemo(() => {
@@ -334,6 +345,165 @@ export const useReportData = ({
             }));
     }, [workSessions, filteredVideoHistory, getCourseName]);
 
+    // Helper: Get start of week (Monday)
+    const getWeekStart = useCallback((date: Date): Date => {
+        const d = new Date(date);
+        const day = d.getDay();
+        const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+        d.setDate(diff);
+        d.setHours(0, 0, 0, 0);
+        return d;
+    }, []);
+
+    // Helper: Get start of month
+    const getMonthStart = useCallback((date: Date): Date => {
+        const d = new Date(date);
+        d.setDate(1);
+        d.setHours(0, 0, 0, 0);
+        return d;
+    }, []);
+
+    // Calculate period stats helper
+    const calculatePeriodStats = useCallback((
+        startDate: Date,
+        endDate: Date,
+        sessions: typeof workSessions,
+        videos: typeof filteredVideoHistory
+    ): PeriodStats => {
+        const startTs = startDate.getTime();
+        const endTs = endDate.getTime();
+
+        const periodSessions = sessions.filter(s =>
+            s.timestamp && s.timestamp >= startTs && s.timestamp < endTs
+        );
+        const periodVideos = videos.filter(v => {
+            const ts = typeof v.timestamp === 'number' ? v.timestamp : new Date(v.timestamp).getTime();
+            return ts >= startTs && ts < endTs;
+        });
+
+        const totalHours = periodSessions.reduce((acc, s) => acc + ((s.duration || 0) / 3600), 0);
+        const sessionCount = periodSessions.length;
+        const videoCount = periodVideos.length;
+
+        // Count unique active days
+        const activeDaysSet = new Set<string>();
+        periodSessions.forEach(s => {
+            if (s.timestamp) activeDaysSet.add(getLocalYMD(s.timestamp));
+        });
+        periodVideos.forEach(v => {
+            const ts = typeof v.timestamp === 'number' ? v.timestamp : new Date(v.timestamp).getTime();
+            activeDaysSet.add(getLocalYMD(ts));
+        });
+        const activeDays = activeDaysSet.size;
+
+        const averagePerDay = activeDays > 0 ? totalHours / activeDays : 0;
+
+        return {
+            totalHours,
+            sessionCount,
+            videoCount,
+            activeDays,
+            averagePerDay
+        };
+    }, []);
+
+    // Weekly stats comparison
+    const weeklyStats: TrendComparison = useMemo(() => {
+        const now = new Date();
+        const thisWeekStart = getWeekStart(now);
+        const thisWeekEnd = new Date(thisWeekStart);
+        thisWeekEnd.setDate(thisWeekEnd.getDate() + 7);
+
+        const lastWeekStart = new Date(thisWeekStart);
+        lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+        const lastWeekEnd = thisWeekStart;
+
+        const current = calculatePeriodStats(thisWeekStart, thisWeekEnd, workSessions, filteredVideoHistory);
+        const previous = calculatePeriodStats(lastWeekStart, lastWeekEnd, workSessions, filteredVideoHistory);
+
+        const percentChange = previous.totalHours > 0
+            ? ((current.totalHours - previous.totalHours) / previous.totalHours) * 100
+            : (current.totalHours > 0 ? 100 : 0);
+
+        return { current, previous, percentChange };
+    }, [workSessions, filteredVideoHistory, getWeekStart, calculatePeriodStats]);
+
+    // Monthly stats comparison
+    const monthlyStats: TrendComparison = useMemo(() => {
+        const now = new Date();
+        const thisMonthStart = getMonthStart(now);
+        const thisMonthEnd = new Date(thisMonthStart);
+        thisMonthEnd.setMonth(thisMonthEnd.getMonth() + 1);
+
+        const lastMonthStart = new Date(thisMonthStart);
+        lastMonthStart.setMonth(lastMonthStart.getMonth() - 1);
+        const lastMonthEnd = thisMonthStart;
+
+        const current = calculatePeriodStats(thisMonthStart, thisMonthEnd, workSessions, filteredVideoHistory);
+        const previous = calculatePeriodStats(lastMonthStart, lastMonthEnd, workSessions, filteredVideoHistory);
+
+        const percentChange = previous.totalHours > 0
+            ? ((current.totalHours - previous.totalHours) / previous.totalHours) * 100
+            : (current.totalHours > 0 ? 100 : 0);
+
+        return { current, previous, percentChange };
+    }, [workSessions, filteredVideoHistory, getMonthStart, calculatePeriodStats]);
+
+    // Weekly chart data (last 8 weeks)
+    const weeklyChartData: WeeklyChartItem[] = useMemo(() => {
+        const result: WeeklyChartItem[] = [];
+        const now = new Date();
+
+        for (let i = 7; i >= 0; i--) {
+            const weekStart = getWeekStart(now);
+            weekStart.setDate(weekStart.getDate() - (i * 7));
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekEnd.getDate() + 7);
+
+            const stats = calculatePeriodStats(weekStart, weekEnd, workSessions, filteredVideoHistory);
+
+            // Format week label (e.g., "6-12 Oca")
+            const weekEndDisplay = new Date(weekEnd);
+            weekEndDisplay.setDate(weekEndDisplay.getDate() - 1);
+            const weekLabel = `${weekStart.getDate()}-${weekEndDisplay.getDate()} ${weekStart.toLocaleDateString('tr-TR', { month: 'short' })}`;
+
+            result.push({
+                weekLabel,
+                weekStart: getLocalYMD(weekStart),
+                hours: stats.totalHours,
+                videoCount: stats.videoCount
+            });
+        }
+
+        return result;
+    }, [workSessions, filteredVideoHistory, getWeekStart, calculatePeriodStats]);
+
+    // Monthly chart data (last 6 months)
+    const monthlyChartData: MonthlyChartItem[] = useMemo(() => {
+        const result: MonthlyChartItem[] = [];
+        const now = new Date();
+
+        for (let i = 5; i >= 0; i--) {
+            const monthStart = getMonthStart(now);
+            monthStart.setMonth(monthStart.getMonth() - i);
+            const monthEnd = new Date(monthStart);
+            monthEnd.setMonth(monthEnd.getMonth() + 1);
+
+            const stats = calculatePeriodStats(monthStart, monthEnd, workSessions, filteredVideoHistory);
+
+            const monthLabel = monthStart.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' });
+
+            result.push({
+                monthLabel,
+                monthStart: getLocalYMD(monthStart),
+                hours: stats.totalHours,
+                videoCount: stats.videoCount
+            });
+        }
+
+        return result;
+    }, [workSessions, filteredVideoHistory, getMonthStart, calculatePeriodStats]);
+
     return {
         // Helper functions
         getCourseCategory,
@@ -344,9 +514,12 @@ export const useReportData = ({
         aggregatedSessions,
         // Statistics
         stats,
+        weeklyStats,
+        monthlyStats,
         // Chart data
         chartData,
-        videoChartData,
-        fullChartData
+        fullChartData,
+        weeklyChartData,
+        monthlyChartData
     };
 };

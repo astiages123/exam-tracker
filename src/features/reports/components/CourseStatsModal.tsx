@@ -116,9 +116,9 @@ export default function CourseStatsModal({
     return (
         <>
             <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-                <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col p-0 gap-0 overflow-hidden border-none text-foreground bg-gradient-to-b from-zinc-900 to-zinc-950 focus:outline-none shadow-2xl">
+                <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col p-0 gap-0 overflow-hidden border-none text-foreground bg-linear-to-b from-zinc-900 to-zinc-950 focus:outline-none shadow-2xl">
                     {/* Header */}
-                    <div className="p-4 sm:p-5 border-b border-white/5 bg-white/[0.02] flex justify-between items-center shrink-0">
+                    <div className="p-4 sm:p-5 border-b border-white/5 bg-white/2 flex justify-between items-center shrink-0">
                         <DialogHeader>
                             <DialogTitle className="text-xl font-bold flex items-center gap-3">
                                 <div className="bg-primary/20 p-2 rounded-lg text-primary shadow-[0_0_15px_-3px_var(--color-primary)]">
@@ -142,7 +142,7 @@ export default function CourseStatsModal({
                         <div className="p-4 sm:p-6 space-y-6">
                             {/* Summary Cards */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                <Card className="bg-white/[0.03] border-white/5 shadow-none overflow-hidden group">
+                                <Card className="bg-white/3 border-white/5 shadow-none overflow-hidden group">
                                     <CardContent className="p-4 flex items-center gap-4 relative">
                                         <div className="bg-purple-500/10 p-2.5 rounded-xl text-purple-400 border border-purple-500/20 group-hover:scale-110 transition-transform">
                                             <Clock size={20} />
@@ -156,7 +156,7 @@ export default function CourseStatsModal({
                                     </CardContent>
                                 </Card>
 
-                                <Card className="bg-white/[0.03] border-white/5 shadow-none overflow-hidden group">
+                                <Card className="bg-white/3 border-white/5 shadow-none overflow-hidden group">
                                     <CardContent className="p-4 flex items-center gap-4 relative">
                                         <div className="bg-orange-500/10 p-2.5 rounded-xl text-orange-400 border border-orange-500/20 group-hover:scale-110 transition-transform">
                                             <MonitorPlay size={20} />
@@ -170,7 +170,7 @@ export default function CourseStatsModal({
                                     </CardContent>
                                 </Card>
 
-                                <Card className="bg-white/[0.03] border-white/5 shadow-none overflow-hidden group">
+                                <Card className="bg-white/3 border-white/5 shadow-none overflow-hidden group">
                                     <CardContent className="p-4 flex items-center gap-4 relative">
                                         <div className="bg-emerald-500/10 p-2.5 rounded-xl text-emerald-400 border border-emerald-500/20 group-hover:scale-110 transition-transform">
                                             <Brain size={20} />
@@ -206,7 +206,7 @@ export default function CourseStatsModal({
                                             className="h-[220px]"
                                         />
                                     ) : (
-                                        <div className="h-[220px] flex items-center justify-center text-muted-foreground bg-white/[0.02] rounded-2xl border border-white/5 text-sm uppercase tracking-widest font-bold">
+                                        <div className="h-[220px] flex items-center justify-center text-muted-foreground bg-white/2 rounded-2xl border border-white/5 text-sm uppercase tracking-widest font-bold">
                                             Veri Bulunmuyor
                                         </div>
                                     )}
@@ -220,7 +220,7 @@ export default function CourseStatsModal({
                                             className="h-[220px]"
                                         />
                                     ) : (
-                                        <div className="h-[220px] flex items-center justify-center text-muted-foreground bg-white/[0.02] rounded-2xl border border-white/5 text-sm uppercase tracking-widest font-bold">
+                                        <div className="h-[220px] flex items-center justify-center text-muted-foreground bg-white/2 rounded-2xl border border-white/5 text-sm uppercase tracking-widest font-bold">
                                             Veri Bulunmuyor
                                         </div>
                                     )}
@@ -244,7 +244,7 @@ export default function CourseStatsModal({
                                             </div>
                                         </div>
 
-                                        <Card className="border-white/5 bg-white/[0.02] shadow-none overflow-hidden">
+                                        <Card className="border-white/5 bg-white/2 shadow-none overflow-hidden">
                                             <CardContent className="p-4 sm:p-6">
                                                 {isLoadingQuiz ? (
                                                     <div className="h-[220px] flex items-center justify-center text-muted-foreground">

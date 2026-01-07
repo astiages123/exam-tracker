@@ -148,7 +148,7 @@ export function QuizModal({
         return (
             <AnimatePresence>
                 <motion.div
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
                     variants={overlayVariants}
                     initial="hidden"
                     animate="visible"
@@ -191,7 +191,7 @@ export function QuizModal({
         return (
             <AnimatePresence>
                 <motion.div
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
                     variants={overlayVariants}
                     initial="hidden"
                     animate="visible"
@@ -274,7 +274,7 @@ export function QuizModal({
     return (
         <AnimatePresence>
             <motion.div
-                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
                 variants={overlayVariants}
                 initial="hidden"
                 animate="visible"
@@ -348,7 +348,7 @@ export function QuizModal({
                         {currentQuestion?.related_image && (
                             <div className="mb-6 flex justify-center">
                                 <div className="relative rounded-xl overflow-hidden border border-gray-700 max-w-full md:max-w-xl group">
-                                    <div className="absolute top-2 right-2 px-2 py-1 bg-black/60 backdrop-blur text-xs text-white rounded-md z-10">
+                                    <div className="absolute top-2 right-2 px-2 py-1 bg-black/60 text-xs text-white rounded-md z-10">
                                         İlgili Görsel
                                     </div>
                                     <img
@@ -412,7 +412,7 @@ export function QuizModal({
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="p-4 border-t border-gray-700 bg-gray-900/50 backdrop-blur-sm shrink-0"
+                            className="p-4 border-t border-gray-700 bg-gray-900/50 shrink-0"
                         >
                             <button
                                 onClick={handleNext}

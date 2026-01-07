@@ -26,7 +26,7 @@ const CourseStatsModal = lazy(() => import('@/features/reports/components/Course
 
 
 const ModalLoader = () => (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-background/80 flex items-center justify-center z-50">
         <div className="flex flex-col items-center gap-3 text-muted-foreground">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
             <span className="text-sm font-medium">Yükleniyor...</span>
@@ -231,7 +231,7 @@ export default function Dashboard({ logout }: DashboardProps) {
 
             {/* Zen Mode Background Deepening */}
             {modals.isZenMode && (
-                <div className="fixed inset-0 bg-background/60 backdrop-blur-[20px] z-40 animate-in fade-in duration-1000" />
+                <div className="fixed inset-0 bg-background/60 z-40 animate-in fade-in duration-1000" />
             )}
 
 

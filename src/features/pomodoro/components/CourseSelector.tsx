@@ -25,7 +25,7 @@ export default function CourseSelector({
 }: CourseSelectorProps) {
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-100 cursor-pointer"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 animate-in fade-in duration-100 cursor-pointer"
             onClick={onClose}
         >
             <div

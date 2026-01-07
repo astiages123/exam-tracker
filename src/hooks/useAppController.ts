@@ -13,7 +13,7 @@ const courseData = courseDataJson as unknown as CourseCategory[];
 
 export const useAppController = () => {
     const { user, logout, loading } = useAuth();
-    useNotification();
+    const { showToast } = useNotification();
 
     // Custom Hooks
     const {
@@ -144,6 +144,12 @@ export const useAppController = () => {
     ) => {
         if (!isDataLoaded) return;
 
+        // Minimum 1 dakika (60 saniye) altındaki work/break oturumlarını kaydetme
+        if (duration < 60) {
+            showToast('Oturum 1 dakikadan kısa olduğu için kaydedilmedi.', 'warning');
+            return;
+        }
+
         // Her zaman aktif kurs ID'sini kullan (bulamazsa 'general')
         const currentCourseId = overrideCourseId || lastActiveCourseId || 'general';
 
@@ -201,7 +207,7 @@ export const useAppController = () => {
                 courseId: currentCourseId
             });
         }
-    }, [isDataLoaded, lastActiveCourseId, addSession]);
+    }, [isDataLoaded, lastActiveCourseId, addSession, showToast]);
 
     const handleUpdateSession = useCallback((oldTimestamp: number, updatedSession: StudySession) => {
         updateSession(oldTimestamp, updatedSession);
