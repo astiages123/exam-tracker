@@ -15,3 +15,19 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Cache directories
+.vite
+.cache
+*.tsbuildinfo
+
+# Generated files
+.generated
+*.generated.*
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test coverage
+coverage
