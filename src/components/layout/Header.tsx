@@ -107,7 +107,7 @@ export default function Header({ rankInfo, dailyFocus, currentStreak, modals, lo
                             <StreakDisplay streak={currentStreak} />
                             <div className="inline-flex items-center gap-2 bg-secondary/30 px-3.5 py-1.5 rounded-full border border-border/40 hover:bg-secondary/50 transition-colors">
                                 <Calendar size={15} className="text-foreground/60" />
-                                <span className="text-sm font-medium text-foreground/80">
+                                <span className="text-sm font-bold text-accent/80">
                                     {dailyFocus}
                                 </span>
                             </div>
@@ -116,7 +116,7 @@ export default function Header({ rankInfo, dailyFocus, currentStreak, modals, lo
 
                     <div className="flex items-center gap-1.5">
                         {[
-                            { icon: Timer, action: () => modals.setShowTimer(!modals.showTimer), label: "Odak" },
+                            { icon: Timer, action: () => modals.setShowTimer(!modals.showTimer), label: "Pomodoro" },
                             { icon: ChartLine, action: () => modals.setShowReport(true), label: "Raporlar" },
                             { icon: CalendarDays, action: () => modals.setShowSchedule(true), label: "Program" },
                         ].map((btn, i) => (

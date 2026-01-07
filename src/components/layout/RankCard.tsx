@@ -1,4 +1,4 @@
-import { Goal, Trophy, Sparkles } from 'lucide-react';
+import { Goal, Sparkles } from 'lucide-react';
 import { RANK_ICONS } from '@/constants/styles';
 import { ProgressBar } from '@/components/stats/ProgressBars';
 import { motion as Motion } from 'framer-motion';
@@ -23,7 +23,9 @@ export default function RankCard({
     totalHours
 }: RankCardProps) {
     const Icon = RANK_ICONS[nextRank.icon] || Goal;
-    const remainingPercentage = Math.max(0, nextRank.min - totalPercentage);
+    const rankRange = nextRank.min - rankInfo.min;
+    const progressInRank = totalPercentage - rankInfo.min;
+    const relativeRemaining = Math.max(0, 100 - (progressInRank / (rankRange || 1)) * 100);
 
     // Days calculation logic
     const daysLeft = (() => {
@@ -38,7 +40,7 @@ export default function RankCard({
         if (uniqueDays === 0) return null;
         const dailyAvg = completedHours / uniqueDays;
         if (dailyAvg === 0) return null;
-        const hoursNeededForNextRank = (remainingPercentage / 100) * totalHours;
+        const hoursNeededForNextRank = ((relativeRemaining / 100) * rankRange / 100) * totalHours;
         return Math.ceil(hoursNeededForNextRank / dailyAvg);
     })();
 
@@ -59,10 +61,6 @@ export default function RankCard({
                         {/* Icon Background Glow */}
                         <div className="relative p-2.5 rounded-2xl bg-linear-to-br from-white/10 to-white/5 border border-white/10">
                             <Icon size={28} className="text-primary" />
-                        </div>
-                        {/* Floating Badge */}
-                        <div className="absolute -top-2 -right-2 bg-amber-400 text-black text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-lg border border-yellow-300">
-                            <Trophy size={10} />
                         </div>
                     </div>
 
@@ -86,7 +84,7 @@ export default function RankCard({
                         <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover/stat:opacity-100 transition-opacity" />
                         <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest block mb-1 relative z-10">Kalan Yüzde</span>
                         <div className="flex items-baseline gap-1 relative z-10">
-                            <span className="text-xl font-black text-primary drop-shadow-sm">%{remainingPercentage.toFixed(1)}</span>
+                            <span className="text-xl font-black text-primary drop-shadow-sm">%{relativeRemaining.toFixed(1)}</span>
                             <span className="text-xs font-bold text-white/30"></span>
                         </div>
                     </div>
