@@ -37,32 +37,30 @@ const SessionListItem = React.memo(({
             transition={{ delay: index * 0.05 }}
             className="group/item relative"
         >
-            <div className="absolute inset-0 bg-linear-to-r from-primary/10 via-transparent to-transparent opacity-0 group-hover/item:opacity-100 transition-opacity duration-500 rounded-2xl blur-xl" />
+
             <Card
                 className={cn(
                     "relative overflow-hidden cursor-pointer transition-all duration-300",
-                    "bg-zinc-900/30 border-border/40",
-                    "hover:bg-zinc-900/50 hover:shadow-2xl hover:shadow-primary/5 hover:border-primary/30",
+                    "bg-zinc-800/40 border-border/50",
+                    "hover:bg-zinc-800/60 hover:shadow-2xl hover:shadow-primary/5 hover:border-primary/30",
                     "hover:-translate-y-0.5 active:scale-[0.995]",
                     "rounded-2xl border"
                 )}
                 onClick={onSelect}
             >
-                {/* Subtle side glow */}
-                <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-linear-to-b from-primary/50 to-transparent opacity-0 group-hover/item:opacity-100 transition-opacity" />
 
-                <CardContent className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex items-start sm:items-center gap-4 min-w-0">
+
+                <CardContent className="p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-start sm:items-center gap-3 min-w-0">
                         <div className={cn(
-                            "p-3 rounded-2xl shrink-0 transition-all duration-300 group-hover/item:scale-110 group-hover/item:rotate-3",
-                            "bg-linear-to-br from-primary/20 via-primary/10 to-transparent text-primary shadow-inner border border-primary/10",
-                            "relative group-hover/item:shadow-[0_0_15px_-5px_var(--color-primary)]"
+                            "p-2 sm:p-2.5 rounded-xl shrink-0 transition-all duration-300 group-hover/item:scale-110 group-hover/item:rotate-3",
+                            "bg-linear-to-br from-primary/20 via-primary/10 to-transparent text-primary shadow-inner border border-primary/10"
                         )}>
-                            <CourseIcon size={isMobile ? 20 : 24} strokeWidth={2.5} />
+                            <CourseIcon size={isMobile ? 18 : 20} strokeWidth={2.5} />
                         </div>
 
-                        <div className="min-w-0 flex-1 space-y-1.5">
-                            <h4 className="font-bold text-zinc-100 text-sm sm:text-base w-full max-w-[500px] truncate leading-tight tracking-tight group-hover/item:text-white transition-colors">
+                        <div className="min-w-0 flex-1 space-y-1">
+                            <h4 className="font-bold text-zinc-100 text-xs sm:text-sm w-full max-w-[500px] truncate leading-tight tracking-tight group-hover/item:text-white transition-colors">
                                 {courseName}
                             </h4>
                             <div className="flex items-center flex-wrap gap-2.5 text-xs font-medium">
@@ -86,14 +84,14 @@ const SessionListItem = React.memo(({
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 pt-3 sm:pt-0 border-t border-white/5 sm:border-t-0 pl-14 sm:pl-0">
+                    <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-3 pt-2 sm:pt-0 border-t border-white/5 sm:border-t-0 pl-12 sm:pl-0">
                         <div className="sm:text-right flex items-center sm:block gap-2">
-                            <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest sm:hidden">
+                            <span className="text-[10px] font-black text-primary-foreground uppercase tracking-widest sm:hidden">
                                 SÜRE
                             </span>
                             <div className="flex items-center justify-end gap-1.5 text-primary">
-                                <Clock size={14} className="opacity-50 hidden sm:inline-block" />
-                                <span className="font-mono font-bold text-lg sm:text-xl tracking-tight bg-linear-to-br from-primary to-primary-foreground bg-clip-text">
+                                <Clock size={14} className="opacity-90 hidden sm:inline-block" />
+                                <span className="font-sans font-bold text-base sm:text-medium tracking-normal bg-linear-to-br from-primary to-primary-foreground bg-clip-text">
                                     {formatHours(group.totalDuration / 3600)}
                                 </span>
                             </div>
@@ -107,8 +105,8 @@ const SessionListItem = React.memo(({
                                 onDelete();
                             }}
                             className={cn(
-                                "h-9 w-9 shrink-0 rounded-xl transition-all duration-300",
-                                "text-muted-foreground/30 hover:text-destructive hover:bg-destructive/10 hover:rotate-12",
+                                "h-8 w-8 shrink-0 rounded-lg transition-all duration-300",
+                                "text-accent hover:text-destructive hover:bg-destructive/10 hover:rotate-12",
                                 "opacity-0 group-hover/item:opacity-100 focus:opacity-100"
                             )}
                             title="Kaydı Sil"

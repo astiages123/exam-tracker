@@ -27,10 +27,10 @@ export default function CategoryList({
     modals
 }: CategoryListProps) {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-20 items-start">
+        <>
             {courseData.map((category, catIdx) => (
                 <CategoryItem
-                    key={category.category} // Changed to stable string key if possible, falling back to catIdx if needed but category name is better
+                    key={category.category}
                     category={category}
                     catIdx={catIdx}
                     progressData={progressData}
@@ -40,6 +40,6 @@ export default function CategoryList({
                     modals={modals}
                 />
             ))}
-        </div>
+        </>
     );
 }

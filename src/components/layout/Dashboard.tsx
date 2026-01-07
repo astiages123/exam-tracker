@@ -5,7 +5,8 @@ import { cn } from '@/lib/utils';
 import courseDataJson from '@/features/course/data/courses.json';
 import { CourseCategory } from '@/types';
 import Header from '@/components/layout/Header';
-import ProgressCard from '@/components/layout/ProgressCard';
+import RankCard from '@/components/layout/RankCard';
+import StatsCard from '@/components/layout/StatsCard';
 import CategoryList from '@/features/course/components/CategoryList';
 import { useAppController } from '@/hooks/useAppController';
 
@@ -202,32 +203,47 @@ export default function Dashboard({ logout }: DashboardProps) {
 
             {/* Main Content Grid */}
             <main className={cn(
-                "max-w-6xl mx-auto p-4 sm:p-6 md:p-8 transition-all duration-700",
+                "max-w-7xl mx-auto p-4 pt-6 sm:p-6 sm:pt-28 md:p-8 md:pt-28 transition-all duration-700",
+                "grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-min",
                 modals.isZenMode ? "opacity-0 pointer-events-none scale-[0.98] blur-xl" : "opacity-100 scale-100 blur-0"
             )}>
-                {/* Progress Stats */}
-                <ProgressCard
-                    totalPercentage={totalPercentage}
-                    rankInfo={rankInfo}
-                    nextRank={nextRank}
-                    completedHours={completedHours}
-                    completedCount={completedCount}
-                    totalVideos={totalVideos}
-                    totalHours={totalHours}
-                    sessions={sessions}
-                    onCompletedClick={() => modals.openReportWithHistory('videos')}
-                    onDurationClick={() => modals.openReportWithHistory('duration')}
-                />
+                {/* 1. Rank Card (Left, Wider) */}
+                <div className="md:col-span-2">
+                    <RankCard
+                        rankInfo={rankInfo}
+                        nextRank={nextRank}
+                        totalPercentage={totalPercentage}
+                        sessions={sessions}
+                        completedHours={completedHours}
+                        totalHours={totalHours}
+                    />
+                </div>
 
-                <CategoryList
-                    courseData={courseData}
-                    progressData={progressData}
-                    expandedCategories={expandedCategories}
-                    expandedCourses={expandedCourses}
-                    handlers={handlers}
-                    modals={modals}
-                />
-            </main >
+                {/* 2. Stats Card (Right, Narrower) */}
+                <div className="md:col-span-1">
+                    <StatsCard
+                        completedHours={completedHours}
+                        completedCount={completedCount}
+                        totalVideos={totalVideos}
+                        totalHours={totalHours}
+                        totalPercentage={totalPercentage}
+                        onCompletedClick={() => modals.openReportWithHistory('videos')}
+                        onDurationClick={() => modals.openReportWithHistory('duration')}
+                    />
+                </div>
+
+                {/* 3. Category Items (Flow into the grid) */}
+                <div className="col-span-1 md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <CategoryList
+                        courseData={courseData}
+                        progressData={progressData}
+                        expandedCategories={expandedCategories}
+                        expandedCourses={expandedCourses}
+                        handlers={handlers}
+                        modals={modals}
+                    />
+                </div>
+            </main>
 
             {/* Zen Mode Background Deepening */}
             {modals.isZenMode && (

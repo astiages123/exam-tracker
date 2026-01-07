@@ -34,8 +34,7 @@ const ReportStats = React.memo(({
             icon: Timer,
             color: 'text-indigo-400',
             bg: 'bg-indigo-500/10',
-            border: 'border-indigo-500/20',
-            gradient: 'from-indigo-500/20 via-indigo-500/5 to-transparent'
+            border: 'border-indigo-500/20'
         },
         {
             label: 'Toplam Mola',
@@ -43,8 +42,7 @@ const ReportStats = React.memo(({
             icon: Coffee,
             color: 'text-emerald-400',
             bg: 'bg-emerald-500/10',
-            border: 'border-emerald-500/20',
-            gradient: 'from-emerald-500/20 via-emerald-500/5 to-transparent'
+            border: 'border-emerald-500/20'
         },
         {
             label: 'Toplam Duraklatma',
@@ -52,8 +50,7 @@ const ReportStats = React.memo(({
             icon: PauseCircle,
             color: 'text-amber-400',
             bg: 'bg-amber-500/10',
-            border: 'border-amber-500/20',
-            gradient: 'from-amber-500/20 via-amber-500/5 to-transparent'
+            border: 'border-amber-500/20'
         }
     ];
 
@@ -74,10 +71,7 @@ const ReportStats = React.memo(({
                             stat.border
                         )}
                     >
-                        <div className={cn(
-                            "absolute inset-0 bg-linear-to-br opacity-50 transition-opacity group-hover:opacity-70",
-                            stat.gradient
-                        )} />
+
 
                         <CardContent className="relative p-3 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                             <div className="flex flex-col gap-0.5 sm:gap-1">
