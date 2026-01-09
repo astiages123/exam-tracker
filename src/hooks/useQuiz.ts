@@ -258,7 +258,12 @@ export function useQuiz(courseId: string | null, lessonType: string | null) {
             const finalQuestions = await fetchOrGenerateQuestions(QUESTIONS_PER_SESSION, excludeIds, true);
 
             if (finalQuestions.length === 0) {
-                throw new Error('Soru bulunamadı veya üretilemedi.');
+                // Check if we even got chunks
+                if (!excludeIds || excludeIds.length === 0) {
+                    throw new Error(`"${lessonType || 'Genel'}" dersi için içerik bulunamadı. Lütfen yönetim panelinden içeriklerin yüklendiğini kontrol edin.`);
+                } else {
+                    throw new Error('Yeni soru üretilemedi. Tüm mevcut içerikler tüketilmiş olabilir.');
+                }
             }
 
             // Create analytics session

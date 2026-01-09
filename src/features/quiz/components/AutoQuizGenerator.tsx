@@ -164,7 +164,7 @@ export const AutoQuizGenerator: React.FC = () => {
                 <div className="grid grid-cols-4 gap-4 mb-8">
                     <div className="bg-black/40 border border-emerald-900/30 p-4 rounded-lg text-center relative overflow-hidden group">
                         <div className="text-[10px] uppercase tracking-wider text-emerald-600 mb-1">Toplam Üretim</div>
-                        <div className="text-3xl font-light text-white">{stats.totalGenerated}</div>
+                        <div className="text-3xl font-light text-emerald">{stats.totalGenerated}</div>
                         <div className="absolute bottom-0 left-0 h-1 bg-blue-500 w-full opacity-20"></div>
                     </div>
 

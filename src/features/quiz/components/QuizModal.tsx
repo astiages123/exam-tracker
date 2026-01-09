@@ -42,7 +42,7 @@ interface QuizModalProps {
     onClose?: () => void;
     questions?: Question[];
     onQuizComplete?: (result: QuizResult) => void;
-    onAnswerSubmit?: (questionId: string, answer: string, isCorrect: boolean) => Promise<SrsResult | null>;
+    onAnswerSubmit?: (questionId: string | undefined, answer: string, isCorrect: boolean) => Promise<SrsResult | null>;
     hasNextSession?: boolean;
     onNextSession?: () => void;
     title?: string;
@@ -160,7 +160,7 @@ export function QuizModal({
         return (
             <AnimatePresence>
                 <motion.div
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
+                    className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60"
                     variants={overlayVariants}
                     initial="hidden"
                     animate="visible"
@@ -185,7 +185,7 @@ export function QuizModal({
                             </div>
                             <button
                                 onClick={handleClose}
-                                className="mt-4 px-6 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-white transition-colors"
+                                className="mt-4 px-6 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-emerald transition-colors"
                             >
                                 Kapat
                             </button>
@@ -203,7 +203,7 @@ export function QuizModal({
         return (
             <AnimatePresence>
                 <motion.div
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
+                    className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60"
                     variants={overlayVariants}
                     initial="hidden"
                     animate="visible"
@@ -225,7 +225,7 @@ export function QuizModal({
                                 <Trophy className="mx-auto text-yellow-500 mb-4" size={64} />
                             </motion.div>
 
-                            <h3 className="text-2xl font-bold text-white mb-2">
+                            <h3 className="text-2xl font-bold text-emerald mb-2">
                                 Quiz Tamamlandı!
                             </h3>
 
@@ -251,14 +251,14 @@ export function QuizModal({
                                             handleReset();
                                             onNextSession?.();
                                         }}
-                                        className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-white font-medium transition-colors"
+                                        className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-emerald font-medium transition-colors"
                                     >
                                         <ChevronRight size={18} />
                                         Sonraki Oturuma Geç
                                     </button>
                                     <button
                                         onClick={handleClose}
-                                        className="px-5 py-2.5 bg-gray-700 hover:bg-gray-600 rounded-xl text-white font-medium transition-colors"
+                                        className="px-5 py-2.5 bg-gray-700 hover:bg-gray-600 rounded-xl text-emerald font-medium transition-colors"
                                     >
                                         Kapat
                                     </button>
@@ -270,7 +270,7 @@ export function QuizModal({
                                     </p>
                                     <button
                                         onClick={handleClose}
-                                        className="w-full px-5 py-2.5 bg-gray-700 hover:bg-gray-600 rounded-xl text-white font-medium transition-colors"
+                                        className="w-full px-5 py-2.5 bg-gray-700 hover:bg-gray-600 rounded-xl text-emerald font-medium transition-colors"
                                     >
                                         Kapat
                                     </button>
@@ -286,7 +286,7 @@ export function QuizModal({
     return (
         <AnimatePresence>
             <motion.div
-                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
+                className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60"
                 variants={overlayVariants}
                 initial="hidden"
                 animate="visible"
@@ -304,7 +304,7 @@ export function QuizModal({
                     {/* Header */}
                     <div className="flex items-center justify-between p-4 border-b border-gray-700 shrink-0">
                         <div className="flex items-center gap-4">
-                            <h2 className="text-lg font-semibold text-white">{title}</h2>
+                            <h2 className="text-lg font-semibold text-emerald">{title}</h2>
                             <span className="px-2 py-0.5 text-xs font-medium bg-gray-800 text-gray-400 rounded-full">
                                 {currentIndex + 1} / {questions.length}
                             </span>
@@ -317,14 +317,14 @@ export function QuizModal({
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={toggleFullScreen}
-                                className="p-2 hover:bg-gray-700 rounded-lg transition-colors text-gray-400 hover:text-white"
+                                className="p-2 hover:bg-gray-700 rounded-lg transition-colors text-gray-400 hover:text-emerald"
                                 title={isFullScreen ? "Küçült" : "Tam Ekran"}
                             >
                                 {isFullScreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
                             </button>
                             <button
                                 onClick={handleClose}
-                                className="p-2 hover:bg-gray-700 rounded-lg transition-colors text-gray-400 hover:text-white"
+                                className="p-2 hover:bg-gray-700 rounded-lg transition-colors text-gray-400 hover:text-emerald"
                                 title="Kapat"
                             >
                                 <X size={20} />
@@ -352,7 +352,7 @@ export function QuizModal({
                         >
                             <LatexRenderer
                                 content={currentQuestion?.question}
-                                className="text-lg text-white leading-relaxed"
+                                className="text-lg text-emerald leading-relaxed"
                             />
                         </motion.div>
 
@@ -360,7 +360,7 @@ export function QuizModal({
                         {currentQuestion?.related_image && (
                             <div className="mb-6 flex justify-center">
                                 <div className="relative rounded-xl overflow-hidden border border-gray-700 max-w-full md:max-w-xl group">
-                                    <div className="absolute top-2 right-2 px-2 py-1 bg-black/60 text-xs text-white rounded-md z-10">
+                                    <div className="absolute top-2 right-2 px-2 py-1 bg-black/60 text-xs text-emerald rounded-md z-10">
                                         İlgili Görsel
                                     </div>
                                     <img
@@ -429,7 +429,7 @@ export function QuizModal({
                         >
                             <button
                                 onClick={handleNext}
-                                className="w-full flex items-center justify-center gap-2 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-white font-medium transition-colors"
+                                className="w-full flex items-center justify-center gap-2 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-emerald font-medium transition-colors"
                             >
                                 {currentIndex < questions.length - 1 ? (
                                     <>

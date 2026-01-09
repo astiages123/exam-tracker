@@ -16,6 +16,7 @@ const FullHistoryModal = lazy(() => import('@/features/reports/components/FullHi
 interface CourseStatsModalProps {
     courseId: string;
     courseName: string;
+    lessonType: string;
     sessions: StudySession[];
     videoHistory: VideoHistoryItem[];
     progressData: UserProgressData;
@@ -26,6 +27,7 @@ interface CourseStatsModalProps {
 export default function CourseStatsModal({
     courseId,
     courseName,
+    lessonType,
     sessions,
     videoHistory,
     progressData,
@@ -73,8 +75,8 @@ export default function CourseStatsModal({
             try {
                 // Fetch stats in parallel
                 const [sessionsData, srsData] = await Promise.all([
-                    getSessionStats(courseName, 50),
-                    getLessonStatistics(courseName)
+                    getSessionStats(lessonType, 50),
+                    getLessonStatistics(lessonType)
                 ]);
 
                 setQuizSessions(sessionsData);
@@ -86,7 +88,7 @@ export default function CourseStatsModal({
             }
         }
         fetchQuizStats();
-    }, [courseName]);
+    }, [lessonType]);
 
     // Prepare quiz chart data (last 5 sessions)
     const quizChartData = useMemo(() => {
@@ -110,7 +112,7 @@ export default function CourseStatsModal({
         const totalSafe = quizSessions.reduce((acc, s) => acc + s.correct_count + s.incorrect_count, 0);
         const totalCorrect = quizSessions.reduce((acc, s) => acc + s.correct_count, 0);
         const globalAvg = totalSafe > 0 ? Math.round((totalCorrect / totalSafe) * 100) : 0;
-        return { avgScore: globalAvg, totalQuizzes, totalCorrect };
+        return { avgScore: globalAvg, totalQuizzes, totalCorrect, totalIncorrect: totalSafe - totalCorrect };
     }, [quizSessions]);
 
     return (
@@ -121,12 +123,12 @@ export default function CourseStatsModal({
                     <div className="p-4 sm:p-5 border-b border-white/5 bg-white/2 flex justify-between items-center shrink-0">
                         <DialogHeader>
                             <DialogTitle className="text-xl font-bold flex items-center gap-3">
-                                <div className="bg-primary/20 p-2 rounded-lg text-primary shadow-[0_0_15px_-3px_var(--color-primary)]">
+                                <div className="bg-emerald/20 p-2 rounded-lg text-emerald shadow-[0_0_15px_-3px_var(--color-primary)]">
                                     <BarChart2 size={22} />
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-white tracking-tight">{courseName.split('(')[0]} Analizi</span>
-                                    <span className="text-[10px] font-medium text-white/40 uppercase tracking-widest mt-0.5">Performans İstatistikleri</span>
+                                    <span className="text-emerald tracking-tight">{courseName.split('(')[0]} Analizi</span>
+                                    <span className="text-[10px] font-medium text-emerald/70 uppercase tracking-widest mt-0.5">Performans İstatistikleri</span>
                                 </div>
                             </DialogTitle>
                             <DialogDescription className="sr-only">
@@ -149,8 +151,8 @@ export default function CourseStatsModal({
                                         </div>
                                         <div>
                                             <p className="text-[10px] uppercase tracking-wider text-purple-300/50 font-bold mb-0.5">Süre</p>
-                                            <h4 className="text-xl font-bold text-white tracking-tight">
-                                                {stats.totalHours}<span className="text-sm font-medium text-white/40 ml-0.5 whitespace-nowrap">s {stats.remainingMins}dk</span>
+                                            <h4 className="text-xl font-bold text-emerald tracking-tight">
+                                                {stats.totalHours}<span className="text-sm font-medium text-emerald/70 ml-0.5 whitespace-nowrap">s {stats.remainingMins}dk</span>
                                             </h4>
                                         </div>
                                     </CardContent>
@@ -163,8 +165,8 @@ export default function CourseStatsModal({
                                         </div>
                                         <div>
                                             <p className="text-[10px] uppercase tracking-wider text-orange-300/50 font-bold mb-0.5">Video</p>
-                                            <h4 className="text-xl font-bold text-white tracking-tight">
-                                                {courseVideoHistory.length} <span className="text-sm font-medium text-white/40">izlendi</span>
+                                            <h4 className="text-xl font-bold text-emerald tracking-tight">
+                                                {courseVideoHistory.length}
                                             </h4>
                                         </div>
                                     </CardContent>
@@ -177,8 +179,8 @@ export default function CourseStatsModal({
                                         </div>
                                         <div>
                                             <p className="text-[10px] uppercase tracking-wider text-emerald-300/50 font-bold mb-0.5">Başarı</p>
-                                            <h4 className="text-xl font-bold text-white tracking-tight">
-                                                %{quizStats.avgScore} <span className="text-sm font-medium text-white/40">quiz</span>
+                                            <h4 className="text-xl font-bold text-emerald tracking-tight">
+                                                %{quizStats.avgScore}
                                             </h4>
                                         </div>
                                     </CardContent>
@@ -187,13 +189,13 @@ export default function CourseStatsModal({
 
                             <Tabs defaultValue="study" className="w-full">
                                 <TabsList className="w-full justify-start bg-black/40 p-1 rounded-xl mb-4 border border-white/5">
-                                    <TabsTrigger value="study" className="flex-1 gap-2 text-xs font-bold data-[state=active]:bg-white/10 data-[state=active]:text-white">
+                                    <TabsTrigger value="study" className="flex-1 gap-2 text-xs font-bold data-[state=active]:bg-white/10 data-[state=active]:text-emerald">
                                         Çalışma Süresi
                                     </TabsTrigger>
-                                    <TabsTrigger value="video" className="flex-1 gap-2 text-xs font-bold data-[state=active]:bg-white/10 data-[state=active]:text-white">
+                                    <TabsTrigger value="video" className="flex-1 gap-2 text-xs font-bold data-[state=active]:bg-white/10 data-[state=active]:text-emerald">
                                         Video İlerlemesi
                                     </TabsTrigger>
-                                    <TabsTrigger value="quiz" className="flex-1 gap-2 text-xs font-bold data-[state=active]:bg-white/10 data-[state=active]:text-white">
+                                    <TabsTrigger value="quiz" className="flex-1 gap-2 text-xs font-bold data-[state=active]:bg-white/10 data-[state=active]:text-emerald">
                                         Quiz İstatistikleri
                                     </TabsTrigger>
                                 </TabsList>
@@ -228,18 +230,30 @@ export default function CourseStatsModal({
 
                                 <TabsContent value="quiz" className="mt-0 outline-none">
                                     <div className="grid grid-cols-1 gap-4">
+                                        {/* Quiz Performance Stats */}
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div className="bg-white/5 p-3 rounded-xl border border-white/5 text-center">
+                                                <div className="text-xl font-light text-emerald">{quizStats.totalCorrect}</div>
+                                                <div className="text-[10px] uppercase tracking-wider text-emerald-400 font-bold">Doğru</div>
+                                            </div>
+                                            <div className="bg-white/5 p-3 rounded-xl border border-white/5 text-center">
+                                                <div className="text-xl font-light text-emerald">{quizStats.totalIncorrect || 0}</div>
+                                                <div className="text-[10px] uppercase tracking-wider text-red-400 font-bold">Yanlış</div>
+                                            </div>
+                                        </div>
+
                                         {/* SRS Stats */}
                                         <div className="grid grid-cols-3 gap-3">
                                             <div className="bg-white/5 p-3 rounded-xl border border-white/5 text-center">
-                                                <div className="text-xl font-light text-white">{srsStats?.learnedCount || 0}</div>
+                                                <div className="text-xl font-light text-emerald">{srsStats?.learnedCount || 0}</div>
                                                 <div className="text-[10px] uppercase tracking-wider text-blue-400 font-bold">Öğrenildi</div>
                                             </div>
                                             <div className="bg-white/5 p-3 rounded-xl border border-white/5 text-center">
-                                                <div className="text-xl font-light text-white">{srsStats?.reviewCount || 0}</div>
+                                                <div className="text-xl font-light text-emerald">{srsStats?.reviewCount || 0}</div>
                                                 <div className="text-[10px] uppercase tracking-wider text-amber-400 font-bold">Tekrar</div>
                                             </div>
                                             <div className="bg-white/5 p-3 rounded-xl border border-white/5 text-center">
-                                                <div className="text-xl font-light text-white">{srsStats?.criticalCount || 0}</div>
+                                                <div className="text-xl font-light text-emerald">{srsStats?.criticalCount || 0}</div>
                                                 <div className="text-[10px] uppercase tracking-wider text-rose-400 font-bold">Kritik</div>
                                             </div>
                                         </div>
@@ -253,7 +267,7 @@ export default function CourseStatsModal({
                                                 ) : quizChartData.length > 0 ? (
                                                     <div className="h-[220px]">
                                                         <div className="flex justify-between items-center mb-4">
-                                                            <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                                                            <h3 className="text-xs font-bold text-emerald uppercase tracking-wider flex items-center gap-2">
                                                                 <div className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
                                                                 Son Quiz Sonuçları
                                                             </h3>

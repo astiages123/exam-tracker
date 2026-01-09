@@ -199,8 +199,8 @@ export default function ReportModal({
                         {/* Header */}
                         <div className="p-4 sm:p-8 border-b border-border flex justify-between items-center bg-card/50">
                             <div className="flex items-center gap-4">
-                                <div className="bg-primary/10 p-2.5 sm:p-3.5 rounded-xl border border-primary/10 mt-1">
-                                    <ChartNoAxesCombined className="text-primary" size={isMobile ? 28 : 40} />
+                                <div className="bg-emerald/10 p-2.5 sm:p-3.5 rounded-xl border border-primary/10 mt-1">
+                                    <ChartNoAxesCombined className="text-emerald" size={isMobile ? 28 : 40} />
                                 </div>
                                 <div className="flex flex-col">
                                     <DialogHeader>
@@ -273,9 +273,9 @@ export default function ReportModal({
                                             <div className="flex flex-col gap-4 sm:gap-6">
                                                 {/* Work Report Section */}
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                    <div className="relative p-4 bg-secondary/5 rounded-2xl border border-border/50 transition-all duration-300">
+                                                    <div className="relative p-4 bg-card rounded-2xl border border-border/50 transition-all duration-300">
                                                         <div className="flex items-center gap-3 mb-3">
-                                                            <div className="p-2 rounded-lg bg-primary/10 text-primary border border-primary/10">
+                                                            <div className="p-2 rounded-lg bg-emerald/10 text-emerald border border-primary/10">
                                                                 <Clock size={18} />
                                                             </div>
                                                             <div className="flex flex-col">
@@ -287,7 +287,7 @@ export default function ReportModal({
                                                         <div className="flex items-end justify-between">
                                                             <div className="flex flex-col">
                                                                 <div className="flex items-baseline gap-1.5">
-                                                                    <span className="text-xl font-black text-primary tracking-tight">
+                                                                    <span className="text-xl font-black text-emerald tracking-tight">
                                                                         {(() => {
                                                                             const hours = Math.floor(workReport.study.current);
                                                                             const mins = Math.round((workReport.study.current - hours) * 60);
@@ -311,9 +311,9 @@ export default function ReportModal({
                                                         </div>
                                                     </div>
 
-                                                    <div className="relative p-4 bg-secondary/5 rounded-2xl border border-border/50 transition-all duration-300">
+                                                    <div className="relative p-4 bg-card rounded-2xl border border-border/50 transition-all duration-300">
                                                         <div className="flex items-center gap-3 mb-3">
-                                                            <div className="p-2 rounded-lg bg-primary/10 text-primary border border-primary/10">
+                                                            <div className="p-2 rounded-lg bg-emerald/10 text-emerald border border-primary/10">
                                                                 <CheckCircle2 size={18} />
                                                             </div>
                                                             <div className="flex flex-col">
@@ -325,7 +325,7 @@ export default function ReportModal({
                                                         <div className="flex items-end justify-between">
                                                             <div className="flex flex-col">
                                                                 <div className="flex items-baseline gap-1.5">
-                                                                    <span className="text-xl font-black text-primary tracking-tight">
+                                                                    <span className="text-xl font-black text-emerald tracking-tight">
                                                                         {Math.round(workReport.video.current)}
                                                                     </span>
                                                                     <span className="text-xs font-medium text-foreground">video/gün</span>

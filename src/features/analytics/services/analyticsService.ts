@@ -280,7 +280,7 @@ export async function getLessonStatistics(lessonType: string): Promise<LessonSta
                     lessons!inner ( name )
                 )
             `)
-            .eq('lesson_chunks.lessons.name', lessonType);
+            .ilike('lesson_chunks.lessons.name', lessonType);
 
         if (bankError) console.error('Bank stats error:', bankError);
 
@@ -311,7 +311,7 @@ export async function getLessonStatistics(lessonType: string): Promise<LessonSta
                 )
             `)
             .eq('user_id', user.id)
-            .eq('question_bank.lesson_chunks.lessons.name', lessonType);
+            .ilike('question_bank.lesson_chunks.lessons.name', lessonType);
 
         if (srsError) console.error('SRS stats error:', srsError);
 

@@ -61,7 +61,7 @@ const QuizContainer: React.FC<QuizContainerProps> = ({
                     </div>
 
                     <div className="text-center">
-                        <h3 className="text-white font-medium mb-1">
+                        <h3 className="text-emerald font-medium mb-1">
                             {isGenerating ? 'Sorular Hazırlanıyor' : (isLoadingStats ? 'İstatistikler Yükleniyor' : 'Quiz Başlatılıyor')}
                         </h3>
                         <p className="text-sm text-gray-400">
@@ -103,11 +103,11 @@ const QuizContainer: React.FC<QuizContainerProps> = ({
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-2">Quiz Başlatılamadı</h3>
+                    <h3 className="text-xl font-bold text-emerald mb-2">Quiz Başlatılamadı</h3>
                     <p className="text-gray-400 mb-6">{error}</p>
                     <button
                         onClick={onClose}
-                        className="w-full py-3 px-4 bg-gray-800 hover:bg-gray-700 text-white rounded-xl transition-colors font-medium border border-gray-700"
+                        className="w-full py-3 px-4 bg-gray-800 hover:bg-gray-700 text-emerald rounded-xl transition-colors font-medium border border-gray-700"
                     >
                         Kapat
                     </button>
@@ -140,12 +140,12 @@ const QuizContainer: React.FC<QuizContainerProps> = ({
                     {/* Header */}
                     <div className="p-6 border-b border-white/5 flex justify-between items-start">
                         <div>
-                            <h2 className="text-xl font-bold text-white">{lessonType}</h2>
-                            <p className="text-xs text-white/50 mt-1">Quiz Seçenekleri</p>
+                            <h2 className="text-xl font-bold text-emerald">{lessonType}</h2>
+                            <p className="text-xs text-emerald/75 mt-1">Quiz Seçenekleri</p>
                         </div>
                         <button
                             onClick={onClose}
-                            className="p-1 rounded-lg hover:bg-white/5 text-white/40 hover:text-white transition-colors"
+                            className="p-1 rounded-lg hover:bg-white/5 text-emerald/65 hover:text-emerald transition-colors"
                         >
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
                         </button>
@@ -155,12 +155,12 @@ const QuizContainer: React.FC<QuizContainerProps> = ({
                         {/* Stockpile Stats - Real-time from Database */}
                         <div className="space-y-3 p-4 bg-black/20 rounded-xl border border-white/5">
                             <div className="flex justify-between text-sm">
-                                <span className="text-white/90 flex items-center gap-2">
+                                <span className="text-emerald flex items-center gap-2">
                                     <Database size={14} style={{ color: statusColor }} />
                                     Soru Bankası
                                 </span>
                                 <span className="font-mono font-bold" style={{ color: statusColor }}>
-                                    {current} <span className="text-white/70 font-normal">/</span> {target}
+                                    {current} <span className="text-emerald/85 font-normal">/</span> {target}
                                 </span>
                             </div>
                             <div className="h-2 bg-white/5 rounded-full overflow-hidden">
@@ -173,7 +173,7 @@ const QuizContainer: React.FC<QuizContainerProps> = ({
                                 />
                             </div>
                             <div className="flex justify-between text-[10px]">
-                                <span className="text-white/70 font-medium flex items-center gap-1">
+                                <span className="text-emerald/85 font-medium flex items-center gap-1">
                                     {progress >= 100 ? (
                                         <><CheckCircle2 size={10} className="text-emerald-500" /> {statusLabel}</>
                                     ) : progress < 25 ? (
@@ -193,7 +193,7 @@ const QuizContainer: React.FC<QuizContainerProps> = ({
                             <button
                                 onClick={handleStartExisting}
                                 disabled={current === 0}
-                                className="w-full p-4 bg-indigo-600 hover:bg-indigo-500 disabled:bg-white/5 disabled:text-white/20 disabled:cursor-not-allowed text-white rounded-xl transition-all font-medium flex items-center justify-center gap-3 group"
+                                className="w-full p-4 bg-indigo-600 hover:bg-indigo-500 disabled:bg-white/5 disabled:text-emerald/20 disabled:cursor-not-allowed text-emerald rounded-xl transition-all font-medium flex items-center justify-center gap-3 group"
                             >
                                 <Play size={20} className={current > 0 ? "fill-white" : ""} />
                                 <div className="text-left">
@@ -204,7 +204,7 @@ const QuizContainer: React.FC<QuizContainerProps> = ({
 
                             <button
                                 onClick={handleStartGeneration}
-                                className="w-full p-4 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all font-medium flex items-center justify-center gap-3 border border-white/10 hover:border-white/20 group"
+                                className="w-full p-4 bg-white/5 hover:bg-white/10 text-emerald rounded-xl transition-all font-medium flex items-center justify-center gap-3 border border-white/10 hover:border-white/20 group"
                             >
                                 <RefreshCcw size={20} className="text-purple-400 group-hover:rotate-12 transition-transform" />
                                 <div className="text-left">

@@ -233,7 +233,7 @@ export async function markQuestionAnswered(
             .select('ease_factor, interval, repetition_count, next_review_at')
             .eq('user_id', user.id)
             .eq('question_id', questionId)
-            .single();
+            .maybeSingle();
 
         // 2. Calculate New SRS Values
         const srsResult = calculateSRS({
@@ -270,7 +270,7 @@ export async function markQuestionAnswered(
             .single();
 
         if (qData?.chunk_id) {
-            await supabase.rpc('upsert_user_statistic', {
+            await supabase.rpc('update_mastery_level', {
                 p_chunk_id: qData.chunk_id,
                 p_is_correct: isCorrect
             });

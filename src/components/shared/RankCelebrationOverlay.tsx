@@ -90,14 +90,14 @@ const RankCelebrationOverlay = ({ rank, onComplete }: RankCelebrationOverlayProp
                 className="relative bg-card border border-primary/30 p-8 rounded-3xl shadow-2xl shadow-primary/20 max-w-md w-full text-center overflow-hidden"
             >
                 {/* Animated Background Glow */}
-                <div className="absolute -top-32 -left-32 w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-pulse" />
-                <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-pulse delay-700" />
+                <div className="absolute -top-32 -left-32 w-64 h-64 bg-emerald/20 rounded-full blur-3xl animate-pulse" />
+                <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-emerald/20 rounded-full blur-3xl animate-pulse delay-700" />
 
                 <div className="relative">
                     <div
-                        className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-primary/20 shadow-[0_0_30px_rgba(var(--primary),0.3)] animate-in zoom-in duration-500"
+                        className="w-24 h-24 bg-emerald/10 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-primary/20 shadow-[0_0_30px_rgba(var(--primary),0.3)] animate-in zoom-in duration-500"
                     >
-                        <Icon size={48} className="text-primary drop-shadow-md" />
+                        <Icon size={48} className="text-emerald drop-shadow-md" />
                     </div>
 
                     <div className="space-y-2 mb-6">

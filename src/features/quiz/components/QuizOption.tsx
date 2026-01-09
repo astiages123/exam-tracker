@@ -115,11 +115,11 @@ export function QuizOption({
                 shrink-0 w-8 h-8 rounded-lg flex items-center justify-center
                 text-sm font-bold
                 ${showResult && isCorrect
-                    ? 'bg-green-500 text-white'
+                    ? 'bg-green-500 text-emerald'
                     : showResult && isSelected && !isCorrect
-                        ? 'bg-red-500 text-white'
+                        ? 'bg-red-500 text-emerald'
                         : isSelected
-                            ? 'bg-indigo-500 text-white'
+                            ? 'bg-indigo-500 text-emerald'
                             : 'bg-gray-700 text-gray-300'
                 }
             `}>

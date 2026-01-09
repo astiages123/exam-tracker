@@ -28,8 +28,6 @@ function loadEnv() {
                     env[key.trim()] = value.replace(/^["']|["']$/g, '');
                 }
             });
-            // If we found variables in one file, we can stop or continue to merge.
-            // Usually .env.local should override .env.
         } catch (e) {
             console.warn(`⚠️  Error reading ${file}: ${e.message}`);
         }
@@ -44,144 +42,160 @@ const supabaseUrl = env.VITE_SUPABASE_URL;
 const supabaseKey = env.SUPABASE_SERVICE_ROLE_KEY || env.VITE_SUPABASE_SERVICE_ROLE_KEY || env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-    console.error('Error: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY must be set in .env file.');
+    console.error('Error: VITE_SUPABASE_URL and a valid API key must be set in .env file.');
     process.exit(1);
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const OUTPUT_FILE = path.resolve(process.cwd(), 'output.json');
+const CONTENT_FILE = path.resolve(process.cwd(), '.generated/content-data.json');
 
 async function seed() {
-    console.log('🌱 Seeding database...');
+    console.log('🌱 Seeding database from pipeline output...');
 
     try {
-        const data = fs.readFileSync(OUTPUT_FILE, 'utf8');
-        const chunks = JSON.parse(data);
-
-        if (!Array.isArray(chunks) || chunks.length === 0) {
-            console.error('Error: output.json is empty or invalid.');
+        if (!fs.existsSync(CONTENT_FILE)) {
+            console.error(`Error: ${CONTENT_FILE} not found. Did you run 'npm run content:build' first?`);
             return;
         }
 
-        console.log(`Found ${chunks.length} chunks to process.`);
+        const data = fs.readFileSync(CONTENT_FILE, 'utf8');
+        const contentData = JSON.parse(data);
 
-        // 1. Extract unique lessons
-        const uniqueLessons = [...new Set(chunks.map(c => c.lesson_type))].filter(Boolean);
-        console.log('Unique Lessons:', uniqueLessons);
+        if (!contentData.lessons || !Array.isArray(contentData.lessons)) {
+            console.error('Error: Invalid content-data.json format.');
+            return;
+        }
 
-        const lessonMap = new Map();
+        console.log(`Found ${contentData.lessons.length} lessons to process.`);
 
-        // 2. Insert Lessons
-        for (const lessonName of uniqueLessons) {
-            const slug = lessonName.toLowerCase()
-                .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's')
-                .replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c')
-                .replace(/[^a-z0-9-]/g, '-');
+        let totalSuccess = 0;
+        let totalFail = 0;
 
-            console.log(`Processing lesson: ${lessonName} (${slug})`);
+        for (const lesson of contentData.lessons) {
+            const lessonName = lesson.title;
+            const lessonSlug = lesson.id;
 
-            // Check if exists
-            const { data: existing } = await supabase
+            console.log(`\n📚 Processing Lesson: ${lessonName} (${lessonSlug})`);
+
+            // 1. Check/Insert Lesson
+            const { data: existingLesson } = await supabase
                 .from('lessons')
                 .select('id')
-                .eq('slug', slug)
-                .single();
+                .eq('slug', lessonSlug)
+                .maybeSingle();
 
-            if (existing) {
-                lessonMap.set(lessonName, existing.id);
+            let lessonId;
+            if (existingLesson) {
+                lessonId = existingLesson.id;
+                // Update name if changed
+                await supabase.from('lessons').update({ name: lessonName }).eq('id', lessonId);
+                console.log(`   ✅ Lesson exists: ${lessonName}`);
             } else {
                 const { data: inserted, error } = await supabase
                     .from('lessons')
-                    .insert({ name: lessonName, slug })
+                    .insert({ name: lessonName, slug: lessonSlug })
                     .select()
                     .single();
 
                 if (error) {
-                    console.error(`Error inserting lesson ${lessonName}:`, error);
+                    console.error(`   ❌ Error inserting lesson:`, error);
+                    totalFail++;
+                    continue;
+                }
+                lessonId = inserted.id;
+                console.log(`   ✨ Created lesson: ${lessonName}`);
+            }
+
+            // 2. Group Blocks by H2 headings
+            const groupedChunks = [];
+            let currentChunk = null;
+
+            for (let i = 0; i < lesson.blocks.length; i++) {
+                const block = lesson.blocks[i];
+                const isH2 = block.type === 'heading' && block.level === 2;
+
+                if (isH2) {
+                    // Start a new chunk
+                    if (currentChunk) groupedChunks.push(currentChunk);
+
+                    currentChunk = {
+                        source_id: block.id,
+                        title: block.metadata?.title || block.content.replace(/<[^>]*>/g, '').trim(),
+                        content_md: block.content,
+                        metadata: {
+                            ...block.metadata,
+                            type: 'section'
+                        }
+                    };
+                } else if (!currentChunk) {
+                    // Content before any H2 goes to "Introduction"
+                    currentChunk = {
+                        source_id: 'intro_' + lessonSlug,
+                        title: 'Giriş',
+                        content_md: block.content,
+                        metadata: { type: 'introduction' }
+                    };
                 } else {
-                    lessonMap.set(lessonName, inserted.id);
+                    // Append block to current chunk
+                    currentChunk.content_md += '\n\n' + block.content;
+                }
+            }
+            if (currentChunk) groupedChunks.push(currentChunk);
+
+            console.log(`   ⚙️  Processing ${groupedChunks.length} sections (delimited by H2)...`);
+
+            for (let i = 0; i < groupedChunks.length; i++) {
+                const chunk = groupedChunks[i];
+                const order = i + 1;
+
+                // Check if chunk exists by source_id
+                const { data: existingChunks } = await supabase
+                    .from('lesson_chunks')
+                    .select('id')
+                    .eq('lesson_id', lessonId)
+                    .contains('metadata', { source_id: chunk.source_id });
+
+                const existingChunk = existingChunks && existingChunks.length > 0 ? existingChunks[0] : null;
+
+                const dbData = {
+                    lesson_id: lessonId,
+                    title: chunk.title,
+                    content_md: chunk.content_md,
+                    metadata: {
+                        ...chunk.metadata,
+                        source_id: chunk.source_id,
+                        order: order
+                    }
+                };
+
+                let error;
+                if (existingChunk) {
+                    const { error: updateError } = await supabase
+                        .from('lesson_chunks')
+                        .update(dbData)
+                        .eq('id', existingChunk.id);
+                    error = updateError;
+                } else {
+                    const { error: insertError } = await supabase
+                        .from('lesson_chunks')
+                        .insert(dbData);
+                    error = insertError;
+                }
+
+                if (error) {
+                    console.error(`      ❌ Error processing section "${chunk.title}":`, error);
+                    totalFail++;
+                } else {
+                    totalSuccess++;
                 }
             }
         }
 
-        // 3. Insert Chunks
-        let successCount = 0;
-        for (const chunk of chunks) {
-            const lessonId = lessonMap.get(chunk.lesson_type);
-            if (!lessonId) {
-                console.warn(`Skipping chunk ${chunk.id}: Lesson ID not found for ${chunk.lesson_type}`);
-                continue;
-            }
-
-            // Check if chunk exists by source_id
-            const query = supabase
-                .from('lesson_chunks')
-                .select('id')
-                .eq('lesson_id', lessonId)
-                .contains('metadata', { source_id: chunk.id });
-
-            // Robust check: get first match if variants exist
-            const { data: foundChunks, error: findError } = await query.limit(1);
-
-            if (findError) {
-                console.error(`Error checking chunk ${chunk.id}:`, findError);
-                continue;
-            }
-
-            const existingChunk = foundChunks && foundChunks.length > 0 ? foundChunks[0] : null;
-
-            let operationError = null;
-
-            if (existingChunk) {
-                // UPDATE existing chunk
-                console.log(`   🔄 Updating chunk: ${chunk.title}`);
-                const { error } = await supabase
-                    .from('lesson_chunks')
-                    .update({
-                        title: chunk.title.trim(),
-                        content_md: chunk.content_md,
-                        name: chunk.lesson_type,
-                        metadata: {
-                            source_id: chunk.id,
-                            order: chunk.order,
-                            images: chunk.images,
-                            stats: chunk.image_stats
-                        }
-                    })
-                    .eq('id', existingChunk.id);
-
-                operationError = error;
-            } else {
-                // INSERT new chunk
-                console.log(`   ✨ Inserting chunk: ${chunk.title}`);
-                const { error } = await supabase
-                    .from('lesson_chunks')
-                    .insert({
-                        lesson_id: lessonId,
-                        title: chunk.title.trim(),
-                        content_md: chunk.content_md,
-                        name: chunk.lesson_type,
-                        metadata: {
-                            source_id: chunk.id,
-                            order: chunk.order,
-                            images: chunk.images,
-                            stats: chunk.image_stats
-                        }
-                    });
-
-                operationError = error;
-            }
-
-            if (operationError) {
-                console.error(`Error processing chunk ${chunk.id}:`, operationError);
-            } else {
-                successCount++;
-            }
-        }
-
-        console.log(`✅ Seeding complete! Successfully processed ${successCount} chunks.`);
+        console.log(`\n✅ Seeding complete!`);
+        console.log(`   Successfully processed ${totalSuccess} items.`);
+        if (totalFail > 0) console.log(`   Failed ${totalFail} items.`);
 
     } catch (error) {
         console.error('Seeding failed:', error);

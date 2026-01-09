@@ -26,7 +26,7 @@ export function QuizProgressBar({
             {/* Stats Row */}
             <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-gray-400">
-                    Soru <span className="text-white font-semibold">{currentQuestion}</span>
+                    Soru <span className="text-emerald font-semibold">{currentQuestion}</span>
                     <span className="text-gray-500"> / {totalQuestions}</span>
                 </span>
 

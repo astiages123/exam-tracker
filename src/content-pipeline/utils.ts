@@ -42,7 +42,7 @@ export function slugify(text: string): string {
         'Ç': 'c', 'ç': 'c',
     };
 
-    let result = text;
+    let result = text.normalize('NFC');
     for (const [from, to] of Object.entries(trMap)) {
         result = result.replace(new RegExp(from, 'g'), to);
     }
@@ -78,7 +78,7 @@ export function findCourseIdByName(courseName: string): string | null {
                 'Ö': 'o', 'ö': 'o',
                 'Ç': 'c', 'ç': 'c',
             };
-            let res = s;
+            let res = s.normalize('NFC');
             for (const [from, to] of Object.entries(trMap)) {
                 res = res.replace(new RegExp(from, 'g'), to);
             }

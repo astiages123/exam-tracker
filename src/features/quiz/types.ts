@@ -10,7 +10,7 @@ export interface ChartData {
 }
 
 export interface Question {
-    id: string;
+    id?: string;
     question: string;
     options: {
         A: string;

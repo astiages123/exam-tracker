@@ -73,8 +73,8 @@ const SessionChartModal: React.FC<SessionChartModalProps> = ({
             >
                 <div className="p-6 border-b border-border bg-card/90 flex justify-between items-center shrink-0 relative z-20">
                     <div className="flex items-center gap-4">
-                        <div className="bg-primary/10 p-2.5 sm:p-3.5 rounded-xl border border-primary/10 mt-1 shrink-0">
-                            <ChartArea className="text-primary" size={isMobile ? 24 : 32} />
+                        <div className="bg-emerald/10 p-2.5 sm:p-3.5 rounded-xl border border-primary/10 mt-1 shrink-0">
+                            <ChartArea className="text-emerald" size={isMobile ? 24 : 32} />
                         </div>
                         <div>
                             <DialogTitle className="font-bold text-foreground text-lg">Günlük Zaman Çizelgesi</DialogTitle>
@@ -102,7 +102,7 @@ const SessionChartModal: React.FC<SessionChartModalProps> = ({
                     </div>
                     <div className="flex flex-col shrink-0">
                         <span className="text-[9px] text-zinc-400 uppercase font-semibold tracking-wider">Duraklatma</span>
-                        <span className="text-xs sm:text-sm font-mono font-bold text-primary">{dayStats.pause}dk</span>
+                        <span className="text-xs sm:text-sm font-mono font-bold text-emerald">{dayStats.pause}dk</span>
                     </div>
                 </div>
 
@@ -175,7 +175,7 @@ const SessionChartModal: React.FC<SessionChartModalProps> = ({
                                             onClick={(e) => e.stopPropagation()}
                                         >
                                             {durationPercent > 3 && (
-                                                <div className="text-white/90">
+                                                <div className="text-emerald/90">
                                                     {isWork && (() => {
                                                         const matchingKey = Object.keys(COURSE_ICONS).find(key => courseName.startsWith(key));
                                                         const CourseIcon = matchingKey ? COURSE_ICONS[matchingKey as keyof typeof COURSE_ICONS] : BookOpen;
@@ -208,7 +208,7 @@ const SessionChartModal: React.FC<SessionChartModalProps> = ({
                                                                         originalSession: item.originalSession,
                                                                         pauseIndex: item.pauseIndex
                                                                     })}
-                                                                    className="h-7 w-7 text-primary hover:bg-primary/20"
+                                                                    className="h-7 w-7 text-emerald hover:bg-emerald/20"
                                                                     title="Düzenle"
                                                                 >
                                                                     <Edit2 size={14} />
@@ -227,7 +227,7 @@ const SessionChartModal: React.FC<SessionChartModalProps> = ({
                                                                         originalSession: item.originalSession,
                                                                         pauseIndex: item.pauseIndex
                                                                     })}
-                                                                    className="h-7 w-7 text-primary hover:bg-primary/20"
+                                                                    className="h-7 w-7 text-emerald hover:bg-emerald/20"
                                                                     title="Düzenle"
                                                                 >
                                                                     <Edit2 size={14} />
@@ -307,7 +307,7 @@ const SessionChartModal: React.FC<SessionChartModalProps> = ({
                 className="max-w-sm"
                 title={
                     <div className="flex items-center gap-2">
-                        <Edit2 size={20} className="text-primary" />
+                        <Edit2 size={20} className="text-emerald" />
                         Süreyi Düzenle
                     </div>
                 }
@@ -343,7 +343,7 @@ const SessionChartModal: React.FC<SessionChartModalProps> = ({
                         {editingSession && (
                             <Button
                                 onClick={() => handleSaveEdit(editingSession.startTime, editingSession.endTime)}
-                                className="flex-1 px-4 py-2.5 rounded-xl bg-primary text-white font-bold hover:bg-primary/80 transition-colors flex items-center justify-center gap-2"
+                                className="flex-1 px-4 py-2.5 rounded-xl bg-emerald text-primary-foreground font-bold hover:bg-emerald/80 transition-colors flex items-center justify-center gap-2"
                             >
                                 <Save size={18} />
                                 Kaydet

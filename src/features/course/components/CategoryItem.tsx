@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { AnimatePresence, motion as Motion } from 'framer-motion';
 import { ChevronDown, MonitorPlay, BadgeCheck, Timer, FileText, Brain, BarChart2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { buttonVariants } from '@/components/ui/button';
 import { CATEGORY_STYLES, CATEGORY_ICONS, COURSE_ICONS } from '@/constants/styles';
 import { formatHours } from '@/utils/formatter';
 import type { Course, CourseCategory, UserProgressData } from '@/types';
@@ -81,9 +82,10 @@ const CategoryItem = React.memo(({
             className="relative group"
         >
             <div className={cn(
-                "relative glass-card glass-card-hover rounded-3xl overflow-hidden transition-all duration-300",
+                "relative glass-card rounded-3xl overflow-hidden transition-all duration-300 hover:-translate-y-[2px]",
                 styles.bg,
-                isExpanded ? "ring-2 ring-white/10" : "hover:ring-1 hover:ring-white/10",
+                styles.hover,
+                isExpanded ? "ring-2 ring-white/10" : "",
                 categoryPercent === 100 ? "border-primary/30 shadow-[0_0_20px_-5px_var(--color-primary)]" : styles.border
             )}>
                 {/* Category Header */}
@@ -114,17 +116,17 @@ const CategoryItem = React.memo(({
                                 <div className="flex gap-3 mt-2">
                                     <div className="flex items-center gap-1.5 bg-white/3 px-2.5 py-1 rounded-full border border-white/5">
                                         <Timer size={15} className={styles.darkAccent} />
-                                        <span className="text-[12px] font-bold text-white/70">
+                                        <span className="text-[12px] font-bold text-emerald/95">
                                             {formatHours(categoryCompletedHours)}
-                                            <span className="mx-1 text-white/40">/</span>
+                                            <span className="mx-1 text-emerald/70">/</span>
                                             <span className="opacity-70">{formatHours(categoryTotalHours)}</span>
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-1.5 bg-white/3 px-2.5 py-1 rounded-full border border-white/5">
                                         <MonitorPlay size={15} className={styles.darkAccent} />
-                                        <span className="text-[12px] font-bold text-white/70">
+                                        <span className="text-[12px] font-bold text-emerald/95">
                                             {categoryCompletedVideos}
-                                            <span className="mx-1 text-white/40">/</span>
+                                            <span className="mx-1 text-emerald/70">/</span>
                                             <span className="opacity-70">{categoryTotalVideos}</span>
                                         </span>
                                     </div>
@@ -135,13 +137,13 @@ const CategoryItem = React.memo(({
                             "p-1.5 rounded-xl bg-white/3 border border-white/5 transition-transform duration-300",
                             isExpanded ? "rotate-180 bg-white/8" : ""
                         )}>
-                            <ChevronDown size={20} className="text-white/40" />
+                            <ChevronDown size={20} className="text-emerald/70" />
                         </div>
                     </div>
 
                     <div className="space-y-2">
                         <div className="flex items-center justify-between text-[12px] font-bold">
-                            <span className="text-white/60 uppercase tracking-wider">İlerleme</span>
+                            <span className="text-emerald/85 uppercase tracking-wider">İlerleme</span>
                             <span className={cn("text-base", styles.accent)}>%{categoryPercent}</span>
                         </div>
                         <CategoryProgressBar percentage={categoryPercent} colorClass={cn(styles.barColor, "shadow-[0_0_10px_rgba(0,0,0,0.5)]")} />
@@ -172,28 +174,21 @@ const CategoryItem = React.memo(({
                                     const isCourseExpanded = expandedCourses.has(course.id);
 
                                     return (
-                                        <div
+                                        <button
                                             key={course.id}
                                             className={cn(
-                                                "rounded-2xl border transition-all duration-300 group/course shadow-lg shadow-black/20",
+                                                "w-full text-left rounded-2xl border transition-all duration-300 group/course shadow-lg shadow-black/20 block outline-none focus-visible:ring-2 focus-visible:ring-primary",
                                                 isCourseCompleted
                                                     ? "bg-amber-400/5 border-amber-400/40"
-                                                    : "bg-black/40 border-white/20 hover:border-white/30"
+                                                    : "bg-card border-white/20 hover:border-white/30"
                                             )}
+                                            onClick={() => handlers.toggleCourse(course.id)}
+                                            // Removed role and tabindex as they are native to button
+                                            aria-expanded={isCourseExpanded}
+                                            aria-label={`${course.name} detaylarını ${isCourseExpanded ? 'gizle' : 'göster'}`}
                                         >
                                             <div
-                                                className="p-3.5 sm:p-4 cursor-pointer relative"
-                                                onClick={() => handlers.toggleCourse(course.id)}
-                                                role="button"
-                                                tabIndex={0}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter' || e.key === ' ') {
-                                                        e.preventDefault();
-                                                        handlers.toggleCourse(course.id);
-                                                    }
-                                                }}
-                                                aria-expanded={isCourseExpanded}
-                                                aria-label={`${course.name} detaylarını ${isCourseExpanded ? 'gizle' : 'göster'}`}
+                                                className="p-3.5 sm:p-4 relative"
                                             >
                                                 <div className="flex items-center gap-4">
                                                     {/* Compact Icon */}
@@ -212,7 +207,7 @@ const CategoryItem = React.memo(({
                                                         <div className="flex items-center gap-2 mb-1">
                                                             <h4 className={cn(
                                                                 "font-bold text-[15px] sm:text-[16px] truncate capitalize tracking-tight",
-                                                                isCourseCompleted ? "text-amber-400" : "text-white/75"
+                                                                isCourseCompleted ? "text-amber-400" : "text-emerald"
                                                             )}>
                                                                 {course.name.split(' - ')[0].replace(/\s*\(AÖF\)\s*/g, '')}
                                                             </h4>
@@ -227,14 +222,14 @@ const CategoryItem = React.memo(({
                                                         <div className="flex items-center gap-3 overflow-hidden">
                                                             <div className="flex items-center gap-1.5 text-[11px] sm:text-[12px] font-bold shrink-0">
                                                                 <Timer size={13} className={cn(isCourseCompleted ? "text-amber-400" : styles.accent)} />
-                                                                <span className="text-white/75">{formatHours(courseCompletedHours)}</span>
-                                                                <span className="text-white/30">/</span>
+                                                                <span className="text-emerald">{formatHours(courseCompletedHours)}</span>
+                                                                <span className="text-emerald/65">/</span>
                                                                 <span className="text-white/50">{formatHours(course.totalHours)}</span>
                                                             </div>
                                                             <div className="flex items-center gap-1.5 text-[11px] sm:text-[12px] font-bold shrink-0">
                                                                 <MonitorPlay size={13} className={cn(isCourseCompleted ? "text-amber-400" : styles.accent)} />
-                                                                <span className="text-white/75">{courseCompletedCount}</span>
-                                                                <span className="text-white/30">/</span>
+                                                                <span className="text-emerald">{courseCompletedCount}</span>
+                                                                <span className="text-emerald/65">/</span>
                                                                 <span className="text-white/50">{course.totalVideos}</span>
                                                             </div>
                                                         </div>
@@ -247,9 +242,9 @@ const CategoryItem = React.memo(({
                                                                     href={course.playlistUrl}
                                                                     target="_blank"
                                                                     rel="noopener noreferrer"
-                                                                    className="p-2 rounded-lg hover:bg-red-500/10 transition-colors"
+                                                                    className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "h-8 w-8 hover:bg-red-500/10 text-red-500 hover:text-red-600")}
                                                                 >
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path><path d="m10 15 5-3-5-3z"></path></svg>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path><path d="m10 15 5-3-5-3z"></path></svg>
                                                                 </a>
                                                             )}
                                                             <button
@@ -281,7 +276,7 @@ const CategoryItem = React.memo(({
                                                                 isCourseExpanded ? "rotate-180 bg-white/10" : ""
                                                             )}
                                                         >
-                                                            <ChevronDown size={16} className="text-white/60" />
+                                                            <ChevronDown size={16} className="text-emerald/85" />
                                                         </button>
                                                     </div>
                                                 </div>
@@ -310,7 +305,7 @@ const CategoryItem = React.memo(({
                                                     </Motion.div>
                                                 )}
                                             </AnimatePresence>
-                                        </div>
+                                        </button>
                                     );
                                 })}
                             </div>

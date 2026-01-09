@@ -33,8 +33,8 @@ export default function CourseSelector({
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="relative flex items-center justify-start gap-3 mb-6">
-                    <div className="bg-primary/10 p-2 rounded-xl border border-primary/10 shrink-0">
-                        <Timer className="text-primary" size={22} />
+                    <div className="bg-emerald/10 p-2 rounded-xl border border-primary/10 shrink-0">
+                        <Timer className="text-emerald" size={22} />
                     </div>
                     <h3 className="text-lg font-bold text-foreground">Çalışmaya Başla</h3>
                     <div className="absolute right-0 top-1/2 -translate-y-1/2">
@@ -57,7 +57,7 @@ export default function CourseSelector({
                         </span>
                         <ChevronDown
                             size={20}
-                            className={`text-muted-foreground transition-transform duration-100 ${isDropdownOpen ? 'rotate-180 text-primary' : ''}`}
+                            className={`text-muted-foreground transition-transform duration-100 ${isDropdownOpen ? 'rotate-180 text-emerald' : ''}`}
                         />
                     </div>
 
@@ -79,7 +79,7 @@ export default function CourseSelector({
                                             onDropdownToggle(false);
                                         }}
                                         className={`p-3 text-left rounded-lg text-sm font-medium transition-colors flex items-center gap-3 group ${selectedCourseId === course.id
-                                            ? 'bg-primary/10 text-primary'
+                                            ? 'bg-emerald/10 text-emerald'
                                             : 'text-muted-foreground hover:bg-background hover:text-foreground'
                                             }`}
                                     >
@@ -87,12 +87,12 @@ export default function CourseSelector({
                                             {(() => {
                                                 const matchingKey = Object.keys(COURSE_ICONS).find(key => course.name.startsWith(key));
                                                 const CourseIcon = matchingKey ? COURSE_ICONS[matchingKey as keyof typeof COURSE_ICONS] : BookOpen;
-                                                return <CourseIcon size={16} className={selectedCourseId === course.id ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'} />;
+                                                return <CourseIcon size={16} className={selectedCourseId === course.id ? 'text-emerald' : 'text-muted-foreground group-hover:text-foreground'} />;
                                             })()}
                                             <span className="truncate text-subcourse">{course.name}</span>
                                         </div>
                                         {selectedCourseId === course.id && (
-                                            <Check size={18} className="text-primary shrink-0" />
+                                            <Check size={18} className="text-emerald shrink-0" />
                                         )}
                                     </button>
                                 ))}
@@ -111,7 +111,7 @@ export default function CourseSelector({
                     <button
                         onClick={onStartSession}
                         disabled={!selectedCourseId}
-                        className="flex-2 py-3 bg-[#059669] text-white rounded-xl font-bold shadow-lg shadow-emerald-900/20 hover:bg-[#047857] disabled:opacity-50 disabled:cursor-not-allowed transition-all text-lg cursor-pointer"
+                        className="flex-2 py-3 bg-[#059669] text-emerald rounded-xl font-bold shadow-lg shadow-emerald-900/20 hover:bg-[#047857] disabled:opacity-50 disabled:cursor-not-allowed transition-all text-lg cursor-pointer"
                     >
                         Başlat
                     </button>

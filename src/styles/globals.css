@@ -10,60 +10,100 @@
   --font-rank: "Tagesschrift", cursive;
 
   /* ============================================
-     COLOR PALETTE - The Inspector's Desk Theme
+     COLOR PALETTE - Emerald Dark Theme
      ============================================ */
 
   /* Base Primitive Colors */
-  --color-main-bg: oklch(0.16 0.01 240);
-  --color-card-bg: oklch(0.22 0.02 240);
-  --color-primary-cyan: oklch(0.75 0.15 200);
-  --color-accent-mint: oklch(0.82 0.16 170);
-  --color-border-subtle: oklch(0.28 0.02 240);
+  --color-main-bg: oklch(0.1822 0 0);
+  --color-card-bg: oklch(0.2046 0 0);
+  --color-popover-bg: oklch(0.2603 0 0);
+  --color-primary-emerald: oklch(0.4365 0.1044 156.7556);
+  --color-primary-light: oklch(0.8003 0.1821 151.7110);
+  --color-border-subtle: oklch(0.2809 0 0);
+  --color-input-border: oklch(0.2603 0 0);
 
   /* Semantic Colors */
   --color-background: var(--color-main-bg);
-  --color-foreground: oklch(0.94 0.008 250);
+  --color-foreground: oklch(0.9288 0.0126 255.5078);
 
   /* Component Surfaces */
   --color-card: var(--color-card-bg);
-  --color-card-foreground: oklch(0.94 0.008 250);
+  --color-card-foreground: oklch(0.9288 0.0126 255.5078);
 
-  --color-popover: var(--color-card-bg);
-  --color-popover-foreground: oklch(0.94 0.008 250);
+  --color-popover: var(--color-popover-bg);
+  --color-popover-foreground: oklch(0.7348 0 0);
 
   /* Brand Colors */
-  --color-primary: var(--color-primary-cyan);
-  --color-primary-foreground: oklch(0.10 0.02 240);
+  --color-primary: oklch(0.4365 0.1044 156.7556);
+  --color-primary-foreground: oklch(0.9213 0.0135 167.1556);
 
-  --color-secondary: oklch(0.28 0.02 240);
-  --color-secondary-foreground: oklch(0.94 0.008 250);
+  --color-secondary: var(--color-popover-bg);
+  --color-secondary-foreground: oklch(0.9851 0 0);
 
-  --color-accent: var(--color-accent-mint);
-  --color-accent-foreground: oklch(0.16 0.01 240);
+  --color-accent: oklch(0.3132 0 0);
+  --color-accent-foreground: oklch(0.9851 0 0);
 
   /* Functional Colors */
-  --color-muted: oklch(0.28 0.02 240);
-  --color-muted-foreground: oklch(0.75 0.02 250);
+  --color-muted: oklch(0.2393 0 0);
+  --color-muted-foreground: oklch(0.7122 0 0);
 
-  --color-destructive: oklch(0.637 0.237 25.331);
-  --color-destructive-foreground: oklch(0.985 0 0);
+  --color-destructive: oklch(0.3123 0.0852 29.7877);
+  --color-destructive-foreground: oklch(0.9368 0.0045 34.3092);
 
   --color-border: var(--color-border-subtle);
-  --color-input: var(--color-border-subtle);
-  --color-ring: var(--color-primary-cyan);
+  --color-input: var(--color-input-border);
+  --color-ring: var(--color-primary-light);
 
-  /* Special Colors - Keeping previous subcourse as it wasn't in colors.md */
+  /* Chart Colors */
+  --color-chart-1: oklch(0.8003 0.1821 151.7110);
+  --color-chart-2: oklch(0.7137 0.1434 254.6240);
+  --color-chart-3: oklch(0.7090 0.1592 293.5412);
+  --color-chart-4: oklch(0.8369 0.1644 84.4286);
+  --color-chart-5: oklch(0.7845 0.1325 181.9120);
+
+  /* Sidebar Colors */
+  --color-sidebar: var(--color-main-bg);
+  --color-sidebar-foreground: oklch(0.6301 0 0);
+  --color-sidebar-primary: var(--color-primary-emerald);
+  --color-sidebar-primary-foreground: oklch(0.9213 0.0135 167.1556);
+  --color-sidebar-accent: oklch(0.3132 0 0);
+  --color-sidebar-accent-foreground: oklch(0.9851 0 0);
+  --color-sidebar-border: var(--color-border-subtle);
+  --color-sidebar-ring: var(--color-primary-light);
+
+  /* Special Colors */
   --color-subcourse: oklch(0.88 0.008 250);
+  --color-success: oklch(0.72 0.18 150);
+  --color-success-foreground: oklch(0.985 0 0);
 
   /* ============================================
      DESIGN TOKENS
      ============================================ */
 
   /* Radii */
-  --radius-lg: 0.75rem;
-  --radius-md: 0.5rem;
-  --radius-sm: 0.375rem;
+  --radius-sm: calc(0.5rem - 4px);
+  --radius-md: calc(0.5rem - 2px);
+  --radius-lg: 0.5rem;
+  --radius-xl: calc(0.5rem + 4px);
 
+  /* Shadows */
+  --shadow-color: #000000;
+  --shadow-2xs: 0px 1px 3px 0px hsl(0 0% 0% / 0.09);
+  --shadow-xs: 0px 1px 3px 0px hsl(0 0% 0% / 0.09);
+  --shadow-sm: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 1px 2px -1px hsl(0 0% 0% / 0.17);
+  --shadow: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 1px 2px -1px hsl(0 0% 0% / 0.17);
+  --shadow-md: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 2px 4px -1px hsl(0 0% 0% / 0.17);
+  --shadow-lg: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 4px 6px -1px hsl(0 0% 0% / 0.17);
+  --shadow-xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 8px 10px -1px hsl(0 0% 0% / 0.17);
+  --shadow-2xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.43);
+
+  /* Letter Spacing */
+  --tracking-normal: 0.025em;
+  --tracking-tighter: calc(0.025em - 0.05em);
+  --tracking-tight: calc(0.025em - 0.025em);
+  --tracking-wide: calc(0.025em + 0.025em);
+  --tracking-wider: calc(0.025em + 0.05em);
+  --tracking-widest: calc(0.025em + 0.1em);
 }
 
 @layer base {
@@ -112,6 +152,7 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    letter-spacing: var(--tracking-normal);
     overscroll-behavior-y: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -134,6 +175,15 @@
   label,
   a {
     cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  button:not(:disabled):hover,
+  [role="button"]:not(:disabled):hover,
+  a:hover {
+    &:not([class*="bg-"]):not([class*="hover:bg-"]) {
+      background-color: oklch(1 0 0 / 0.05);
+    }
   }
 }
 
@@ -200,8 +250,10 @@
       transition: all 0.2s ease-in-out;
 
       &:hover {
-        transform: translateY(-1px);
-        border-color: var(--color-primary);
+        transform: translateY(-2px);
+        border-color: var(--color-primary-light);
+        background-color: color-mix(in oklch, var(--color-primary-light), transparent 92%);
+        box-shadow: 0 8px 30px -10px color-mix(in oklch, var(--color-primary), transparent 50%);
       }
     }
   }
@@ -217,9 +269,9 @@
     display: inline-flex;
     align-items: center;
     border-radius: 9999px;
-    background-color: color-mix(in srgb, var(--color-primary-cyan) 15%, transparent);
-    color: var(--color-primary-cyan);
-    border: 1px solid color-mix(in srgb, var(--color-primary-cyan) 30%, transparent);
+    background-color: color-mix(in srgb, var(--color-primary-emerald) 15%, transparent);
+    color: var(--color-primary-emerald);
+    border: 1px solid color-mix(in srgb, var(--color-primary-emerald) 30%, transparent);
     padding: 2px 10px;
     font-size: 0.75rem;
     font-weight: 600;

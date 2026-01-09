@@ -40,9 +40,9 @@ export default function FullHistoryModal({ isOpen, type, data, onClose }: FullHi
             >
                 <div className="p-6 sm:p-8 border-b border-border bg-card/50 flex justify-between items-center">
                     <div className="flex items-center gap-4">
-                        <div className="bg-primary/10 p-3.5 rounded-xl border border-primary/10 mt-1">
+                        <div className="bg-emerald/10 p-3.5 rounded-xl border border-primary/10 mt-1">
                             {isDuration ? (
-                                <BarChart2 className="text-primary" size={32} />
+                                <BarChart2 className="text-emerald" size={32} />
                             ) : (
                                 <MonitorPlay className="text-orange-400" size={32} />
                             )}
@@ -110,7 +110,7 @@ export default function FullHistoryModal({ isOpen, type, data, onClose }: FullHi
                         <p className="text-[10px] text-zinc-300 uppercase font-bold tracking-widest mb-1">
                             {isDuration ? 'Toplam Süre' : 'Toplam Video'}
                         </p>
-                        <p className="text-xl font-mono font-bold text-primary">
+                        <p className="text-xl font-mono font-bold text-emerald">
                             {isDuration ? formatHours(totalHours) : `${totalVideos} video`}
                         </p>
                     </div>

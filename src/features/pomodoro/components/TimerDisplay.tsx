@@ -34,7 +34,7 @@ export default function TimerDisplay({
 }: TimerDisplayProps) {
     return (
         <div className={cn(
-            "fixed z-[45] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card border border-white/10 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] transition-all duration-700 overflow-hidden",
+            "fixed z-45 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card border border-white/10 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.6)] transition-all duration-700 overflow-hidden",
             isZenMode
                 ? "w-96 p-10 scale-110 shadow-primary/20"
                 : "w-80 p-8 scale-100",
@@ -43,7 +43,7 @@ export default function TimerDisplay({
             {/* Background decoration */}
             <div className={cn(
                 "absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[80px] opacity-20 transition-all duration-500",
-                mode === 'work' ? 'bg-primary' : 'bg-emerald-400',
+                mode === 'work' ? 'bg-emerald' : 'bg-emerald-400',
                 isZenMode && "scale-150 opacity-30"
             )} />
 
@@ -55,7 +55,7 @@ export default function TimerDisplay({
             {/* Header: Mode and Course */}
             <div className="flex flex-col items-center mb-6 w-full z-10 relative">
                 <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-3 transition-colors border ${mode === 'work'
-                    ? 'bg-primary/10 border-primary/20 text-primary'
+                    ? 'bg-emerald/10 border-primary/20 text-emerald'
                     : 'bg-emerald-400/10 border-emerald-400/20 text-emerald-400'
                     }`}>
                     {mode === 'work' ? 'ODAK MODU' : 'DİNLENME MODU'}
@@ -68,7 +68,7 @@ export default function TimerDisplay({
                     const matchingKey = Object.keys(COURSE_ICONS).find(key => selectedCourseName?.startsWith(key));
                     const CourseIcon = matchingKey ? COURSE_ICONS[matchingKey as keyof typeof COURSE_ICONS] : BookOpen;
                     return (
-                        <div className="mt-2 text-primary opacity-60">
+                        <div className="mt-2 text-emerald opacity-60">
                             <CourseIcon size={20} />
                         </div>
                     );
@@ -81,7 +81,7 @@ export default function TimerDisplay({
                     {timeText}
                 </div>
                 <div className="flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/5 border border-white/5 mt-2">
-                    <span className="text-[11px] font-extrabold text-primary uppercase tracking-[0.15em]">
+                    <span className="text-[11px] font-extrabold text-emerald uppercase tracking-[0.15em]">
                         OTURUM #{sessionsCount + 1}
                     </span>
                 </div>
@@ -93,7 +93,7 @@ export default function TimerDisplay({
                 <button
                     onClick={onToggleTimer}
                     className={`w-full py-4 rounded-2xl flex items-center justify-center gap-3 font-bold text-sm transition-all active:scale-[0.98] shadow-lg ${isActive
-                        ? 'bg-[#1e293b] border border-white/10 text-white hover:bg-[#334155]'
+                        ? 'bg-[#1e293b] border border-white/10 text-emerald hover:bg-[#334155]'
                         : (mode === 'work'
                             ? 'bg-[#10b981] text-[#042f2e] shadow-[#10b981]/20 hover:bg-[#34d399]'
                             : 'bg-[#22c55e] text-[#052e16] shadow-[#22c55e]/20 hover:bg-[#4ade80]')
@@ -112,7 +112,7 @@ export default function TimerDisplay({
                         <>
                             <button
                                 onClick={onStartBreak}
-                                className="py-3 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-[11px] font-bold transition-all flex flex-col items-center gap-1 border border-primary/10"
+                                className="py-3 rounded-xl bg-emerald/10 hover:bg-emerald/20 text-emerald text-[11px] font-bold transition-all flex flex-col items-center gap-1 border border-primary/10"
                             >
                                 <Coffee size={16} />
                                 MOLA VER
@@ -128,7 +128,7 @@ export default function TimerDisplay({
                     ) : (
                         <button
                             onClick={onSkipBreak}
-                            className="col-span-2 py-3 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-[11px] font-bold transition-all flex items-center justify-center gap-2 border border-primary/10"
+                            className="col-span-2 py-3 rounded-xl bg-emerald/10 hover:bg-emerald/20 text-emerald text-[11px] font-bold transition-all flex items-center justify-center gap-2 border border-primary/10"
                         >
                             <Play size={16} />
                             MOLAYI BİTİR VE ÇALIŞMAYA DÖN

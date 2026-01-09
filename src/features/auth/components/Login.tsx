@@ -33,8 +33,8 @@ export default function Login() {
         <main className="min-h-[100dvh] flex items-center justify-center bg-background p-4">
             <div className="bg-card w-full max-w-md p-8 rounded-2xl shadow-xl shadow-primary/5 border border-secondary/30">
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-                        <Lock className="w-8 h-8 text-primary" />
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald/10 mb-4">
+                        <Lock className="w-8 h-8 text-emerald" />
                     </div>
                     <h1 className="text-2xl font-bold text-foreground">Giriş Yap</h1>
                     <p className="text-muted-foreground mt-2">Devam etmek için hesabınıza erişin</p>

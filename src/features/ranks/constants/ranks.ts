@@ -10,13 +10,14 @@ import { Rank } from '@/types';
  * User ranks based on completion percentage
  */
 export const RANKS: Rank[] = [
-    { title: "Stajyer", min: 0, color: "text-zinc-300", icon: "Sprout" },
-    { title: "Gişe Asistanı", min: 10, color: "text-emerald-400", icon: "HandCoins" },
-    { title: "Müfettiş Yardımcısı", min: 25, color: "text-blue-400", icon: "SearchCheck" },
-    { title: "Kıdemli Müfettiş Yardımcısı", min: 50, color: "text-violet-400", icon: "UserSearch" },
-    { title: "Müfettiş", min: 75, color: "text-amber-400", icon: "ShieldCheck" },
-    { title: "Kıdemli Müfettiş", min: 100, color: "text-rose-500 font-bold", icon: "Medal" }
+    { title: "Stajyer", min: 0, color: "text-slate-400", icon: "User" },
+    { title: "Müfettiş Yardımcısı", min: 20, color: "text-blue-400", icon: "Search" },
+    { title: "Kıdemli Müfettiş Yardımcısı", min: 40, color: "text-indigo-400", icon: "FileSearch" },
+    { title: "Müfettiş", min: 60, color: "text-emerald-400", icon: "ShieldCheck" },
+    { title: "Baş Müfettiş", min: 80, color: "text-amber-400 font-bold", icon: "BadgeCheck" }
 ];
+
+
 
 /**
  * Helper function to get rank by percentage

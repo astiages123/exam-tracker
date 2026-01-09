@@ -99,13 +99,13 @@ export default function ScheduleModal({ onClose, schedule, setSchedule }: Schedu
             <DialogContent
                 className={cn(
                     "flex flex-col p-0 gap-0 bg-card border-border overflow-hidden transition-all duration-300 focus-visible:outline-none",
-                    "w-full max-w-full sm:max-w-5xl h-[100dvh] sm:h-auto sm:max-h-[90vh] sm:rounded-lg"
+                    "w-full max-w-full sm:max-w-5xl h-dvh sm:h-auto sm:max-h-[90vh] sm:rounded-lg"
                 )}
             >
                 <div className="p-4 sm:p-6 border-b border-border bg-card/50 flex justify-between items-center shrink-0">
                     <div className="flex items-center gap-4">
-                        <div className="bg-primary/10 p-3.5 rounded-xl border border-primary/10 mt-1">
-                            <CalendarDays className="text-primary" size={32} />
+                        <div className="bg-emerald/10 p-3.5 rounded-xl border border-primary/10 mt-1">
+                            <CalendarDays className="text-emerald" size={32} />
                         </div>
                         <div>
                             <DialogHeader>
@@ -140,7 +140,7 @@ export default function ScheduleModal({ onClose, schedule, setSchedule }: Schedu
                                             {day}
                                         </span>
                                         {dayItems.length > 0 && (
-                                            <span className="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+                                            <span className="text-[10px] font-bold bg-emerald/10 text-emerald px-2 py-0.5 rounded-full">
                                                 {dayItems.length}
                                             </span>
                                         )}
@@ -167,7 +167,7 @@ export default function ScheduleModal({ onClose, schedule, setSchedule }: Schedu
                                                         <div className={cn("text-xs font-mono font-bold px-1.5 py-0.5 rounded", styles.badge, styles.text)}>
                                                             {item.time}
                                                         </div>
-                                                        <span className={cn("text-xs font-semibold break-words flex-1", styles.text)}>
+                                                        <span className={cn("text-xs font-semibold wrap-break-word flex-1", styles.text)}>
                                                             {item.subject}
                                                         </span>
 

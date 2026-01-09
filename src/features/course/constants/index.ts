@@ -35,6 +35,7 @@ export const CATEGORY_STYLES: Record<string, {
     darkAccent: string;
     iconBg: string;
     barColor: string;
+    hover: string;
 }> = {
     'EKONOMİ': {
         bg: 'bg-sky-400/8 hover:bg-sky-900/30',
@@ -42,7 +43,8 @@ export const CATEGORY_STYLES: Record<string, {
         accent: 'text-sky-300',
         darkAccent: 'text-sky-500',
         iconBg: 'bg-sky-500/20',
-        barColor: 'bg-sky-300'
+        barColor: 'bg-sky-300',
+        hover: 'hover:border-sky-400/50 hover:ring-1 hover:ring-sky-400/50 hover:shadow-[0_8px_30px_-10px_rgba(56,189,248,0.3)]'
     },
     'HUKUK': {
         bg: 'bg-rose-400/8 hover:bg-rose-900/30',
@@ -50,7 +52,8 @@ export const CATEGORY_STYLES: Record<string, {
         accent: 'text-rose-300',
         darkAccent: 'text-rose-500',
         iconBg: 'bg-rose-500/20',
-        barColor: 'bg-rose-300'
+        barColor: 'bg-rose-300',
+        hover: 'hover:border-rose-400/50 hover:ring-1 hover:ring-rose-400/50 hover:shadow-[0_8px_30px_-10px_rgba(251,113,133,0.3)]'
     },
     'MUHASEBE - MALİYE': {
         bg: 'bg-emerald-400/8 hover:bg-emerald-900/30',
@@ -58,7 +61,8 @@ export const CATEGORY_STYLES: Record<string, {
         accent: 'text-emerald-300',
         darkAccent: 'text-emerald-500',
         iconBg: 'bg-emerald-500/20',
-        barColor: 'bg-emerald-300'
+        barColor: 'bg-emerald-300',
+        hover: 'hover:border-emerald-400/50 hover:ring-1 hover:ring-emerald-400/50 hover:shadow-[0_8px_30px_-10px_rgba(52,211,153,0.3)]'
     },
     'MATEMATİK - İŞLETME': {
         bg: 'bg-violet-400/8 hover:bg-violet-900/30',
@@ -66,15 +70,17 @@ export const CATEGORY_STYLES: Record<string, {
         accent: 'text-violet-300',
         darkAccent: 'text-violet-500',
         iconBg: 'bg-violet-500/20',
-        barColor: 'bg-violet-300'
+        barColor: 'bg-violet-300',
+        hover: 'hover:border-violet-400/50 hover:ring-1 hover:ring-violet-400/50 hover:shadow-[0_8px_30px_-10px_rgba(167,139,250,0.3)]'
     },
     'DEFAULT': {
         bg: 'bg-card',
         border: 'border-border/30',
-        accent: 'text-primary',
-        darkAccent: 'text-primary-foreground',
-        iconBg: 'bg-primary/10',
-        barColor: 'bg-primary'
+        accent: 'text-emerald',
+        darkAccent: 'text-emerald-foreground',
+        iconBg: 'bg-emerald/10',
+        barColor: 'bg-emerald',
+        hover: 'hover:border-emerald-400/50 hover:ring-1 hover:ring-emerald-400/50 hover:shadow-[0_8px_30px_-10px_rgba(52,211,153,0.3)]'
     }
 };
 

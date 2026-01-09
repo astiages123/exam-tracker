@@ -1,20 +1,20 @@
 
 import {
-    Sprout,
-    HandCoins,
-    SearchCheck,
-    UserSearch,
+    User,
+    Search,
+    FileSearch,
     ShieldCheck,
-    Medal,
+    BadgeCheck,
     Star
 } from 'lucide-react';
 
 export const RANK_ICONS: Record<string, any> = {
-    Sprout,
-    HandCoins,
-    SearchCheck,
-    UserSearch,
+    User,
+    Search,
+    FileSearch,
     ShieldCheck,
-    Medal,
+    BadgeCheck,
     Star
 };
+
+

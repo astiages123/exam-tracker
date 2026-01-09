@@ -148,7 +148,7 @@ export default function NotesModal({ courseName, notePath, onClose, icon: Icon }
                             <div className="flex items-center justify-between w-full">
                                 <DialogHeader className="text-left space-y-0 p-0">
                                     <DialogTitle className="text-base sm:text-xl font-bold text-foreground leading-tight wrap-break-word pr-1 flex items-center gap-2">
-                                        {Icon && <Icon size={24} className="text-primary shrink-0" />}
+                                        {Icon && <Icon size={24} className="text-emerald shrink-0" />}
                                         <span className="text-subcourse">{courseName}</span>
                                     </DialogTitle>
                                     <DialogDescription className="sr-only">
@@ -161,7 +161,7 @@ export default function NotesModal({ courseName, notePath, onClose, icon: Icon }
                                         variant="ghost"
                                         size="icon"
                                         onClick={() => setIsFullscreen(!isFullscreen)}
-                                        className="h-10 w-10 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors [&_svg]:size-6 hidden sm:flex"
+                                        className="h-10 w-10 text-muted-foreground hover:bg-emerald/10 hover:text-emerald transition-colors [&_svg]:size-6 hidden sm:flex"
                                         title={isFullscreen ? "Küçült" : "Tam Ekran"}
                                     >
                                         {isFullscreen ? <Minimize2 size={24} /> : <Maximize2 size={24} />}
@@ -170,7 +170,7 @@ export default function NotesModal({ courseName, notePath, onClose, icon: Icon }
                                         variant="ghost"
                                         size="icon"
                                         asChild
-                                        className="h-10 w-10 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors [&_svg]:size-6"
+                                        className="h-10 w-10 text-muted-foreground hover:bg-emerald/10 hover:text-emerald transition-colors [&_svg]:size-6"
                                     >
                                         <a href={notePath} target="_blank" rel="noopener noreferrer">
                                             <ExternalLink size={24} />
@@ -195,7 +195,7 @@ export default function NotesModal({ courseName, notePath, onClose, icon: Icon }
                             />
                         )}
                         {loading && !error && (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-primary bg-background/80 z-10">
+                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-emerald bg-background/80 z-10">
                                 <Loader2 className="animate-spin" size={48} />
                                 <p className="text-lg font-medium text-foreground">Notlar yükleniyor...</p>
                             </div>
@@ -219,7 +219,7 @@ export default function NotesModal({ courseName, notePath, onClose, icon: Icon }
                                             <Button
                                                 onClick={onClose}
                                                 variant="outline"
-                                                className="rounded-xl px-8 py-6 h-auto font-bold uppercase tracking-widest text-xs hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                                                className="rounded-xl px-8 py-6 h-auto font-bold uppercase tracking-widest text-xs hover:bg-emerald hover:text-emerald-foreground transition-all duration-300"
                                             >
                                                 Kapat
                                             </Button>

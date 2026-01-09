@@ -7,11 +7,12 @@ import { useAuth } from '@/context/AuthContext';
 const Login = lazy(() => import('@/features/auth/components/Login'));
 const Dashboard = lazy(() => import('@/components/layout/Dashboard'));
 const AutoQuizGenerator = lazy(() => import('@/features/quiz/components/AutoQuizGenerator').then(module => ({ default: module.AutoQuizGenerator })));
+const AdminDashboard = lazy(() => import('@/features/admin/components/AdminDashboard'));
 
 const ModalLoader = () => (
   <div className="fixed inset-0 bg-background/80 flex items-center justify-center z-50">
     <div className="flex flex-col items-center gap-3 text-muted-foreground">
-      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <Loader2 className="h-8 w-8 animate-spin text-emerald" />
       <span className="text-sm font-medium">Yükleniyor...</span>
     </div>
   </div>
@@ -40,9 +41,11 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-emerald/30">
       <Suspense fallback={<ModalLoader />}>
-        {!user ? (
+        {window.location.pathname === '/admin' ? (
+          <AdminDashboard />
+        ) : !user ? (
           <Login />
         ) : window.location.pathname === '/autoquiz' ? (
           <AutoQuizGenerator />

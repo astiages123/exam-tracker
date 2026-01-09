@@ -98,7 +98,7 @@ export function QuizExplanation({
                                 <div className="flex items-center gap-2 text-sm text-gray-300">
                                     <Calendar size={16} className="text-indigo-400" />
                                     <span>
-                                        Tekrar: <span className="text-white font-medium">
+                                        Tekrar: <span className="text-emerald font-medium">
                                             {new Date(srsResult.nextReviewDate).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })}
                                         </span>
                                     </span>
@@ -106,7 +106,7 @@ export function QuizExplanation({
                                 <div className="flex items-center gap-2 text-sm text-gray-300">
                                     <Clock size={16} className="text-indigo-400" />
                                     <span>
-                                        Süre: <span className="text-white font-medium">
+                                        Süre: <span className="text-emerald font-medium">
                                             {srsResult.interval === 0 ? 'Hemen' : `${srsResult.interval} Gün`}
                                         </span>
                                     </span>
@@ -115,7 +115,7 @@ export function QuizExplanation({
                                     <div className="flex items-center gap-2 text-sm text-gray-300">
                                         <RotateCw size={16} className="text-emerald-400" />
                                         <span>
-                                            Tekrar Sayısı: <span className="text-white font-medium">{srsResult.repetitionCount}</span>
+                                            Tekrar Sayısı: <span className="text-emerald font-medium">{srsResult.repetitionCount}</span>
                                         </span>
                                     </div>
                                 )}

@@ -41,29 +41,29 @@ export default function ProgressCard({
             className="max-w-4xl mx-auto mb-4 relative"
         >
             {/* Ambient Background Glow */}
-            <div className="absolute -inset-1 bg-primary/5 blur-2xl rounded-4xl opacity-30" />
+            <div className="absolute -inset-1 bg-emerald/5 blur-2xl rounded-4xl opacity-30" />
 
-            <div className="relative glass-card rounded-3xl overflow-hidden border border-white/10 bg-primary/10 shadow-xl shadow-black/40">
+            <div className="relative glass-card rounded-3xl overflow-hidden border border-white/10 bg-emerald/10 shadow-xl shadow-black/40">
                 <div className="p-4 sm:p-4.5">
                     <div className="flex flex-col md:flex-row items-center gap-5 mb-4">
                         {/* 1. Icon Box - More Compact */}
                         <div className="relative group shrink-0">
                             <div className="relative p-3.5 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center shadow-lg shadow-black/20">
-                                <Icon size={28} className="text-primary drop-shadow-[0_0_10px_rgba(var(--primary),0.3)]" />
+                                <Icon size={28} className="text-emerald drop-shadow-[0_0_10px_rgba(var(--primary),0.3)]" />
                             </div>
                         </div>
 
                         {/* 2. Rank Info - More Compact */}
                         <div className="flex-1 text-center md:text-left min-w-0">
                             <div className="flex items-center justify-center md:justify-start gap-2 mb-0.5">
-                                <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">Sonraki Rütbe</span>
+                                <span className="text-[9px] font-black text-emerald uppercase tracking-[0.2em]">Sonraki Rütbe</span>
                             </div>
-                            <h2 className="text-xl font-black text-white/80 flex items-center justify-center md:justify-start gap-2">
+                            <h2 className="text-xl font-black text-emerald flex items-center justify-center md:justify-start gap-2">
                                 {nextRank.title}
-                                <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_var(--color-primary)]" />
+                                <div className="h-1.5 w-1.5 rounded-full bg-emerald animate-pulse shadow-[0_0_8px_var(--color-primary)]" />
                             </h2>
-                            <p className="text-white/60 text-[13px] font-medium leading-tight">
-                                Hedefe ulaşmak için <span className="text-primary font-bold">{(nextRank.min - totalPercentage).toFixed(1)}%</span>
+                            <p className="text-emerald/85 text-[13px] font-medium leading-tight">
+                                Hedefe ulaşmak için <span className="text-emerald font-bold">{(nextRank.min - totalPercentage).toFixed(1)}%</span>
                                 {(() => {
                                     if (!sessions || sessions.length === 0 || completedHours === 0) return null;
                                     const daySet = new Set<string>();
@@ -82,7 +82,7 @@ export default function ProgressCard({
                                     return (
                                         <>
                                             <span className="mx-1.5 opacity-40">/</span>
-                                            ~<span className="text-white font-bold">{daysLeft} gün</span>
+                                            ~<span className="text-emerald font-bold">{daysLeft} gün</span>
                                         </>
                                     );
                                 })()} daha çalışmalısın
@@ -91,12 +91,12 @@ export default function ProgressCard({
 
                         {/* 3. General Progress - More Compact */}
                         <div className="flex flex-col items-center justify-center shrink-0 bg-white/4 p-2.5 px-5 rounded-xl border border-white/5 min-w-[130px]">
-                            <span className="text-[10px] font-bold text-white/80 uppercase tracking-[0.2em] mb-0.5">Toplam İlerleme</span>
+                            <span className="text-[10px] font-bold text-emerald/95 uppercase tracking-[0.2em] mb-0.5">Toplam İlerleme</span>
                             <div className="flex items-center gap-1">
-                                <span className="text-2xl font-black text-primary tracking-tighter">
+                                <span className="text-2xl font-black text-emerald tracking-tighter">
                                     {totalPercentage.toFixed(1)}
                                 </span>
-                                <span className="text-base font-bold text-primary">%</span>
+                                <span className="text-base font-bold text-emerald">%</span>
                             </div>
                         </div>
                     </div>
@@ -104,8 +104,8 @@ export default function ProgressCard({
                     {/* Main Progress Bar - More Integrated */}
                     <div className="space-y-2">
                         <div className="flex justify-between items-end px-0.5 h-3">
-                            <span className="text-[11px] font-bold text-primary uppercase tracking-widest">{rankInfo.title}</span>
-                            <span className="text-[11px] font-bold text-primary uppercase tracking-widest">{nextRank.title}</span>
+                            <span className="text-[11px] font-bold text-emerald uppercase tracking-widest">{rankInfo.title}</span>
+                            <span className="text-[11px] font-bold text-emerald uppercase tracking-widest">{nextRank.title}</span>
                         </div>
                         <ProgressBar
                             progress={totalPercentage}
@@ -125,7 +125,7 @@ export default function ProgressCard({
                         onClick={onCompletedClick}
                     />
                     <StatItem
-                        icon={<Timer size={16} className="text-primary" />}
+                        icon={<Timer size={16} className="text-emerald" />}
                         label="Toplam Süre"
                         value={formatHours(completedHours)}
                         total={`/ ${formatHours(totalHours)}`}
@@ -150,14 +150,14 @@ function StatItem({ icon, label, value, total, onClick }: {
             className="p-3 flex items-center justify-center gap-3 hover:bg-white/2 active:bg-white/5 cursor-pointer transition-colors border-r border-white/5 last:border-0 w-full group"
             onClick={onClick}
         >
-            <div className="p-1.5 rounded-lg bg-white/5 text-white/40 group-hover:text-white/80 group-hover:bg-white/10 transition-colors">
+            <div className="p-1.5 rounded-lg bg-white/5 text-emerald/70 group-hover:text-emerald group-hover:bg-white/10 transition-colors">
                 {icon}
             </div>
             <div className="flex flex-col items-start gap-0.5">
-                <span className="text-[10px] font-bold text-white/90 uppercase tracking-widest">{label}</span>
+                <span className="text-[10px] font-bold text-emerald/90 uppercase tracking-widest">{label}</span>
                 <div className="flex items-baseline gap-1">
-                    <span className="text-sm font-bold text-white/90">{value}</span>
-                    <span className="text-[10px] font-medium text-white/70">{total}</span>
+                    <span className="text-sm font-bold text-emerald/90">{value}</span>
+                    <span className="text-[10px] font-medium text-emerald/70">{total}</span>
                 </div>
             </div>
         </button>

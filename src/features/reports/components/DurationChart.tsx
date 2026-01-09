@@ -24,7 +24,7 @@ const DurationChart = React.memo(({ data = [], onShowFullHistory, className }: D
             <CardContent className="p-5">
                 <div className="mb-4 flex justify-between items-start">
                     <div>
-                        <h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors">
+                        <h3 className="text-base font-bold text-foreground group-hover:text-emerald transition-colors">
                             Çalışma Süresi
                         </h3>
                         <p className="text-[11px] text-zinc-300 font-medium">
@@ -34,7 +34,7 @@ const DurationChart = React.memo(({ data = [], onShowFullHistory, className }: D
                     <Button
                         variant="outline"
                         size="sm"
-                        className="h-auto px-1.5 py-0.5 bg-primary/10 border border-primary/20 rounded text-[9px] text-primary font-bold uppercase tracking-tight hover:bg-primary/25 hover:text-primary shadow-none"
+                        className="h-auto px-1.5 py-0.5 bg-emerald/10 border border-primary/20 rounded text-[9px] text-emerald font-bold uppercase tracking-tight hover:bg-emerald/25 hover:text-emerald shadow-none"
                         onClick={(e) => {
                             e.stopPropagation();
                             onShowFullHistory();

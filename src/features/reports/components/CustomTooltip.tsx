@@ -42,7 +42,7 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload
         return (
             <div className="bg-card border border-secondary p-3 rounded-lg shadow-xl min-w-[150px]">
                 <p className="text-muted-foreground text-xs mb-1 font-medium border-b border-white/5 pb-1">{data.fullDate}</p>
-                <p className="text-primary font-bold text-sm mt-1">
+                <p className="text-emerald font-bold text-sm mt-1">
                     {valueText}
                 </p>
                 {displayCourses && displayCourses.length > 0 && (
@@ -52,7 +52,7 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload
                         </p>
                         {displayCourses.map((course, idx) => (
                             <div key={idx} className="text-xs text-foreground flex items-center gap-1.5 font-medium">
-                                <div className="w-1.5 h-1.5 rounded-full bg-primary/40" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-emerald/40" />
                                 {course}
                             </div>
                         ))}

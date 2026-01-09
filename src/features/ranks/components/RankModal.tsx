@@ -65,7 +65,7 @@ const RankModal = ({
 
                     <div className="relative flex items-center gap-4">
                         <div className="p-2 sm:p-3 rounded-xl bg-secondary border border-border shrink-0">
-                            <Goal className="w-5 h-5 sm:w-7 sm:h-7 text-primary" />
+                            <Goal className="w-5 h-5 sm:w-7 sm:h-7 text-emerald" />
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between w-full">
@@ -126,33 +126,42 @@ const RankModal = ({
                                 <div key={index} className="flex items-stretch gap-3 sm:gap-5 group">
                                     <div className="flex flex-col items-center justify-center shrink-0 w-[44px] sm:w-[56px] relative">
                                         <div className={cn(
-                                            "w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-2 z-10 transition-all shadow-sm",
+                                            "w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-2 z-10 transition-all shadow-sm overflow-hidden relative",
                                             isCompleted
-                                                ? "bg-accent/10 border-accent/50"
+                                                ? "bg-accent/5 border-accent/40"
                                                 : isCurrent
                                                     ? "bg-card border-primary"
-                                                    : "bg-secondary/50 border-border/60"
+                                                    : "bg-secondary/30 border-border/40"
                                         )}>
-                                            <div className="relative flex items-center justify-center">
+                                            {/* Circular Fill Progress */}
+                                            <div
+                                                className={cn(
+                                                    "absolute bottom-0 left-0 right-0 transition-all duration-1000 ease-out",
+                                                    isCompleted ? "bg-accent/20" : isCurrent ? "bg-emerald/20" : "bg-transparent"
+                                                )}
+                                                style={{ height: `${progress}%` }}
+                                            />
+
+                                            <div className="relative flex items-center justify-center z-10">
                                                 {/* Background / Outline Icon */}
                                                 <IconComponent
                                                     size={20}
                                                     className={cn(
                                                         "sm:w-6 sm:h-6 transition-colors",
-                                                        isCompleted ? "text-accent/30" : isCurrent ? "text-primary/10" : "text-white/90"
+                                                        isCompleted ? "text-accent/40" : isCurrent ? "text-emerald/20" : "text-emerald/80"
                                                     )}
                                                 />
 
                                                 {/* Filled Icon Overlay */}
                                                 <div
-                                                    className="absolute inset-0 flex items-center justify-center overflow-hidden transition-all duration-700 ease-in-out"
+                                                    className="absolute inset-0 flex items-center justify-center overflow-hidden transition-all duration-1000 ease-in-out"
                                                     style={{ clipPath: `inset(${100 - progress}% 0 0 0)` }}
                                                 >
                                                     <IconComponent
                                                         size={20}
                                                         className={cn(
                                                             "sm:w-6 sm:h-6",
-                                                            isCompleted ? "text-accent fill-accent" : "text-primary fill-primary"
+                                                            isCompleted ? "text-accent fill-accent" : "text-emerald fill-primary"
                                                         )}
                                                     />
                                                 </div>
@@ -161,18 +170,18 @@ const RankModal = ({
                                         {/* Line Segment - Upward part */}
                                         {index > 0 && (
                                             <div className={cn(
-                                                "absolute left-1/2 -translate-x-1/2 w-[2px] sm:w-[2.5px] -z-10",
+                                                "absolute left-1/2 -translate-x-1/2 w-[2px] sm:w-[3px] -z-10",
                                                 "top-0 h-[calc(50%-20px)] sm:h-[calc(50%-24px)]",
-                                                isCompleted || isCurrent ? "bg-accent/40" : "bg-white/10"
+                                                isCompleted ? "bg-accent/40" : isCurrent ? "bg-linear-to-b from-accent/40 to-primary/40" : "bg-white/5"
                                             )} />
                                         )}
 
                                         {/* Line Segment - Downward part */}
                                         {index < RANKS.length - 1 && (
                                             <div className={cn(
-                                                "absolute left-1/2 -translate-x-1/2 w-[2px] sm:w-[2.5px] -z-10",
+                                                "absolute left-1/2 -translate-x-1/2 w-[2px] sm:w-[3px] -z-10",
                                                 "top-[calc(50%+20px)] sm:top-[calc(50%+24px)] bottom-0",
-                                                isCompleted ? "bg-accent/40" : "bg-white/10"
+                                                isCompleted ? "bg-accent/40" : (isCurrent && progress > 0) ? "bg-linear-to-b from-primary/40 to-white/5" : "bg-white/5"
                                             )} />
                                         )}
                                     </div>
@@ -180,25 +189,34 @@ const RankModal = ({
                                     {/* Right Side: Content Card */}
                                     <div
                                         className={cn(
-                                            "flex-1 relative flex flex-col justify-center gap-1 p-2.5 sm:p-3 my-1.5 rounded-xl border transition-all",
+                                            "flex-1 relative flex flex-col justify-center gap-1 p-3 sm:p-4 my-2 rounded-2xl border transition-all overflow-hidden",
                                             isCurrent
-                                                ? "bg-primary/5 border-primary/30"
+                                                ? "bg-emerald/3 border-primary/30 shadow-[0_0_15px_rgba(var(--color-primary),0.05)]"
                                                 : isCompleted
                                                     ? "bg-card border-border shadow-sm"
-                                                    : "bg-secondary/20 border-border/40"
+                                                    : "bg-secondary/10 border-border/40"
                                         )}
                                     >
+                                        {/* Background Fill Progress */}
+                                        <div
+                                            className={cn(
+                                                "absolute bottom-0 left-0 right-0 transition-all duration-1000 ease-out opacity-10",
+                                                isCompleted ? "bg-accent" : isCurrent ? "bg-emerald" : "bg-transparent"
+                                            )}
+                                            style={{ height: `${progress}%` }}
+                                        />
+
                                         <div className="flex items-center justify-between gap-3">
                                             <div className="min-w-0">
                                                 <h3 className={cn(
                                                     "font-bold text-sm sm:text-lg tracking-tight leading-none truncate",
-                                                    isCurrent ? "text-primary" : isCompleted ? "text-foreground font-medium" : "text-white/60 font-medium"
+                                                    isCurrent ? "text-emerald" : isCompleted ? "text-foreground font-medium" : "text-emerald font-medium"
                                                 )}>
                                                     {rank.title}
                                                 </h3>
                                                 <div className="flex items-center gap-1.5 mt-1.5">
                                                     {isCurrent ? (
-                                                        <span className="flex items-center gap-1 text-[10px] sm:text-xs font-bold text-primary">
+                                                        <span className="flex items-center gap-1 text-[10px] sm:text-xs font-bold text-emerald">
                                                             Şu an buradasınız
                                                         </span>
                                                     ) : isCompleted ? (
@@ -207,7 +225,7 @@ const RankModal = ({
                                                             Tamamlandı
                                                         </span>
                                                     ) : (
-                                                        <span className="text-[10px] sm:text-xs font-medium text-white/60 flex items-center gap-1">
+                                                        <span className="text-[10px] sm:text-xs font-medium text-emerald flex items-center gap-1">
                                                             <Clock size={10} />
                                                             %{rank.min} ile açılır
                                                         </span>
@@ -219,15 +237,15 @@ const RankModal = ({
                                                 <span className={cn(
                                                     "text-xs sm:text-sm font-bold px-2 py-0.5 sm:px-3 sm:py-1 rounded-lg border",
                                                     isCurrent
-                                                        ? "bg-primary/20 text-primary border-primary/30"
+                                                        ? "bg-emerald/20 text-emerald border-primary/30"
                                                         : isCompleted
                                                             ? "bg-accent/20 text-accent border-accent/30"
-                                                            : "bg-secondary/40 text-white/60 border-border/30"
+                                                            : "bg-secondary/40 text-emerald border-border/30"
                                                 )}>
                                                     %{rank.min}+
                                                 </span>
                                                 {daysText && (
-                                                    <span className="text-[9px] sm:text-[10px] font-bold text-white/60 bg-muted/30 px-1.5 py-0.5 rounded-md">
+                                                    <span className="text-[9px] sm:text-[10px] font-bold text-emerald bg-muted/30 px-1.5 py-0.5 rounded-md">
                                                         {daysText}
                                                     </span>
                                                 )}

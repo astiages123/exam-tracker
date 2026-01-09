@@ -86,14 +86,14 @@ const CelebrationOverlay = ({ courseName, onComplete }: CelebrationOverlayProps)
                 className="relative bg-card border border-primary/30 p-8 rounded-3xl shadow-2xl shadow-primary/20 max-w-sm w-full text-center overflow-hidden"
             >
                 {/* Animated Background Glow */}
-                <div className="absolute -top-24 -left-24 w-48 h-48 bg-primary/20 rounded-full blur-3xl animate-pulse" />
-                <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-primary/20 rounded-full blur-3xl animate-pulse delay-700" />
+                <div className="absolute -top-24 -left-24 w-48 h-48 bg-emerald/20 rounded-full blur-3xl animate-pulse" />
+                <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-emerald/20 rounded-full blur-3xl animate-pulse delay-700" />
 
                 <div className="relative">
                     <div
-                        className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-primary/20"
+                        className="w-20 h-20 bg-emerald/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-primary/20"
                     >
-                        <PartyPopper size={40} className="text-primary" />
+                        <PartyPopper size={40} className="text-emerald" />
                     </div>
 
                     <h2

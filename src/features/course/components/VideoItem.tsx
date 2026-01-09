@@ -27,20 +27,20 @@ const VideoItem = React.memo(({ video, courseId, index, isCompleted, onToggle }:
                 }
             }}
             className={cn(
-                "flex items-center gap-3 p-3.5 rounded-xl cursor-pointer transition-all duration-150 group/video relative overflow-hidden border mb-2 outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                "flex items-center gap-3 p-3.5 rounded-xl cursor-pointer transition-all duration-200 group/video relative overflow-hidden border mb-2 outline-none focus-visible:ring-2 focus-visible:ring-primary",
                 isCompleted
-                    ? "bg-gradient-to-r from-primary/15 to-accent/10 border-primary/30 shadow-[0_0_20px_-5px] shadow-primary/20"
-                    : "bg-card/50 border-border/40 border-dashed hover:bg-card hover:border-primary/40 hover:shadow-[0_0_25px_-8px] hover:shadow-primary/30"
+                    ? "bg-linear-to-r from-primary/20 to-primary/5 border-primary/20 shadow-sm"
+                    : "bg-card/50 border-border/40 border-dashed hover:bg-card hover:border-primary/40 hover:shadow-sm hover:shadow-primary/10"
             )}
         >
             {/* Checkbox with micro-animation */}
             <div className={cn(
-                "w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 shrink-0 border-2",
+                "w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 shrink-0 border-2",
                 isCompleted
-                    ? "bg-primary border-primary text-primary-foreground scale-110 shadow-lg shadow-primary/40"
+                    ? "bg-primary border-primary text-primary-foreground scale-100 shadow-md shadow-primary/20"
                     : "border-muted-foreground/30 group-hover/video:border-primary/60 group-hover/video:scale-105 bg-transparent"
             )}>
-                {isCompleted && <Check size={14} strokeWidth={3} className="animate-[pulse_0.3s_ease-out]" />}
+                {isCompleted && <Check size={14} strokeWidth={3} className="animate-[pulse_0.4s_ease-out]" />}
             </div>
 
             {/* Index */}
@@ -66,8 +66,8 @@ const VideoItem = React.memo(({ video, courseId, index, isCompleted, onToggle }:
                 className={cn(
                     "flex items-center justify-center h-7 px-2.5 rounded-lg text-[12px] leading-[16px] font-semibold shrink-0 border font-mono transition-all",
                     isCompleted
-                        ? "bg-primary/20 border-primary/30 text-primary"
-                        : "bg-muted/50 border-border/50 text-accent group-hover/video:bg-accent/10 group-hover/video:border-accent/40"
+                        ? "bg-primary/10 border-primary/20 text-emerald/50"
+                        : "bg-muted/50 border-border/50 text-muted-foreground group-hover/video:bg-accent/10 group-hover/video:border-accent/40"
                 )}
             >
                 {formatVideoDuration(video.durationMinutes)}

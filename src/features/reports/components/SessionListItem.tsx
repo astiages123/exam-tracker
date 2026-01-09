@@ -1,8 +1,8 @@
 import React from 'react';
-import { BookOpen, Trash2, Calendar, Clock, Tag } from 'lucide-react';
+import { BookOpen, Trash2, Calendar, Clock } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { COURSE_ICONS } from '@/constants/styles';
+import { COURSE_ICONS, SUBJECT_STYLES } from '@/constants/styles';
 import type { GroupedSession } from '../hooks/useReportData';
 import { formatHours } from '@/utils';
 import { cn } from '@/lib/utils';
@@ -41,7 +41,7 @@ const SessionListItem = React.memo(({
             <Card
                 className={cn(
                     "relative overflow-hidden cursor-pointer transition-all duration-300",
-                    "bg-zinc-800/40 border-border/50",
+                    "bg-card border-border/50",
                     "hover:bg-zinc-800/60 hover:shadow-2xl hover:shadow-primary/5 hover:border-primary/30",
                     "hover:-translate-y-0.5 active:scale-[0.995]",
                     "rounded-2xl border"
@@ -54,42 +54,48 @@ const SessionListItem = React.memo(({
                     <div className="flex items-start sm:items-center gap-3 min-w-0">
                         <div className={cn(
                             "p-2 sm:p-2.5 rounded-xl shrink-0 transition-all duration-300 group-hover/item:scale-110 group-hover/item:rotate-3",
-                            "bg-linear-to-br from-primary/20 via-primary/10 to-transparent text-primary shadow-inner border border-primary/10"
+                            "bg-linear-to-br from-primary/20 via-primary/10 to-transparent text-emerald shadow-inner border border-primary/10"
                         )}>
                             <CourseIcon size={isMobile ? 18 : 20} strokeWidth={2.5} />
                         </div>
 
                         <div className="min-w-0 flex-1 space-y-1">
-                            <h4 className="font-bold text-zinc-100 text-xs sm:text-sm w-full max-w-[500px] truncate leading-tight tracking-tight group-hover/item:text-white transition-colors">
+                            <h4 className="font-bold text-zinc-100 text-xs sm:text-sm w-full max-w-[500px] truncate leading-tight tracking-tight group-hover/item:text-emerald transition-colors">
                                 {courseName}
                             </h4>
                             <div className="flex items-center flex-wrap gap-2.5 text-xs font-medium">
-                                <div className="flex items-center gap-1.5 shrink-0 bg-zinc-800/50 text-zinc-400 px-2 py-0.5 rounded-lg border border-white/5">
-                                    <Calendar size={11} className="text-primary/70" />
+                                <div className="flex items-center gap-1.5 shrink-0 bg-card text-zinc-300 px-2 py-0.5 rounded-sm border border-white/5">
+                                    <Calendar size={11} className="text-emerald/70" />
                                     {new Date(group.date).toLocaleDateString('tr-TR', {
                                         day: 'numeric',
                                         month: 'short',
                                         weekday: 'short'
                                     })}
                                 </div>
-                                {categoryName && (
-                                    <div className="flex items-center gap-1.5 shrink-0 bg-primary/10 text-primary/90 px-2.5 py-0.5 rounded-lg border border-primary/20 shadow-sm">
-                                        <Tag size={10} className="text-primary/70" />
-                                        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest">
-                                            {categoryName}
-                                        </span>
-                                    </div>
-                                )}
+                                {categoryName && (() => {
+                                    const styles = SUBJECT_STYLES[categoryName as keyof typeof SUBJECT_STYLES] || SUBJECT_STYLES['DEFAULT'];
+                                    return (
+                                        <div className={cn(
+                                            "flex items-center gap-1.5 shrink-0 px-2.5 py-0.5 rounded-sm border shadow-sm",
+                                            styles.bg,
+                                            styles.border
+                                        )}>
+                                            <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-zinc-200">
+                                                {categoryName}
+                                            </span>
+                                        </div>
+                                    );
+                                })()}
                             </div>
                         </div>
                     </div>
 
                     <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-3 pt-2 sm:pt-0 border-t border-white/5 sm:border-t-0 pl-12 sm:pl-0">
                         <div className="sm:text-right flex items-center sm:block gap-2">
-                            <span className="text-[10px] font-black text-primary-foreground uppercase tracking-widest sm:hidden">
+                            <span className="text-[10px] font-black text-emerald-foreground uppercase tracking-widest sm:hidden">
                                 SÜRE
                             </span>
-                            <div className="flex items-center justify-end gap-1.5 text-primary">
+                            <div className="flex items-center justify-end gap-1.5 text-emerald">
                                 <Clock size={14} className="opacity-90 hidden sm:inline-block" />
                                 <span className="font-sans font-bold text-base sm:text-medium tracking-normal bg-linear-to-br from-primary to-primary-foreground bg-clip-text">
                                     {formatHours(group.totalDuration / 3600)}

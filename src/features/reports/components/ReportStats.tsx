@@ -66,7 +66,7 @@ const ReportStats = React.memo(({
                     <Card
                         className={cn(
                             "relative overflow-hidden border transition-all duration-300",
-                            "bg-zinc-900/40 hover:bg-zinc-900/60",
+                            "bg-card hover:bg-zinc-900/60",
                             "hover:shadow-[0_0_20px_-12px_rgba(0,0,0,0.5)] group",
                             stat.border
                         )}
