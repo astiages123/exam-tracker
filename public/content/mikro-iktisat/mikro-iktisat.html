@@ -1,0 +1,2212 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mikro İktisat</title>
+    <link rel="stylesheet" href="/content/not_stilleri.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {
+        delimiters: [
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\\[', right: '\\\]', display: true},
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+        ],
+        throwOnError : false,
+        strict: false
+    });"></script>
+</head>
+<body>
+    <div class="sidebar">
+<h3>İÇİNDEKİLER</h3>
+<ul class="toc-list">
+<li><a href="#h-1-e-im">A. Eğim</a>
+<ul class="toc-sublist">
+<li><a href="#h-2-negatif-e-imli-e-riler">a. Negatif Eğimli Eğriler</a>
+</li>
+<li><a href="#h-3-pozitif-e-imli-e-riler">b. Pozitif Eğimli Eğriler</a>
+</li></ul>
+</li>
+<li><a href="#h-4-toplam-marjinal-ve-ortalama">B. Toplam, Marjinal ve Ortalama</a>
+<ul class="toc-sublist">
+<li><a href="#h-5-marjinal">a. Marjinal</a>
+</li>
+<li><a href="#h-6-ortalama">b. Ortalama</a>
+</li></ul>
+</li>
+<li><a href="#h-7-kardinalist-t-ketim-kuram">C. Kardinalist Tüketim Kuramı</a>
+<ul class="toc-sublist">
+<li><a href="#h-8-toplam-fayda-total-utility-tu">a. Toplam Fayda (Total Utility, TU):</a>
+</li>
+<li><a href="#h-9-marjinal-fayda-marginal-utility-mu">b. Marjinal Fayda (Marginal Utility, MU):</a>
+</li>
+<li><a href="#h-10-azalan-marjinal-fayda-yasas-gossen-1">c. Azalan Marjinal Fayda Yasası (Gossen 1)</a>
+</li></ul>
+</li>
+<li><a href="#h-11-ordinalist-t-ketim-kuram">D. Ordinalist Tüketim Kuramı</a>
+<ul class="toc-sublist">
+<li><a href="#h-12-farks-zl-k-e-risi-kay-ts-zl-k-e-fayda-e-risi">a. Farksızlık Eğrisi (Kayıtsızlık -- Eş Fayda Eğrisi)</a>
+</li>
+<li><a href="#h-13-marjinal-i-kame-oran-marginal-rate-of-substitution-mrs">b. Marjinal İkame Oranı (Marginal Rate of Substitution, MRS)</a>
+</li>
+<li><a href="#h-14-a-tipik-farks-zl-k-e-riler">c. A Tipik Farksızlık Eğriler</a>
+</li></ul>
+</li>
+<li><a href="#h-15-b-t-e-do-rusu">E. Bütçe Doğrusu</a>
+<ul class="toc-sublist">
+<li><a href="#h-16-b-t-e-do-rusunun-e-imi">a. Bütçe Doğrusunun Eğimi</a>
+</li>
+<li><a href="#h-17-b-t-e-denklemi-k-s-t">b. Bütçe Denklemi (Kısıtı)</a>
+</li>
+<li><a href="#h-18-b-t-e-do-rusunun-e-im-ve-konumunun-de-i-mesi">c. Bütçe Doğrusunun Eğim ve Konumunun Değişmesi</a>
+</li>
+<li><a href="#h-19-mal-t-rleri">d. Mal Türleri</a>
+</li></ul>
+</li>
+<li><a href="#h-20-t-ketici-dengesi-fayda-maksimizasyonu">F. Tüketici Dengesi (Fayda Maksimizasyonu)</a>
+<ul class="toc-sublist">
+<li><a href="#h-21-a-tipik-t-ketici-dengesi">a. A Tipik Tüketici Dengesi</a>
+</li></ul>
+</li>
+<li><a href="#h-22-t-ketici-dengesinin-de-i-mesi">G. Tüketici Dengesinin Değişmesi</a>
+<ul class="toc-sublist">
+<li><a href="#h-23-mallar-n-fiyat-n-n-de-i-imi">a. Malların Fiyatının Değişimi</a>
+</li>
+<li><a href="#h-24-t-keticinin-gelirinin-b-t-enin-de-i-imi">b. Tüketicinin Gelirinin (Bütçenin) Değişimi</a>
+</li>
+</ul></li>
+</ul>
+</div>
+    <main class="content">
+        <h1>Mikro İktisat</h1>
+        <h2 id="h-1-e-im"><span class="prefix-num">A. </span>Eğim</h2>
+
+<p>Bağımsız değişkenin bir birim arttırılmasıyla bağımlı değişkenin kaç birim değişeceğini anlatır.</p>
+
+<blockquote>$$m = \frac{\Delta y}{\Delta x} = \frac{y_{2} - y_{1}}{x_{2} - x_{1}}$$</blockquote>
+
+<ul>
+<li>Doğrusal fonksiyonlarda (yani X'in üssü 1 ise) katsayı eğimi verir.
+<p></p></li><p></p>
+<li>Bir doğru dikleştikçe eğimi artmaktadır.
+<p></p></li><p></p>
+<li>Eğimi bulmak için grafikteki doğrulara teğetler çizmek gereklidir.
+<p></p></li>
+</ul>
+
+<h4 id="h-2-negatif-e-imli-e-riler"><span class="prefix-num">a. </span>Negatif Eğimli Eğriler</h4>
+
+<blockquote><img src="/content/mikro-iktisat/media/image1.webp" alt="Orijine Göre İç Bükey, Dış Bükey ve Doğrusal Negatif Eğimli Eğriler - Soldan sağa üç farklı geometrik yapıda negatif eğimli eğri seti bulunmaktadır. İlk grafik orijine göre iç bükey (artan marjinal dönüşüm oranı), ikinci grafik orijine göre dış bükey (azalan marjinal ikame oranı) ve üçüncü grafik sabit eğimli doğrusal yapıyı temsil eder. X ekseni: x, Y ekseni: y. Tür: eğri">{width="6.3in" height="2.0944444444444446in"}</blockquote>
+
+<h4 id="h-3-pozitif-e-imli-e-riler"><span class="prefix-num">b. </span>Pozitif Eğimli Eğriler</h4>
+
+<blockquote><img src="/content/mikro-iktisat/media/image2.webp" alt="Pozitif Eğimli İç Bükey, Dış Bükey ve Doğrusal Eğriler - Artan bir trend izleyen üç farklı fonksiyonel yapıdır. İlk grafik azalarak artan (iç bükey), ikinci grafik artarak artan (dış bükey) ve üçüncü grafik sabit oranlı artan (doğrusal) bir seyir izlemektedir. X ekseni: x, Y ekseni: y. Tür: eğri">{width="6.299212598425197in" height="2.4803149606299213in"}</blockquote>
+
+<h2 id="h-4-toplam-marjinal-ve-ortalama"><span class="prefix-num">B. </span>Toplam, Marjinal ve Ortalama</h2>
+
+<h4 id="h-5-marjinal"><span class="prefix-num">a. </span>Marjinal</h4>
+
+<ul>
+<li>Miktarın 1 birim arttırılmasıyla toplamda ortaya çıkan değişimdir.
+<p></p></li><p></p>
+<li>İktisatta eğimin karşılığıdır.
+<p></p></li><p></p>
+<li>Yani en sonuncu birimin katkısı anlamında gelir.
+<p></p></li><p></p>
+<li>Türev ile bulunur.
+<p></p></li>
+</ul>
+
+<blockquote>$$M = \frac{dT}{dQ}$$
+<p><img src="/content/mikro-iktisat/media/image3.webp" alt="Toplam ve Marjinal Değer Korelasyonu - Sol panelde toplam değerin (TV) azalarak artıp miktar 10 birim iken maksimuma ulaştığı konkav bir eğri, sağ panelde ise marjinal değerin (MV) negatif eğimli bir doğru olduğu görülmektedir. Toplam değerin zirve noktasında (Q=10) marjinal değer sıfıra eşittir. X ekseni: Miktar (Q), Y ekseni: Toplam Değer / Marjinal Değer. Tür: eğri">{width="6.3in" height="2.7in"}</p></blockquote>
+
+<h4 id="h-6-ortalama"><span class="prefix-num">b. </span>Ortalama</h4>
+
+<ul>
+<li>Bağımsız değişken başına düşen değeri ifade eder.
+<p></p></li><p></p>
+<li>Orijinden çıkan doğrunun yatay eksenle yaptığı açının tanjantıdır.
+<p></p></li>
+</ul>
+
+<blockquote>$$A = \frac{\text{Toplam}}{\text{Miktar}}$$</blockquote>
+
+<h2 id="h-7-kardinalist-t-ketim-kuram"><span class="prefix-num">C. </span>Kardinalist Tüketim Kuramı</h2>
+
+<ul>
+<li>Faydanın ölçülebileceğini öne sürmektedirler.
+<p></p></li>
+</ul>
+
+<h4 id="h-8-toplam-fayda-total-utility-tu"><span class="prefix-num">a. </span>Toplam Fayda (Total Utility, TU):</h4>
+
+<ul>
+<li>Bir malın tüketilen tüm birimlerinin faydalarının toplamıdır.
+<p></p></li><p></p>
+<li>En az iki kere türevi alınabilir, yani doğrusal değildir.
+<p></p></li>
+</ul>
+
+<blockquote>$$TU = f(Q)$$</blockquote>
+
+<ul>
+<li>Toplam fayda azalarak artandır.
+<p></p></li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image4.webp" alt="Toplam Fayda (TU) Eğrisi - Tüketilen mal miktarı arttıkça toplam faydanın azalarak artan bir seyir izlediği konkav eğridir. Eğrinin eğimi, azalan marjinal fayda nedeniyle giderek düşmektedir. X ekseni: Miktar (Q), Y ekseni: Toplam Fayda (TU). Tür: eğri">{width="5.118110236220472in" height="3.838582677165354in"}</blockquote>
+
+<h4 id="h-9-marjinal-fayda-marginal-utility-mu"><span class="prefix-num">b. </span>Marjinal Fayda (Marginal Utility, MU):</h4>
+
+<ul>
+<li>Tüketimin bir birim artmasıyla toplam faydada meydana gelen değişimdir.
+<p></p></li><p></p>
+<li>Yani son birim faydasıdır.
+<p></p></li>
+</ul>
+
+<blockquote>$$MU = \frac{dTU}{dQ} = \frac{\Delta TU}{\Delta Q}$$</blockquote>
+
+<ul>
+<li>Marjinal fayda azalandır
+<p></p></li><p></p>
+<li>Marjinal fayda sıfırken toplam fayda maksimumdur. Buna "doyum noktası" denir.
+<p></p></li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image5.webp" alt="Marjinal Fayda (MU) Eğrisi ve Doyum Noktası - Tüketilen miktar arttıkça ek birimin sağladığı faydanın azaldığını gösteren negatif eğimli doğrusal eğridir. Miktar 5 birim olduğunda marjinal fayda sıfıra ulaşarak doyum noktasını belirler; bu noktadan sonra marjinal fayda negatiftir. X ekseni: Tüketilen Miktar (Q), Y ekseni: Marjinal Fayda (MU). Tür: eğri">{width="5.118110236220472in" height="3.838582677165354in"}</blockquote>
+
+<h4 id="h-10-azalan-marjinal-fayda-yasas-gossen-1"><span class="prefix-num">c. </span>Azalan Marjinal Fayda Yasası (Gossen 1)</h4>
+
+<ul>
+<li>Tüketilen miktar arttıkça marjinal fayda azalır ve toplam fayda artar.
+<p></p></li><p></p>
+<li>Bu yasaya uymayan durumlara ise "atipik durumlar" denir.
+<p></p></li>
+</ul>
+
+<h2 id="h-11-ordinalist-t-ketim-kuram"><span class="prefix-num">D. </span>Ordinalist Tüketim Kuramı</h2>
+
+<ul>
+<li>Faydanın ölçülemeyeceğini ancak sıralanabileceğini öne sürmektedirler.
+<p></p></li>
+</ul>
+
+<h4 id="h-12-farks-zl-k-e-risi-kay-ts-zl-k-e-fayda-e-risi"><span class="prefix-num">a. </span>Farksızlık Eğrisi (Kayıtsızlık -- Eş Fayda Eğrisi)</h4>
+
+<ul>
+<li>Bir tüketicinin tükettiği iki farklı mal bileşiminin yer aldığı ve bu bileşimlerin her birinin tüketiciye tamamen aynı toplam fayda (memnuniyet) düzeyini sağladığı noktaların geometrik yeridir.
+<p></p></li><p></p>
+<li>Buna göre tüketici bir malın tüketimini arttırırken diğerini azalttığı için fayda aynı kalmaktadır.
+<p></p></li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image6.webp" alt="Farksızlık Eğrisi Grafiği (U = 100) - Tüketiciye aynı tatmin düzeyini sağlayan mal bileşimlerini gösteren, orijine göre dış bükey ve negatif eğimli bir eğridir. Eğri boyunca sağ aşağı hareket edildikçe azalan marjinal ikame oranı gözlenir. X ekseni: Mal X Miktarı, Y ekseni: Mal Y Miktarı. Tür: eğri">{width="5.118110236220472in" height="3.838581583552056in"}</blockquote>
+
+<ul>
+<li>Özellikleri şunlardır:
+<ul>
+<li>Üzerindeki her noktada fayda aynıdır.
+<p></p></li>
+</ul>
+</li><p></p>
+<li>Ancak mallar ve eğimler farklıdır.
+<ul>
+<li>Bu nedenle mallar ikamedir.
+<p></p></li><p></p>
+<li>Birden fazla farksızlık eğrisi olabilmektedir.
+<p></p></li><p></p>
+<li>Bu eğriler orijinden uzaklaştıkça "toplam fayda" artar.
+<p></p></li><p></p>
+<li>Farksızlık eğrileri birbirlerini kesmezler
+<ul>
+<li>Çünkü kestiklerin takdirde tüketicinin tutarlılık (geçişkenlik) ilkesi ihlal edilmiş olur.
+<p></p></li>
+</ul>
+</li>
+</ul>
+</li><p></p>
+<li>Negatif eğimlidir.
+<p></p></li><p></p>
+<li>Orijine göre dış bükeydir.
+<p></p></li><p></p>
+<li>Tüketicinin aynı fayda düzeyini korurken bir malın tüketimini artırdıkça diğer maldan vazgeçmeye razı olduğu miktarın giderek azalmasını ifade eden "Azalan Marjinal İkame Oranı" ilkesidir.
+<p></p></li>
+</ul>
+
+<h4 id="h-13-marjinal-i-kame-oran-marginal-rate-of-substitution-mrs"><span class="prefix-num">b. </span>Marjinal İkame Oranı (Marginal Rate of Substitution, MRS)</h4>
+
+<ul>
+<li>X ürününün tüketimi 1 birim arttırıldığında faydanın aynı kalabilmesi için vazgeçilen ya da tüketmesi gereken Y ürünün miktarıdır.
+<p></p></li><p></p>
+<li>Farksızlık eğrisinin eğimidir.
+<p></p></li>
+</ul>
+
+<blockquote>$$MRS_{x,y} = - \frac{MU_{x}}{MU_{y}}$$
+<p><img src="/content/mikro-iktisat/media/image7.webp" alt="Marjinal İkame Oranı (MRS) ve Teğet Analizi - Bir farksızlık eğrisi üzerindeki A noktasında (5, 10) çizilen teğet doğrusunun eğimi gösterilmektedir. Bu noktada MRS değeri -2\'dir ve tüketicinin denge durumundaki ikame tercihini yansıtır. X ekseni: X Malı Miktarı, Y ekseni: Y Malı Miktarı. Tür: eğri">{width="5.118110236220472in" height="3.5824507874015747in"}</p></blockquote>
+
+<ul>
+<li>Cobb-Douglas Tipi Fayda Fonksiyonu
+<p></p></li>
+</ul>
+
+<blockquote>$$U = A \cdot X^{\alpha} \cdot Y^{\beta}$$</blockquote>
+
+<h4 id="h-14-a-tipik-farks-zl-k-e-riler"><span class="prefix-num">c. </span>A Tipik Farksızlık Eğriler</h4>
+
+<ul>
+<li><strong>Doğrusal Farksızlık Eğrileri (Tam İkame)</strong>
+<ul>
+<li><strong>Mantık</strong>: Tüketici için X ve Y arasında hiçbir fark yoktur (Örn: İki farklı marka su).
+<p></p></li><p></p>
+<li><strong>Özellik</strong>: Marjinal İkame Oranı (MRS) sabittir.
+<p></p></li><p></p>
+<li><strong>Fonksiyon</strong>: $U = aX\  + \ bY$
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image8.webp" alt="Tam İkame Mallar ve Doğrusal Farksızlık Eğrileri - Sabit marjinal ikame oranına (MRS) sahip, birbirine paralel ve negatif eğimli doğrusal farksızlık eğrileridir (U1, U2, U3). Orijinden uzaklaştıkça fayda seviyesi artmaktadır. X ekseni: X Malı, Y ekseni: Y Malı. Tür: eğri">{width="2.7559055118110236in" height="2.7559055118110236in"}</blockquote>
+
+<ul>
+<li><strong>L Şeklinde Farksızlık Eğrileri (Tam Tamamlayıcı)</strong>
+<ul>
+<li><strong>Mantık</strong>: Mallar sabit bir oranda, birlikte tüketilmek zorundadır (Örn: Sağ ve sol ayakkabı).
+<p></p></li><p></p>
+<li><strong>Özellik</strong>: Leontief fayda fonksiyonu geçerlidir ve köşe noktaları dışında ikame yoktur.
+<p></p></li><p></p>
+<li><strong>Fonksiyon</strong>: $U(x,y) = \min(aX,bY)$
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image9.webp" alt="Tam Tamamlayıcı Mallar (L Şekli) - Malların sabit oranlarda birlikte tüketilmesi gerektiğini gösteren, birbirini kesmeyen dik açılı (L biçimli) farksızlık eğrileridir. Fayda artışı orijinden dışarıya doğru 45 derecelik bir hat üzerinde gerçekleşir. X ekseni: X Malı, Y ekseni: Y Malı. Tür: eğri">{width="2.7559055118110236in" height="2.7559055118110236in"}</blockquote>
+
+<ul>
+<li><strong>Pozitif Eğimli Eğriler (Kötü Mal)</strong>
+<ul>
+<li>Mallardan biri \"kötü\" (çöp, gürültü, risk), diğeri \"iyi\"dir.
+<p></p></li><p></p>
+<li>Faydayı sabit tutmak için kötü malın artışı, iyi mal ile telafi edilmelidir.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image10.webp" alt="Kötü Mal ve İyi Mal İlişkisi (X Kötü, Y İyi) - Tüketicinin katlanmak zorunda olduğu bir \" kötü\"="" (x)="" karşılığında="" \"iyi\"="" (y)="" maldan="" daha="" fazla="" talep="" ettiği="" durumu="" gösteren="" pozitif="" eğimli="" doğrusal="" farksızlık="" eğrileridir.="" fayda="" artışı="" sol="" yukarı="" (daha="" az="" kötü="" mal,="" çok="" iyi="" mal)="" yönündedir.="" x="" ekseni:="" malı="" (kötü),="" y="" (İyi).="" tür:="" eğri"="">{width="2.7559055118110236in" height="2.7559055118110236in"}</blockquote>
+
+<ul>
+<li><strong>Dikey ve Yatay Eğriler (Nötr Mal)</strong>
+<ul>
+<li><strong>Dikey</strong>: X fayda verir, Y nötrdür (faydayı etkilemez).
+<p></p></li><p></p>
+<li><strong>Fonksiyon</strong>: $U(X,Y) = a \cdot X$
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image11.webp" alt="Nötr Mal ve Dikey Farksızlık Eğrileri (Y Nötr, X İyi) - Tüketicinin Y malına karşı tamamen duyarsız olduğunu, toplam faydasının sadece X malı tüketimine bağlı olduğunu gösteren Y eksenine paralel dikey farksızlık eğrileridir (U1, U2, U3). Fayda artışı sağa doğru gerçekleşir. X ekseni: X Malı (İyi), Y ekseni: Y Malı (Nötr). Tür: eğri">{width="2.7559055118110236in" height="2.7559055118110236in"}</blockquote>
+
+<ul>
+<li><strong>Yatay</strong>: Y fayda verir, X nötrdür.
+<p></p></li><p></p>
+<li><strong>Fonksiyon:</strong> $U(X,Y) = b \cdot Y$
+<p></p></li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image12.webp" alt="Nötr Mal ve Yatay Farksızlık Eğrileri (X Nötr, Y İyi) - Tüketicinin X malı tüketiminden fayda sağlamadığını ve duyarsız olduğunu gösteren, X eksenine paralel yatay farksızlık eğrileridir. Toplam fayda sadece Y malı miktarı arttıkça yükselir. X ekseni: X Malı (Nötr), Y ekseni: Y Malı (İyi). Tür: eğri">{width="2.7559055118110236in" height="2.7559055118110236in"}</blockquote>
+
+<ul>
+<li>Farksızlık eğrisi, her zaman fayda veren (iyi) malın eksenine dik konumdadır.
+<p></p></li>
+</ul>
+
+<ul>
+<li><strong>Orijine Göre İç Bükey (Konkav) Eğriler</strong>
+<ul>
+<li><strong>Mantık</strong>: Bağımlılık yaratan mallar veya uzmanlaşma isteği.
+<p></p></li><p></p>
+<li><strong>Özellik</strong>: MRS artandır.
+<p></p></li><p></p>
+<li>Tüketici genelde sadece bir malı tüketmeyi (köşe dengesi) tercih eder.
+<p></p></li><p></p>
+<li><strong>Formül</strong>: $U = aX^{n} + bY^{n}$
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image13.webp" alt="Orijine Göre İç Bükey Farksızlık Eğrileri (İki Kötü Mal) - Her iki malın da tüketiciye rahatsızlık verdiği durumu temsil eden, orijine yaklaştıkça fayda seviyesinin arttığı konkav yapılı eğrilerdir. U1 en yüksek, U3 en düşük fayda düzeyini temsil eder. X ekseni: X Malı, Y ekseni: Y Malı. Tür: eğri">{width="2.7559055118110236in" height="2.7559055118110236in"}</blockquote>
+
+<h2 id="h-15-b-t-e-do-rusu"><span class="prefix-num">E. </span>Bütçe Doğrusu</h2>
+
+<ul>
+<li>Tüketicinin mevcut bütçesi ile alabileceği mal miktarlarını gösteren eğridir.
+<p></p></li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image14.webp" alt="Bütçe Doğrusu ve Tam Sayı Demetleri - Tüketicinin sınırlı geliriyle satın alabileceği maksimum mal miktarlarını birleştiren negatif eğimli doğrudur. Ekseni kesen noktalar (M/Px ve M/Py) reel geliri gösterirken, doğru üzerindeki kırmızı noktalar bütçenin tam kullanıldığı tam sayı mal bileşimlerini temsil eder. X ekseni: X Malı, Y ekseni: Y Malı. Tür: eğri">{width="5.118110236220472in" height="3.9823108048993876in"}</blockquote>
+
+<ul>
+<li>Alınabilecek maksimum X malı miktarı: $X_{\max} = \frac{M}{P_{x}}$
+<p></p></li><p></p>
+<li>Alınabilecek maksimum Y malı miktarı: $Y_{\max} = \frac{M}{P_{y}}$
+<p></p></li><p></p>
+<li>Bütçe doğrusunun eksenleri kestiği noktalara reel gelir denir.
+<p></p></li>
+</ul>
+
+<h4 id="h-16-b-t-e-do-rusunun-e-imi"><span class="prefix-num">a. </span>Bütçe Doğrusunun Eğimi</h4>
+
+<blockquote>$$\text{Eğim} = - \frac{P_{x}}{P_{y}}$$</blockquote>
+
+<h4 id="h-17-b-t-e-denklemi-k-s-t"><span class="prefix-num">b. </span>Bütçe Denklemi (Kısıtı)</h4>
+
+<blockquote>$$I = \left( P_{X} \cdot Q_{X} \right) + \left( P_{Y} \cdot Q_{Y} \right)$$
+<p>$$y = \frac{I}{P_{y}} - \left( \frac{P_{x}}{P_{y}} \right)Qx$$</p></blockquote>
+
+<ul>
+<li>Grafikte noktanın durumuna göre;
+<ul>
+<li><strong>Üzerinde ise</strong>; gelir ve fiyatlar aynı ve sabittir.
+<p></p></li><p></p>
+<li><strong>İçinde ise</strong>; para artmıştır.
+<p></p></li><p></p>
+<li><strong>Dışında ise</strong>; para eksiktir.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<h4 id="h-18-b-t-e-do-rusunun-e-im-ve-konumunun-de-i-mesi"><span class="prefix-num">c. </span>Bütçe Doğrusunun Eğim ve Konumunun Değişmesi</h4>
+
+<ul>
+<li><strong>Eğim Değişimi (Fiyat Değişimi)</strong>
+<ul>
+<li><strong>Tek Malın Fiyatının Düşmesi (Px ↓):</strong> Dikey eksen sabit, yatay eksen dışa doğru döner. Doğru yatıklaşır.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image15.webp" alt="X Malı Ucuzladığında Bütçe Doğrusunun Değişimi - Y malı fiyatı ve bütçe sabitken X malı fiyatının düşmesi sonucu bütçe doğrusunun Y eksenindeki ucu sabit kalırken X eksenindeki kesim noktasının sağa doğru kaymasıdır. Bu durum bütçe doğrusunun yatıklaşmasına ve X malı için reel gelirin artmasına neden olur. X ekseni: X, Y ekseni: Y. Tür: eğri">{width="3.1496062992125986in" height="2.099737532808399in"}</blockquote>
+
+<ul>
+<li><strong>Orantısız Fiyat Artışı (Px ↑↑ \&gt; Py ↑):</strong> Her iki eksen içeri daralır ama X ekseni daha fazla çekilir. Doğru dikleşerek içeri kayar.
+<p></p></li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image16.webp" alt="Orantısız Fiyat Artışı ve Bütçe Doğrusunda Dikleşme - Her iki malın fiyatı artarken X malı fiyatının Y malına göre çok daha fazla artması (Px\>Py) sonucu bütçe doğrusunun sola/içeriye kayarak dikleşmesidir. Satın alma gücü her iki mal için daralmış ancak X malı için kayıp daha fazla olmuştur. X ekseni: X, Y ekseni: Y. Tür: eğri">{width="3.1496062992125986in" height="2.099737532808399in"}</blockquote>
+
+<ul>
+<li><strong>Ters Yönlü Değişim (Px ↓, Py ↑):</strong> X ekseni sağa, Y ekseni aşağı gider. Doğrular kesişir (makas hareketi). Doğru yatıklaşır.
+<p></p></li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image17.webp" alt="X Malı Ucuzlayıp Y Malı Pahalandığında Bütçe Doğrusu - X malı fiyatının düşmesiyle X eksenindeki kesim noktasının sağa, Y malı fiyatının artmasıyla Y eksenindeki kesim noktasının aşağı kayması sonucu doğrunun pivot hareketiyle yatıklaşmasıdır. Nispi fiyatlar X malı lehine değişmiştir. X ekseni: X, Y ekseni: Y. Tür: eğri">{width="3.1496062992125986in" height="2.099737532808399in"}</blockquote>
+
+<ul>
+<li><strong>Gelir Değişimleri (Eğim Sabit Kalır)</strong>
+<ul>
+<li><strong>Saf Gelir Artışı (M↑):</strong> Fiyatlar sabitken gelir artarsa doğru, paralel sağa kayar.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image18.webp" alt="Saf Gelir Artışı ve Bütçe Kısıtı - Mal fiyatları sabitken tüketicinin nominal gelirinin (M) artması sonucu bütçe doğrusunun eğimi değişmeden paralel bir şekilde sağa/yukarı kaymasıdır. Tüketicinin her iki mal için de satın alma gücü aynı oranda artmıştır. X ekseni: X, Y ekseni: Y. Tür: eğri">{width="3.1496062992125986in" height="2.099737532808399in"}</blockquote>
+
+<ul>
+<li><strong>Reel Gelir Artışı (Gelir Artışı \&gt; Fiyat Artışı):</strong> Alım gücü arttığı için doğru, paralel sağa kayar (Nispi fiyatlar değişmediği sürece).
+<p></p></li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image19.webp" alt="Gelir ve Fiyatların Farklı Oranlarda Artışı - Gelirin %50, fiyatların ise %25 oranında arttığı senaryoda, gelirin fiyatlardan daha fazla artması nedeniyle reel gelirin yükselmesini ve bütçe doğrusunun paralel bir şekilde sağa kaymasını ifade eder. X ekseni: X, Y ekseni: Y. Tür: eğri">{width="3.1496062992125986in" height="2.099737532808399in"}</blockquote>
+
+<ul>
+<li><strong>Özel Durumlar</strong>
+<ul>
+<li><strong>Saf Enflasyon:</strong> Gelir ve tüm fiyatlar aynı oranda (örneğin %100) artarsa; bütçe doğrusu hiç hareket etmez. Reel alım gücü değişmez.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image20.webp" alt="Saf Enflasyonun Bütçe Doğrusuna Etkisi - Tüketicinin geliri ile her iki malın fiyatının aynı oranda artması durumunda, reel gelir ve nispi fiyatlar değişmediği için bütçe doğrusunun konumunda ve eğiminde herhangi bir değişiklik olmadığını gösteren grafiktir. X ekseni: X, Y ekseni: Y. Tür: eğri">{width="3.1496062992125986in" height="2.099737532808399in"}</blockquote>
+
+<h4 id="h-19-mal-t-rleri"><span class="prefix-num">d. </span>Mal Türleri</h4>
+
+<table>
+<colgroup>
+<col style="width: 18%">
+<col style="width: 21%">
+<col style="width: 25%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Mal Türü</strong></th>
+<th style="text-align: center;"><strong>Gelir (M) Artarsa</strong></th>
+<th style="text-align: center;"><strong>Fiyat (P) Artarsa</strong></th>
+<th style="text-align: center;"><strong>Temel Mantık</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>Normal Mal</strong></td>
+<td style="text-align: center;">Talep Artar</td>
+<td style="text-align: center;">Talep Azalır</td>
+<td style="text-align: center;">Gelirle doğru, fiyatla ters orantılıdır. En yaygın mal grubudur.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Üstün (Lüks) Mal</strong></td>
+<td style="text-align: center;">Talep ÇOK Artar</td>
+<td style="text-align: center;">Talep Azalır</td>
+<td style="text-align: center;">Normal malın bir alt türüdür. Gelir artışından çok etkilenir.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Düşük (Fakir) Mal</strong></td>
+<td style="text-align: center;">Talep Azalır</td>
+<td style="text-align: center;">Talep Azalır</td>
+<td style="text-align: center;">Gelir artınca "terfi" edilir, daha kaliteli mala geçilir. Fiyat artınca her normal mal gibi talebi düşer.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Giffen Mal</strong></td>
+<td style="text-align: center;">Talep Azalır</td>
+<td style="text-align: center;">Talep ARTAR</td>
+<td style="text-align: center;">Düşük malın ekstrem halidir. Fiyatı artsa bile tüketicinin başka çaresi olmadığı için daha fazla alır.</td>
+</tr>
+</tbody>
+</table>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 1:</strong> Yatay eksende düşük malın, dikey eksende ise üstün malın olduğu bir grafikte tüketicinin geliri artarsa bütçe doğrusu nasıl değişir?</span>
+  <div class="example-content">
+    <blockquote><img src="/content/mikro-iktisat/media/image21.webp" alt="Gelir Artışının Düşük ve Üstün Mal Tüketimine Etkisi - Gelir artışı sonrası (I2 \> I1) denge noktasının E1\'den E2\'ye kayışını analiz eder. Gelir artmasına rağmen yatay eksendeki malın tüketim miktarının azalması (sola kayış), bu malın \" düşük="" mal\"="" olduğunu;="" dikey="" eksendeki="" malın="" tüketiminin="" artması="" ise="" onun="" \"üstün="" olduğunu="" gösterir.="" x="" ekseni:="" mal="" (yatay="" eksen),="" y="" Üstün="" (dikey="" eksen).="" tür:="" eğri"="">{width="5.118110236220472in" height="3.0707534995625547in"}
+<p></p></blockquote>
+<span class="badge">Cevap</span>
+<p>-</p>
+<strong>Bütçe Doğrusu</strong>
+<p>: Tüketicinin geliri arttığında, her iki malın fiyatı sabitken satın alma gücü arttığı için bütçe doğrusu sağa paralel kayar.</p>
+<p></p>
+<ul>
+<li><strong>Denge Noktası (</strong>$\mathbf{E}_{\mathbf{1}}$ <strong>=\&gt;</strong> $\mathbf{E}_{\mathbf{2}}$<strong>):</strong> Yeni denge noktası, yeni bütçe doğrusu üzerinde ancak eski konuma göre sola ve yukarı bir noktada oluşur.
+<p></p></li><p></p>
+<li><strong>Sola Kayma</strong>: Yatay eksendeki düşük malın miktarının azaldığını gösterir (Gelir etkisi negatiftir).
+<p></p></li><p></p>
+<li><strong>Yukarı Kayma</strong>: Dikey eksendeki üstün malın miktarının arttığını gösterir (Gelir etkisi pozitiftir).
+<p></p></li><p></p>
+<li><strong>Sonuç</strong>: Bu hareket, tüketicinin zenginleştikçe kalitesiz (düşük) malı, kaliteli (üstün) mal ile ikame ettiğini kanıtlar. 
+<p></p></li>
+</ul>
+<p></p>
+  </div>
+</div>
+
+<h2 id="h-20-t-ketici-dengesi-fayda-maksimizasyonu"><span class="prefix-num">F. </span>Tüketici Dengesi (Fayda Maksimizasyonu)</h2>
+
+<ul>
+<li>Farksızlık eğrileri (tercihler) ile bütçe doğrusunun (imkanlar) bir araya gelmesidir.
+<p></p></li><p></p>
+<li>Farksızlık eğrisi fayda bilgisin, bütçe doğrusu ise alınabilecek mal miktarı bilgisini verir.
+<p></p></li><p></p>
+<li>Tüketici dengesi; bütçe doğrusunun, orijine en uzak (en dıştaki) farksızlık eğrisine teğet geçtiği noktadır.
+<p></p></li><p></p>
+<li>Denge durumunda iki mal tükettiği için "dahili denge" denir.
+<p></p></li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image22.webp" alt="Standart Tüketici Dengesi Analizi - Orijine göre dışbükey (azalan marjinal ikame oranlı) farksızlık eğrileri ile bütçe kısıtının etkileşimini gösterir. Maksimum fayda, bütçe doğrusunun en dıştaki farksızlık eğrisine (U2) teğet geçtiği E noktasında sağlanır; bu noktada MRS = Px/Py eşitliği gerçekleşir. X ekseni: X Malı Miktarı, Y ekseni: Y Malı Miktarı. Tür: eğri">{width="5.118110236220472in" height="3.5824518810148733in"}
+<p>$$\text{Eğim}_{\text{Farksızlık}} = \text{Eğim}_{\text{Bütçe Doğrusu}}$$</p>
+<p>$$MRS_{xy} = - \frac{P_{x}}{P_{y}}$$</p>
+<p>$$\frac{MU_{x}}{MU_{y}} = \frac{P_{x}}{P_{y}}\ $$</p></blockquote>
+
+<ul>
+<li>Burada iki temel kural ve varsayım mevcuttur:
+<ul>
+<li>Tüketici dengesinde, farksızlık eğrisinin eğimi (MRS), bütçe doğrusunun eğimine (fiyatlar oranına) eşit olmalıdır.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<blockquote>$$\frac{MU_{x}}{MU_{y}} = \frac{P_{x}}{P_{y}}$$</blockquote>
+
+<ul>
+<li>Tüketici, rasyonel olduğu için gelirinin tamamını harcamalıdır.
+<p></p></li>
+</ul>
+
+<blockquote>$$I = P_{x} \cdot X + P_{y} \cdot Y$$</blockquote>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 1:</strong> Bir tüketicinin fayda fonksiyonu $U = X^{1\text{/}2} \cdot Y^{1\text{/}4}$ olarak verilmiştir. Tüketici bütçesi 120 TL, X malı fiyatı (Px) 4 TL, Y malı fiyatı (Py) 2 TL ise faydayı maksimize eden X ve Y miktarları nedir?</span>
+  <div class="example-content">
+    <p><span class="badge">Çözüm</span> - <strong>Aşama 1 (Denge Koşulu):</strong> $\mathbf{\ }\frac{\mathbf{M}\mathbf{U}_{\mathbf{x}}}{\mathbf{M}\mathbf{U}_{\mathbf{y}}}\mathbf{=}\frac{\mathbf{P}_{\mathbf{x}}}{\mathbf{P}_{\mathbf{y}}}$<strong>​</strong></p>
+<blockquote>$$\frac{\frac{1}{2}X^{- 1\text{/}2}Y^{1\text{/}4}}{\frac{1}{4}X^{1\text{/}2}Y^{- 3\text{/}4}} = \frac{4}{2}$$</blockquote>
+<ul>
+<li><strong>Sadeleştirme sonrası:</strong>
+<p></p></li>
+</ul>
+<p></p>
+<blockquote>$$\frac{2Y}{X} = 2 \Rightarrow 2X = 2Y \Rightarrow X = Y$$</blockquote>
+<ul>
+<li><strong>Aşama 2 (Bütçe Doğrusu):</strong>
+<p></p></li>
+</ul>
+<p></p>
+<blockquote>$$M = P_{x} \cdot X + P_{y} \cdot Y$$
+<p>$$120 = \ 4X\  + \ 2Y$$</p>
+<p>$$X = Y\ olduğu\ için:\ 120\, = \, 4X\, + \, 2X\, \Rightarrow 6X\, = \, 120$$</p></blockquote>
+<p></p>
+<ul>
+<li><strong>Sonuç</strong>: $X = 20,Y = 20$
+<p></p></li>
+</ul>
+<p></p>
+  </div>
+</div>
+
+<h4 id="h-21-a-tipik-t-ketici-dengesi"><span class="prefix-num">a. </span>A Tipik Tüketici Dengesi</h4>
+
+<p>Her fayda fonksiyonunun ya da her farksızlık eğrisinin kendine ait bir denge koşulu vardır.</p>
+
+<ul>
+<li><strong>Doğrusal Farksızlık Eğrisinde Tüketici Dengesi</strong>
+<ul>
+<li><strong>Temel Mantık</strong>: Doğrusal farksızlık eğrileri, malların birbirini tam ikame ettiği durumlarda görülür $(u = Ax + By)$. Bu durumda Marjinal İkame Oranı (MRS) sabittir
+<p></p></li><p></p>
+<li><strong>Denge Durumları</strong>: Tüketici dengesi, farksızlık eğrisinin eğimi (MRS) ile bütçe doğrusunun eğiminin $(Px/Py)$ kıyaslanmasıyla bulunur:
+<ul>
+<li>$\mathbf{MRS}\  &gt; \ \mathbf{Px}/\mathbf{Py}:$ Farksızlık eğrisi daha diktir. Tüketici sadece X malı tüketir (Köşe Dengesi).
+<p></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image23.webp" alt="Köşe Dengesi: Sadece X Malı Tüketimi - Tam ikame mallar için geçerli olan bu analizde, farksızlık eğrisinin mutlak eğimi |MRS|, bütçe doğrusunun mutlak eğimi olan |Px/Py| değerinden daha büyüktür. Bu durumda tüketici, marjinal fayda/fiyat rasyosu daha yüksek olan X malına tüm gelirini tahsis eder ve denge dikey eksende Y=0 olan E noktasında oluşur. X ekseni: X Malı Miktarı, Y ekseni: Y Malı Miktarı. Tür: eğri">{width="3.937007874015748in" height="2.4606299212598426in"}</blockquote>
+
+<ul>
+<li>$\mathbf{MRS}\  &lt; \ \mathbf{Px}/\mathbf{Py}$: Farksızlık eğrisi daha yatıktır. Tüketici sadece Y malı tüketir (Köşe Dengesi).
+<p></p></li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image24.webp" alt="Köşe Dengesi: Sadece Y Malı Tüketimi - Tam ikame mallarda bütçe doğrusunun eğiminin, farksızlık eğrisinin sabit eğiminden daha büyük olduğu (|Px/Py| \> |MRS|) durumu gösterir. Tüketici, X malını çok pahalı bulduğu için tüm bütçesini dikey eksen üzerindeki Y malına harcar ve denge X=0 noktasında oluşur. X ekseni: X Malı Miktarı, Y ekseni: Y Malı Miktarı. Tür: eğri">{width="3.937007874015748in" height="2.4606299212598426in"}</blockquote>
+
+<ul>
+<li>$\mathbf{MRS}\  = \ \mathbf{Px}/\mathbf{Py}$: Eğriler çakışır. Bütçe doğrusu üzerindeki her nokta dengedir.
+<p></p></li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image25.webp" alt="Tam İkame Mallarda Çakışma Senaryosu - Farksızlık eğrisinin sabit eğimi ile bütçe doğrusunun eğiminin birbirine eşit olduğu (|MRS| = |Px/Py|) özel durumu temsil eder. Bu senaryoda farksızlık eğrisi ile bütçe doğrusu üst üste biner ve bütçe kısıtı üzerindeki her nokta tüketici için aynı maksimum faydayı sağlar; dolayısıyla sonsuz sayıda denge noktası mevcuttur. X ekseni: X Malı, Y ekseni: Y Malı. Tür: eğri">{width="3.937007874015748in" height="2.4606299212598426in"}</blockquote>
+
+<ul>
+<li><strong>NOT</strong>: $\ U = X + Y\ $ ise (katsayılar 1 ise) marjinal faydaları türev gereği 1'dir. Tüketici dengesi sorulursa sadece ucuz üründen alınır.
+<p></p></li>
+</ul>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 1:</strong> Bir tüketici için marjinal ikame oranı, malların fiyat oranından büyüktür $\left( {MRS}_{xy} > Px\text{/}Py \right)$. Bu durumla ilgili aşağıdakilerden hangisi doğrudur?</span>
+  <div class="example-content">
+    <blockquote><strong>a)</strong> Tüketici faydasını maksimize etmiştir.
+<p><strong>b)</strong> Tüketici sadece X malı tüketir.</p>
+<p><strong>c)</strong> Tüketici sadece Y malı tüketir.</p>
+<p><strong>d)</strong> Tüketici faydasını maksimize edememiştir.</p>
+<p><strong>e)</strong> Tüketici bütçe kısıtının dışındadır.</p>
+<p><strong>Doğru Cevap</strong>: D
+</p></blockquote>
+<span class="badge">Çözüm</span>
+<p>-</p>
+<strong>Sıradan Durum (Belirtilmemişse):</strong>
+<p>Denge için $MRS = Px/Py$ şarttır. Eğer $MRS > Px/Py$ ise denge yoktur; tüketici dengeye gelmek için X'i artırıp Y'yi azaltmalıdır.</p>
+<p></p>
+<ul>
+<li><strong>Tam İkame Durumu (Belirtilmişse):</strong> $MRS &gt; Px/Py$ ise \"Köşe Dengesi\" oluşur ve tüketici sadece X malı tüketerek faydasını maksimize eder.
+<p></p></li><p></p>
+<li><strong>Püf Noktası:</strong> Sorunun başında \"tam ikame\" ifadesi yoksa cevap \"denge yoktur\"; varsa cevap \"sadece X tüketir\" olur. 
+<p></p></li>
+</ul>
+<p></p>
+  </div>
+</div>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 2:</strong> Fayda Fonksiyonu $U = X + Y$ ve tüketici bütçesi 120 TL, Px = 4 TL, Py = 2 TL ise faydayı maksimize eden X ve Y?</span>
+  <div class="example-content">
+    <p><span class="badge">Çözüm</span> - <strong>Aşama 1:</strong></p>
+<blockquote>$$MRS = - \frac{MU_{x}}{MU_{y}} = - \frac{1}{1} \Rightarrow |MRS| = 1$$</blockquote>
+<ul>
+<li><strong>Aşama 2:</strong>
+<p></p></li>
+</ul>
+<p>$$Fiyatlar\ oran\imath = \frac{P_{x}}{P_{y}} = \frac{4}{2} = 2$$</p>
+<p></p>
+<ul>
+<li><strong>Aşama 3 (Kıyaslama):</strong>
+<p></p></li>
+</ul>
+<p></p>
+<blockquote>$$MRS &lt; \frac{P_{x}}{P_{y}}\ (1 &lt; 2)\ olduğu\ için\ tüketici\ sadece\ ucuz\ olan\ mal\imath\ (Y)\ al\imath r$$
+<p>$$y = \frac{M}{P_{y}} = \frac{120}{2} = 60$$</p></blockquote>
+<p></p>
+<ul>
+<li><strong>Sonuç</strong>: $Y = 60,\ \ X = 0$ (Köşe Dengesi) 
+<p></p></li>
+</ul>
+<p></p>
+  </div>
+</div>
+
+<ul>
+<li><strong>L Şeklinde Farksızlık Eğrisinde Tüketici Dengesi</strong>
+<ul>
+<li><strong>Temel Mantık</strong>: Mal İlişkisi: X ve Y malları birbirini tam olarak tamamlayan mallardır $\text{(}U = \min(Ax,By)$. Leontief tipidir.
+<p></p></li><p></p>
+<li><strong>Denge Koşulu</strong>: Tüketici her zaman farksızlık eğrisinin \"dirsek noktasında\" dengeye gelir. Bu noktada parantez içindeki değerler birbirine eşittir. $\text{(}Ax = By\text{)}\ $ve bütçenin tamamı harcanır. Dahili dengedir.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image26.webp" alt="Tam Tamlayıcı Mallarda Tüketici Dengesi (L Şekli) - Malların ancak belirli bir sabit oranda birlikte kullanılabildiği (L şekilli farksızlık eğrileri) durumu temsil eder. Bu durumda marjinal ikame oranı köşe noktalarında tanımsızdır ve denge noktası, bütçe doğrusunun L şeklindeki eğrinin tam \" dirsek\"="" noktasına="" temas="" ettiği="" koordinatla="" (10,="" 10)="" belirlenir.="" x="" ekseni:="" malı,="" y="" malı.="" tür:="" eğri"="">{width="3.937007874015748in" height="2.952755905511811in"}</blockquote>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 1:</strong> Bir tüketicinin fayda fonksiyonu $U = \min(2X,Y)\ $ve tüketici bütçesi 120 TL, Px = 4 TL, Py = 2 TL ise faydayı maksimize eden X ve Y miktarı nedir?</span>
+  <div class="example-content">
+    <p><span class="badge">Çözüm</span> - <strong>Parantez içi eşitlenir:</strong></p>
+<blockquote>$$2X\  = \ Y$$</blockquote>
+<ul>
+<li><strong>Bütçe Doğrusu Yazılır:</strong>
+<p></p></li>
+</ul>
+<p></p>
+<blockquote>$$M = P_{x} \cdot X + P_{y} \cdot Y120 = 4X + 2Y$$
+<p>Y yerine 2X yazılır: $120 = 4X + 2(2X) \Rightarrow 120 = 8X$
+</p></blockquote>
+<span class="badge">Sonuç:</span>
+<p>X = 15, buradan Y = 2(15) = 30</p>
+<p></p>
+<ul>
+<li><strong>Orijine Göre İçbükey Farksızlık Eğrisinde Tüketici Dengesi</strong>
+<ul>
+<li><strong>Temel Mantık</strong>: Artan Marjinal İkame Oranı ($\mathbf{MR}\mathbf{S}_{\mathbf{xy}}$): Tüketici bir maldan daha fazla tükettikçe, o malın her bir birimi için diğer maldan vazgeçme isteği azalmak yerine artar. Bu, azalan marjinal fayda yasasının bu mallar için (birlikte tüketildiğinde) işlemediğini gösterir.
+<p></p></li><p></p>
+<li><strong>Birbirini Dışlayan Mallar</strong>: Tüketici için mallar bir arada tüketildiğinde fayda düşüktür. Tüketici \"ya hep ya hiç\" mantığıyla hareket eder ($U = aX^{n} + bY^{n}$).
+<p></p></li><p></p>
+<li><strong>Denge Koşulu</strong>: Tüketici, faydasını maksimize etmek için bütçe doğrusu üzerinde gidebileceği en uç noktaya kadar gider. Bu duruma Köşe Çözümü denir. Tüketici şu iki noktayı kıyaslar:
+<ul>
+<li>Tüm parayı X malına harcamak: ($M/Px$)
+<p></p></li><p></p>
+<li>Tüm parayı Y malına harcamak: ($M/Py)$
+<p></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image27.webp" alt="Orijine İçbükey Farksızlık Eğrileri ve Köşe Çözümü - Artan marjinal ikame oranına sahip (içbükey) tercihlerde, bütçe doğrusu ile farksızlık eğrisinin teğet olduğu nokta faydayı maksimize etmek yerine minimize eder. Tüketici, en dıştaki farksızlık eğrisine (U2 veya U3) ulaşmak için gelirinin tamamını tek bir mala harcayarak eksenlerin bütçe doğrusunu kestiği köşe noktalarında dengeye gelir. X ekseni: X Malı Miktarı, Y ekseni: Y Malı Miktarı. Tür: eğri">{width="3.937007874015748in" height="3.937007874015748in"}</blockquote>
+<p><strong></strong></p>
+<strong>
+</strong>
+  </div>
+</div>
+
+<p><strong><span class="badge">Örnek</span> 1:</strong> Bir tüketicinin fayda fonksiyonu $U = 2X^{2} + 3Y^{2}$ şeklindedir. Tüketicinin bütçesi 120 TL, X malının fiyatı 4 TL ve Y malının fiyatı 2 TL'dir. Buna göre faydayı maksimize eden X ve Y nedir?
+<span class="badge">Çözüm</span> &gt;</p>
+
+<blockquote><strong>Sadece X alırsa:</strong>
+<p>$$X = \frac{M}{P_{x}} = \frac{120}{4} = 30,\ \ Y = 0$$</p>
+<p><strong>Toplam Fayda</strong>: $U = 2(30)^{2} + 3(0)^{2} = 2 \cdot 900 = 1800\text{ util}$</p>
+<p><strong>Sadece Y alırsa:</strong></p>
+<p>$$X = 0,Y = \frac{M}{P_{y}} = \frac{120}{2} = 60$$</p>
+<p><strong>Toplam Fayda</strong>: $U = 2(0)^{2} + 3(60)^{2} = 3 \cdot 3600 = 10.800\text{ util}$</p>
+<p><strong>Karar</strong>: 10.800 \&gt; 1800 olduğu için tüketici tüm parasını Y malına harcar.
+</p></blockquote>
+
+<span class="badge">Sonuç:</span>
+
+<h2 id="h-22-t-ketici-dengesinin-de-i-mesi"><span class="prefix-num">G. </span>Tüketici Dengesinin Değişmesi</h2>
+
+<p>Tüketici dengesinin değişimi için üç unsur vardır:</p>
+
+<h4 id="h-23-mallar-n-fiyat-n-n-de-i-imi"><span class="prefix-num">a. </span>Malların Fiyatının Değişimi</h4>
+
+<ul>
+<li><strong>Fiyat Değişimi ve Bütçe Doğrusu</strong>
+<ul>
+<li>Gelir (M) ve diğer malın fiyatı (Py) sabitken, X malının fiyatı (Px) düştüğünde, tüketicinin reel geliri artar ve bütçe doğrusunun X eksenini kestiği nokta sağa doğru kayar.
+<p></p></li><p></p>
+<li>Fiyat düştüğünde bütçe doğrusu daha yatık hale gelir ve tüketici daha yüksek bir fayda düzeyini temsil eden yeni bir farksızlık eğrisi üzerinde yeni bir denge noktasına ulaşır.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Malın Cinsine Göre Örnekler:</strong>
+<ul>
+<li><strong>Ekmek gibi zorunlu mallar</strong>: Fiyat düştüğünde tüketim çok az artabilir, artan para diğer mallara (Y malına) kaydırılabilir.
+<p></p></li><p></p>
+<li><strong>Eğlence/Giyim Gibi Lüks Mallar</strong>: Fiyat düştüğünde tüketici bu mala olan talebini çok fazla artırabilir ve diğer mallardan (Y malından) vazgeçebilir.
+<p></p></li><p></p>
+<li><strong>İlaç (İnsülin) Gibi Tam Zorunlu Mallar</strong>: Fiyat ne kadar düşerse düşsün, tüketim miktarı reçeteye bağlı olarak sabit kalabilir; kalan bütçe tamamen diğer mallara yönlendirilir.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Fiyat Tüketim Eğrisi (FTE)</strong>
+<ul>
+<li><strong>Tanım</strong>: Gelir ve diğer malın fiyatı sabitken, bir malın fiyatının sürekli değiştirilmesi sonucu elde edilen denge noktaları birleştiren eğriye Fiyat Tüketim Eğrisi denir.
+<p></p></li><p></p>
+<li>Fiyat Tüketim Eğrisi, eksenlerde yer alan X ve Y mallarının miktarları arasındaki ilişkiyi gösterir.
+<p></p></li><p></p>
+<li>Bu eğri üzerindeki her noktada; bütçenin tamamı harcanmıştır, fayda maksimumdur ve farksızlık eğrisi bütçe doğrusuna teğettir.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image28.webp" alt="Fiyat Tüketim Eğrisi (FTE) ve Esneklik - X malının fiyatı düştükçe (Px=10→5→2.5) bütçe doğrusunun sağa doğru esnemesiyle oluşan yeni denge noktalarının (E1, E2, E3) birleşimini gösterir. Grafikte FTE\'nin yatay bir doğru olması, X malı fiyatındaki değişimin Y malı miktarını etkilemediğini ve X malı talep esnekliğinin birim esnek (∣e∣=1) olduğunu ifade eder. X ekseni: X Malı Miktarı, Y ekseni: Y Malı Miktarı. Tür: eğri">{width="3.937007874015748in" height="2.755731627296588in"}</blockquote>
+
+<ul>
+<li><strong>Bireysel Talep Eğrisi (BTE)</strong>
+<ul>
+<li>Fiyat Tüketim Eğrisi üzerindeki denge noktalarından (fiyat ve miktar çiftlerinden) hareketle Bireysel Talep Eğrisi türetilir.
+<p></p></li><p></p>
+<li>Talep eğrisi, bir malın fiyatı ile o maldan talep edilen miktar arasındaki ilişkiyi gösterir.
+<p></p></li><p></p>
+<li>Talep eğrisi elde edilirken; tüketicinin geliri, diğer malın fiyatı ve zevk/tercihiler sabit tutulur.
+<p></p></li><p></p>
+<li>Fiyat düştükçe denge noktaları kayar, bu noktaların birleşimi Fiyat Tüketim Eğrisi\'ni oluşturur ve bu eğri de bize malın talep eğrisini verir.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image29.webp" alt="Bireysel Talep Eğrisi Türetimi - Bir malın fiyatı ile o maldan talep edilen miktar arasındaki ters yönlü ilişkiyi gösterir. Negatif eğimli olan bu eğri üzerindeki A (P x ​ =10.0,X=6.0), B (P x ​ =5.0,X=12.0) ve C (P x ​ =2.5,X=24.0) noktaları, fiyat azaldıkça talep edilen miktarın arttığını matematiksel olarak doğrular. X ekseni: X Malı Miktarı (Q x ​ ), Y ekseni: X Malının Fiyatı (P x ​ ). Tür: eğri">{width="3.937007874015748in" height="2.755731627296588in"}</blockquote>
+
+<ul>
+<li><strong>Sınavlar İçin Önemli Soru Tipleri ve Püf Noktalar</strong>
+<ul>
+<li><strong>Fiyat Tüketim Eğrisi hangi değişkenleri gösterir?</strong>
+<ul>
+<li>Dengede tüketilen X ve Y malı miktarları arasındaki ilişkiyi.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Fiyat Tüketim Eğrisi üzerindeki noktalarda ne geçerlidir?</strong>
+<ul>
+<li>Bütçenin tamamı harcanmıştır, fayda maksimumdur ve marjinal ikame oranı (MRS) fiyatların oranına eşittir.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Bireysel Talep Eğrisi nasıl elde edilir?</strong>
+<ul>
+<li>Fiyat Tüketim Eğrisi yardımıyla.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Bireysel Talep Eğrisi hangi değişkenleri gösterir?</strong>
+<ul>
+<li>Malın kendi fiyatı ile o maldan talep edilen miktar arasındaki ilişkiyi.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Talep eğrisi elde edilirken neler sabittir?</strong>
+<ul>
+<li>Tüketicinin geliri, diğer malların fiyatları ve zevk-tercihler sabittir; sadece ilgili malın fiyatı değişir.
+<p></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<h4 id="h-24-t-keticinin-gelirinin-b-t-enin-de-i-imi"><span class="prefix-num">b. </span>Tüketicinin Gelirinin (Bütçenin) Değişimi</h4>
+
+<ul>
+<li><strong>Gelir Değişiminin Tüketici Dengesi Üzerindeki Etkisi</strong>
+<ul>
+<li>Malların fiyatları (Px, Py) ve tüketicinin zevk/tercihlerinin sabit olduğu, ancak tüketicinin gelirinin (M) arttığı durum analiz edilmektedir.
+<p></p></li><p></p>
+<li>Bütçe Doğrusu Hareketleri: Gelir arttığında bütçe doğrusu, eğimi değişmeden paralel bir şekilde sağa kayar.
+<p></p></li><p></p>
+<li>Yeni Dengelerin Belirlenmesi: Yeni bütçe doğrusu üzerinde dengenin nerede oluşacağını, malların cinsi (normal veya düşük mal olması) belirler.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Gelir Tüketim Eğrisi (GTE)</strong>
+<ul>
+<li>Tüketicinin geliri değiştikçe ortaya çıkan yeni denge noktalarının birleştirilmesiyle elde edilen eğriye Gelir Tüketim Eğrisi denir.
+<p></p></li><p></p>
+<li>Tanımı: Çeşitli gelir düzeylerinde faydayı maksimize eden mal bileşimlerinin geometrik yeridir.
+<p></p></li><p></p>
+<li>Özellikleri: GTE üzerindeki her noktada tüketici faydasını maksimize eder, gelirin tamamını harcar ve marjinal ikame oranı (MRS) fiyatlar oranına (Px/Py) eşittir.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image30.webp" alt="Gelir Tüketim Eğrisi (GTE) ve Normal Mallar - Mal fiyatları sabitken tüketicinin gelirinin artması sonucu bütçe doğrusunun paralel olarak sağa kaymasını ve yeni denge noktalarının (E1, E2, E3) oluşumunu gösterir. GTE\'nin pozitif eğimli olması, gelir arttıkça her iki malın tüketiminin de arttığını, dolayısıyla her iki malın da \" normal="" mal\"="" olduğunu="" kanıtlar.="" x="" ekseni:="" malı="" miktarı,="" y="" miktarı.="" tür:="" eğri"="">{width="3.937007874015748in" height="3.1497801837270343in"}</blockquote>
+
+<ul>
+<li><strong>Engel Eğrisi</strong>
+<ul>
+<li>Gelir Tüketim Eğrisi\'nden hareketle, gelirin miktarı ile talep edilen miktar arasındaki ilişkiyi gösteren eğriye Engel Eğrisi denir.
+<p></p></li><p></p>
+<li>İktisatta arz ve talep eğrileri \"ters\" çizilirken, Engel eğrisinde dikey eksende miktar (Q), yatay eksende gelir (M) bulunur.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image31.webp" alt="X Malı İçin Engel Eğrisi - Gelir (I) ile talep edilen X malı miktarı arasındaki ilişkiyi gösteren pozitif eğimli bir doğrudur. Gelir 40 birimden 120 birime çıktıkça X malı miktarı 10\'dan 30\'a yükselmektedir. Doğrusal yapı, X malının gelir esnekliğinin sabit ve malın normal bir mal olduğunu gösterir. X ekseni: X Malı Miktarı (Qx), Y ekseni: Gelir (I). Tür: eğri">{width="3.937007874015748in" height="2.952755905511811in"}</blockquote>
+
+<ul>
+<li><strong>Mal Cinslerine Göre Engel Eğrisinin Biçimi</strong>: Grafiksel analizlerde malların türü eğrinin yönünü belirler
+<ul>
+<li><strong>Her İki Mal da Normal Mal İse</strong>: Gelir arttıkça her iki malın tüketimi de artacağı için Gelir Tüketim Eğrisi pozitif eğimli bir yol izler.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image32.webp" alt="Her İki Malın Normal Mal Olduğu Durumda GTE - Gelir artışı ile birlikte bütçe doğruları paralel şekilde sağa kaymakta ve yeni denge noktaları (E1, E2, E3) hem X hem de Y malından daha fazla tüketildiğini göstermektedir. Orijinden başlayan pozitif eğimli doğrusal GTE, her iki malın da gelir esnekliğinin pozitif ve malların normal mal olduğunu ifade eder. X ekseni: X Malı Miktarı (Normal Mal), Y ekseni: Y Malı Miktarı (Normal Mal). Tür: eğri">{width="3.937007874015748in" height="2.755731627296588in"}</blockquote>
+
+<ul>
+<li><strong>X Düşük, Y Normal Mal İse</strong>: Gelir arttığında tüketici X\'ten daha az, Y\'den daha fazla alır. Bu durumda GTE dikey eksene (Y malına) doğru bükülerek negatif eğimli olur.
+<p></p></li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image33.webp" alt="X Malının Düşük, Y Malının Normal Mal Olduğu Durumda GTE - Gelir yükseldikçe denge noktaları (E1, E2, E3) sol yukarı yönde yer değiştirmektedir. Bu süreçte X malı talebi düşerken Y malı talebi artmaktadır. Negatif eğimli GTE, Y eksenine yaklaşan bir yay çizerek X malının düşük mal olma özelliğini teknik olarak sergiler. X ekseni: X Malı Miktarı (Düşük Mal), Y ekseni: Y Malı Miktarı (Normal Mal). Tür: eğri">{width="3.937007874015748in" height="3.1497801837270343in"}</blockquote>
+
+<ul>
+<li><strong>X Normal, Y Düşük Mal İse</strong>: Gelir arttığında X tüketimi artarken Y tüketimi azalır. GTE yatay eksene (X malına) doğru bükülür ve yine negatif eğimli olur.
+<p></p></li>
+</ul>
+
+<blockquote><img src="/content/mikro-iktisat/media/image34.webp" alt="X Malının Normal, Y Malının Düşük Mal Olduğu Durumda GTE - Gelir artışına (100, 150, 200) paralel olarak denge noktalarının (E1, E2, E3) sağ aşağı yönde hareket ettiği görülmektedir. X malı tüketimi artarken Y malı tüketimi azalmaktadır, bu durum X\'in normal, Y\'nin ise düşük mal olduğunu kanıtlar. GTE negatif eğimli ve X eksenine doğru bükülen bir yapıdadır. X ekseni: X Malı Miktarı (Normal Mal), Y ekseni: Y Malı Miktarı (Düşük Mal). Tür: eğri">{width="3.937007874015748in" height="3.1497801837270343in"}</blockquote>
+
+<ul>
+<li><strong>İki Mal Aynı Anda Düşük Mal Olamaz</strong>: İktisat teorisine göre, bir modeldeki tüm mallar (X ve Y) aynı anda düşük mal olamaz.
+<ul>
+<li><strong>Neden</strong>: Tüketici geliri arttığında rasyonel davranarak bütçesinin tamamını harcamalıdır. Eğer her iki mal da düşük mal olsaydı, gelir arttığında her ikisinden de daha az alması gerekirdi. Bu durum, tüketicinin artan gelirini harcayacak bir yer bulamaması anlamına gelir ki bu da bütçe doğrusu üzerinde kalınmasını imkânsız kılar.
+<p></p></li>
+</ul>
+</li>
+</ul>
+
+<ul>
+<li><strong>Sınavda Çıkabilecek Kritik Sorular</strong>
+<ul>
+<li><strong>GTE üzerinde ne değişir?</strong>
+<ul>
+<li>Sadece gelir değişir; fiyatlar ve zevkler sabittir.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>GTE hangi ilişkiyi gösterir?</strong>
+<ul>
+<li>İki malın (X ve Y) miktarları arasındaki ilişkiyi.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Engel eğrisi hangi ilişkiyi gösterir?</strong>
+<ul>
+<li>Gelir (M) ve miktar (Q) arasındaki ilişkiyi.
+<p></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 1:</strong> Gelir Tüketim Eğrisi (GTE) pozitif eğimli ise ve gittikçe yatay eksene (X eksenine) yaklaşıyorsa, X ve Y malları hakkında ne söylenebilir?</span>
+  <div class="example-content">
+    <p><span class="badge">Cevap</span> - Her iki mal da Normal (Üstün) Mal\'dır.</p>
+<ul>
+<li><strong>Not</strong>: Öğrenciler eksene yaklaşmayı \"düşük mal\" olarak yorumlama hatasına düşer. Ancak eğim pozitif olduğu sürece, gelir arttığında her iki malın da tüketimi artıyor demektir. Sadece X malına olan talep artış hızı, Y malına göre daha yüksektir.
+<p></p></li>
+</ul>
+<p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image35.webp" alt="Pozitif Eğimli ve X Eksenine Yaklaşan GTE - Her iki malın da normal olduğu bu grafikte, gelir arttıkça X malı tüketimi Y malına oranla çok daha hızlı artmaktadır. Bu durum, X malının gelir esnekliğinin Y malından ve 1\'den büyük olduğunu (lüks mal potansiyeli) gösterir. GTE pozitif eğimli fakat X eksenine doğru asimptotik bir eğilim sergiler. X ekseni: X Malı Tüketimi, Y ekseni: Y Malı Tüketimi. Tür: eğri">{width="3.937007874015748in" height="2.755731627296588in"}</blockquote>
+  </div>
+</div>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 2:</strong> X ve Y malları tam ikame mallar iken Marjinal İkame Oranı (MRS), fiyat oranından (Px/Py) büyükse (MRS\>Px/Py), GTE\'nin durumu nedir?</span>
+  <div class="example-content">
+    <p><span class="badge">Cevap</span> - Farksızlık eğrileri bütçe doğrusundan daha dik olduğu için tüketici sadece X malı tüketir (köşe dengesi). Bu durumda gelir arttıkça yeni dengeler hep yatay eksen üzerinde oluşacağından, GTE yatay eksen (X ekseni) ile çakışıktır.</p>
+<blockquote><img src="/content/mikro-iktisat/media/image36.webp" alt="Tam İkame Mallar: MRS \> Px/Py Durumunda GTE - Marjinal ikame oranının fiyat oranından büyük olduğu bu senaryoda tüketici tüm gelirini X malına harcayarak köşe dengesine (E1, E2, E3) ulaşmaktadır. Bütçe doğruları farksızlık eğrilerinden daha yatıktır. GTE, X ekseni ile tamamen çakışık bir doğru halindedir. X ekseni: X Malı Tüketimi, Y ekseni: Y Malı Tüketimi. Tür: eğri">{width="3.937007874015748in" height="2.755731627296588in"}</blockquote>
+  </div>
+</div>
+
+<div class="note-card example-card">
+  <span class="example-title"><strong>Örnek 3:</strong> Gelir Tüketim Eğrisi\'nin dikey eksenle (Y ekseni) çakışık olduğu senaryolar nelerdir?</span>
+  <div class="example-content">
+    <p><span class="badge">Cevap</span> - Bu durum tüketicinin sadece Y malı tükettiğini gösterir. Şu 3 durumda gerçekleşebilir:</p>
+<ul>
+<li><strong>Tam İkame: MRS\<px py="" ise.<="" strong="">
+<p></p></px></strong></li><strong>
+</strong></ul>
+<p></p>
+<strong>
+<blockquote><img src="/content/mikro-iktisat/media/image37.webp" alt="Tam İkame Mallar: MRS \< Px/Py Durumunda GTE - Marjinal ikame oranının fiyat oranından küçük olduğu durumda tüketici rasyonel olarak sadece Y malı tüketmekte ve köşe dengesi oluşmaktadır. Gelir arttıkça denge noktaları sadece Y ekseni üzerinde yukarı hareket etmektedir. GTE, Y ekseni ile çakışık dikey bir doğrudur. X ekseni: X Malı Tüketimi, Y ekseni: Y Malı Tüketimi. Tür: eğri">{width="3.937007874015748in" height="2.755731627296588in"}</blockquote>
+<ul>
+<li><strong>Orijine Göre İç Bükey Farksızlık Eğrileri</strong>: Tüketicinin uç tercihleri varsa (örneğin sadece kitap alıp hiç eroin almaması).
+<p></p></li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image38.webp" alt="Orijine İç Bükey Farksızlık Eğrileri ve GTE - İç bükey farksızlık eğrileri, tüketicinin sadece bir malı tercih ettiği \" ya="" hep="" hiç\"="" durumunu="" temsil="" eder.="" x="" malı="" zararlı="" istenmeyen="" bir="" madde="" olarak="" tanımlandığından,="" denge="" noktaları="" (e1,="" e2,="" e3)="" sadece="" faydalı="" olan="" y="" malının="" bulunduğu="" eksende="" oluşur.="" gte,="" ekseni="" üzerinde="" yükselen="" kalın="" doğru="" gösterilmiştir.="" ekseni:="" (Örn:="" madde),="" kitap).="" tür:="" eğri"="">{width="3.937007874015748in" height="2.755731627296588in"}</blockquote>
+<ul>
+<li><strong>Yatay Farksızlık Eğrileri</strong>: Tüketici X malından hiç fayda sağlamıyorsa (vejetaryen birinin et yerine sadece sebze/Y malı tüketmesi).
+<p></p></li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image39.webp" alt="Yatay Farksızlık Eğrileri ve GTE - X malının nötr (marjinal faydası sıfır) olduğu durumda farksızlık eğrileri yatay doğrular halindedir. Tüketici gelirindeki tüm artışları sadece Y malı tüketimini artırmak için kullanır. Denge noktaları Y ekseni üzerinde sıralanır ve GTE, Y ekseni ile çakışık konumdadır. X ekseni: X Malı (Faydasız Mal / Örn: Et), Y ekseni: Y Malı (Faydalı Mal / Örn: Sebze). Tür: eğri">{width="3.937007874015748in" height="2.755731627296588in"}</blockquote>
+</strong>
+  </div>
+</div>
+
+<strong>
+<div class="custom-block example" data-title="Örnek 4: Gelir Tüketim Eğrisi\'nin kesinlikle pozitif eğimli olabilmesi için farksızlık eğrilerinin şekli nasıl olmalıdır?">
+<p><span class="badge">Cevap</span> - Farksızlık eğrileri L şeklinde (Tam Tamamlayıcı Mallar) olmalıdır.</p>
+<ul>
+<li><strong>Neden</strong>: Sağ ve sol ayakkabı gibi mallarda, gelir arttığında birini artırıp diğerini sabit tutamazsınız; her iki malı da aynı oranda artırmak zorunda olduğunuz için denge noktaları hep dirseklerde oluşur ve GTE pozitif eğimli olur.
+<p></p></li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image40.webp" alt="Tam Tamamlayıcı Mallar (Leontief) ve GTE - Malların sabit bir oranda tüketildiği durumu temsil eden L-şeklindeki farksızlık eğrileri gösterilmektedir. Gelir arttıkça (I=10, 20, 30) bütçe doğruları dışa kaymakta ve denge noktaları (E1, E2, E3) köşe noktalarında oluşmaktadır. Gelir Tüketim Eğrisi (GTE), orijinden çıkan pozitif eğimli düz bir doğru şeklinde olup malların her gelir seviyesinde aynı sabit oranla tüketildiğini ifade eder. X ekseni: X Malı (Örn: Sol Tek Ayakkabı), Y ekseni: Y Malı (Örn: Sağ Tek Ayakkabı). Tür: eğri">{width="3.937007874015748in" height="2.755731627296588in"}</blockquote>
+</div>
+<div class="custom-block example" data-title="Örnek 5: Fayda fonksiyonu $U = 4x^{1\text{/}4}y^{1\text{/}2}$ biçiminde olan bir tüketicinin; X malı fiyatı Px=20, Y malı fiyatı Py=5 ise Gelir Tüketim Eğrisi denklemi nedir?">
+<p><span class="badge">Cevap:</span> GTE üzerindeki her noktada denge koşulu $\frac{MU_{x}}{MU_{y}} = \frac{P_{x}}{P_{y}}\ $geçerlidir.</p>
+<ul>
+<li><strong>Marjinal Faydaları Bul:</strong>
+<p></p></li>
+</ul><p></p>
+<blockquote>$$MU_{x} = \frac{\partial U}{\partial x} = 4 \cdot \frac{1}{4}x^{- 3\text{/}4}y^{1\text{/}2} = x^{- 3\text{/}4}y^{1\text{/}2}$$
+<p>$$MU_{y} = \frac{\partial U}{\partial y} = 4 \cdot \frac{1}{2}x^{1\text{/}4}y^{- 1\text{/}2} = 2x^{1\text{/}4}y^{- 1\text{/}2}$$</p></blockquote><p></p>
+<ul>
+<li><strong>Oranla ve Fiyatlara Eşitle:</strong>
+<p></p></li>
+</ul><p></p>
+<blockquote>$$\frac{x^{- 3\text{/}4}y^{1\text{/}2}}{2x^{1\text{/}4}y^{- 1\text{/}2}} = \frac{20}{5}$$</blockquote>
+<ul>
+<li><strong>Üslü ifadeler düzenlendiğinde</strong>: $\frac{y}{2x} = 4$
+<p></p></li>
+</ul>
+<!-- --><p></p>
+<ul>
+<li><strong>Denklemi Çöz:</strong>
+<p></p></li>
+</ul><p></p>
+<blockquote>$y\  = \ 8x$ (Gelir Tüketim Eğrisi Denklemi) </blockquote>
+</div>
+<h4 id="h-25-zevk-ve-tercihlerin-farks-zl-k-e-risinin-de-i-imi"><span class="prefix-num">c. </span>Zevk ve Tercihlerin (Farksızlık Eğrisinin) Değişimi</h4>
+<ul>
+<li><strong>Koşul</strong>: Gelir ve fiyatlar sabitken (ceteris paribus), zevkler ve tercihler X malı lehine değişsin.
+<p></p></li><p></p>
+<li><strong>Sonuç</strong>: Farksızlık haritası hangi mal tercih ediliyorsa o eksene yaklaşır. Zevkler X lehine değişirse, farksızlık eğrileri bütçe doğrusu üzerinde aşağı doğru kayarak X eksenine yaklaşır
+<p></p></li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image41.webp" alt="Zevk ve Tercihlerin X Malı Lehine Değişimi - Sabit bütçe doğrusu üzerinde tüketicinin zevklerinin X malı lehine değişmesiyle farksızlık eğrisinin biçim değiştirdiği ve denge noktasının X tüketimini artıracak şekilde E1\'den E2\'ye kaydığı görülmektedir. Bu durum marjinal ikame oranının X lehine arttığını ve farksızlık eğrisinin X eksenine göre dikleştiğini gösterir. X ekseni: X Malı Tüketimi, Y ekseni: Y Malı Tüketimi. Tür:">{width="3.937007874015748in" height="2.755731627296588in"}</blockquote>
+<h2 id="h-26-fiyat-de-i-iminin-yaratt-etki"><span class="prefix-num">H. </span>Fiyat Değişiminin Yarattığı Etki</h2>
+<h4 id="h-27-temel-kavramlar-ve-giri"><span class="prefix-num">a. </span>Temel Kavramlar ve Giriş</h4>
+<ul>
+<li><strong>Fiyat ve Talep İlişkisi</strong>: Genel olarak bir malın fiyatı arttığında talep edilen miktar azalır (Giffen mallar hariç). Bu azalışın nedenleri \"İkame Etkisi\" ve \"Gelir Etkisi\" olarak ikiye ayrılır.
+<p></p></li><p></p>
+<li><strong>Etki Kavramı</strong>: İktisatta bir \"etki\"den bahsediliyorsa, bu durum fiyat (P) ve miktar (Q) arasındaki ilişkiyi inceler. Ancak toplam etkiden bahsediyorsak bu malların tanımıyla ilgidir.
+<ul>
+<li><strong>Negatif Etki:</strong> Fiyat ile miktarın ters yönlü hareket etmesidir (P artarsa Q azalır).
+<p></p></li><p></p>
+<li><strong>Pozitif Etki:</strong> Fiyat ile miktarın aynı yönlü hareket etmesidir (P artarsa Q artar).
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<h4 id="h-28-i-kame-etkisi"><span class="prefix-num">b. </span>İkame Etkisi</h4>
+<ul>
+<li><strong>Tanım</strong>: Bir malın fiyatı arttığında, tüketicinin o mal yerine daha ucuz olan başka malları tercih etmesi nedeniyle talebin azalmasıdır.
+<p></p></li><p></p>
+<li><strong>Genel Kural</strong>: Malın türü ne olursa olsun (normal, düşük veya Giffen mal), ikame etkisi her zaman negatiftir. Yani fiyat artarsa, ikame etkisi miktar üzerinde her zaman azaltıcı bir rol oynar.
+<p></p></li><p></p>
+<li><strong>Telafi Edilmiş Talep Eğrisi (Hicksian):</strong> Sadece ikame etkisini yansıtan bu eğri, tüm mal gruplarında negatif eğimlidir.
+<p></p></li>
+</ul><p></p>
+<h4 id="h-29-gelir-etkisi"><span class="prefix-num">c. </span>Gelir Etkisi</h4>
+<ul>
+<li><strong>Tanım</strong>: Bir malın fiyatı değiştiğinde tüketicinin reel gelirinin (satın alma gücünün) değişmesi ve bunun talebe yansımasıdır.
+<p></p></li><p></p>
+<li><strong>Reel Gelir (M/P):</strong> Fiyatlar arttığında tüketicinin reel geliri azalır ve kendini daha \"fakir\" hisseder.
+<p></p></li><p></p>
+<li><strong>Mal Türüne Göre Değişkenlik</strong>: Gelir etkisi, ikame etkisinin aksine malın türüne göre farklılık gösterir:
+<ul>
+<li><strong>Normal Mallar</strong>: Gelir etkisi negatiftir (Fiyat artar =\&gt; Reel gelir düşer =\&gt; Talep düşer).
+<p></p></li><p></p>
+<li><strong>Düşük Mallar</strong>: Gelir etkisi pozitiftir (Fiyat düşer =\&gt; Reel gelir artar =\&gt; Tüketici daha kaliteli mallara yöneldiği için düşük mala talep düşer).
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<h4 id="h-30-toplam-etki-fiyat-etkisi"><span class="prefix-num">d. </span>Toplam Etki (Fiyat Etkisi)</h4>
+<ul>
+<li><strong>Tanım</strong>: Bir malın türü bize toplam etkinin eğiminin yönünü vermektedir.
+<p></p></li><p></p>
+<li><strong>Formül</strong>: Toplam Etki (Fiyat Etkisi) = İkame Etkisi + Gelir Etkisi.
+<p></p></li><p></p>
+<li><strong>Alışılmış (Ordinary/Marshallian) Talep Eğrisi</strong>: Toplam etkiyi yansıtan eğridir. Mal gruplarında eğrisinin negatif ya da pozitif olduğunu bilemeyiz.
+<p></p></li>
+</ul><p></p>
+<h4 id="h-31-normal-mallar-i-in-analiz"><span class="prefix-num">e. </span>Normal Mallar İçin Analiz</h4>
+<ul>
+<li><strong>Normal Mal Tanımları:</strong>
+<ul>
+<li>Fiyat arttığında talebin azaldığı ya da fiyat azalmasıyla talebin arttığı mallar.
+<p></p></li><p></p>
+<li>Gelir arttıkça talebin arttığı ya da gelir azaldığında talebin azaldığı mallardı.
+<p></p></li><p></p>
+<li>Normal mallarda hem ikame etkisi hem de gelir etkisi aynı yönde (negatif) çalışır.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Fiyat Artışı Durumunda:</strong>
+<ul>
+<li><strong>İkame Etkisi</strong>: Negatif (Miktar azalır).
+<p></p></li><p></p>
+<li><strong>Gelir Etkisi</strong>: Negatif (Reel gelir düştüğü için miktar azalır).
+<p></p></li><p></p>
+<li><strong>Sonuç</strong>: Toplam etki negatiftir ve miktar belirgin şekilde azalır.
+<p></p></li><p></p>
+<li><strong>Grafiksel Karşılaştırma</strong>: Normal mallarda Alışılmış Talep Eğrisi (ATE), Telafi Edilmiş Talep Eğrisi\'ne (TETE) göre daha yatıktır (daha esnektir).
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image42.webp" alt="Normal Mallarda Fiyat Artışı: ATE ve TETE Karşılaştırması - Fiyatın p1\'den p2\'ye yükselmesi durumunda talep miktarındaki azalışın gelir ve ikame etkilerine ayrıştırılması gösterilmektedir. ATE (Alışılmış Talep) hem ikame hem gelir etkisini içerdiği için daha esnektir; q1-q2 arası ikame etkisini, q2-q3 arası gelir etkisini, q1-q3 ise toplam etkiyi ifade eder. X ekseni: Miktar (Q), Y ekseni: Fiyat (P). Tür: eğri">{width="3.937007874015748in" height="2.755731627296588in"}</blockquote>
+<ul>
+<li><strong>Düşük Mallar İçin Analiz:</strong>
+<ul>
+<li>Düşük mallar, gelir arttığında talebi azalan mallardır. Kendi içinde \"Giffen olmayan\" ve \"Giffen\" mallar olarak ikiye ayrılır.
+<ul>
+<li><strong>Giffen Olmayan Düşük Mallar (Fiyat Artışı Senaryosu)</strong>
+<ul>
+<li><strong>İkame Etkisi</strong>: Negatiftir (Fiyat ↑, Talep ↓).
+<p></p></li><p></p>
+<li><strong>Gelir Etkisi</strong>: Fiyat artışı reel geliri azaltır; düşük mal olduğu için talep artar. Fiyat ve miktar aynı yönlü olduğundan etkisi pozitiftir.
+<p></p></li><p></p>
+<li><strong>Toplam Etki:</strong> Negatiftir çünkü ikame etkisi, gelir etkisinden daha baskındır. Sonuç olarak fiyat artınca talep azalır.
+<p></p></li><p></p>
+<li><strong>Eğriler</strong>: İkame etkisi toplam etkiden büyük olduğu için TETE, ATE\'den daha yatıktır.
+<p></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image43.webp" alt="Giffen Olmayan Düşük Mal: Talep Eğrileri Analizi - Düşük mallarda gelir etkisi ikame etkisine zıt yönlü olduğu için Marshallian talep eğrisi (mavi), Hicksian talep eğrisinden (turuncu) daha dik bir yapıdadır. Bu grafikte gelir etkisinin ikame etkisini zayıflattığı ancak tamamen ortadan kaldırmadığı, talebin hala negatif eğimli olduğu görülmektedir. X ekseni: Miktar (Q), Y ekseni: Fiyat (P). Tür: eğri">{width="4.724409448818897in" height="2.8345417760279963in"}</blockquote>
+<ul>
+<li><strong>Giffen Malları (Fiyat Artışı Senaryosu)</strong>
+<ul>
+<li><strong>İkame Etkisi</strong>: Her zaman negatiftir (Fiyat ↑, Talep ↓).
+<p></p></li><p></p>
+<li><strong>Gelir Etkisi</strong>: Pozitiftir ve oldukça güçlüdür.
+<p></p></li><p></p>
+<li><strong>Toplam Etki</strong>: Pozitiftir çünkü gelir etkisi ikame etkisini yener. Yani Giffen malın fiyatı arttığında talep miktarı da artar.
+<p></p></li><p></p>
+<li><strong>Eğriler</strong>: Alışılmış Talep Eğrisi (ATE) bu mallarda pozitif eğimlidir.
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image44.webp" alt="Giffen Malı: Talep Eğrileri Analizi - Negatif gelir etkisinin ikame etkisinden daha baskın olduğu Giffen malı durumunda Marshallian talep eğrisi pozitif eğimli (sağ yukarı) olarak gösterilmiştir. Fiyat arttıkça talep edilen miktar da artmaktadır; Hicksian talep eğrisi ise ikame etkisi nedeniyle negatif eğimli kalmaya devam eder. X ekseni: Miktar (Q), Y ekseni: Fiyat (P). Tür: eğri">{width="4.724409448818897in" height="3.1772069116360453in"}</blockquote>
+<h4 id="h-32-t-m-mal-t-rleri-i-in-tablo"><span class="prefix-num">f. </span>Tüm Mal Türleri İçin Tablo</h4>
+<p></p><table>
+<colgroup>
+<col style="width: 17%">
+<col style="width: 15%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"><strong>İkame Etkisi</strong></th>
+<th style="text-align: center;"><strong>Gelir Etkisi</strong></th>
+<th style="text-align: center;"><strong>Toplam Etki</strong></th>
+<th style="text-align: center;"><strong>TETE</strong></th>
+<th style="text-align: center;"><strong>ATE</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>Normal Mal</strong></td>
+<td style="text-align: center;">(-)</td>
+<td style="text-align: center;">(-)</td>
+<td style="text-align: center;">(-)</td>
+<td style="text-align: center;">(-)</td>
+<td style="text-align: center;">(-)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Düşük Mal</strong></td>
+<td style="text-align: center;">(-)</td>
+<td style="text-align: center;">(+)</td>
+<td style="text-align: center;">(?)</td>
+<td style="text-align: center;">(-)</td>
+<td style="text-align: center;">(?)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Giffen Olmayan Mal</strong></td>
+<td style="text-align: center;">(-)</td>
+<td style="text-align: center;">(+)</td>
+<td style="text-align: center;">(-)</td>
+<td style="text-align: center;">(-)</td>
+<td style="text-align: center;">(-)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Giffen Mal</strong></td>
+<td style="text-align: center;">(-)</td>
+<td style="text-align: center;">(+)</td>
+<td style="text-align: center;">(+)</td>
+<td style="text-align: center;">(-)</td>
+<td style="text-align: center;">(+)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Çay</strong></td>
+<td style="text-align: center;">(-)</td>
+<td style="text-align: center;">(?)</td>
+<td style="text-align: center;">(?)</td>
+<td style="text-align: center;">(-)</td>
+<td style="text-align: center;">(?)</td>
+</tr>
+</tbody>
+</table><p></p>
+<h4 id="h-33-hicks-ve-slutsky-analizi"><span class="prefix-num">g. </span>Hicks ve Slutsky Analizi</h4>
+<ul>
+<li><strong>Hicks Analizi</strong>
+<ul>
+<li>J.R. Hicks tarafından geliştirilen bu analiz, \"Ordinal Fayda Kuramı\"na dayanır ve ikame etkisini ölçerken tüketici refahını (faydasını) merkeze alır.
+<p></p></li><p></p>
+<li><strong>Reel Gelir Tanımı:</strong> Hicks'e göre reel gelir, tüketicinin ulaştığı fayda (tatmin) düzeyidir.
+<p></p></li><p></p>
+<li><strong>İşleyiş Mekanizması</strong>: Fiyat düşüşü sonucu tüketicinin artan satın alma gücü, hayali bir vergiyle (Telafi Edici Varyasyon) elinden alınır. Tüketici, başlangıçtaki (eski) kayıtsızlık eğrisi üzerinde tutulur.
+<p></p></li><p></p>
+<li><strong>Grafiksel Özellik</strong>: Yeni fiyat oranına (yeni bütçe doğrusuna) paralel, ancak eski kayıtsızlık eğrisine teğet olan hayali bir bütçe doğrusu çizilir.
+<p></p></li><p></p>
+<li><strong>İkame Etkisi</strong>: Aynı kayıtsızlık eğrisi üzerindeki hareketle sınırlıdır. Bu süreçte fayda sabit kalırken, sadece mal sepetindeki bileşim değişir.
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image45.webp" alt="Hicks Analizi: İkame ve Gelir Etkisi Ayrıştırması - Fiyat düşüşü sonrası toplam etkinin (A\'dan C\'ye) farksızlık eğrileri yardımıyla ayrıştırılmasıdır. Tüketiciyi eski fayda düzeyinde (U1) tutan hayali bütçe doğrusu üzerindeki hareket ikame etkisini (A-B), daha yüksek fayda düzeyine (U2) geçiş ise gelir etkisini (B-C) temsil eder. X ekseni: X Malı, Y ekseni: Y Malı. Tür: eğri">{width="5.118110236220472in" height="3.5824507874015747in"}</blockquote>
+<ul>
+<li><strong>Slutsky Analizi (Slutsky Yaklaşımı)</strong>
+<ul>
+<li>Slutsky tarafından geliştirilen bu yaklaşım, fayda gibi ölçülmesi zor bir kavram yerine, gözlemlenebilir olan satın alma gücünü temel alır.
+<p></p></li><p></p>
+<li><strong>Reel Gelir Tanımı</strong>: Slutsky'ye göre reel gelir, tüketicinin fiyat değişiminden önceki aynı mal sepetini (başlangıç bileşimini) alabilme yeteneğidir.
+<p></p></li><p></p>
+<li><strong>İşleyiş Mekanizması</strong>: Fiyat değişimi sonrası çizilen hayali bütçe doğrusu, tüketicinin eski denge noktasından (ilk sepetinden) geçecek şekilde kurgulanır.
+<p></p></li><p></p>
+<li><strong>Grafiksel Özellik</strong>: Hayali bütçe doğrusu, orijinal denge noktasından geçtiği için tüketiciye daha yüksek bir kayıtsızlık eğrisine geçme imkânı tanır.
+<p></p></li><p></p>
+<li><strong>İkame Etkisi</strong>: Slutsky analizinde ikame etkisi hesaplanırken tüketici genellikle daha yüksek bir fayda düzeyine ulaşır.
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image46.webp" alt="Slutsky Analizi: Satın Alma Gücü Sabitken Ayrıştırma - Fiyat değişimi sonrası tüketicinin başlangıçtaki sepetini (A noktası) tam olarak alabilmesini sağlayan \" hayali\"="" bütçe="" doğrusu="" (mor="" kesikli)="" üzerinden="" toplam="" etkinin="" ayrıştırılmasıdır.="" slutsky="" dengesi="" (b),="" hicks="" dengesinden="" farklı="" olarak="" satın="" alma="" gücünün="" korunmasına="" odaklanır="" ve="" genellikle="" daha="" yüksek="" bir="" fayda="" düzeyinde="" oluşur.="" x="" ekseni:="" malı,="" y="" malı.="" tür:="" eğri"="">{width="5.118110236220472in" height="3.5824518810148733in"}</blockquote>
+<ul>
+<li><strong>Hicks vs. Slutsky: Karşılaştırmalı Özet</strong>
+<p></p></li>
+</ul><p></p>
+<p></p><table style="width:94%;">
+<colgroup>
+<col style="width: 31%">
+<col style="width: 31%">
+<col style="width: 31%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Kriter</strong></th>
+<th style="text-align: center;"><strong>Hicks Analizi</strong></th>
+<th style="text-align: center;"><strong>Slutsky Analizi</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>Sabit Tutulan Değişken</strong></td>
+<td style="text-align: center;">Fayda Düzeyi (U)</td>
+<td style="text-align: center;">Satın Alma Gücü (Sepet)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Reel Gelir Yaklaşımı</strong></td>
+<td style="text-align: center;">Psikolojik / Öznel (Fayda)</td>
+<td style="text-align: center;">Matematiksel / Nesnel (Maliyet)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Kayıtsızlık Eğrisi</strong></td>
+<td style="text-align: center;">Eski kayıtsızlık eğrisi üzerinde kalınır.</td>
+<td style="text-align: center;">Daha yüksek bir kayıtsızlık eğrisine geçilebilir.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Analiz Yöntemi</strong></td>
+<td style="text-align: center;">Yeni bütçe doğrusu eski eğriye&nbsp;teğet&nbsp;geçer.</td>
+<td style="text-align: center;">Yeni bütçe doğrusu eski&nbsp;denge noktasından&nbsp;geçer.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>İkame Etkisi Şiddeti</strong></td>
+<td style="text-align: center;">Slutsky'ye göre daha küçüktür.</td>
+<td style="text-align: center;">Hicks'e göre daha büyüktür.</td>
+</tr>
+</tbody>
+</table><p></p>
+<h2 id="h-34-arz-ve-talep"><span class="prefix-num">I. </span>Arz ve Talep</h2>
+<h4 id="h-35-talep"><span class="prefix-num">a. </span>Talep</h4>
+<ul>
+<li><strong>Talebin Tanımı ve Şartları</strong>
+<ul>
+<li>Talep, sadece bir şeyi istemek değildir. İktisadi anlamda talep olabilmesi için şu şartların bir arada olması gerekir:
+<p></p></li><p></p>
+<li><strong>Ceteris Paribus</strong>: \"Diğer tüm değişkenler sabitken\" varsayımı altında incelenir.
+<p></p></li><p></p>
+<li><strong>Satın Alma İsteği ve Yeteneği</strong>: Bir malı sadece istemek yetmez; cebinizde o isteği destekleyecek paranın (satın alma gücünün) da olması gerekir.
+<p></p></li><p></p>
+<li><strong>Talep Fiyatı</strong>: Tüketicinin bir mal için ödemeye razı olduğu maksimum fiyattır. Eğer piyasa fiyatı bu sınırın üzerindeyse talep oluşmaz.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Talep Yasası (Kanunu)</strong>
+<ul>
+<li>Talep yasası, bir malın fiyatı ile o maldan talep edilen miktar arasındaki ters yönlü ilişkiyi ifade eder. Yani, bir malın fiyatı arttığında o maldan talep edilen miktar azalır. Bu ters yönlü ilişkinin üç temel nedeni vardır:
+<ul>
+<li><strong>İkame Etkisi</strong>: Malın fiyatı artınca tüketicinin daha ucuz olan benzer mallara yönelmesi.
+<p></p></li><p></p>
+<li><strong>Gelir Etkisi</strong>: Malın fiyatı artınca tüketicinin reel alım gücünün düşmesi.
+<p></p></li><p></p>
+<li><strong>Azalan Marjinal Fayda Yasası</strong>: Tüketilen her ek birimin sağladığı faydanın azalması.
+<p></p></li>
+</ul>
+</li>
+</ul>
+</li><p></p>
+<li><strong>Su-Elmas Paradoksu ve Marjinal Fayda</strong>
+<ul>
+<li>Adam Smith\'in ortaya attığı, Alfred Marshall\'ın çözdüğü bu paradoksla malın değeri açıklanır:
+<ul>
+<li><strong>Adam Smith</strong>: Suyun kullanım değeri (faydası) çok yüksek ama fiyatı düşük; elmasın kullanım değeri düşük ama fiyatı neden çok yüksek diye sormuştur.
+<p></p></li><p></p>
+<li><strong>Marshall\'ın Çözümü</strong>: Değeri belirleyen şey toplam fayda değil, marjinal faydadır. Suyu çok tükettiğimiz için son biriminin faydası (marjinal fayda) düşüktür, bu yüzden fiyatı da düşüktür. Elması az tükettiğimiz için marjinal faydası ve dolayısıyla fiyatı yüksektir.
+<p></p></li><p></p>
+<li><strong>Önemli Not</strong>: Bir malın marjinal fayda eğrisi ($MU$), aynı zamanda o malın talep eğrisidir $P = MU$.
+<p></p></li>
+</ul>
+</li>
+</ul>
+</li><p></p>
+<li><strong>Talep Fonksiyonu ve Eğrisinin Çizimi</strong>
+<ul>
+<li><strong>Marjinal Faydanın</strong> $\mathbf{(}\mathbf{MU}\mathbf{)}$ <strong>Türetilmesi</strong>
+<ul>
+<li>Tüketicinin bir maldan elde ettiği toplam fayda $(TU)$, o malın tüketim miktarına $(q)$ bağlıdır. Tüketilen her bir birim malın toplam faydada yarattığı değişim, yani fonksiyonun türevi bize Marjinal Faydayı verir.
+<p></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote>$$\mathbf{MU} = \frac{\mathbf{dTU}}{\mathbf{dq}}$$</blockquote>
+<ul>
+<li><strong>Marshallcı Denge Koşulu</strong> $\mathbf{(}\mathbf{P}\mathbf{=}\mathbf{MU}\mathbf{)}$
+<ul>
+<li>Tüketici, rasyonel bir birey olarak bir malın son birimine, o birimin kendisine sağladığı ek tatmin (marjinal fayda) kadar bedel ödemek ister. Bu nedenle, piyasada oluşacak fiyatın marjinal faydaya eşit olduğu varsayılır:
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote>$$P = MU$$</blockquote>
+<ul>
+<li><strong>Fonksiyonel Dönüşüm</strong>
+<ul>
+<li>Bu aşamada karşımıza iki tür gösterim çıkar:
+<ul>
+<li><strong>Ters Talep Fonksiyonu:</strong>
+<ul>
+<li><strong>Gösterim</strong>$:\ P = f(q$)
+<p></p></li><p></p>
+<li>Fiyatın miktara bağlı olmasıdır. $(P = MU)$ eşitliğinden elde edilen ilk formdur.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Düz Talep Fonksiyonu:</strong>
+<ul>
+<li><strong>Gösterim</strong>: $q = f(P)$
+<p></p></li><p></p>
+<li>Miktarın fiyata bağlı olmasıdır ($Q_{d} = a - bP)$. Grafik çizildikten sonra q yalnız bırakılarak elde edilir.
+<p></p></li><p></p>
+<li><strong>NOT</strong>: Fonksiyondaki $- b$ katsayısı (P\'nin önündeki sayı) eğim değildir; $\frac{1}{\text{Eğim}}$ değeridir. Eğim her zaman dikey eksendeki değişimin yatay eksendeki değişime oranıdır $\left( \frac{\Delta P}{\Delta Q} \right)$.
+<p></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- --><p></p>
+<ul>
+<li>Grafiksel Gösterim
+<ul>
+<li>Talep eğrisi, Azalan Marjinal Fayda Yasası nedeniyle negatif eğimlidir.
+<p></p></li><p></p>
+<li><strong>Dikey Eksen (</strong>$\mathbf{P}$ <strong>- Rezervasyon Fiyatı):</strong> Eğrinin fiyat eksenini kestiği nokta, tüketicinin o malı tüketmeye başlamak için ödemeye razı olduğu maksimum fiyattır.
+<p></p></li><p></p>
+<li><strong>Yatay Eksen (</strong>$\mathbf{q}$ <strong>- Doyum Noktası):</strong> Eğrinin miktar eksenini kestiği nokta, mal bedava $(P = 0)\ $olsa bile tüketicinin tüketeceği maksimum miktardır. Bu noktada $MU = 0$ olur; yani doyum noktasına ulaşılmıştır.
+<p></p></li><p></p>
+<li><strong>Eğim</strong>: Eğrinin aşağı doğru eğimli olması, fiyat düştükçe talep edilen miktarın arttığını (Talep Yasası) simgeler.
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image47.webp" alt="Talep Eğrisi (Marshallian) - Fiyat ve miktar arasındaki ters yönlü ilişkiyi temsil eden, negatif eğimli ve doğrusal bir Marshallian talep eğrisidir. Fiyat 80\'den 10\'a düştükçe talep edilen miktarın 10\'dan 45\'e yükseldiği veri noktalarıyla gösterilerek azalan marjinal fayda ilkesi vurgulanmaktadır. X ekseni: Miktar (Q), Y ekseni: Fiyat (P). Tür: eğri">{width="5.118110236220472in" height="3.0707534995625547in"}</blockquote>
+<ul>
+<li><strong>Talebi ve Talep Miktarını Etkileyen Faktörler</strong>
+<p></p></li>
+</ul>
+\"Talep miktarının değişmesi\" ile \"talebin değişmesi\" arasında fark vardır<p></p>
+<ul>
+<li><strong>Malın Kendi Fiyatı:</strong> Sadece talep edilen miktarı değiştirir. Fiyat değiştiğinde talep eğrisi üzerinde hareket edilir.
+<p></p></li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image48.webp" alt="Talep Miktarı Değişmesi (Fiyat Artışı Etkisi) - Qd =240−2P fonksiyonuna sahip talep eğrisi üzerinde fiyatın 40\'tan 50\'ye çıkmasıyla talep edilen miktarın 160\'tan 140\'a düştüğü A ve B noktaları arası hareket gösterilmektedir. Bu durum talep eğrisinde bir kayma değil, eğri üzerinde talep edilen miktar değişimidir. X ekseni: Miktar (Q), Y ekseni: Fiyat (P). Tür: eğri">{width="5.118110236220472in" height="3.070754593175853in"}</blockquote>
+<ul>
+<li><strong>Gelir (Talebi Değiştirir):</strong>
+<ul>
+<li><strong>Normal Mallar</strong>: Gelir arttığında talebi artan (eğri sağa kayar) mallardır.
+<p></p></li><p></p>
+<li><strong>Düşük Mallar</strong>: Gelir arttığında talebi azalan (eğri sola kayar) mallardır.
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image49.webp" alt="Talep Eğrisinin Sağa Kayması (Talebin Artması) - Fiyat dışı faktörlerin (gelir artışı, zevk değişimi vb.) etkisiyle talep eğrisinin bütünüyle sağa paralel kayması gösterilmektedir. 40 TL sabit fiyat seviyesinde talep edilen miktar 160 birimden 220 birime yükselmiştir; bu durum her fiyat düzeyinde talebin arttığını ifade eder. X ekseni: Miktar (Q), Y ekseni: Fiyat (P). Tür: eğri">{width="5.118110236220472in" height="3.0707534995625547in"}</blockquote>
+<ul>
+<li><strong>İlgili Malların Fiyatları:</strong>
+<ul>
+<li><strong>İkame Mallar</strong>: Kahve fiyatı artarsa, çaya olan talep artar (sağa kayar).
+<p></p></li><p></p>
+<li><strong>Tamamlayıcı Mallar</strong>: Benzin fiyatı artarsa, otomobile olan talep azalır (sola kayar).
+<p></p></li><p></p>
+<li><strong>Beklentiler</strong>: Gelecekte fiyatların artacağı beklentisi, bugünkü talebi artırır.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Zevk ve Tercihler:</strong>
+<ul>
+<li>Bir malın moda olması veya lehine değişen tercihler talebi artırır.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Alıcı Sayısı (Nüfus):</strong>
+<ul>
+<li>Pazar talebini etkiler; alıcı sayısı arttıkça piyasa talebi artar.
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<h4 id="h-36-arz"><span class="prefix-num">b. </span>Arz</h4>
+<ul>
+<li><strong>Arzın Tanımı ve Arz Yasası</strong>
+<ul>
+<li><strong>Arz</strong>: Diğer şeyler sabitken (ceteris paribus), üreticilerin belirli bir zaman diliminde değişik fiyat düzeylerinden piyasaya sunmaya razı ve yetenekli oldukları mal miktarıdır.
+<p></p></li><p></p>
+<li><strong>Arz Yasası</strong>: Bir malın fiyatı arttığında, üreticinin daha fazla kar elde etme beklentisiyle piyasaya sunduğu mal miktarının (arz edilen miktar) artmasıdır. Fiyat ile miktar arasında doğru yönlü (pozitif) bir ilişki vardır.
+<p></p></li><p></p>
+<li><strong>Arz Yasasının Temel Nedeni</strong>: Üretim sürecindeki \"Azalan Verimler Yasası\"dır.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Arz ve Arz Miktarını Etkileyen Faktörler</strong>
+<p></p></li>
+</ul><p></p>
+<blockquote>İktisatta \"arzın değişmesi\" ile \"arz miktarının değişmesi\" farklı kavramlardır.</blockquote>
+<ul>
+<li><strong>Arz Miktarını Değiştiren Faktör (Eğri Üzerinde Hareket)</strong>
+<ul>
+<li><strong>Malın Kendi Fiyatı</strong>: Malın fiyatı değiştiğinde arz eğrisi üzerinde bir noktadan diğerine geçilir. Fiyat artarsa miktar artar, fiyat düşerse miktar azalır. Bu durum sadece \"arz edilen miktar\"ın değişmesidir; eğrinin kendisi kaymaz.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Arzı Değiştiren Faktörler (Eğrinin Kayması)</strong>
+<ul>
+<li><strong>Girdi Fiyatları (Üretim Faktörleri):</strong> Üretim sürecinde kullanılan her türlü kaynağa girdi denir.
+<ul>
+<li><strong>Emek (İş gücü):</strong> Karşılığı ücrettir. Ücretlerin artması maliyeti artırır, arzı azaltır (sola kayar).
+<p></p></li><p></p>
+<li><strong>Sermaye (Kapital):</strong> Karşılığı faizdir.
+<p></p></li><p></p>
+<li><strong>Toprak (Doğa):</strong> Karşılığı ranttır.
+<p></p></li><p></p>
+<li><strong>Girişimci</strong>: Karşılığı kârdır.
+<p></p></li><p></p>
+<li><strong>Özet</strong>: Girdi maliyetleri ile arz arasında ters yönlü bir ilişki vardır. Maliyet artarsa arz azalır, maliyet düşerse arz artar.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Devletin Müdahaleleri:</strong>
+<ul>
+<li><strong>Vergiler</strong>: Spesifik (birim başına) veya Advalorem (değer üzerinden) olabilir. Vergi artışı maliyeti artırarak arzı azaltır (sola kayar).
+<p></p></li><p></p>
+<li><strong>Sübvansiyonlar (Desteklemeler):</strong> Devletin üreticiye sunduğu mali desteklerdir. Maliyeti düşürdüğü için arzı artırır (sağa kayar).
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Fiyat Beklentisi</strong>: Üretici, malın fiyatının gelecekte artacağını öngörüyorsa, kârını maksimize etmek için bugünkü arzını azaltır ve malları stoğa çeker.
+<p></p></li><p></p>
+<li><strong>Diğer Malların Fiyatı</strong>: Üreticinin aynı imkanlarla üretebileceği başka bir malın fiyatı artarsa (örneğin patates fiyatı soğana göre yükselirse), üretici kaynaklarını o fiyata yönlendirir. Bu durum, orijinal malın arzının azalmasına neden olur.
+<p></p></li><p></p>
+<li><strong>Teknoloji</strong>: Teknolojik ilerlemeler verimliliği artırır. Aynı girdiyle daha fazla üretim yapılmasını sağladığı için birim maliyeti düşürür ve arzı artırır (sağa kayar).
+<p></p></li><p></p>
+<li><strong>Firma Sayısı</strong>: Piyasaya yeni firmaların girişi, toplam üretim kapasitesini artırarak piyasa arzını sağa kaydırır.
+<p></p></li>
+</ul>
+</li>
+</ul>
+<!-- --><p></p>
+<ul>
+<li><strong>Arz Fonksiyonu ve Analizi</strong>
+<ul>
+<li>Arz fonksiyonu matematiksel olarak şu formülle ifade edilir:
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote>$$Q_{s} = c + dP$$</blockquote>
+<ul>
+<li>$\mathbf{c}$ (Sabit Sayı): Fiyat dışındaki tüm unsurların (teknoloji, vergi, girdi fiyatları vb.) toplam etkisini temsil eder.
+<ul>
+<li>Eğer bu dışsal faktörler olumluysa c artar ve eğri sağa kayar; olumsuzsa c azalır ve eğri sola kayar.
+<p></p></li>
+</ul>
+</li><p></p>
+<li>$\mathbf{d}$ (Katsayı): Arz miktarının fiyata olan duyarlılığını gösterir. Bu katsayı, arz eğrisinin eğiminin tersidir $(\frac{1}{\text{Eğim}})$. Arz kanunu gereği fiyat ile miktar doğru orantılı olduğu için bu değer her zaman pozitiftir.
+<p></p></li><p></p>
+<li>$P$ (Fiyat): Arz fiyatıdır. Satıcının bir malı satmaya razı olduğu minimum fiyatı ifade eder. Fiyattaki değişimler eğriyi kaydırmaz, eğri üzerinde hareket edilmesini sağlar.
+<p></p></li>
+</ul>
+<!-- --><p></p>
+<ul>
+<li><strong>Arz Eğrisinin Çizimi ve Başlangıç Noktaları</strong>
+<ul>
+<li>Fonksiyondaki sabit sayının (c) değeri, eğrinin hangi eksenden başlayacağını belirler:
+<ul>
+<li>$\mathbf{c} &lt; \mathbf{0}$ (Negatif Sabit): Arz eğrisi fiyat (P) ekseninden başlar. (Üreticinin üretime başlamak için belirli bir fiyat eşiğine ihtiyaç duyduğunu gösterir).
+<p></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image50.webp" alt="Arz Eğrisi Grafiği - Qs=−40+2P fonksiyonuna sahip pozitif eğimli bir arz doğrusudur. Grafikte üretimin başladığı fiyat eşiği (P=20) ve fiyat 60 iken arz edilen miktarın 80 birim olduğu denge noktası işaretlenmiştir; fiyat ile arz edilen miktar arasındaki doğru orantılı ilişkiyi gösterir. X ekseni: Miktar (Q), Y ekseni: Fiyat (P). Tür: eğri">{width="5.118110236220472in" height="3.0707534995625547in"}</blockquote>
+<ul>
+<li>$\mathbf{c} &gt; \mathbf{0}$ (Pozitif Sabit): Arz eğrisi miktar (Q) ekseninden başlar.
+<p></p></li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image51.webp" alt="Arz Eğrisi Grafiği (Qs=40+2P) - Pozitif eğimli doğrusal bir arz doğrusu gösterilmektedir. Fiyatın sıfır olduğu durumda dahi 40 birimlik bir arz miktarının (yatay eksen kesişimi) varlığını ve fiyat 50 birime çıktığında arz edilen miktarın 140 birime ulaştığını (A noktası) temsil eder. X ekseni: Miktar (Q), Y ekseni: Fiyat (P). Tür: eğri">{width="5.118110236220472in" height="3.0707534995625547in"}</blockquote>
+<ul>
+<li>$\mathbf{c} = \mathbf{0}$ (Sıfır Sabit): Arz eğrisi tam olarak orijinden (sıfır noktasından) başlar.
+<p></p></li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image52.webp" alt="Arz Eğrisi: Qs=2P - Orijinden başlayan, sabit marjinal maliyet yapısına uygun pozitif eğimli doğrusal bir arz eğrisidir. Fiyat ve miktar arasındaki tam doğrusal ilişkiyi; fiyatın 25\'ten 50\'ye yükselmesiyle arz edilen miktarın da 50\'den 100 birime çıktığını gösteren koordinat noktalarıyla vurgular. X ekseni: Miktar (Q), Y ekseni: Fiyat (P). Tür: eğri">{width="5.118110236220472in" height="3.0707534995625547in"}</blockquote>
+<h2 id="h-37-esneklik"><span class="prefix-num">J. </span>Esneklik</h2>
+<h4 id="h-38-esnekli-in-matematiksel-temeli"><span class="prefix-num">a. </span>Esnekliğin Matematiksel Temeli</h4>
+<p>Esneklik, bir fonksiyon içindeki iki değişken arasındaki ilişkiyi ölçer. Matematiksel bir kavram olan esneklik, iktisada uyarlanmıştır. Bir fonksiyonun (örneğin $y\  = \ f(x)$) esnekliğinden bahsedebilmek için mutlaka bir etkileyen (bağımsız değişken) ve bir etkilenen (bağımlı değişken) olması gerekir.</p>
+<ul>
+<li><strong>Eğim ve Esneklik Arasındaki Fark</strong>
+<ul>
+<li><strong>Eğim</strong>: Bağımsız değişken (x) 1 birim arttığında, bağımlı değişkenin (y) mutlak olarak ne kadar değişeceğini gösterir.
+<p></p></li><p></p>
+<li><strong>Esneklik</strong>: Bağımsız değişken (x) %1 arttığında, bağımlı değişkenin (y) yüzde kaç değişeceğini ölçer.
+<p></p></li><p></p>
+<li><strong>Özetle</strong>: \"Değişim\" kelimesi eğimi, \"yüzde değişim\" veya \"nisbi değişim\" kelimesi ise esnekliği ifade eder.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Esneklik Formülünün Türetilmesi</strong>
+<ul>
+<li>Esnekliğin genel formülü, bağımlı değişkendeki yüzde değişimin, bağımsız değişkendeki yüzde değişime oranıdır. Formülün matematiksel açılımı şu şekilde gösterilir:
+<ul>
+<li><strong>Yüzde Değişim Hesabı</strong>: $\frac{\text{Son Değer} - \text{İlk Değer}}{\text{İlk Değer}}$ şeklinde bulunur.
+<p></p></li><p></p>
+<li><strong>Genel Formül</strong>: $E = \frac{\frac{y_{2} - y_{1}}{y_{1}}}{\frac{x_{2} - x_{1}}{x_{1}}}$
+<p></p></li><p></p>
+<li><strong>Bu formül düzenlendiğinde</strong>; $E = \frac{\Delta y}{\Delta x} \cdot \frac{x_{1}}{y_{1}}$ haline gelir.
+<ul>
+<li>Buradaki ilk kısım $(\frac{\Delta y}{\Delta x})$ aslında fonksiyonun eğimidir.
+<p></p></li>
+</ul>
+</li><p></p>
+<li>Dolayısıyla esneklik, eğim ile başlangıç değerlerinin oranının çarpımına eşittir.
+<p></p></li>
+</ul>
+</li>
+</ul>
+</li><p></p>
+<li><strong>İktisadi Fonksiyonlar Üzerinden Örnekler</strong>
+<ul>
+<li><strong>Engel Fonksiyonu (Gelir Esnekliği):</strong>
+<ul>
+<li>Gelir (M) ile talep miktarı (Q) arasındaki ilişkiyi ölçer.
+<p></p></li><p></p>
+<li>Gelir %1 arttığında talebin yüzde kaç değişeceğini gösterir.
+<p></p></li><p></p>
+<li>Gelir arttığında talep artabileceği gibi (normal mallar) azalabilir de (düşük mallar).
+<p></p></li><p></p>
+<li>Bu nedenle gelir esnekliği pozitif veya negatif değer alabilir.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Talep Fonksiyonu (Fiyat Esnekliği):</strong>
+<ul>
+<li>Malın fiyatı (P) ile talep miktarı (Q) arasındaki ilişkiyi ölçer.
+<p></p></li><p></p>
+<li>Fiyat %1 arttığında talep miktarının yüzde kaç azalacağını gösterir.
+<p></p></li><p></p>
+<li>Talep kanunu gereği fiyat ve miktar ters yönlü değiştiği için (istisnalar hariç) fiyat esnekliği genellikle negatif işaretlidir.
+<p></p></li>
+</ul>
+</li>
+</ul>
+</li><p></p>
+<li><strong>Esneklik Okuma ve Yorumlama</strong>
+<ul>
+<li>Bir esneklik ifadesi okunurken önce bağımlı, sonra bağımsız değişken söylenir.
+<ul>
+<li><strong>Örneğin</strong>: \"Talebin gelir esnekliği\" denildiğinde, gelirin talebi nasıl etkilediği anlaşılmalıdır.
+<p></p></li>
+</ul>
+</li><p></p>
+<li>Eğer bir malın gelir esnekliği 2 ise; bu, gelir %1 arttığında o mala olan talebin %2 artacağı anlamına gelir.
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<h4 id="h-39-talebin-fiyat-esnekli-i"><span class="prefix-num">b. </span>Talebin Fiyat Esnekliği</h4>
+<ul>
+<li><strong>Tanımı</strong>
+<ul>
+<li>Talebin fiyat esnekliği, bir malın fiyatındaki %1\'lik değişimin, o maldan talep edilen miktar üzerinde yüzde kaçlık bir değişime yol açacağını ölçer. Temel olarak tüketicilerin fiyat değişimlerine karşı ne kadar \"duyarlı\" olduğunu gösterir. Talep kanunu gereği fiyat ve miktar ters yönlü hareket ettiği için (fiyat artınca miktar azalır), esneklik değeri normal mallarda her zaman negatiftir; ancak iktisadi yorumlarda bu değerin mutlak değeri dikkate alınır.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Tüketici Duyarlılığına Göre Mal Grupları</strong>
+<ul>
+<li><strong>Zorunlu Mallar (Tuz, Ekmek):</strong> Fiyatı artsa bile tüketimi çok az değiştiği için bu mallar \"esnek olmayan\" (inelastik) olarak tanımlanır. Duyarlılık düşüktür.
+<p></p></li><p></p>
+<li><strong>Lüks Mallar (Eğlence, Sinema, Kozmetik):</strong> Fiyat değişimlerine karşı duyarlılık yüksektir. Fiyat azıcık arttığında miktar çok azalırsa bu mallar \"esnek\" (elastik) kabul edilir.
+<p></p></li><p></p>
+<li><strong>Tam Zorunlu Mallar (İnsülin):</strong> Fiyat ne olursa olsun miktar hiç değişmez. Bu durum \"tam esnek olmayan talep\" olarak adlandırılır.
+<p></p></li><p></p>
+<li><strong>Tam İkamesi Olan Mallar</strong>: Bir malın fiyatı çok az bile artsa tüketicinin tamamen başka bir markaya yöneldiği durumdur.
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Esnekliği Etkileyen Faktörler</strong>
+<ul>
+<li><strong>İkame İmkânı</strong>: Bir malın yerine geçebilecek benzer mallar ne kadar çoksa, o malın esnekliği o kadar yüksektir.
+<p></p></li><p></p>
+<li><strong>Zorunlu ve Lüks Olma</strong>: Zorunlu malların esnekliği düşük, lüks mallarınki yüksektir.
+<p></p></li><p></p>
+<li><strong>Bütçedeki Pay</strong>: Malın fiyatı bütçe içinde çok küçük bir yer kaplıyorsa (örneğin tuz), esneklik düşüktür. Pay arttıkça esneklik artar.
+<p></p></li><p></p>
+<li><strong>Zaman</strong>: Zaman uzadıkça esneklik artar. Çünkü tüketiciler uzun vadede fiyatı artan bir malın yerine alternatif bulmaya daha meyillidir (örneğin evde kendi ekmeğini veya içkisini yapmak gibi).
+<p></p></li><p></p>
+<li><strong>Malın Tanımı</strong>: Genel tanımlarda (meyve) esneklik düşük, özel tanımlarda (elma) esneklik yüksektir.
+<p></p></li><p></p>
+<li><strong>Marjinal Fayda Eğrisinin Eğimi</strong>: Marjinal faydası hızla azalan malların esnekliği genellikle düşüktür.
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<h4 id="h-40-hesaplama-y-ntemleri-ve-rnekler"><span class="prefix-num">c. </span>Hesaplama Yöntemleri ve Örnekler</h4>
+<ul>
+<li>Esneklik hesaplanırken iki ana yöntem kullanılır:
+<ul>
+<li><strong>Nokta Fiyat Esnekliği</strong>: Talep eğrisi üzerindeki belirli bir noktanın esnekliğini ölçer. Formül; miktardaki yüzde değişimin fiyattaki yüzde değişime oranıdır.
+<ul>
+<li><strong>Genel Formül</strong>: Miktardaki yüzde değişimin fiyattaki yüzde değişime oranını ve bunun sadeleşmiş halini verir\
+<p>$$e_{d} = \frac{\frac{\Delta Q}{Q}}{\frac{\Delta P}{P}} = \frac{\Delta Q}{\Delta P} \cdot \frac{P}{Q}$$
+</p></li><p></p>
+<li><strong>Türev Yardımıyla Esneklik Formülü</strong>:\
+<p>$$e_{d} = \frac{dQ}{dP} \cdot \frac{P}{Q}$$
+</p></li>
+</ul>
+</li><p></p>
+<li><strong>Yay (Ark/Orta Nokta) Esnekliği</strong>: Talep eğrisi üzerindeki iki nokta arasındaki ortalama esnekliği bulmak için kullanılır.
+<ul>
+<li><strong>Genel Formül\</strong>
+<p>$$e_{d} = \frac{\frac{Q_{2} - Q_{1}}{Q_{1} + Q_{2}}}{\frac{P_{2} - P_{1}}{P_{1} + P_{2}}}$$
+</p></li><p></p>
+<li><strong>Sadeleştirilmiş (Pratik) Formül</strong>: İki taraftaki \"bölü 2\"ler birbirini götürdüğü için hesaplamalarda genellikle şu formül kullanılır:\
+<p>$$e_{d} = \frac{Q_{2} - Q_{1}}{P_{2} - P_{1}} \cdot \frac{P_{1} + P_{2}}{Q_{1} + Q_{2}}$$
+</p></li>
+</ul>
+</li>
+</ul>
+</li><p></p>
+<li><strong>Katsayıların Yorumlanması ve Grafikler</strong>
+<ul>
+<li><strong>e \&lt; 1 (İnelastik):</strong> Fiyat %10 artarken miktar sadece %5 azalıyorsa talep esnek değildir. Grafik dikey bir yapıya yakındır.
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image53.webp" alt="İnelastik Talep (e\<1) - Fiyat ve miktar arasındaki düşük duyarlılığı temsil eden negatif eğimli talep doğrusudur. Fiyatın 100\'den 110\'a (10% artış) çıkması karşısında talep edilen miktarın 100\'den 95\'e (5% azalış) düşmesi, miktardaki oransal değişimin fiyattaki değişimden küçük olduğunu kanıtlar. X ekseni: Miktar (Q), Y ekseni: Fiyat (P). Tür: eğri">{width="4.724409448818897in" height="3.543307086614173in"}
+<p>$$e = \frac{\%\text{Miktar Değişimi}}{\%\text{Fiyat Değişimi}} = \frac{5}{10} = 0,5 &lt; 1$$</p></blockquote><p></p>
+<ul>
+<li><strong>e \&gt; 1 (Elastik):</strong> Fiyat %10 artarken miktar %20 azalıyorsa talep esnektir. Grafik daha yatık bir yapıdadır.
+<p></p></li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image54.webp" alt="Elastik Talep (e\>1) - Fiyat değişimlerine karşı yüksek miktar duyarlılığını gösteren nispeten yatık negatif eğimli talep eğrisidir. Fiyatın 100\'den 110\'a (10% artış) çıkması sonucunda talep edilen miktarın 100\'den 80\'e (20% azalış) keskin bir düşüş göstermesi, talebin fiyat esnekliğinin yüksek olduğunu ifade eder. X ekseni: Miktar (Q), Y ekseni: Fiyat (P). Tür: eğri">{width="4.724409448818897in" height="3.543307086614173in"}
+<p>$$e = \frac{\%\text{Miktar Değişimi}}{\%\text{Fiyat Değişimi}} = \frac{20}{10} = 2 &gt; 1$$</p></blockquote><p></p>
+<ul>
+<li><strong>e = 1 (Birim Esnek):</strong> Fiyat ve miktar aynı oranda değişir.
+<p></p></li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image55.webp" alt="Birim Esnek Talep (e=1) - Fiyat ve miktardaki oransal değişimlerin mutlak değerce birbirine eşit olduğu hiperbolik talep eğrisidir. Grafikte fiyatın 10% artması ile miktarın 10% azalması dengeyi (100, 100) noktasından (90, 110) noktasına taşır ve bu eğri üzerindeki her noktada toplam tüketici harcaması sabit kalır. X ekseni: Miktar (Q), Y ekseni: Fiyat (P). Tür: eğri">{width="4.724409448818897in" height="3.543307086614173in"}
+<p>$$e = \frac{\%\text{Miktar Değişimi}}{\%\text{Fiyat Değişimi}} = \frac{10}{10} = 1$$</p></blockquote><p></p>
+<ul>
+<li><strong>e = 0 (Tam İnelastik):</strong> Grafik tam diktir, miktar hiç değişmez.
+<p></p></li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image56.webp" alt="Tam İnelastik Talep (e=0) - Fiyat değişimlerinden bağımsız olarak talep edilen miktarın sabit kaldığını gösteren dikey bir talep doğrusudur. Fiyat 50 birimden 120 birime yükselse dahi, tüketicilerin talep ettiği miktarın 100 birim seviyesinde değişmeden kalması fiyata karşı sıfır duyarlılığı simgeler. X ekseni: Miktar (Q), Y ekseni: Fiyat (P). Tür: eğri">{width="4.724409448818897in" height="3.543307086614173in"}
+<p>$$e = \frac{\% 0\text{ (Miktar Değişimi)}}{\%\Delta P\text{ (Fiyat Değişimi)}} = 0$$</p></blockquote><p></p>
+<ul>
+<li><strong>e = ∞ (Tam Esnek):</strong> Grafik tam yataydır, sonsuz duyarlılık vardır.
+<p></p></li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image57.webp" alt="Tam Elastik Talep (e=∞) - Belirli bir fiyat seviyesinde (P=100) tüketicilerin sonsuz miktar talep etmeye hazır olduğunu gösteren yatay talep doğrusudur. Piyasa fiyatındaki en küçük bir artışın talebi sıfıra indireceği, fiyatın değişmediği durumda ise miktarın (50\'den 150\'ye gibi) serbestçe değişebileceği bir yapıyı temsil eder. X ekseni: Miktar (Q), Y ekseni: Fiyat (P). Tür: eğri">{width="4.724409448818897in" height="3.543307086614173in"}
+<p>$$e = \frac{\%\Delta Q\text{ (Miktar Değişimi)}}{\% 0\text{ (Fiyat Değişimi)}} = \infty$$</p></blockquote><p></p>
+<ul>
+<li><strong>Önemli Not</strong>: Talep doğrusu dikleştikçe eğim artar ancak esneklik azalır. Talep doğrusu yatıklaştıkça (yatay eksene yaklaştıkça) esneklik artar.
+<p></p></li><p></p>
+<li><strong>Uyarılar</strong>:
+<ul>
+<li><strong>1/Eğim Meselesi</strong>: Fonksiyonel sorularda P\'nin önündeki sayının aslında esneklik formülündeki değişim oranına karşılık geldiğini, bunun \"eğim\" ile karıştırılmaması gerektiğini vurgular.
+<p></p></li><p></p>
+<li><strong>Negatif İşaret</strong>: Talebin fiyat esnekliğinin her zaman negatif olduğunu, ancak mutlak değer içinde sorulabileceğini hatırlatır. İşlem yaparken eksiyi unutmanın yanlış sonuca götüreceğini belirtir
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote><div class="custom-block example" data-title="Örnek 1: A malının fiyatı 20 TL'den 25 TL'ye çıktığında talep miktarı 8 birimden 4 birime düşüyorsa talebin fiyat esnekliği nedir?"></div></blockquote>
+<p><strong>Veriler</strong>: $P_{1} = 20,\ \ P_{2} = 25\ |\ Q_{1} = 8,\ \ Q_{2} = 4$
+<span class="badge">Çözüm:</span> - Nokta esnekliği formülü kullanılır: $\epsilon_{d} = \frac{\frac{\Delta Q}{Q_{1}}}{\frac{\Delta P}{P_{1}}}\quad\text{veya}\quad\epsilon_{d} = \frac{\Delta Q}{\Delta P} \cdot \frac{P_{1}}{Q_{1}}$</p>
+<ul>
+<li>$\Delta Q = Q_{2} - Q_{1} = 4 - 8 = - 4$
+<p></p></li><p></p>
+<li>$\Delta P = P_{2} - P_{1} = 25 - 20 = 5$
+<p></p></li><p></p>
+<li><strong>İşlem</strong>: $\left( - 4\text{/}8 \right)\text{/}\left( 5\text{/}20 \right) = - 0.50\text{/}0.25 = - 2$
+<p></p></li>
+</ul><p></p>
+<ul>
+<li><strong>Sonuç</strong>: Esneklik katsayısı mutlak değerce 2\'dir (∣−2∣\&gt;1). Bu durumda esnek talep söz konusudur.
+<p></p></li>
+</ul><p></p>
+
+<div class="custom-block example" data-title="Örnek 2: X malının fiyatı %50 arttığında, talep miktarı 60 birimden 40 birime düşüyorsa talebin fiyat esnekliği nedir?">
+<p><strong>Veriler</strong>: $\%\Delta P = + \ \% 50\  = \frac{1}{2}\ |\ Q_{1} = 60,\ Q_{2} = 40$
+<span class="badge">Çözüm:</span> - Miktardaki yüzdesel değişim: $(40 - 60)\text{/}60 = - 20\text{/}60 = - 1\text{/}3(33)$</p>
+<ul>
+<li>İşlem: $( - 1/3)/(1/2) = - 2/3$
+<p></p></li>
+</ul><p></p>
+<ul>
+<li><strong>Sonuç</strong>: Katsayı mutlak değerce 1\'den küçük olduğu için esnek olmayan (inelastik) talep söz konusudur. 
+<p></p></li>
+</ul><p></p>
+</div>
+<div class="custom-block example" data-title="Örnek 3: Q=400−4P talep fonksiyonuna göre malın fiyatı 30 TL ise talebin fiyat esnekliği nedir?">
+<p><strong>Veriler</strong>: P=30 | Fonksiyon: Q=400−4P
+<span class="badge">Çözüm:</span> - Fonksiyon verildiğinde esneklik formülü: $\epsilon_{d} = \frac{dQ}{dP} \cdot \frac{P}{Q}$ ​</p>
+<ul>
+<li>Önce Q bulunur: $400 - 4(30) = 400 - 120 = 280\ $
+<p></p></li><p></p>
+<li>P\'nin önündeki katsayı (türev) alınır: −4
+<p></p></li><p></p>
+<li>İşlem: $- 4 \times (30/280) = - 120/280 = - 3/7$
+<p></p></li>
+</ul><p></p>
+<ul>
+<li><strong>Sonuç</strong>: Esneklik katsayısı −3/7 olarak bulunur. 
+<p></p></li>
+</ul><p></p>
+</div>
+<div class="custom-block example" data-title="Örnek 4: P=120−1/2Q talep fonksiyonuna göre malın fiyatı 60 TL ise talebin fiyat esnekliği nedir?">
+<p><span class="badge">Çözüm:</span> - Fonksiyon P cinsinden verildiği için önce Q yalnız bırakılır:</p>
+<ul>
+<li>$1/2Q = 120 - P \Rightarrow Q = 240 - 2P\ \ $
+<p></p></li><p></p>
+<li>$P = 60\ için\ Q\  = \ 240 - 2(60) = 120\ \ $
+<p></p></li><p></p>
+<li>P\'nin önündeki katsayı: −2
+<p></p></li><p></p>
+<li>İşlem: $- 2 \times (60/120) = - 1$
+<p></p></li>
+</ul><p></p>
+<ul>
+<li><strong>Sonuç</strong>: Katsayı -1 çıktığı için bu nokta birim esnek noktadır. 
+<p></p></li>
+</ul><p></p>
+</div>
+<div class="custom-block example" data-title="Örnek 5: Soru: Q=50−aP talep fonksiyonunda malın fiyatı 5 TL ve esneklik mutlak değerce 2 ise \&quot;a\&quot; sayısı nedir?">
+<p><strong>Veriler</strong>: $P = 5,\quad\left| \epsilon_{d} \right| = 2\quad\left( \text{yani }\epsilon_{d} = - 2 \right)$
+<span class="badge">Çözüm:</span> - $Q = 50 - 5a\ \ $</p>
+<ul>
+<li>Formül yerine konur: $- 2 = - a \times (5/(50 - 5a))\ \ $
+<p></p></li><p></p>
+<li>İçler dışlar çarpımı: $100 - 10a = 5a \Rightarrow 100 = 15a$
+<p></p></li>
+</ul><p></p>
+<ul>
+<li><strong>Sonuç</strong>: $a = 100/15 = 20/3$ olarak bulunur. 
+<p></p></li>
+</ul><p></p>
+</div>
+<div class="custom-block example" data-title="Örnek 6: Soru: X malının fiyatı 100 TL iken talep miktarı 60 birimdir. Esneklik mutlak değerce 5 ise malın fiyatı 20 TL arttığında yeni talep miktarı ne olur?">
+<p><strong>Veriler</strong>: $P_{1} = 100,Q_{1} = 60,\epsilon_{d} = - 5,\ \ \Delta P = + 20$
+<span class="badge">Çözüm:</span> - $- 5 = (\Delta Q/20) \times (100/60)\ \ $</p>
+<ul>
+<li>Sadeleştirmelerle: $- 5 = (\Delta Q \times 5)/60 \Rightarrow - 300 = 5\Delta Q \Rightarrow \Delta Q = - 60$
+<p></p></li><p></p>
+<li><strong>Sonuç</strong>: Yeni miktar $Q_{2} = Q_{1} + \Delta Q = 60 - 60 = 0$
+<ul>
+<li>Fiyat 20 TL artarsa talep tamamen kesilir 
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+</div>
+<h4 id="h-41-grafiksel-analiz-ve-zel-fonksiyonlar"><span class="prefix-num">d. </span>Grafiksel Analiz ve Özel Fonksiyonlar</h4>
+<ul>
+<li><strong>Doğrusal Talep Fonksiyonları:</strong>
+<p></p></li>
+</ul>
+Doğrusal bir talep fonksiyonu $Q = a - bP\ $şeklinde ifade edilir. Bu doğru üzerinde eğim ($\frac{dP}{dQ}$) sabit olsa da her fiyat düzeyinde esneklik değişir.<p></p>
+<ul>
+<li><strong>Grafiksel Analiz ve Özel Noktalar</strong>: Bir talep doğrusu üzerinde üç kritik nokta ve iki bölge bulunur.
+<p></p></li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image58.webp" alt="Doğrusal Talep Eğrisinde Nokta Esnekliği - Negatif eğimli doğrusal bir talep eğrisi (D) üzerinde esneklik bölgeleri gösterilmektedir. K noktası (fiyat ekseni kesişimi) sonsuz esnekliği, M noktası (miktar ekseni kesişimi) sıfır esnekliği temsil ederken; L noktası eksenlerin tam orta noktasında (a/2) konumlanarak birim esnekliği (e=1) simgeler. X ekseni: Miktar (Q), Y ekseni: Fiyat (P). Tür: eğri">{width="4.330708661417323in" height="3.248031496062992in"}</blockquote>
+<ul>
+<li><strong>K Noktası (Dikey Eksen - Fiyat Ekseni):</strong>
+<ul>
+<li>Miktar (Q) sıfırdır.
+<p></p></li><p></p>
+<li><strong>Esneklik</strong>: $\left| \mathbf{\epsilon} \right|\mathbf{= \infty}$ (Tam Esnek).
+<p></p></li><p></p>
+<li><strong>Matematiksel Kanıt</strong>: $\mathbf{\epsilon = - b \cdot}\frac{\mathbf{P}}{\mathbf{0}}\mathbf{= \ \infty}$
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>L Noktası (Orta Nokta):</strong>
+<ul>
+<li>Fiyat ve miktarın tam orta değerleridir ($P = \frac{a}{2b}\quad Q = \frac{a}{2}$)
+<p></p></li><p></p>
+<li><strong>Esneklik</strong>: $\left| \mathbf{\epsilon} \right|\mathbf{= 1}$ (Birim Esnek).
+<p></p></li><p></p>
+<li><strong>Matematiksel Kanıt</strong>: $\epsilon = - b \cdot \frac{a\text{/}2b}{a\text{/}2} = 1$
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>M Noktası (Yatay Eksen - Miktar Ekseni):</strong>
+<ul>
+<li>Fiyat (P) sıfırdır.
+<p></p></li><p></p>
+<li><strong>Esneklik</strong>: $|\epsilon| = 0$ (Tam Esnek Olmayan).
+<p></p></li><p></p>
+<li><strong>Matematiksel Kanıt</strong>: $\epsilon = - b \cdot \frac{0}{Q} = 0$
+<p></p></li>
+</ul>
+</li>
+</ul>
+<!-- --><p></p>
+<ul>
+<li><strong>Bölgeler ve Değişim Yönü</strong>
+<ul>
+<li><strong>Üst Bölge (K ile L arası)</strong>: |$\epsilon| &gt; 1$ (Esnek Talep).
+<p></p></li><p></p>
+<li><strong>Alt Bölge (L ile M arası):</strong> $|\epsilon| &lt; 1$ (İnelastik/Esnek Olmayan Talep).
+<p></p></li><p></p>
+<li><strong>Değişim Kuralı</strong>: Talep doğrusu üzerinde yukarıdan aşağıya (fiyat düştükçe) inildikçe esneklik azalır.
+<p></p></li>
+</ul>
+</li>
+</ul>
+<!-- --><p></p>
+<ul>
+<li><strong>Hiperbolik Talep Fonksiyonları (Sabit Esneklik)</strong>
+<p></p></li>
+</ul>
+Eğer talep eğrisi doğrusal değil de bir eğri (hiperbol) şeklindeyse, durum doğrusal fonksiyonun tam tersidir. $Q = a \cdot P^{- n}$ şeklinde ifade edilir.<p></p>
+<ul>
+<li><strong>Temel Özellik</strong>: Bu fonksiyonlarda eğim her noktada değişirken, esneklik her noktada sabittir.
+<p></p></li><p></p>
+<li><strong>Kısa Yol</strong>: Fiyatın (P) üzerindeki üs (mutlak değerce), doğrudan talebin fiyat esnekliğini verir.
+<ul>
+<li><strong>Örnek</strong>: $Q = 500 \cdot P^{- 2}$ ise bu malın esnekliği her fiyat düzeyinde 2\'dir.
+<p></p></li><p></p>
+<li><strong>Matematiksel Kanıt:</strong>
+<ul>
+<li>$\frac{dQ}{dP} = - 2 \cdot 500 \cdot P^{- 3}$
+<p></p></li><p></p>
+<li>$\epsilon = \left( - 2 \cdot 500 \cdot P^{- 3} \right) \cdot \frac{P}{500 \cdot P^{- 2}} = - 2$
+<p></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- --><p></p>
+<ul>
+<li><strong>Yatay ve Dikey Talep Eğrileri</strong>
+<p></p></li>
+</ul>
+Sınavlarda sıkça sorulan \"dikleşme\" ve \"yatıklaşma\" yorumları bu iki uç noktaya dayanır:<p></p>
+<p></p><table style="width:82%;">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 31%">
+<col style="width: 8%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Durum</strong></th>
+<th style="text-align: center;"><strong>Grafik</strong></th>
+<th style="text-align: center;"><strong>Eğim</strong></th>
+<th style="text-align: center;"><strong>Esneklik</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>Yatay Talep</strong></td>
+<td style="text-align: center;">Fiyat sabit, miktar değişken</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">∞ (Tam Esnek)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Dikey Talep</strong></td>
+<td style="text-align: center;">Miktar sabit, fiyat değişken</td>
+<td style="text-align: center;">∞</td>
+<td style="text-align: center;">0 (Tam Esnek Olmayan)</td>
+</tr>
+</tbody>
+</table><p></p>
+<ul>
+<li><strong>Altın Kural</strong>: Bir talep doğrusu yatıklaştıkça esnekliği artar (sonsuza yaklaşır), dikleştikçe esnekliği azalır (sıfıra yaklaşır).
+<p></p></li>
+</ul>
+<!-- --><p></p>
+<ul>
+<li><strong>Karşılaştırma Tablosu: Doğrusal vs. Hiperbolik</strong>
+<p></p></li>
+</ul><p></p>
+<p></p><table style="width:89%;">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 35%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Özellik</strong></th>
+<th style="text-align: center;"><strong>Doğrusal Talep</strong> <span class="math inline">(<em>Q</em> = <em>a</em> − <em>b</em><em>P</em>)</span></th>
+<th style="text-align: center;"><strong>Hiperbolik Talep</strong> <span class="math inline">(<em>Q</em> = <em>a</em> ⋅ <em>P</em><sup>−<em>n</em></sup>)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>Eğim</strong></td>
+<td style="text-align: center;">Sabittir (Her noktada aynı)</td>
+<td style="text-align: center;">Değişkendir</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Esneklik</strong></td>
+<td style="text-align: center;">Değişkendir (Aşağı indikçe azalır)</td>
+<td style="text-align: center;">Sabittir (Üsse eşittir)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Grafik Şekli</strong></td>
+<td style="text-align: center;">Düz bir doğru</td>
+<td style="text-align: center;">Merkeze dışbükey bir eğri</td>
+</tr>
+</tbody>
+</table><p></p>
+<ul>
+<li><strong>Sınav İçin Kritik Notlar</strong>
+<ul>
+<li><strong>Türev İlişkisi</strong>: Esneklik hesaplanırken Q fonksiyonunun P\'ye göre türevi alınır ve o noktadaki P/Q oranı ile çarpılır.
+<p></p></li><p></p>
+<li><strong>Birimlere Dikkat</strong>: Esneklik birimsiz bir sayıdır; fiyatın cinsi (TL, dolar) sonucu değiştirmez.
+<p></p></li><p></p>
+<li><strong>Talep Doğrusu Vurgusu</strong>: Esnekliğin azalması için \"talep doğrusu\" üzerinde hareket edildiğinden emin olunmalıdır; diğer mal gruplarında (örneğin Engel eğrisi) bu ilişkiler farklılık gösterebilir.
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<h4 id="h-42-talebin-fiyat-esnekli-i-ile-sat-c-geliri-toplam-has-lat-tr"><span class="prefix-num">e. </span>Talebin Fiyat Esnekliği ile Satıcı Geliri (Toplam Hasılat - TR)</h4>
+<ul>
+<li><strong>Toplam Hasılat (TR) Kavramı</strong>:
+<ul>
+<li>Toplam hasılat, bir satıcının belirli bir fiyattan sattığı toplam mal miktarı karşılığında elde ettiği gelirdir. Aynı zamanda tüketicinin bu mal için yaptığı harcamaya eşittir.
+<p></p></li><p></p>
+<li><strong>Temel Formül:</strong>\
+<p>$$TR\  = \ P\  \times Q$$
+</p></li>
+</ul>
+</li><p></p>
+<li><strong>Esneklik Durumlarına Göre Analiz ve Hesaplamalar</strong>
+<ul>
+<li><strong>Tam Esnek Olmayan Talep (</strong>$\mathbf{E}_{\mathbf{d}}\mathbf{= 0}$<strong>)</strong>
+<ul>
+<li>Tüketici fiyat değişimine sıfır tepki verir. Fiyat ne kadar artarsa artsın miktar değişmez (Örneğin; hayati ilaçlar).
+<p></p></li><p></p>
+<li><strong>Matematiksel Örnek:</strong>
+<ul>
+<li><strong>Başlangıç</strong>: $P_{1} = 20,\ Q = 5 \Rightarrow TR_{1} = 20 \times 5 = 100$
+<p></p></li><p></p>
+<li><strong>Fiyat Azalışı</strong>: $P_{2} = 10,Q = 5 \Rightarrow TR_{2} = 10 \times 5 = 50$
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>İlişki</strong>: Fiyat hangi oranda değişirse, hasılat da o oranda ve aynı yönde değişir.
+<p></p></li><p></p>
+<li><strong>Formül</strong>:\
+<p>$$\%\ \Delta P\  = \ \%\ \Delta TR$$
+</p></li>
+</ul>
+</li><p></p>
+<li><strong>Esnek Olmayan Talep</strong> $\left( \mathbf{0 &lt;}\mathbf{E}_{\mathbf{d}}\mathbf{&lt; 1} \right)$
+<ul>
+<li>Fiyat değişimi, miktar değişiminden daha baskındır. Zorunlu mallarda (ekmek, su vb.) görülür.
+<p></p></li><p></p>
+<li><strong>Matematiksel Örnek:</strong>
+<ul>
+<li><strong>Başlangıç</strong>: $P_{1} = 8,Q_{1} = 3 \Rightarrow TR_{1} = 24$
+<p></p></li><p></p>
+<li><strong>Fiyat %50 Azalırsa</strong>: $P_{2} = 4$
+<p></p></li><p></p>
+<li><strong>Miktar duyarlılığı düşük olduğu için sadece 1 birim artsın</strong>: $Q_{2} = 4$
+<p></p></li><p></p>
+<li><strong>Yeni Hasılat</strong>: $TR_{2} = 4 \times 4 = 16$
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>İlişki</strong>: Fiyat ve toplam hasılat doğru orantılı hareket eder.
+<p></p></li><p></p>
+<li><strong>Strateji</strong>:\
+<p>$$P \uparrow \  \Rightarrow TR \uparrow \quad\text{veya}\quad P \downarrow \  \Rightarrow TR \downarrow$$
+</p></li>
+</ul>
+</li><p></p>
+<li><strong>Birim Esnek Talep (</strong>$\mathbf{E}_{\mathbf{d}}\mathbf{= 1}$<strong>)</strong>
+<ul>
+<li>Fiyattaki yüzde değişim, miktardaki yüzde değişime tam olarak eşittir. Bu durum genellikle ikizkenar hiperbol talep eğrilerinde görülür.
+<p></p></li><p></p>
+<li><strong>Matematiksel Örnek</strong>: Talep denklemi $Q = 75 \times P^{- 1}$olsun.
+<ul>
+<li><strong>Durum 1</strong>: $P = 5 \Rightarrow Q = 75/5 = 15 \Rightarrow TR = 75$
+<p></p></li><p></p>
+<li><strong>Durum 2</strong>: $P = 25 \Rightarrow Q = 75/25 = 3 \Rightarrow TR = 75$
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>İlişki</strong>: Fiyat değişimi toplam hasılatı değiştirmez.
+<p></p></li><p></p>
+<li><strong>Formül:</strong>\
+<p>$$\%\ \Delta P\  = \ \%\ \Delta Q\  \Rightarrow \Delta TR\  = \ 0$$
+</p></li>
+</ul>
+</li><p></p>
+<li><strong>Esnek Talep (</strong>$\mathbf{E}_{\mathbf{d}}\mathbf{&gt; 1}$<strong>)</strong>
+<ul>
+<li>Tüketicinin fiyata karşı duyarlılığı yüksektir. Miktar değişimi, fiyat değişiminden daha baskındır (Lüks mallar, hazır giyim vb.).
+<ul>
+<li><strong>Matematiksel Örnek</strong>:
+<ul>
+<li><strong>Başlangıç (Sezon Fiyatı):</strong> $P_{1} = 500,\ \ Q_{1} = 5 \Rightarrow TR_{1} = 2.500\ \ $
+<p></p></li><p></p>
+<li><strong>Fiyat %50 İndirime Girerse</strong>: $P_{2} = 250$
+<p></p></li><p></p>
+<li><strong>Talep esnek olduğu için miktar çok artar</strong>: $Q_{2} = 20$
+<p></p></li><p></p>
+<li><strong>Yeni Hasılat</strong>: $TR_{2} = 250 \times 20 = 5.000$
+<p></p></li>
+</ul>
+</li>
+</ul>
+</li><p></p>
+<li><strong>İlişki</strong>: Fiyat ve toplam hasılat ters orantılı hareket eder.
+<p></p></li><p></p>
+<li><strong>Strateji</strong>:\
+<p>$$P \downarrow \  \Rightarrow TR \uparrow \text{veya}\ P \uparrow \  \Rightarrow TR$$
+</p></li>
+</ul>
+</li>
+</ul>
+</li><p></p>
+<li><strong>Özet Tablo ve Grafiksel İlişki</strong>
+<p></p></li>
+</ul><p></p>
+<p></p><table>
+<colgroup>
+<col style="width: 23%">
+<col style="width: 19%">
+<col style="width: 18%">
+<col style="width: 19%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Talep Esnekliği Türü</strong></th>
+<th style="text-align: center;"><strong>Esneklik Katsayısı</strong></th>
+<th style="text-align: center;"><strong>Fiyat Artışı (P↑)</strong></th>
+<th style="text-align: center;"><strong>Fiyat Azalışı (P↓)</strong></th>
+<th style="text-align: center;"><strong>Satıcı İçin Strateji</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>Tam İnelastik</strong></td>
+<td style="text-align: center;"><span class="math display"><em>E</em><sub><em>d</em></sub> = 0</span></td>
+<td style="text-align: center;">TR Artar&nbsp;(Aynı oranda)</td>
+<td style="text-align: center;">TR Azalır&nbsp;(Aynı oranda)</td>
+<td style="text-align: center;">Fiyatı artır</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>İnelastik (Esnek Olmayan)</strong></td>
+<td style="text-align: center;"><span class="math display">0 &lt; <em>E</em><sub><em>d</em></sub> &lt; 1</span></td>
+<td style="text-align: center;">TR Artar</td>
+<td style="text-align: center;">TR Azalır</td>
+<td style="text-align: center;">Fiyatı artır</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Birim Esnek</strong></td>
+<td style="text-align: center;"><span class="math display"><em>E</em><sub><em>d</em></sub> = 1</span></td>
+<td style="text-align: center;">TR Değişmez</td>
+<td style="text-align: center;">TR Değişmez</td>
+<td style="text-align: center;">Fiyatı değiştirme</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Elastik (Esnek)</strong></td>
+<td style="text-align: center;"><span class="math display"><em>E</em><sub><em>d</em></sub> &gt; 1</span></td>
+<td style="text-align: center;">TR Azalır</td>
+<td style="text-align: center;">TR Artar</td>
+<td style="text-align: center;">Fiyatı düşür (İndirim)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Tam Elastik</strong></td>
+<td style="text-align: center;"><span class="math display"><em>E</em><sub><em>d</em></sub> = ∞</span></td>
+<td style="text-align: center;">TR Sıfıra İner</td>
+<td style="text-align: center;">TR Sonsuza Gider</td>
+<td style="text-align: center;">Pazar fiyatına uy</td>
+</tr>
+</tbody>
+</table><p></p>
+<h4 id="h-43-fiyat-t-ketim-e-risi-fte-ile-talebin-fiyat-esnekli-i"><span class="prefix-num">f. </span>Fiyat Tüketim Eğrisi (FTE) ile Talebin Fiyat Esnekliği</h4>
+<ul>
+<li><strong>Bileşik Mal Analizi</strong>
+<ul>
+<li>Tüketim kuramında normalde iki mal (X ve Y) üzerinden analiz yapılırken, bileşik mal analizinde yatay eksende ilgilenilen X malı, dikey eksende ise diğer tüm mallara yapılan harcamalar yer alır
+<ul>
+<li><strong>Bütçe Doğrusu</strong>: Yatay ekseni kestiği nokta $M\text{/}P_{x}\ $(alınabilecek maksimum X miktarı), dikey ekseni kestiği nokta ise M (gelirin tamamının diğer mallara harcanması) değerini verir
+<p></p></li><p></p>
+<li><strong>X Malına Yapılan Harcama</strong> $\left( \mathbf{T}\mathbf{R}_{\mathbf{x}} \right)$<strong>:</strong> Toplam gelirden (M), diğer mallara yapılan harcama çıkarıldığında bulunur. Grafikte bütçe doğrusunun dikey eksenindeki toplam uzunluk ile denge noktasının dikey eksendeki karşılığı arasındaki fark $TR_{x}$\'i temsil eder
+<p></p></li>
+</ul>
+</li><p></p>
+<li><strong>Bileşik Mal Analizinde Bütçe Doğrusunun Eğimi Formülü</strong>: Normal bütçe doğrusunda eğim $- Px/Py$ iken, burada dikey eksen \"para\" veya \"harcama\" olduğu için (fiyatı 1 kabul edilir) eğim sadece X malının fiyatına eşittir
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote>$$\text{Eğim} = - P_{x}$$
+<p><img src="/content/mikro-iktisat/media/image59.webp" alt="Bileşik Mal Analizi ve Tüketici Dengesi - Toplam bütçenin (M=800) X malı ve diğer tüm harcamalar (DMYH) arasındaki optimal dağılımını gösteren grafiktir. X malının fiyatı 4 birimken (800/200), farksızlık eğrisinin bütçe doğrusuna teğet olduğu noktada tüketici 80 birim X (320 TL) ve 480 TL değerinde bileşik mal tüketerek dengeye ulaşır. X ekseni: X Malı Miktarı, Y ekseni: Diğer Mallara Yapılan Harcamalar (DMYH). Tür: eğri">{width="5.118110236220472in" height="3.722364391951006in"}</p></blockquote><p></p>
+<ul>
+<li><strong>Fiyat Tüketim Eğrisi (FTE) ve Esneklik İlişkisi</strong>
+<ul>
+<li>X malının fiyatı düştüğünde, bütçe doğrusunun yatay eksendeki ucu sağa kayar. Bu yeni bütçe doğruları üzerindeki denge noktalarının birleştirilmesiyle <strong>Fiyat Tüketim Eğrisi</strong> elde edilir. Bu eğrinin şekli, talebin fiyat esnekliği hakkında bilgi verir:
+<ul>
+<li><strong>FTE Dikey ise (e=0):</strong> X malının fiyatı düştüğünde talep edilen miktar değişmiyorsa ve diğer mallara yapılan harcama artıyorsa (yani X\'e yapılan harcama azalıyorsa), esneklik sıfırdır.
+<ul>
+<li><strong>Durum</strong>: Tam esnek olmayan talep.
+<p></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image60.webp" alt="Fiyat Tüketim Eğrisi (FTE): Tam İnelastik Durum - X malı fiyatı düştüğünde bütçe doğrusunun sağa doğru genişlemesine rağmen, denge noktalarını (E1,E 2) birleştiren FTE\'nin dikey bir doğru olduğu gösterilmektedir. Bu durum, X malına olan talebin fiyat esnekliğinin sıfır olduğunu ve miktar tüketiminin 20 birim seviyesinde sabit kaldığını kanıtlar. X ekseni: X Malı Miktarı, Y ekseni: Diğer Harcamalar (Y). Tür: eğri">{width="4.330708661417323in" height="3.248031496062992in"}</blockquote>
+<ul>
+<li><strong>FTE Pozitif Eğimli ise (e\&lt;1):</strong> Fiyat düştüğünde X malına olan talep artıyor ancak X malına yapılan toplam harcama azalıyorsa, esneklik birden küçüktür.
+<ul>
+<li><strong>Durum</strong>: İnelastik (esnek olmayan) talep.
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image61.webp" alt="Fiyat Tüketim Eğrisi (FTE) - İnelastik Durum (0\<e\<1) - X malı fiyatı düştüğünde oluşan denge noktalarını birleştiren pozitif eğimli FTE\'dir (kırmızı). Fiyat düştükçe X tüketimiyle birlikte diğer harcamaların (Y) da artması, X malına yapılan toplam harcamanın azaldığını ve talebin inelastik olduğunu gösterir. X ekseni: X Malı Miktarı, Y ekseni: Diğer Harcamalar (Y). Tür: eğri">{width="4.330708661417323in" height="3.248031496062992in"}</blockquote>
+<ul>
+<li><strong>FTE Yatay ise (e=1):</strong> Fiyat düştüğünde talep artıyor ama X malına yapılan toplam harcama ($TR_{x}$) değişmiyorsa, esneklik bire eşittir.
+<ul>
+<li><strong>Durum</strong>: Birim esnek talep.
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image62.webp" alt="Fiyat Tüketim Eğrisi (FTE) - Birim Esnek Durum (e=1) - X malı fiyatı düştüğünde oluşan denge noktalarını (E 1 ​ ,E 2 ​ ) birleştiren yatay FTE\'dir (kırmızı). X tüketimi 20\'den 40\'a çıkarken diğer harcamaların (Y) sabit kalması, X\'e ayrılan bütçe payının değişmediğini ve talebin birim esnek olduğunu gösterir. X ekseni: X Malı Miktarı, Y ekseni: Diğer Harcamalar (Y). Tür: eğri">{width="4.330708661417323in" height="3.248031496062992in"}</blockquote>
+<ul>
+<li><strong>FTE Negatif Eğimli ise (e\&gt;1):</strong> Fiyat düştüğünde X malına yapılan toplam harcama artıyorsa, esneklik birden büyüktür.
+<ul>
+<li><strong>Durum</strong>: Esnek talep.
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image63.webp" alt="Fiyat Tüketim Eğrisi (FTE) - Esnek Durum (e\>1) - X malı fiyatı düştüğünde oluşan denge noktalarını birleştiren negatif eğimli FTE\'dir (kırmızı). Fiyat düştükçe X tüketiminin artması ve diğer harcamaların (Y) azalması, X malına yapılan toplam harcamanın arttığını ve talebin esnek olduğunu kanıtlar. X ekseni: X Malı Miktarı, Y ekseni: Diğer Harcamalar (Y). Tür: eğri">{width="4.330708661417323in" height="3.248031496062992in"}</blockquote>
+<ul>
+<li><strong>Sonsuz Esneklik (e=∞):</strong> Sonsuz artış grafikte gösterilemediği için sonsuz esnekliğin Fiyat Tüketim Eğrisi çizilemez.
+<p></p></li>
+</ul>
+<!-- --><p></p>
+<ul>
+<li><strong>Kestirme Yöntem ve Özet</strong>
+<ul>
+<li>Karıştırmamak için \"saat yönü\" kuralı kullanılabilir. Esneklik değerlerini en küçükten (0) başlayarak büyük olana doğru sıraladığımızda FTE\'nin şekli dikeyden negatife doğru döner.
+<p></p></li>
+</ul>
+</li>
+</ul><p></p>
+<blockquote><img src="/content/mikro-iktisat/media/image64.webp" alt="Fiyat Tüketim Eğrisi (FTE) ve Esneklik İlişkisi - FTE\'nin eğimi ile talebin fiyat esnekliği arasındaki korelasyonu gösteren genel özet diyagramıdır. FTE\'nin dikey, pozitif eğimli, yatay veya negatif eğimli olma durumlarına göre esneklik katsayıları (0, \<1, 1, \>1) kategorize edilmiştir. X ekseni: X Malı Miktarı, Y ekseni: Y Malı Miktarı. Tür: şekil">{width="4.330708661417323in" height="3.248031496062992in"}</blockquote>
+<ul>
+<li><strong>Önemli Not:</strong> Talebin fiyat esnekliği analiz edilirken \"Talep Eğrisi\" ile \"Fiyat Tüketim Eğrisi\" birbirine karıştırılmamalıdır.
+<ul>
+<li>Örneğin, talep eğrisi yatay olduğunda esneklik sonsuzdur; ancak FTE yatay olduğunda esneklik 1\'dir.
+<p></p></li>
+</ul>
+</li>
+</ul><p></p></strong>
+    </main>
+    <script src="/content/notes.js"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+// Prisma Schema for Exam Tracker
+// Connected to Supabase PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// =====================================================
+// MODELS
+// =====================================================
+
+model Lesson {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  chunks    LessonChunk[]
+  
+  @@map("lessons")
+}
+
+model LessonChunk {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  lessonId   String   @map("lesson_id") @db.Uuid
+  title      String
+  contentMd  String   @map("content_md")
+  metadata   Json     @default("{}")
+  lessonName String?  @map("lesson_name")
+  createdAt  DateTime @default(now()) @map("created_at")
+  
+  lesson     Lesson          @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  questions  QuestionBank[]
+  statistics UserStatistic[]
+  
+  @@map("lesson_chunks")
+}
+
+model QuestionBank {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  chunkId      String    @map("chunk_id") @db.Uuid
+  questionData Json      @map("question_data")
+  createdBy    String?   @map("created_by") @db.Uuid
+  createdAt    DateTime  @default(now()) @map("created_at")
+  
+  chunk             LessonChunk            @relation(fields: [chunkId], references: [id], onDelete: Cascade)
+  answeredQuestions UserAnsweredQuestion[]
+  
+  @@map("question_bank")
+}
+
+model UserStatistic {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  chunkId        String   @map("chunk_id") @db.Uuid
+  correctCount   Int      @default(0) @map("correct_count")
+  incorrectCount Int      @default(0) @map("incorrect_count")
+  lastReviewedAt DateTime @default(now()) @map("last_reviewed_at")
+  createdAt      DateTime @default(now()) @map("created_at")
+  masteryLevel   String?  @map("mastery_level")
+  totalTimeMs    Int      @default(0) @map("total_time_ms")
+  
+  chunk LessonChunk @relation(fields: [chunkId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, chunkId])
+  @@map("user_statistics")
+}
+
+model UserAnsweredQuestion {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  questionId      String    @map("question_id") @db.Uuid
+  isCorrect       Boolean   @default(false) @map("is_correct")
+  answeredAt      DateTime  @default(now()) @map("answered_at")
+  userAnswer      String?   @map("user_answer")
+  aiAdvice        String?   @map("ai_advice")
+  easeFactor      Float     @default(2.5) @map("ease_factor")
+  interval        Int       @default(0)
+  repetitionCount Int       @default(0) @map("repetition_count")
+  nextReviewAt    DateTime? @map("next_review_at")
+  
+  question QuestionBank @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, questionId])
+  @@map("user_answered_questions")
+}
+
+model QuizSession {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String    @map("user_id") @db.Uuid
+  lessonType     String    @map("lesson_type")
+  totalQuestions Int       @map("total_questions")
+  correctCount   Int       @default(0) @map("correct_count")
+  completedAt    DateTime? @map("completed_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  
+  @@map("quiz_sessions")
+}

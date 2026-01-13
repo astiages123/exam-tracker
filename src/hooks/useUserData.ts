@@ -110,15 +110,56 @@ export const useUserData = (user: User | null): UseUserDataReturn => {
                             console.error('Error loading user_progress:', error);
                         }
                     } else if (data) {
+                        // Course ID Migration Mapping (Old -> New)
+                        const idMigrationMap: Record<string, string> = {
+                            'ekonomi_1': 'mikro-iktisat',
+                            'ekonomi_2': 'makro-iktisat',
+                            'ekonomi_3': 'para-banka-ve-kredi',
+                            'ekonomi_4': 'uluslararasi-ticaret',
+                            'ekonomi_5': 'turkiye-ekonomisi',
+                            'hukuk_1': 'medeni-hukuk',
+                            'hukuk_2': 'borclar-hukuku',
+                            'hukuk_3': 'ticaret-hukuku',
+                            'hukuk_4': 'bankacilik-hukuku',
+                            'hukuk_5': 'icra-ve-iflas-hukuku',
+                            'hukuk_6': 'ceza-hukuku',
+                            'hukuk_7': 'is-hukuku',
+                            'muhasebe_1': 'muhasebe',
+                            'muhasebe_2': 'isletme-yonetimi',
+                            'muhasebe_3': 'pazarlama-yonetimi',
+                            'muhasebe_4': 'finansal-yonetim',
+                            'muhasebe_5': 'maliye',
+                            'yetenek_1': 'finans-matematigi',
+                            'yetenek_2': 'matematik-sayisal-mantik',
+                            'yetenek_3': 'istatistik',
+                            'yetenek_4': 'banka-muhasebesi'
+                        };
+
+                        const migrateId = (oldId: string): string => idMigrationMap[oldId] || oldId;
+                        const migrateIdNullable = (oldId: string | null): string | null => {
+                            if (!oldId) return oldId;
+                            return idMigrationMap[oldId] || oldId;
+                        };
+
                         // Set progress data
                         if (data.progress_data) {
-                            setProgressData(data.progress_data as UserProgressData);
+                            const rawProgress = data.progress_data as UserProgressData;
+                            const migratedProgress: UserProgressData = {};
+                            Object.entries(rawProgress).forEach(([id, progress]) => {
+                                migratedProgress[migrateId(id)] = progress;
+                            });
+                            setProgressData(migratedProgress);
                         }
 
                         // Set sessions
                         if (data.sessions && Array.isArray(data.sessions)) {
-                            setSessions(data.sessions as StudySession[]);
-                            prevSessionsCountRef.current = data.sessions.length;
+                            const rawSessions = data.sessions as StudySession[];
+                            const migratedSessions = rawSessions.map(s => ({
+                                ...s,
+                                courseId: migrateIdNullable(s.courseId)
+                            }));
+                            setSessions(migratedSessions);
+                            prevSessionsCountRef.current = migratedSessions.length;
                         }
 
                         // Set schedule
@@ -133,7 +174,12 @@ export const useUserData = (user: User | null): UseUserDataReturn => {
 
                         // Set video history
                         if (data.video_history && Array.isArray(data.video_history)) {
-                            setVideoHistory(data.video_history as VideoHistoryItem[]);
+                            const rawHistory = data.video_history as VideoHistoryItem[];
+                            const migratedHistory = rawHistory.map(h => ({
+                                ...h,
+                                courseId: migrateId(h.courseId)
+                            }));
+                            setVideoHistory(migratedHistory);
                         }
                     }
                 } catch (error) {

@@ -1,14 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
-import { Timer, ChartLine, CalendarDays, LogOut, Calendar, Goal, Zap, User, Shield, Brain } from 'lucide-react';
+import { Timer, ChartLine, CalendarDays, LogOut, Goal, User, Shield, Brain, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { RANK_ICONS } from '@/constants/styles';
 import { Button } from '@/components/ui/button';
-import StreakDisplay from '@/components/shared/StreakDisplay';
-import type { Rank } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
+import StreakDisplay from '@/components/shared/StreakDisplay';
 
 interface HeaderProps {
-    rankInfo: Rank;
+    rankInfo: any;
     dailyFocus: string;
     currentStreak: number;
     modals: {
@@ -21,7 +19,7 @@ interface HeaderProps {
     logout: () => Promise<void>;
 }
 
-export default function Header({ rankInfo, dailyFocus, currentStreak, modals, logout }: HeaderProps) {
+export default function Header({ dailyFocus, currentStreak, modals, logout }: HeaderProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -64,57 +62,28 @@ export default function Header({ rankInfo, dailyFocus, currentStreak, modals, lo
     ];
 
     return (
-        <header className="relative z-50 px-4 sm:px-6 lg:px-8 pt-5">
-            <div className="relative max-w-7xl mx-auto">
+        <header className="relative z-50 w-full">
+            <div className="relative w-full">
                 {/* Glassmorphism Background Container */}
-                <div className="absolute inset-0 glass-card glass-card-hover rounded-xl overflow-hidden transition-all duration-300 bg-sky-400/8 hover:bg-sky-900/30 hover:ring-1 hover:ring-white/10 border border-sky-500/20 backdrop-blur-xl shadow-2xl shadow-black/20" />
-
-                <div className="relative px-4 sm:px-6">
-                    <div className="flex items-center justify-between h-20">
-
-                        {/* Left: Rank & Progress */}
-                        <div className="flex items-center gap-4">
-                            <motion.button
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className="flex items-center gap-3 p-1.5 pr-4 rounded-2xl border border-white/10 hover:bg-white/10 hover:border-primary/30 transition-all group"
-                                onClick={() => modals.setShowRankModal(true)}
-                            >
-                                <div className="bg-emerald/10 p-2 rounded-xl border border-primary/20 shadow-inner group-hover:bg-emerald/20 transition-colors">
-                                    {(() => {
-                                        const Icon = RANK_ICONS[rankInfo.icon] || Goal;
-                                        return <Icon size={24} className="text-emerald" />;
-                                    })()}
-                                </div>
-                                <div className="flex flex-col items-start leading-none gap-1">
-                                    <span className="text-[10px] font-bold text-emerald/70 uppercase tracking-widest">Mevcut Seviye</span>
-                                    <span className={cn("text-base font-black tracking-tight leading-none", rankInfo.color)}>
-                                        {rankInfo.title}
-                                    </span>
-                                </div>
-                            </motion.button>
-
-                            <div className="hidden lg:flex h-10 w-px bg-white/10 mx-2" />
-
-                            <div className="hidden lg:flex items-center gap-4">
-                                <StreakDisplay streak={currentStreak} />
-                                <div className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-secondary/30 border border-white/5">
-                                    <Calendar size={16} className="text-emerald/70" />
-                                    <div className="flex flex-col leading-none gap-1">
-                                        <span className="text-[9px] font-bold text-emerald/65 uppercase tracking-tighter">Günün Odağı</span>
-                                        <span className="text-sm font-bold text-emerald leading-none">{dailyFocus}</span>
-                                    </div>
-                                </div>
+                <div className="absolute inset-0 glass-card glass-card-hover transition-all duration-300 bg-sky-400/8 hover:bg-sky-900/30 hover:ring-1 hover:ring-white/10 border-b border-white/10 backdrop-blur-xl shadow-2xl shadow-black/20" />
+                <div className="relative px-4 sm:px-8 lg:px-12 py-4">
+                    <div className="flex items-center justify-between">
+                        {/* Left: Logo & Title */}
+                        <div className="flex items-center gap-4 lg:gap-8">
+                            <div className="flex items-center gap-3">
+                                <img src="/logo.svg" alt="Audit Path" className="w-10 h-10 object-contain mb-3" />
+                                <span className="hidden sm:inline-block font-semibold text-2xl tracking-tight text-emerald font-futura">Audit Path</span>
                             </div>
                         </div>
 
                         {/* Right: Navigation Actions */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-4">
                             <div className="flex items-center bg-white/5 p-1 rounded-xl border border-white/10">
                                 {[
-                                    { icon: Timer, action: () => modals.setShowTimer(!modals.showTimer), label: "Kronometre", shortcut: "T" },
-                                    { icon: ChartLine, action: () => modals.setShowReport(true), label: "İstatistik", shortcut: "S" },
-                                    { icon: CalendarDays, action: () => modals.setShowSchedule(true), label: "Program", shortcut: "P" },
+                                    { icon: ChartLine, action: () => modals.setShowReport(true), label: "İstatistikler" },
+                                    { icon: CalendarDays, action: () => modals.setShowSchedule(true), label: "Program" },
+                                    { icon: Timer, action: () => modals.setShowTimer(!modals.showTimer), label: "Kronometre" },
+                                    { icon: Goal, action: () => modals.setShowRankModal(true), label: "Unvan Yolu" },
                                 ].map((btn, i) => (
                                     <motion.div key={i} whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
                                         <Button
@@ -127,8 +96,7 @@ export default function Header({ rankInfo, dailyFocus, currentStreak, modals, lo
                                             )}
                                         >
                                             <btn.icon size={20} />
-                                            <span className="hidden md:inline-block text-sm font-bold tracking-tight">{btn.label}</span>
-                                            {/* Activity Indicator (Example for Timer) */}
+                                            <span className="hidden lg:inline-block text-sm font-bold tracking-tight">{btn.label}</span>
                                             {btn.icon === Timer && modals.showTimer && (
                                                 <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-emerald rounded-full animate-pulse shadow-[0_0_8px_var(--color-primary)]" />
                                             )}
@@ -137,23 +105,25 @@ export default function Header({ rankInfo, dailyFocus, currentStreak, modals, lo
                                 ))}
                             </div>
 
-                            <div className="h-8 w-px bg-white/10 mx-2 hidden sm:block" />
+                            <div className="h-8 w-px bg-white/10 mx-1 hidden sm:block" />
 
-                            {/* User Avatar & Dropdown */}
+                            {/* User Avatar (Profil) & Dropdown */}
                             <div className="relative" ref={menuRef}>
-                                <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                                    className={cn(
-                                        "flex items-center justify-center h-11 w-11 rounded-xl border transition-all duration-300",
-                                        isMenuOpen
-                                            ? "bg-emerald/20 border-primary/40 text-emerald shadow-[0_0_20px_rgba(var(--color-primary),0.2)]"
-                                            : "bg-white/5 border-white/10 text-emerald/70 hover:text-emerald hover:bg-white/10 hover:border-white/20"
-                                    )}
-                                >
-                                    <User size={22} />
-                                </motion.button>
+                                <div className="flex items-center gap-2">
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                                        className={cn(
+                                            "flex items-center justify-center h-11 w-11 rounded-xl border transition-all duration-300",
+                                            isMenuOpen
+                                                ? "bg-emerald/20 border-primary/40 text-emerald shadow-[0_0_20px_rgba(var(--color-primary),0.2)]"
+                                                : "bg-white/5 border-white/10 text-emerald/70 hover:text-emerald hover:bg-white/10 hover:border-white/20"
+                                        )}
+                                    >
+                                        <User size={22} />
+                                    </motion.button>
+                                </div>
 
                                 <AnimatePresence>
                                     {isMenuOpen && (

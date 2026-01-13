@@ -104,6 +104,7 @@ export function getLessonMediaPath(lessonType: string): string {
         'İcra ve İflas Hukuku': 'hukuk_5',
         'Ceza Hukuku': 'hukuk_6',
         'İş Hukuku': 'hukuk_7',
+        'Medeni Usul Hukuku': 'hukuk_8',
         'Muhasebe': 'muhasebe_1',
         'İşletme Yönetimi': 'muhasebe_2',
         'Pazarlama Yönetimi': 'muhasebe_3',
@@ -112,7 +113,9 @@ export function getLessonMediaPath(lessonType: string): string {
         'Finans Matematiği': 'yetenek_1',
         'Matematik & Sayısal Mantık': 'yetenek_2',
         'İstatistik': 'yetenek_3',
-        'Banka Muhasebesi': 'yetenek_4'
+        'Banka Muhasebesi': 'yetenek_4',
+        'Sözel Mantık': 'yetenek_5',
+        'İngilizce': 'diger_1'
     };
 
     if (lessonFolderMap[lessonType]) {

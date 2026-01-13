@@ -3,7 +3,7 @@
     "category": "1. EKONOMİ (Toplam: 144 Saat)",
     "courses": [
       {
-        "id": "ekonomi_1",
+        "id": "mikro-iktisat",
         "name": "Mikro İktisat - Bilge Beyaz",
         "lessonType": "Mikro İktisat",
         "totalVideos": 111,
@@ -680,7 +680,7 @@
         ]
       },
       {
-        "id": "ekonomi_2",
+        "id": "makro-iktisat",
         "name": "Makro İktisat - Mesut Güzelli",
         "lessonType": "Makro İktisat",
         "totalVideos": 91,
@@ -1237,7 +1237,7 @@
         ]
       },
       {
-        "id": "ekonomi_3",
+        "id": "para-banka-ve-kredi",
         "name": "Para, Banka ve Kredi - Emel Aksaç",
         "lessonType": "Para, Banka ve Kredi",
         "totalVideos": 31,
@@ -1434,7 +1434,7 @@
         ]
       },
       {
-        "id": "ekonomi_4",
+        "id": "uluslararasi-ticaret",
         "name": "Uluslararası Ticaret - Emel Aksaç",
         "lessonType": "Uluslararası Ticaret",
         "totalVideos": 33,
@@ -1643,7 +1643,7 @@
         ]
       },
       {
-        "id": "ekonomi_5",
+        "id": "turkiye-ekonomisi",
         "name": "Türkiye Ekonomisi - Emel Aksaç",
         "lessonType": "Türkiye Ekonomisi",
         "totalVideos": 31,
@@ -1842,10 +1842,10 @@
     ]
   },
   {
-    "category": "2. HUKUK (Toplam: 145 Saat)",
+    "category": "2. HUKUK (Toplam: 161 Saat)",
     "courses": [
       {
-        "id": "hukuk_1",
+        "id": "medeni-hukuk",
         "name": "Medeni Hukuk - Eyüp İpek",
         "lessonType": "Medeni Hukuk",
         "totalVideos": 61,
@@ -2222,7 +2222,7 @@
         ]
       },
       {
-        "id": "hukuk_2",
+        "id": "borclar-hukuku",
         "name": "Borçlar Hukuku - Eyüp İpek",
         "lessonType": "Borçlar Hukuku",
         "totalVideos": 49,
@@ -2527,7 +2527,7 @@
         ]
       },
       {
-        "id": "hukuk_3",
+        "id": "ticaret-hukuku",
         "name": "Ticaret Hukuku - Elif Kendüzler",
         "lessonType": "Ticaret Hukuku",
         "totalVideos": 68,
@@ -2946,7 +2946,7 @@
         ]
       },
       {
-        "id": "hukuk_4",
+        "id": "bankacilik-hukuku",
         "name": "Bankacılık Hukuku - Davut Gürses",
         "lessonType": "Bankacılık Hukuku",
         "totalVideos": 7,
@@ -2999,7 +2999,7 @@
         ]
       },
       {
-        "id": "hukuk_5",
+        "id": "icra-ve-iflas-hukuku",
         "name": "İcra ve İflas - Muhammet Özekes",
         "lessonType": "İcra ve İflas Hukuku",
         "totalVideos": 24,
@@ -3154,7 +3154,7 @@
         ]
       },
       {
-        "id": "hukuk_6",
+        "id": "ceza-hukuku",
         "name": "Türk Ceza Kanunu - Hukuk Öğretir",
         "lessonType": "Ceza Hukuku",
         "totalVideos": 36,
@@ -3381,7 +3381,7 @@
         ]
       },
       {
-        "id": "hukuk_7",
+        "id": "is-hukuku",
         "name": "İş Hukuku - Mehmet Bağcı",
         "lessonType": "İş Hukuku",
         "totalVideos": 9,
@@ -3444,14 +3444,331 @@
             "durationMinutes": 28.53
           }
         ]
+      },
+      {
+        "id": "medeni-usul-hukuku",
+        "name": "Medeni Usul Hukuku - Kamusal Alan Hukuk Akademi",
+        "lessonType": "Medeni Usul Hukuku",
+        "totalVideos": 51,
+        "totalHours": 16.256944444444443,
+        "notePath": null,
+        "playlistUrl": "https://www.youtube.com/playlist?list=PLhZMVVb8_mrLtTOvTaBCod2qXp92-S4vg",
+        "videos": [
+          {
+            "id": 1,
+            "title": "Usul Hukukunun Anlamı, Görev Kuralları",
+            "duration": "26:44",
+            "durationMinutes": 26.733333333333334
+          },
+          {
+            "id": 2,
+            "title": "Yetki Kuralları, Genel, Kesin ve Özel Yetki",
+            "duration": "22:52",
+            "durationMinutes": 22.866666666666667
+          },
+          {
+            "id": 3,
+            "title": "Yetki Sözleşmesi, Yetki İtirazı",
+            "duration": "27:55",
+            "durationMinutes": 27.916666666666668
+          },
+          {
+            "id": 4,
+            "title": "Yargı Yerinin Belirlenmesi: Merci Tayini",
+            "duration": "07:49",
+            "durationMinutes": 7.816666666666666
+          },
+          {
+            "id": 5,
+            "title": "Medeni Usul Hukuku İlkeleri",
+            "duration": "19:32",
+            "durationMinutes": 19.533333333333335
+          },
+          {
+            "id": 6,
+            "title": "Yargıcın Yasaklılığı ve Reddi - 1",
+            "duration": "24:33",
+            "durationMinutes": 24.55
+          },
+          {
+            "id": 7,
+            "title": "Yargıcın Yasaklılığı ve Reddi - 2",
+            "duration": "27:56",
+            "durationMinutes": 27.933333333333334
+          },
+          {
+            "id": 8,
+            "title": "Taraflar: Taraf Ehliyeti, Tarafın Temsili",
+            "duration": "19:07",
+            "durationMinutes": 19.116666666666667
+          },
+          {
+            "id": 9,
+            "title": "İhtiyari ve Mecburi Dava Arkadaşlığı",
+            "duration": "11:58",
+            "durationMinutes": 11.966666666666667
+          },
+          {
+            "id": 10,
+            "title": "Davanın İhbarı, Davaya Katılma",
+            "duration": "23:46",
+            "durationMinutes": 23.766666666666666
+          },
+          {
+            "id": 11,
+            "title": "Davaya Vekalet - 1",
+            "duration": "15:17",
+            "durationMinutes": 15.283333333333333
+          },
+          {
+            "id": 12,
+            "title": "Vekilin İstifası, Azli ve Teminat",
+            "duration": "24:03",
+            "durationMinutes": 24.05
+          },
+          {
+            "id": 13,
+            "title": "HMK'da Süreler",
+            "duration": "16:41",
+            "durationMinutes": 16.683333333333334
+          },
+          {
+            "id": 14,
+            "title": "Eski Hale Getirme ve Adli Tatil",
+            "duration": "24:13",
+            "durationMinutes": 24.216666666666665
+          },
+          {
+            "id": 15,
+            "title": "Dava Türleri",
+            "duration": "29:25",
+            "durationMinutes": 29.416666666666668
+          },
+          {
+            "id": 16,
+            "title": "Dava Şartları ve İlk İtirazlar",
+            "duration": "14:32",
+            "durationMinutes": 14.533333333333333
+          },
+          {
+            "id": 17,
+            "title": "Davanın Açılması",
+            "duration": "21:33",
+            "durationMinutes": 21.55
+          },
+          {
+            "id": 18,
+            "title": "Cevap Dilekçesi",
+            "duration": "21:57",
+            "durationMinutes": 21.95
+          },
+          {
+            "id": 19,
+            "title": "Ön İnceleme Aşaması",
+            "duration": "13:40",
+            "durationMinutes": 13.666666666666666
+          },
+          {
+            "id": 20,
+            "title": "Tahkikat Aşaması",
+            "duration": "08:00",
+            "durationMinutes": 8
+          },
+          {
+            "id": 21,
+            "title": "Duruşma ve Duruşma Düzeni",
+            "duration": "20:00",
+            "durationMinutes": 20
+          },
+          {
+            "id": 22,
+            "title": "Soru Yöneltme ve Tutanak",
+            "duration": "14:32",
+            "durationMinutes": 14.533333333333333
+          },
+          {
+            "id": 23,
+            "title": "Ön Sorun ve Bekletici Sorun",
+            "duration": "11:39",
+            "durationMinutes": 11.65
+          },
+          {
+            "id": 24,
+            "title": "Davaların Birleştirilmesi",
+            "duration": "10:57",
+            "durationMinutes": 10.95
+          },
+          {
+            "id": 25,
+            "title": "İsticvap",
+            "duration": "10:55",
+            "durationMinutes": 10.916666666666666
+          },
+          {
+            "id": 26,
+            "title": "Islah",
+            "duration": "16:50",
+            "durationMinutes": 16.833333333333332
+          },
+          {
+            "id": 27,
+            "title": "Tahkikatın Sona Ermesi",
+            "duration": "09:15",
+            "durationMinutes": 9.25
+          },
+          {
+            "id": 28,
+            "title": "İspat Hukuku: İkrar, Karine, Varsayım",
+            "duration": "18:42",
+            "durationMinutes": 18.7
+          },
+          {
+            "id": 29,
+            "title": "İspat Hukuku: Belge ve Senet",
+            "duration": "15:06",
+            "durationMinutes": 15.1
+          },
+          {
+            "id": 30,
+            "title": "Delil Sözleşmesi, Delillerin İncelenmesi",
+            "duration": "09:55",
+            "durationMinutes": 9.916666666666666
+          },
+          {
+            "id": 31,
+            "title": "Adi Senet, Yazı/İmza İnkarı, Sahtelik",
+            "duration": "20:37",
+            "durationMinutes": 20.616666666666667
+          },
+          {
+            "id": 32,
+            "title": "Haksız Sahtelik İddiası, Belge İbrazı",
+            "duration": "27:32",
+            "durationMinutes": 27.533333333333335
+          },
+          {
+            "id": 33,
+            "title": "Yemin",
+            "duration": "17:04",
+            "durationMinutes": 17.066666666666666
+          },
+          {
+            "id": 34,
+            "title": "Tanıklık",
+            "duration": "14:04",
+            "durationMinutes": 14.066666666666666
+          },
+          {
+            "id": 35,
+            "title": "Tanıklıktan Çekinme",
+            "duration": "18:43",
+            "durationMinutes": 18.716666666666665
+          },
+          {
+            "id": 36,
+            "title": "Bilirkişi",
+            "duration": "29:12",
+            "durationMinutes": 29.2
+          },
+          {
+            "id": 37,
+            "title": "Keşif",
+            "duration": "12:16",
+            "durationMinutes": 12.266666666666667
+          },
+          {
+            "id": 38,
+            "title": "Hüküm: Temel Kavramlar",
+            "duration": "11:53",
+            "durationMinutes": 11.883333333333333
+          },
+          {
+            "id": 39,
+            "title": "Hükmün Verilmesi",
+            "duration": "16:16",
+            "durationMinutes": 16.266666666666666
+          },
+          {
+            "id": 40,
+            "title": "Kesin Hüküm",
+            "duration": "15:21",
+            "durationMinutes": 15.35
+          },
+          {
+            "id": 41,
+            "title": "Tashih, Tavzih, Tamamlama",
+            "duration": "12:13",
+            "durationMinutes": 12.216666666666667
+          },
+          {
+            "id": 42,
+            "title": "Sulh, Kabul, Feragat",
+            "duration": "17:15",
+            "durationMinutes": 17.25
+          },
+          {
+            "id": 43,
+            "title": "Basit Yargılama Usulü",
+            "duration": "12:44",
+            "durationMinutes": 12.733333333333333
+          },
+          {
+            "id": 44,
+            "title": "Yargılama Giderleri",
+            "duration": "28:56",
+            "durationMinutes": 28.933333333333334
+          },
+          {
+            "id": 45,
+            "title": "İstinaf",
+            "duration": "33:00",
+            "durationMinutes": 33
+          },
+          {
+            "id": 46,
+            "title": "Temyiz",
+            "duration": "18:54",
+            "durationMinutes": 18.9
+          },
+          {
+            "id": 47,
+            "title": "Yargılamanın Yenilenmesi",
+            "duration": "19:56",
+            "durationMinutes": 19.933333333333334
+          },
+          {
+            "id": 48,
+            "title": "Çekişmesiz Yargı",
+            "duration": "25:26",
+            "durationMinutes": 25.433333333333334
+          },
+          {
+            "id": 49,
+            "title": "Geçici Hukuki Koruma",
+            "duration": "26:52",
+            "durationMinutes": 26.866666666666667
+          },
+          {
+            "id": 50,
+            "title": "Tahkim - 1. Bölüm",
+            "duration": "28:51",
+            "durationMinutes": 28.85
+          },
+          {
+            "id": 51,
+            "title": "Tahkim - 2. Bölüm",
+            "duration": "28:56",
+            "durationMinutes": 28.933333333333334
+          }
+        ]
       }
     ]
   },
   {
-    "category": "3. MUHASEBE - MALİYE (Toplam: 79 Saat)",
+    "category": "3. MUHASEBE VE MALİYE (Toplam: 79 Saat)",
     "courses": [
       {
-        "id": "muhasebe_1",
+        "id": "muhasebe",
         "name": "Genel Muhasebe - Sinan Öztürk",
         "lessonType": "Muhasebe",
         "totalVideos": 124,
@@ -4206,7 +4523,7 @@
         ]
       },
       {
-        "id": "muhasebe_5",
+        "id": "maliye",
         "name": "Maliye Teorisi - Murat Güzelli",
         "lessonType": "Maliye",
         "totalVideos": 72,
@@ -4649,7 +4966,7 @@
         ]
       },
       {
-        "id": "yetenek_4",
+        "id": "banka-muhasebesi",
         "name": "Banka Muhasebesi - Cemal Hoca",
         "lessonType": "Banka Muhasebesi",
         "totalVideos": 5,
@@ -4688,14 +5005,191 @@
             "durationMinutes": 20.92
           }
         ]
+      },
+      {
+        "id": "isletme-yonetimi",
+        "name": "İşletme Yönetimi (AÖF)",
+        "lessonType": "İşletme Yönetimi",
+        "totalVideos": 8,
+        "totalHours": 1.39,
+        "notePath": "/content/muhasebe_2/muhasebe_2.html",
+        "playlistUrl": "https://www.youtube.com/playlist?list=PLfFz63YLe29oga382t4p0ACkU9PTErzIR",
+        "videos": [
+          {
+            "id": 1,
+            "title": "Yönetim ve Yönetici",
+            "duration": "09:19",
+            "durationMinutes": 9.32
+          },
+          {
+            "id": 2,
+            "title": "Klasik Yönetim Kuramları",
+            "duration": "10:10",
+            "durationMinutes": 10.17
+          },
+          {
+            "id": 3,
+            "title": "Modern Yönetim Kuramları",
+            "duration": "10:15",
+            "durationMinutes": 10.25
+          },
+          {
+            "id": 4,
+            "title": "Planlama",
+            "duration": "09:58",
+            "durationMinutes": 9.97
+          },
+          {
+            "id": 5,
+            "title": "Örgütleme",
+            "duration": "10:08",
+            "durationMinutes": 10.13
+          },
+          {
+            "id": 6,
+            "title": "Yöneltme",
+            "duration": "11:20",
+            "durationMinutes": 11.33
+          },
+          {
+            "id": 7,
+            "title": "Koordinasyon ve Kontrol",
+            "duration": "11:18",
+            "durationMinutes": 11.3
+          },
+          {
+            "id": 8,
+            "title": "Çağdaş Yönetim Konuları",
+            "duration": "11:05",
+            "durationMinutes": 11.08
+          }
+        ]
+      },
+      {
+        "id": "pazarlama-yonetimi",
+        "name": "Pazarlama Yönetimi (AÖF)",
+        "lessonType": "Pazarlama Yönetimi",
+        "totalVideos": 8,
+        "totalHours": 1.41,
+        "notePath": "/content/muhasebe_3/muhasebe_3.html",
+        "playlistUrl": "https://www.youtube.com/playlist?list=PLfFz63YLe29qFsfcr0xu43U0_EycrMYEP",
+        "videos": [
+          {
+            "id": 1,
+            "title": "Değer Yaratım Süreci Olarak Pazarlama",
+            "duration": "10:21",
+            "durationMinutes": 10.35
+          },
+          {
+            "id": 2,
+            "title": "Pazarlama Yönetim Süreci",
+            "duration": "09:50",
+            "durationMinutes": 9.83
+          },
+          {
+            "id": 3,
+            "title": "Pazarlama Stratejileri ve Rekabet",
+            "duration": "13:36",
+            "durationMinutes": 13.6
+          },
+          {
+            "id": 4,
+            "title": "Ürün Yönetimi",
+            "duration": "09:28",
+            "durationMinutes": 9.47
+          },
+          {
+            "id": 5,
+            "title": "Fiyat Yönetimi",
+            "duration": "10:53",
+            "durationMinutes": 10.88
+          },
+          {
+            "id": 6,
+            "title": "Dağıtım Yönetimi",
+            "duration": "10:26",
+            "durationMinutes": 10.43
+          },
+          {
+            "id": 7,
+            "title": "Pazarlama İletişimi Yönetimi",
+            "duration": "12:06",
+            "durationMinutes": 12.1
+          },
+          {
+            "id": 8,
+            "title": "Pazarlama Performansının Değerlendirilmesi",
+            "duration": "07:49",
+            "durationMinutes": 7.82
+          }
+        ]
+      },
+      {
+        "id": "finansal-yonetim",
+        "name": "Finansal Yönetim (AÖF)",
+        "lessonType": "Finansal Yönetim",
+        "totalVideos": 8,
+        "totalHours": 1.57,
+        "notePath": "/content/muhasebe_4/muhasebe_4.html",
+        "playlistUrl": "https://youtube.com/playlist?list=PLfFz63YLe29pGOq7BTtyqrVpx8E1l9aXA&si=HxiyG8eKl5pYmx-E",
+        "videos": [
+          {
+            "id": 1,
+            "title": "Finansal Yönetime Giriş",
+            "duration": "10:41",
+            "durationMinutes": 10.68
+          },
+          {
+            "id": 2,
+            "title": "Paranın Zaman Değeri",
+            "duration": "10:55",
+            "durationMinutes": 10.92
+          },
+          {
+            "id": 3,
+            "title": "Finansal Analiz",
+            "duration": "13:12",
+            "durationMinutes": 13.2
+          },
+          {
+            "id": 4,
+            "title": "Finansal Planlama ve Denetim",
+            "duration": "11:17",
+            "durationMinutes": 11.28
+          },
+          {
+            "id": 5,
+            "title": "Finansman Kaynakları",
+            "duration": "12:30",
+            "durationMinutes": 12.5
+          },
+          {
+            "id": 6,
+            "title": "Sermaye Maliyeti",
+            "duration": "10:49",
+            "durationMinutes": 10.82
+          },
+          {
+            "id": 7,
+            "title": "Çalışma Sermayesi Yönetimi",
+            "duration": "11:50",
+            "durationMinutes": 11.83
+          },
+          {
+            "id": 8,
+            "title": "Yatırım Kararları",
+            "duration": "12:40",
+            "durationMinutes": 12.67
+          }
+        ]
       }
     ]
   },
   {
-    "category": "4. MATEMATİK - İŞLETME (Toplam: 75 Saat)",
+    "category": "4. GENEL YETENEK - İNGİLİZCE (Toplam: 80 Saat)",
     "courses": [
       {
-        "id": "yetenek_1",
+        "id": "finans-matematigi",
         "name": "Finans Matematiği - BUders",
         "lessonType": "Finans Matematiği",
         "totalVideos": 32,
@@ -4898,7 +5392,7 @@
         ]
       },
       {
-        "id": "yetenek_2",
+        "id": "matematik-sayisal-mantik",
         "name": "Matematik & Sayısal Mantık - İlyas Güneş",
         "lessonType": "Matematik & Sayısal Mantık",
         "totalVideos": 79,
@@ -5383,7 +5877,7 @@
         ]
       },
       {
-        "id": "yetenek_3",
+        "id": "istatistik",
         "name": "İstatistik - XDERS",
         "lessonType": "İstatistik",
         "totalVideos": 15,
@@ -5484,179 +5978,402 @@
         ]
       },
       {
-        "id": "muhasebe_2",
-        "name": "İşletme Yönetimi (AÖF)",
-        "lessonType": "İşletme Yönetimi",
-        "totalVideos": 8,
-        "totalHours": 1.39,
-        "notePath": "/content/muhasebe_2/muhasebe_2.html",
-        "playlistUrl": "https://www.youtube.com/playlist?list=PLfFz63YLe29oga382t4p0ACkU9PTErzIR",
+        "id": "sozel-mantik",
+        "name": "Sözel Mantık - Aker Kartal",
+        "lessonType": "Sözel Mantık",
+        "totalVideos": 18,
+        "totalHours": 5.39,
+        "notePath": null,
+        "playlistUrl": "https://www.youtube.com/watch?v=TSJQXXNOZIU&list=PL5w_hbb3voMnDXx1DQVmiFZZBGdAuZdhb",
         "videos": [
           {
             "id": 1,
-            "title": "Yönetim ve Yönetici",
-            "duration": "09:19",
-            "durationMinutes": 9.32
+            "title": "Sözel Mantık - 1",
+            "duration": "22:38",
+            "durationMinutes": 22.633333333333333
           },
           {
             "id": 2,
-            "title": "Klasik Yönetim Kuramları",
-            "duration": "10:10",
-            "durationMinutes": 10.17
+            "title": "Sözel Mantık - 2",
+            "duration": "15:54",
+            "durationMinutes": 15.9
           },
           {
             "id": 3,
-            "title": "Modern Yönetim Kuramları",
-            "duration": "10:15",
-            "durationMinutes": 10.25
+            "title": "Sözel Mantık - 3",
+            "duration": "10:43",
+            "durationMinutes": 10.716666666666667
           },
           {
             "id": 4,
-            "title": "Planlama",
-            "duration": "09:58",
-            "durationMinutes": 9.97
+            "title": "Sözel Mantık - 4",
+            "duration": "13:35",
+            "durationMinutes": 13.583333333333334
           },
           {
             "id": 5,
-            "title": "Örgütleme",
-            "duration": "10:08",
-            "durationMinutes": 10.13
+            "title": "Sözel Mantık - 5",
+            "duration": "18:16",
+            "durationMinutes": 18.266666666666666
           },
           {
             "id": 6,
-            "title": "Yöneltme",
-            "duration": "11:20",
-            "durationMinutes": 11.33
+            "title": "Sözel Mantık - 6",
+            "duration": "19:58",
+            "durationMinutes": 19.966666666666665
           },
           {
             "id": 7,
-            "title": "Koordinasyon ve Kontrol",
-            "duration": "11:18",
-            "durationMinutes": 11.3
+            "title": "Sözel Mantık - 7",
+            "duration": "21:19",
+            "durationMinutes": 21.316666666666666
           },
           {
             "id": 8,
-            "title": "Çağdaş Yönetim Konuları",
-            "duration": "11:05",
-            "durationMinutes": 11.08
+            "title": "Sözel Mantık - 8",
+            "duration": "14:42",
+            "durationMinutes": 14.7
+          },
+          {
+            "id": 9,
+            "title": "Sözel Mantık - 9",
+            "duration": "21:10",
+            "durationMinutes": 21.166666666666668
+          },
+          {
+            "id": 10,
+            "title": "Sözel Mantık - 10",
+            "duration": "16:08",
+            "durationMinutes": 16.133333333333333
+          },
+          {
+            "id": 11,
+            "title": "Sözel Mantık - 11",
+            "duration": "09:48",
+            "durationMinutes": 9.8
+          },
+          {
+            "id": 12,
+            "title": "Sözel Mantık - 12",
+            "duration": "16:44",
+            "durationMinutes": 16.733333333333334
+          },
+          {
+            "id": 13,
+            "title": "Sözel Mantık - 13",
+            "duration": "10:14",
+            "durationMinutes": 10.233333333333333
+          },
+          {
+            "id": 14,
+            "title": "Karma Soru Çözümü - 1",
+            "duration": "29:17",
+            "durationMinutes": 29.283333333333335
+          },
+          {
+            "id": 15,
+            "title": "Karma Soru Çözümü - 2",
+            "duration": "27:00",
+            "durationMinutes": 27
+          },
+          {
+            "id": 16,
+            "title": "ÖSYM Soruları Çözümü - 1",
+            "duration": "16:06",
+            "durationMinutes": 16.1
+          },
+          {
+            "id": 17,
+            "title": "ÖSYM Soruları Çözümü - 2",
+            "duration": "23:03",
+            "durationMinutes": 23.05
+          },
+          {
+            "id": 18,
+            "title": "ÖSYM Soruları Çözümü - 3",
+            "duration": "16:49",
+            "durationMinutes": 16.816666666666666
           }
         ]
       },
       {
-        "id": "muhasebe_3",
-        "name": "Pazarlama Yönetimi (AÖF)",
-        "lessonType": "Pazarlama Yönetimi",
-        "totalVideos": 8,
-        "totalHours": 1.41,
-        "notePath": "/content/muhasebe_3/muhasebe_3.html",
-        "playlistUrl": "https://www.youtube.com/playlist?list=PLfFz63YLe29qFsfcr0xu43U0_EycrMYEP",
+        "id": "ingilizce",
+        "name": "İngilizce - Fatih Çömez",
+        "lessonType": "İngilizce",
+        "totalVideos": 45,
+        "totalHours": 14.916666666666666,
+        "notePath": null,
+        "playlistUrl": "https://www.youtube.com/playlist?list=PL8xiaE-wCWlZRj6dhWBQ0XHeoandgYHCN",
         "videos": [
           {
             "id": 1,
-            "title": "Değer Yaratım Süreci Olarak Pazarlama",
-            "duration": "10:21",
-            "durationMinutes": 10.35
+            "title": "Ön Hazırlık Konuları",
+            "duration": "14:12",
+            "durationMinutes": 14.2
           },
           {
             "id": 2,
-            "title": "Pazarlama Yönetim Süreci",
-            "duration": "09:50",
-            "durationMinutes": 9.83
+            "title": "Present Simple & Present Continuous",
+            "duration": "16:42",
+            "durationMinutes": 16.7
           },
           {
             "id": 3,
-            "title": "Pazarlama Stratejileri ve Rekabet",
+            "title": "Present Perfect Tense",
+            "duration": "14:32",
+            "durationMinutes": 14.533333333333333
+          },
+          {
+            "id": 4,
+            "title": "Simple Past Tense",
+            "duration": "11:56",
+            "durationMinutes": 11.933333333333334
+          },
+          {
+            "id": 5,
+            "title": "Diğer Past Tense'ler",
+            "duration": "11:44",
+            "durationMinutes": 11.733333333333333
+          },
+          {
+            "id": 6,
+            "title": "Future Tense",
+            "duration": "14:14",
+            "durationMinutes": 14.233333333333333
+          },
+          {
+            "id": 7,
+            "title": "Zaman Uyumu Kuralları",
+            "duration": "07:05",
+            "durationMinutes": 7.083333333333333
+          },
+          {
+            "id": 8,
+            "title": "Present Modals",
+            "duration": "12:52",
+            "durationMinutes": 12.866666666666667
+          },
+          {
+            "id": 9,
+            "title": "Past - Future Modals",
+            "duration": "13:33",
+            "durationMinutes": 13.55
+          },
+          {
+            "id": 10,
+            "title": "Passive Voice (Edilgen Yapı)",
+            "duration": "12:35",
+            "durationMinutes": 12.583333333333334
+          },
+          {
+            "id": 11,
+            "title": "Passive Voice Soru Çözümü",
+            "duration": "36:00",
+            "durationMinutes": 36
+          },
+          {
+            "id": 12,
+            "title": "Prepositions (Edatlar)",
+            "duration": "12:25",
+            "durationMinutes": 12.416666666666666
+          },
+          {
+            "id": 13,
+            "title": "Determiners - Quantifiers",
+            "duration": "10:49",
+            "durationMinutes": 10.816666666666666
+          },
+          {
+            "id": 14,
+            "title": "Determiners - Quantifiers Soru Çözümü",
+            "duration": "44:57",
+            "durationMinutes": 44.95
+          },
+          {
+            "id": 15,
+            "title": "Conditionals (Type 1 - 2 - 3)",
+            "duration": "09:22",
+            "durationMinutes": 9.366666666666667
+          },
+          {
+            "id": 16,
+            "title": "Conditionals (Type 4 - 5)",
+            "duration": "10:53",
+            "durationMinutes": 10.883333333333333
+          },
+          {
+            "id": 17,
+            "title": "Conditionals Soru Çözümü",
+            "duration": "40:17",
+            "durationMinutes": 40.28333333333333
+          },
+          {
+            "id": 18,
+            "title": "Gerund - Infinitive",
+            "duration": "17:16",
+            "durationMinutes": 17.266666666666666
+          },
+          {
+            "id": 19,
+            "title": "Kısaltma Çözüm Teknikleri",
+            "duration": "10:00",
+            "durationMinutes": 10
+          },
+          {
+            "id": 20,
+            "title": "Relative Clause - 1",
+            "duration": "14:20",
+            "durationMinutes": 14.333333333333334
+          },
+          {
+            "id": 21,
+            "title": "Relative Clause - 2",
+            "duration": "12:07",
+            "durationMinutes": 12.116666666666667
+          },
+          {
+            "id": 22,
+            "title": "Relative Clause - 3",
+            "duration": "08:19",
+            "durationMinutes": 8.316666666666666
+          },
+          {
+            "id": 23,
+            "title": "Relative Clause Soru Çözümü",
+            "duration": "28:13",
+            "durationMinutes": 28.216666666666665
+          },
+          {
+            "id": 24,
+            "title": "Noun Clause",
+            "duration": "16:02",
+            "durationMinutes": 16.033333333333335
+          },
+          {
+            "id": 25,
+            "title": "Noun Clause Soru Çözümü",
+            "duration": "41:59",
+            "durationMinutes": 41.983333333333334
+          },
+          {
+            "id": 26,
+            "title": "Adjective - Adverb - 1",
+            "duration": "17:35",
+            "durationMinutes": 17.583333333333332
+          },
+          {
+            "id": 27,
+            "title": "Adjective - Adverb - 2",
+            "duration": "14:43",
+            "durationMinutes": 14.716666666666667
+          },
+          {
+            "id": 28,
+            "title": "Adjective - Adverb Soru Çözümü",
+            "duration": "33:56",
+            "durationMinutes": 33.93333333333333
+          },
+          {
+            "id": 29,
+            "title": "Conjunctions (Bağlaçlar) - 1",
+            "duration": "09:01",
+            "durationMinutes": 9.016666666666667
+          },
+          {
+            "id": 30,
+            "title": "Conjunctions (Bağlaçlar) - 2",
+            "duration": "10:46",
+            "durationMinutes": 10.766666666666667
+          },
+          {
+            "id": 31,
+            "title": "Conjunctions (Bağlaçlar) - 3",
+            "duration": "19:05",
+            "durationMinutes": 19.083333333333332
+          },
+          {
+            "id": 32,
+            "title": "Conjunctions Soru Çözümü",
+            "duration": "44:16",
+            "durationMinutes": 44.266666666666666
+          },
+          {
+            "id": 33,
+            "title": "Reading Comprehension - 1",
             "duration": "13:36",
             "durationMinutes": 13.6
           },
           {
-            "id": 4,
-            "title": "Ürün Yönetimi",
-            "duration": "09:28",
-            "durationMinutes": 9.47
+            "id": 34,
+            "title": "Reading Comprehension - 2",
+            "duration": "12:49",
+            "durationMinutes": 12.816666666666666
           },
           {
-            "id": 5,
-            "title": "Fiyat Yönetimi",
-            "duration": "10:53",
-            "durationMinutes": 10.88
+            "id": 35,
+            "title": "Reading Comprehension - 3",
+            "duration": "07:55",
+            "durationMinutes": 7.916666666666667
           },
           {
-            "id": 6,
-            "title": "Dağıtım Yönetimi",
-            "duration": "10:26",
-            "durationMinutes": 10.43
+            "id": 36,
+            "title": "Reading Comprehension - 4",
+            "duration": "08:39",
+            "durationMinutes": 8.65
           },
           {
-            "id": 7,
-            "title": "Pazarlama İletişimi Yönetimi",
-            "duration": "12:06",
-            "durationMinutes": 12.1
+            "id": 37,
+            "title": "Reading Comprehension - 5",
+            "duration": "11:21",
+            "durationMinutes": 11.35
           },
           {
-            "id": 8,
-            "title": "Pazarlama Performansının Değerlendirilmesi",
-            "duration": "07:49",
-            "durationMinutes": 7.82
-          }
-        ]
-      },
-      {
-        "id": "muhasebe_4",
-        "name": "Finansal Yönetim (AÖF)",
-        "lessonType": "Finansal Yönetim",
-        "totalVideos": 8,
-        "totalHours": 1.57,
-        "notePath": "/content/muhasebe_4/muhasebe_4.html",
-        "playlistUrl": "https://youtube.com/playlist?list=PLfFz63YLe29pGOq7BTtyqrVpx8E1l9aXA&si=HxiyG8eKl5pYmx-E",
-        "videos": [
-          {
-            "id": 1,
-            "title": "Finansal Yönetime Giriş",
-            "duration": "10:41",
-            "durationMinutes": 10.68
+            "id": 38,
+            "title": "Reading Comprehension - 6",
+            "duration": "09:27",
+            "durationMinutes": 9.45
           },
           {
-            "id": 2,
-            "title": "Paranın Zaman Değeri",
-            "duration": "10:55",
-            "durationMinutes": 10.92
+            "id": 39,
+            "title": "Reading Comprehension - 7",
+            "duration": "08:41",
+            "durationMinutes": 8.683333333333334
           },
           {
-            "id": 3,
-            "title": "Finansal Analiz",
-            "duration": "13:12",
-            "durationMinutes": 13.2
+            "id": 40,
+            "title": "Reading Comprehension - 8",
+            "duration": "21:09",
+            "durationMinutes": 21.15
           },
           {
-            "id": 4,
-            "title": "Finansal Planlama ve Denetim",
-            "duration": "11:17",
-            "durationMinutes": 11.28
+            "id": 41,
+            "title": "Gerund - Infinitive Soru Çözümü",
+            "duration": "26:48",
+            "durationMinutes": 26.8
           },
           {
-            "id": 5,
-            "title": "Finansman Kaynakları",
-            "duration": "12:30",
-            "durationMinutes": 12.5
+            "id": 42,
+            "title": "Modals Soru Çözümü",
+            "duration": "43:58",
+            "durationMinutes": 43.96666666666667
           },
           {
-            "id": 6,
-            "title": "Sermaye Maliyeti",
-            "duration": "10:49",
-            "durationMinutes": 10.82
+            "id": 43,
+            "title": "Prepositions Soru Çözümü",
+            "duration": "34:14",
+            "durationMinutes": 34.233333333333334
           },
           {
-            "id": 7,
-            "title": "Çalışma Sermayesi Yönetimi",
-            "duration": "11:50",
-            "durationMinutes": 11.83
+            "id": 44,
+            "title": "Tenses Soru Çözümü",
+            "duration": "39:40",
+            "durationMinutes": 39.666666666666664
           },
           {
-            "id": 8,
-            "title": "Yatırım Kararları",
-            "duration": "12:40",
-            "durationMinutes": 12.67
+            "id": 45,
+            "title": "GENEL GRAMER SORULARI",
+            "duration": "01:04:57",
+            "durationMinutes": 64.95
           }
         ]
       }

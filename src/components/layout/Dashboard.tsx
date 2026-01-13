@@ -217,6 +217,8 @@ export default function Dashboard({ logout }: DashboardProps) {
                         sessions={sessions}
                         completedHours={completedHours}
                         totalHours={totalHours}
+                        dailyFocus={dailyFocus}
+                        currentStreak={currentStreak}
                     />
                 </div>
 

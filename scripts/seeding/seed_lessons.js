@@ -69,17 +69,22 @@ async function seedLessons() {
                     continue;
                 }
 
-                const lessonName = course.lessonType;
+                const lessonName = course.lessonType || course.name;
 
-                // Tr karakterleri ve özel karakterleri temizleyip slug oluştur
-                const slug = lessonName.toLowerCase()
-                    .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's')
-                    .replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c')
+                // Use course.id as slug if available, otherwise generate from name
+                const slug = course.id || lessonName.toLowerCase()
+                    .replace(/İ/g, 'i').replace(/I/g, 'i').replace(/ı/g, 'i')
+                    .replace(/Ğ/g, 'g').replace(/ğ/g, 'g')
+                    .replace(/Ü/g, 'u').replace(/ü/g, 'u')
+                    .replace(/Ş/g, 's').replace(/ş/g, 's')
+                    .replace(/Ö/g, 'o').replace(/ö/g, 'o')
+                    .replace(/Ç/g, 'c').replace(/ç/g, 'c')
+                    .toLowerCase()
                     .replace(/[^a-z0-9-]/g, '-')
-                    .replace(/-+/g, '-') // Birden fazla tireyi teke indir
-                    .replace(/^-|-$/g, ''); // Baştaki ve sondaki tireleri kaldır
+                    .replace(/-+/g, '-')
+                    .replace(/^-|-$/g, '');
 
-                console.log(`Processing lesson: ${lessonName} -> slug: ${slug}`);
+                console.log(`Processing lesson: ${lessonName} (ID: ${course.id}) -> slug: ${slug}`);
 
                 // Check if exists
                 const { data: existing } = await supabase
